@@ -12,6 +12,6 @@ jobs:
       with:
         set-safe-directory: '*'
     - name: Build and Deploy Nikola
-      uses: getnikola/nikola-action@v4
+      uses: getnikola/nikola-action@v8
       with:
         dry_run: false
