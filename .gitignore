@@ -165,6 +165,9 @@ cython_debug/
 # website: https://getnikola.com/
 
 .doit.db
+.doit.db.dat
+.doit.db.bak
+.doit.db.dir
 *.py[cod]
 cache/
 output/

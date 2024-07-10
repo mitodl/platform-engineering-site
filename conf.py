@@ -144,12 +144,10 @@ NAVIGATION_LINKS = {
         # ("/categories/", "Tags"),
         # ("/rss.xml", "RSS feed"),
         # ("/pages", "Pages"),
-        (
-            ("/pages/runbooks/", "Runbooks"),
-            ("/pages/discoveries/", "Discoveries"),
-            ("/pages/how_to/", "How To"),
-            ("/pages/post-mortems/", "Post Mortems"),
-        ),
+        ("/pages/runbooks/", "Runbooks"),
+        ("/pages/discoveries/", "Discoveries"),
+        ("/pages/how_to/", "How To"),
+        ("/pages/post_mortems/", "Post Mortems"),
     ),
 }
 
