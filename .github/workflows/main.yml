@@ -9,6 +9,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         set-safe-directory: '/workspace'
+        set-safe-directory: '/github/workspace'
     - name: Build and Deploy Nikola
       uses: getnikola/nikola-action@v4
       with:
