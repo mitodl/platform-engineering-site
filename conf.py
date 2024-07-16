@@ -245,10 +245,6 @@ THEME_CONFIG = {
 PAGES = (
     # ("pages/*.rst", "pages", "page.tmpl"),
     ("pages/*.md", "pages", "page.tmpl"),
-    ("pages/runbooks/*.md", "pages", "page.tmpl"),
-    ("pages/discoveries/*.md", "pages", "page.tmpl"),
-    ("pages/how_to/*.md", "pages", "page.tmpl"),
-    ("pages/post-mortems/*.md", "pages", "page.tmpl"),
     # ("pages/*.txt", "pages", "page.tmpl"),
     # ("pages/*.html", "pages", "page.tmpl"),
 )
@@ -430,7 +426,7 @@ COMPILERS = {
 # If you do not want to display a tag publicly, you can mark it as hidden.
 # The tag will not be displayed on the tag list page and posts.
 # Tag pages will still be generated.
-HIDDEN_TAGS = ["mathjax"]
+# HIDDEN_TAGS = ["mathjax"]
 
 # Only include tags on the tag list/overview page if there are at least
 # TAGLIST_MINIMUM_POSTS number of posts or more with every tag. Every tag
@@ -473,10 +469,10 @@ HIDDEN_TAGS = ["mathjax"]
 # using a forward slash ('/') to separate paths. Use a backslash ('\') to escape
 # a forward slash or a backslash (i.e. '\//\\' is a path specifying the
 # subcategory called '\' of the top-level category called '/').
-CATEGORY_ALLOW_HIERARCHIES = False
+# CATEGORY_ALLOW_HIERARCHIES = False
 # If CATEGORY_OUTPUT_FLAT_HIERARCHY is set to True, the output written to output
 # contains only the name of the leaf category and not the whole path.
-CATEGORY_OUTPUT_FLAT_HIERARCHY = False
+# CATEGORY_OUTPUT_FLAT_HIERARCHY = False
 
 # If CATEGORY_PAGES_ARE_INDEXES is set to True, each category's page will contain
 # the posts themselves. If set to False, it will be just a list of links.
