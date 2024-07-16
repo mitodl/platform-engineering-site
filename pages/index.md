@@ -7,4 +7,4 @@
 - [Concourse Pipelines Production](https://cicd.odl.mit.edu/)
 
 ## For Us
-- [Platform Engineer Oncall Runbook](runbooks/oncall.md)
+- [Platform Engineer Oncall Runbook](pages/runbooks/oncall)
