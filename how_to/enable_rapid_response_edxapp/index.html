@@ -3,26 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>index | Platform Engineering Site</title>
-<link href="assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<title>enable_rapid_response_edxapp | Platform Engineering Site</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
-<link rel="canonical" href="https://pe.ol.mit.edu/">
-<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><meta name="author" content="MIT Online Learning Platform Engineering">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="https://pe.ol.mit.edu/how_to/enable_rapid_response_edxapp/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="MIT Online Learning Platform Engineering">
 <meta property="og:site_name" content="Platform Engineering Site">
-<meta property="og:title" content="index">
-<meta property="og:url" content="https://pe.ol.mit.edu/">
-<meta property="og:description" content="Handy Links
-For Our Customers
+<meta property="og:title" content="enable_rapid_response_edxapp">
+<meta property="og:url" content="https://pe.ol.mit.edu/how_to/enable_rapid_response_edxapp/">
+<meta property="og:description" content="Reference
+https://github.com/mitodl/rapid-response-xblock/blob/master/README.md
+How-To
 
-Celery Monitoring Production
-Concourse Pipelines Production
-
-For Us
-
-Platform Engineer Oncall Runbook">
+Common env.yaml file must have FEATURES:ALLOW_ALL_ADVANCED_COMPONENTS: True
+Common env.yaml file must have ENABL">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2024-07-16T15:03:57-04:00">
 </head>
@@ -41,7 +38,7 @@ Platform Engineer Oncall Runbook">
             </div>
         </div>
           <div class="col-md-6 col-xs-10 col-sm-10 bootblog4-brand" style="width: auto;">
-            <a class="navbar-brand blog-header-logo text-dark" href=".">
+            <a class="navbar-brand blog-header-logo text-dark" href="../../">
 
             <span id="blog-title">Platform Engineering Site</span>
         </a>
@@ -53,16 +50,16 @@ Platform Engineer Oncall Runbook">
 </header><nav class="navbar navbar-expand-md navbar-light bg-white static-top"><div class="collapse navbar-collapse bs-nav-collapsible" id="bs-navbar">
             <ul class="navbar-nav nav-fill d-flex w-100">
 <li class="nav-item">
-<a href="pages/runbooks/" class="nav-link">Runbooks</a>
+<a href="../../pages/runbooks/" class="nav-link">Runbooks</a>
                 </li>
 <li class="nav-item">
-<a href="pages/discoveries/" class="nav-link">Discoveries</a>
+<a href="../../pages/discoveries/" class="nav-link">Discoveries</a>
                 </li>
 <li class="nav-item">
-<a href="pages/how_to/" class="nav-link">How To</a>
+<a href="../../pages/how_to/" class="nav-link">How To</a>
                 </li>
 <li class="nav-item">
-<a href="pages/post_mortems/" class="nav-link">Post Mortems</a>
+<a href="../../pages/post_mortems/" class="nav-link">Post Mortems</a>
 
                 
             </li>
@@ -78,22 +75,24 @@ Platform Engineer Oncall Runbook">
         
         
         
-<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">index</a></h1>
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">enable_rapid_response_edxapp</a></h1>
 
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <p><img alt="MIT Logo 3 Line Black" src="images/mit_lockup_std-three-line_rgb_black.png"></p>
-<h2>Handy Links</h2>
-<h3>For Our Customers</h3>
-<ul>
-<li><a href="https://celery-monitoring.odl.mit.edu/">Celery Monitoring Production</a></li>
-<li><a href="https://cicd.odl.mit.edu/">Concourse Pipelines Production</a></li>
-</ul>
-<h3>For Us</h3>
-<ul>
-<li><a href="pages/runbooks/oncall">Platform Engineer Oncall Runbook</a></li>
-</ul>
+    <h2>Reference</h2>
+<p>https://github.com/mitodl/rapid-response-xblock/blob/master/README.md</p>
+<h2>How-To</h2>
+<ol>
+<li>Common env.yaml file must have <code>FEATURES:ALLOW_ALL_ADVANCED_COMPONENTS: True</code>
+</li>
+<li>Common env.yaml file must have <code>ENABLE_RAPID_RESPONSE_AUTHOR_VIEW: True</code>
+</li>
+<li>Rapid-response package pip packages must be installed in the image <code>rapid-response-xblock</code> and <code>ol-openedx-rapid-response-reports</code>. Refer to existing package listings in the openedx docker configs.</li>
+<li>In the <em>LMS</em> Admin UI -&gt; <code>/admin/lms_xblock/xblockasidesconfig/</code> create an <code>enabled</code> record.</li>
+<li>In the <em>CMS</em> Admin UI -&gt; <code>/admin/xblock_config/studioconfig/</code> create an 'enabled' record.</li>
+<li>Verify via studio on a test/demo course, find an existing multiple choice problem or create a new one. After creation in the 'unit view', you should now have a checkbox at the bottom of a multiple choice problem that will say 'Enable problem for rapid-response'.</li>
+</ol>
 </div>
     
 
@@ -106,7 +105,7 @@ Platform Engineer Oncall Runbook">
 </div>
 
 
-        <script src="assets/js/all-nocdn.js"></script><script>
+        <script src="../../assets/js/all-nocdn.js"></script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
         captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
