@@ -7,7 +7,8 @@
 - [Concourse Pipelines Production](https://cicd.odl.mit.edu/)
 - [Directory of MIT OL's
 Applications](https://github.mit.edu/odl-engineering/project-status/wiki/App-Links)
-- [MIT OL's Github Discussions](https://github.com/mitodl/hq/discussions)
+- [MIT OL Engineering Github Discussions](https://github.com/mitodl/hq/discussions)
+- [MIT Online Learning Intranet](https://openlearning-intranet.mit.edu/)
 
 ## For Us
 - [Platform Engineer Oncall Runbook](pages/runbooks/oncall)
