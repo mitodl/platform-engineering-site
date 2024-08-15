@@ -8,10 +8,10 @@ jobs:
     - name: Fix git safe.directory in container
       run: mkdir -p /home/runner/work/_temp/_github_home && printf "[safe]\n\tdirectory = /github/workspace" > /home/runner/work/_temp/_github_home/.gitconfig
     - name: Check out
-      uses: actions/checkout@v4
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       with:
         set-safe-directory: '*'
     - name: Build and Deploy Nikola
-      uses: getnikola/nikola-action@v8
+      uses: getnikola/nikola-action@9bbc30f5719c488f8e77c60bae010b090d98094e # v8
       with:
         dry_run: false
