@@ -1,0 +1,5 @@
+site_name: Platform Engineering Documentation Site
+theme:
+  name: mkdocs
+  user_color_mode_toggle: true
+
