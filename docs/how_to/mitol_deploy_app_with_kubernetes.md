@@ -66,8 +66,12 @@ sections.
 
 ### Networking
 
-You'll need to choose pod and service subnets for your cluster. **TODO** add
-specific instructions on how to do this. For now, use the example of the data-qa
+You'll need to choose pod and service subnets for your cluster. 
+
+**TODO** add
+specific instructions on how to do this.
+
+For now, use the example of the data-qa
 cluster's definitions and pay attention to the relationship between the subnets
 we chose and the VPC subnets they live in.
 
