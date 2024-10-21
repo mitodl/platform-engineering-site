@@ -121,4 +121,4 @@ up.
 
 ```bash
 pulumi up -s applications.open_metadata.QA
-```bash
+```
