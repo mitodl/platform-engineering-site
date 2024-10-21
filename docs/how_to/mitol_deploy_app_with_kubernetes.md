@@ -120,5 +120,5 @@ ol-infrastucture/src/ol_infrastructure/applications/open_metadata and run pulumi
 up.
 
 ```bash
-pulumi up -s applications.open_metadata.QA
+pulumi up -s applications.open_metadata.CI
 ```
