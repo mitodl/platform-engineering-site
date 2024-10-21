@@ -276,6 +276,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-bs-level="2"><a href="#make-it-so" class="nav-link">Make It So</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -333,8 +337,6 @@ in the <a href="#infrastructure">infrastructure</a> and <a href="#substructure">
 sections.</p>
 <h3 id="networking">Networking</h3>
 <p>You'll need to choose pod and service subnets for your cluster. </p>
-<p><strong>TODO</strong> add
-specific instructions on how to do this.</p>
 <p>For now, use the example of the data-qa
 cluster's definitions and pay attention to the relationship between the subnets
 we chose and the VPC subnets they live in.</p>
@@ -349,8 +351,28 @@ Kubernetes Provider</a>.</p>
 <a href="https://github.com/mitodl/ol-infrastructure/blob/3321e8499509199ffd2002bd15ac255e6ce3e2c2/src/ol_infrastructure/applications/open_metadata/__main__.py#L295">kubernetes.helm.v3.release</a>
 object. Click the link about for an example of how we translated Open Metadata's
 helm chart. Pay particular attention to the Values dictionary.</p>
-<p><strong>TODO</strong> Provide explicit instructions for running <code>pulumi up</code> in
-infrastructure (eks, networking) and substructure (eks) projects.</p></div>
+<h2 id="make-it-so">Make It So</h2>
+<p>We use CI to prove things out. So you'll want to start with that environment.</p>
+<p>If your application will require its own EKS cluster, you'll want to build that
+first.</p>
+<p>So change directories to
+ol-infrastructure/src/ol_infrastructure/infrastructure/aws/eks and run pulumi
+up.</p>
+<p>For instance, were you building the data CI cluster, you'd run:</p>
+<pre><code class="language-bash">pulumi up -s infrastructure.aws.eks.data.CI
+</code></pre>
+<p>You'll almost certainly need to fix issues as you go. There's lots of complex
+configuration here that can't be covered in a simple doc.</p>
+<p>Then you'll want to build the resources in substructure for your project, so
+once again for the data CI cluster we'd want to change directory to
+ol-infrastructure/src/ol_infrastructure/substructure/aws/eks and run pulumi up.</p>
+<pre><code class="language-bash">pulumi up -s substructure.aws.eks.data.CI
+</code></pre>
+<p>Then you'll want to deploy your application. So for OMD as an example, cd to
+ol-infrastucture/src/ol_infrastructure/applications/open_metadata and run pulumi
+up.</p>
+<p><code>bash
+pulumi up -s applications.open_metadata.QA</code>bash</p></div>
             </div>
         </div>
 
