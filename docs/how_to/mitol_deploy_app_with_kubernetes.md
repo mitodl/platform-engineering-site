@@ -68,9 +68,6 @@ sections.
 
 You'll need to choose pod and service subnets for your cluster. 
 
-**TODO** add
-specific instructions on how to do this.
-
 For now, use the example of the data-qa
 cluster's definitions and pay attention to the relationship between the subnets
 we chose and the VPC subnets they live in.
@@ -91,6 +88,37 @@ Helm charts are deployed by Pulumi by translating the helm chart into a
 object. Click the link about for an example of how we translated Open Metadata's
 helm chart. Pay particular attention to the Values dictionary.
 
-**TODO** Provide explicit instructions for running `pulumi up` in
-infrastructure (eks, networking) and substructure (eks) projects.
+## Make It So
 
+We use CI to prove things out. So you'll want to start with that environment.
+
+If your application will require its own EKS cluster, you'll want to build that
+first.
+
+So change directories to
+ol-infrastructure/src/ol_infrastructure/infrastructure/aws/eks and run pulumi
+up.
+
+For instance, were you building the data CI cluster, you'd run:
+```bash
+pulumi up -s infrastructure.aws.eks.data.CI
+```
+
+You'll almost certainly need to fix issues as you go. There's lots of complex
+configuration here that can't be covered in a simple doc.
+
+Then you'll want to build the resources in substructure for your project, so
+once again for the data CI cluster we'd want to change directory to
+ol-infrastructure/src/ol_infrastructure/substructure/aws/eks and run pulumi up.
+
+```bash
+pulumi up -s substructure.aws.eks.data.CI
+```
+
+Then you'll want to deploy your application. So for OMD as an example, cd to
+ol-infrastucture/src/ol_infrastructure/applications/open_metadata and run pulumi
+up.
+
+```bash
+pulumi up -s applications.open_metadata.QA
+```bash
