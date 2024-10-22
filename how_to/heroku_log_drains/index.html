@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Summary - Platform Engineering Documentation Site</title>
+        <title>Heroku log drains - Platform Engineering Documentation Site</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../css/brands.min.css" rel="stylesheet">
@@ -87,7 +87,7 @@
 </li>
                                     
 <li>
-    <a href="../heroku_log_drains/" class="dropdown-item">Heroku log drains</a>
+    <a href="./" class="dropdown-item active" aria-current="page">Heroku log drains</a>
 </li>
                                     
 <li>
@@ -99,7 +99,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">Summary</a>
+    <a href="../mitol_devops_patterns_cookbook/" class="dropdown-item">Summary</a>
 </li>
                                     
 <li>
@@ -201,12 +201,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../mitol_deploy_app_with_kubernetes/" class="nav-link">
+                                <a rel="prev" href="../heroku_dynosaur_management/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../mitol_openedx_retirement_pipeline/" class="nav-link">
+                                <a rel="next" href="../import_existing_resources_with_pulumi/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -258,17 +258,13 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#summary" class="nav-link">Summary</a>
+            <li class="nav-item" data-bs-level="2"><a href="#configure-a-log-drain" class="nav-link">Configure a Log Drain</a>
               <ul class="nav flex-column">
               </ul>
             </li>
             
-            <li class="nav-item" data-bs-level="1"><a href="#recipes" class="nav-link">Recipes</a>
+            <li class="nav-item" data-bs-level="2"><a href="#references" class="nav-link">References</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#traefik" class="nav-link">Traefik</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
               </ul>
             </li>
         </ul>
@@ -276,40 +272,28 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="summary">Summary</h1>
-<p>This document will serve as a place to put patterns and best practices.</p>
-<p>The goal is to ease the path for both new builders and experienced builders by
-helping narrow down the bevvy of choices and present a workable best practice
-solution to a given problem.</p>
-<p>There are many potential ways to organize a document like this, but for now I
-intend to start with the recipes broken down by infrastructure components.</p>
-<p>Example of what I mean are Docker, Traefik, Pyinfra and the like.</p>
-<p>Please write your recipes in the following form with <em>What I Want</em> and <em>How To
-Build It</em> as bold subsections.</p>
-<h1 id="recipes">Recipes</h1>
-<h2 id="traefik">Traefik</h2>
-<h3 id="token-based-authentication">Token Based Authentication</h3>
-<p><em>What I Want</em></p>
-<p>I want Traefik to allow requests only from clients that pass a particular token
-in the HTTP headers of the request. Here's an example <code>curl</code> from Tika with the
-actual token:</p>
-<pre><code class="language-bash">curl  --header 'X-Access-Token: &lt;crazy hex digits&gt;' https://tika-qa.odl.mit.edu
+<h2 id="configure-a-log-drain">Configure a Log Drain</h2>
+<p>To get logs from heroku applications -&gt; Grafana we need to configure a 'log drain' in heroku for each application. This is pretty straight forward but does require collecting a few pieces of information first:</p>
+<ul>
+<li>The address of the 'vector-log-proxy'</li>
+<li>log-proxy-ci.odl.mit.edu</li>
+<li>log-proxy-qa.odl.mit.edu</li>
+<li>log-proxy.odl.mit.edu</li>
+<li>The basic auth password for the 'vector-log-proxy' server.</li>
+<li><code>sops -d src/bridge/secrets/vector/vector_log_proxy.ci.yaml</code>  heroku section, username: vector-log-proxy</li>
+<li><code>sops -d src/bridge/secrets/vector/vector_log_proxy.qa.yaml</code>  heroku section, username: vector-log-proxy</li>
+<li><code>sops -d src/bridge/secrets/vector/vector_log_proxy.production.yaml</code>  heroku section, username: vector-log-proxy</li>
+</ul>
+<p>Next we configure the log drain using the heroku-cli. There is no web interface for configuring this.</p>
+<pre><code>heroku drains:add -a &lt;HEROKU_APP_NAME&gt; 'https://vector-log-proxy:&lt;PASSWORD_FROM_SOPS&gt;@&lt;URL_FROM_ABOVE&gt;:9000/events?app_name=&lt;APP_NAME_WO_ENV_INFO&gt;&amp;environment=&lt;ENV&gt;&amp;service=heroku'
 </code></pre>
-<p><em>How To Build It</em></p>
-<p>Traefik does not contain this functionality by default, so we must leverage the
-<a href="https://plugins.traefik.io/plugins/628c9eda108ecc83915d7760/check-request-headers-plugin">checkheaders</a>
-Traefik middleware plugin.</p>
-<p>You will need to add a blob to your Traefik static configuration like this:</p>
-<pre><code>experimental:
-  plugins:
-    checkheadersplugin:
-      moduleName: &quot;github.com/dkijkuit/checkheadersplugin&quot;
-      version: &quot;v0.2.6&quot;
+<p>And you'll get a response like: </p>
+<pre><code>Successfully added drain https://vector-log-proxy:&lt;The rest of the URL you just used&gt;
 </code></pre>
-<p>Since we use <a href="https://pyinfra.com/">pyinfra</a> to automate our image builds,
-you'll need to add code like <a href="https://github.com/mitodl/ol-infrastructure/blob/b71388a4e0c2d6099ccbe92236301c5c30dc6154/src/bilder/images/tika/deploy.py#L110C1-L110C1">this</a>
-to your deploy.py and a line like <a href="https://github.com/mitodl/ol-infrastructure/blob/b71388a4e0c2d6099ccbe92236301c5c30dc6154/src/bilder/images/tika/files/docker-compose.yaml#L35">this</a>
-to your docker-compose.yaml file.</p></div>
+<p><code>app_name</code>, <code>environment</code>, and <code>service</code> all refer directly to the organization fields used to categorize the logs in Grafana.</p>
+<h2 id="references">References</h2>
+<p>https://devcenter.heroku.com/articles/logplex
+https://devcenter.heroku.com/articles/log-drains#https-drains</p></div>
             </div>
         </div>
 
