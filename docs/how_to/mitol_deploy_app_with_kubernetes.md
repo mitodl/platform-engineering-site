@@ -36,16 +36,17 @@ All the component infrastructure required to support your application.
 #### Network
 
 General Rules:
+
 - There will only be one EKS cluster in any given VPC
 - Pods and EKS nodes share the same address spaces
-  - Pod + node address spaces reside in different availability zones
-  - Pod + node address spaces should be positioned "in the middle of the VPC"
-  - Pod + node address spaces are at least  `/21`  -> ~2048 addresses per space
-  - There are at least 4 pod and node address spaces -> at least ~8192 addresses per cluster
+    - Pod + node address spaces reside in different availability zones
+    - Pod + node address spaces should be positioned "in the middle of the VPC"
+    - Pod + node address spaces are at least  `/21`  -> ~2048 addresses per space
+    - There are at least 4 pod and node address spaces -> at least ~8192 addresses per cluster
 - Service Address spaces are arbitrary but CANNOT be a subnet of the VPC.
-  - Service address spaces should not overlap from cluster to cluster
-  - Service address spaces jump +60 on the third octet for CI->QA->Production
-  - Service address spaces are at least `/23` -> ~512 addresses per space
+    - Service address spaces should not overlap from cluster to cluster
+    - Service address spaces jump +60 on the third octet for CI->QA->Production
+    - Service address spaces are at least `/23` -> ~512 addresses per space
 
 
 | VPC | CI | QA | Production| 
