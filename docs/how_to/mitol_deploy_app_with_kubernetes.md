@@ -35,9 +35,39 @@ All the component infrastructure required to support your application.
 
 #### Network
 
-All the networking required to support the kubernetes cluster your app lives on
-are here. For instance the k8s service and [pod
-subnets](https://github.com/mitodl/ol-infrastructure/blob/3321e8499509199ffd2002bd15ac255e6ce3e2c2/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml#L17).
+General Rules:
+- There will only be one EKS cluster in any given VPC
+- Pods and EKS nodes share the same address spaces
+  - Pod + node address spaces reside in different availability zones
+  - Pod + node address spaces should be positioned "in the middle of the VPC"
+  - Pod + node address spaces are at least  `/21`  -> ~2048 addresses per space
+  - There are at least 4 pod and node address spaces -> at least ~8192 addresses per cluster
+- Service Address spaces are arbitrary but CANNOT be a subnet of the VPC.
+  - Service address spaces should not overlap from cluster to cluster
+  - Service address spaces jump +60 on the third octet for CI->QA->Production
+  - Service address spaces are at least `/23` -> ~512 addresses per space
+
+
+| VPC | CI | QA | Production| 
+|--|--|--|--|
+| Operations |Services:<br/>10.110.20.0/23<br/>Pods:<br/>172.16.128.0/21<br/>172.16.136.0/21<br/>172.16.144.0/21<br/>172.16.152.0/21 | Services:<br/>***10.110.84.0/23***<br/>Pods:<br/>10.1.128.0/21<br/>10.1.136.0/21<br/>10.1.144.0/21<br/>10.1.152.0/21 | ***Services:<br/>10.110.140.0/23<br/>Pods:<br/>10.0.128.0/21<br/>10.0.136.0/21<br/>10.0.144.0/21<br/>10.0.152.0/21*** |
+| Data |Services:<br/>10.110.22.0/23<br/>Pods:<br/>172.23.128.0/21<br/>172.23.136.0/21<br/>172.23.144.0/21<br/>172.23.152.0/21 | Services:<br/>10.110.82.0/23<br/>Pods:<br/>10.2.128.0/21<br/>10.2.136.0/21<br/>10.2.144.0/21<br/>10.2.152.0/21 | ***Services:<br/>10.110.142.0/23<br/>Pods:<br/>10.3.128.0/21<br/>10.3.136.0/21<br/>10.3.144.0/21<br/>10.3.152.0/21*** |
+| ... | ... | ... | ... |
+
+Networking Configuration YAML
+ 
+ - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml)
+ - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml)
+ - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml)
+
+**CIDR Sizing Helper**
+| Format | Address Space Size |
+|--|--|
+| a.b.c.0/24 | 256 |
+| a.b.c.0/23 | 512 |
+| a.b.c.0/22 | 1024 |
+| a.b.c.0/21 | 2048 | 
+| a.b.c.0/20 | 4096 |  
 
 #### EKS Cluster
 
