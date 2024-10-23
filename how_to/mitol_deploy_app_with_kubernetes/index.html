@@ -318,17 +318,23 @@ architecture hangs together.</p>
 <h3 id="infrastructure">Infrastructure</h3>
 <p>All the component infrastructure required to support your application.</p>
 <h4 id="network">Network</h4>
-<p>General Rules:
-- There will only be one EKS cluster in any given VPC
-- Pods and EKS nodes share the same address spaces
-  - Pod + node address spaces reside in different availability zones
-  - Pod + node address spaces should be positioned "in the middle of the VPC"
-  - Pod + node address spaces are at least  <code>/21</code>  -&gt; ~2048 addresses per space
-  - There are at least 4 pod and node address spaces -&gt; at least ~8192 addresses per cluster
-- Service Address spaces are arbitrary but CANNOT be a subnet of the VPC.
-  - Service address spaces should not overlap from cluster to cluster
-  - Service address spaces jump +60 on the third octet for CI-&gt;QA-&gt;Production
-  - Service address spaces are at least <code>/23</code> -&gt; ~512 addresses per space</p>
+<p>General Rules:</p>
+<ul>
+<li>There will only be one EKS cluster in any given VPC</li>
+<li>Pods and EKS nodes share the same address spaces<ul>
+<li>Pod + node address spaces reside in different availability zones</li>
+<li>Pod + node address spaces should be positioned "in the middle of the VPC"</li>
+<li>Pod + node address spaces are at least  <code>/21</code>  -&gt; ~2048 addresses per space</li>
+<li>There are at least 4 pod and node address spaces -&gt; at least ~8192 addresses per cluster</li>
+</ul>
+</li>
+<li>Service Address spaces are arbitrary but CANNOT be a subnet of the VPC.<ul>
+<li>Service address spaces should not overlap from cluster to cluster</li>
+<li>Service address spaces jump +60 on the third octet for CI-&gt;QA-&gt;Production</li>
+<li>Service address spaces are at least <code>/23</code> -&gt; ~512 addresses per space</li>
+</ul>
+</li>
+</ul>
 <table>
 <thead>
 <tr>
