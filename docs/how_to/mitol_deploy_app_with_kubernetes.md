@@ -60,15 +60,6 @@ Networking Configuration YAML
  - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml)
  - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml)
 
-**CIDR Sizing Helper**
-| Format | Address Space Size |
-|--|--|
-| a.b.c.0/24 | 256 |
-| a.b.c.0/23 | 512 |
-| a.b.c.0/22 | 1024 |
-| a.b.c.0/21 | 2048 | 
-| a.b.c.0/20 | 4096 |  
-
 #### EKS Cluster
 
 [This](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/eks/Pulumi.infrastructure.aws.eks.data.QA.yaml) is the beating heart of where your kubernetes cluster is defined in Pulumi.
