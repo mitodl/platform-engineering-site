@@ -1,4 +1,6 @@
-# Summary
+# Deploying Concourse
+
+## Summary
 
 This document will detail the best practice we use to develop and deploy changes
 to our Concourse pipeline web and worker servers.
