@@ -1,4 +1,6 @@
-# The Problem
+# Concourse github Issues Workflow User Guide
+
+## The Problem
 
 Here at MIT OL we use [Concourse CI](https://concourse-ci.org/). It's an
 incredibly powerful package for managing complex continuous integration
@@ -9,7 +11,7 @@ difficult to get one's head around and understand. As an example,
 [this](https://cicd.odl.mit.edu/teams/infrastructure/pipelines/docker-packer-pulumi-edxapp-global)
 is our edx platform meta-pipeline.
 
-# The Ask
+## The Ask
 
 Most of the time, there are exactly two questions software developers wants
 answered when it comes to deploying their software:
@@ -17,14 +19,14 @@ answered when it comes to deploying their software:
 1. How can I tell when my code has been deployed to $X?
 2. How can I trigger my code to be deployed to $X?
 
-# The Solution
+## The Solution
 
 Thankfully, our director Tobias came up with an excellent and novel solution.
 What's one of the most common non code mechanism developers use to govern their work?
 
 Github Issues!
 
-## A Traffic Light For Deploys
+### A Traffic Light For Deploys
 
 Now that you've indulged me with a full page of setup. Let's get down to brass
 tacks and answer those two most common questions devs have about their deploys:
