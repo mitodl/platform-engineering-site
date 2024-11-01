@@ -1,8 +1,10 @@
-# Reference
+# Enable Rapid Responde in edxapp
+
+## Reference
 
 https://github.com/mitodl/rapid-response-xblock/blob/master/README.md
 
-# How-To
+## How-To
 
 1. Common env.yaml file must have `FEATURES:ALLOW_ALL_ADVANCED_COMPONENTS: True`
 2. Common env.yaml file must have `ENABLE_RAPID_RESPONSE_AUTHOR_VIEW: True`

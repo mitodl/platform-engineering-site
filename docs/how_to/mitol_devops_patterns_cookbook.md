@@ -1,4 +1,6 @@
-# Summary
+# MIT OL Devops Patterns Cookbook
+
+## Summary
 
 This document will serve as a place to put patterns and best practices.
 
@@ -14,11 +16,11 @@ Example of what I mean are Docker, Traefik, Pyinfra and the like.
 Please write your recipes in the following form with _What I Want_ and _How To
 Build It_ as bold subsections.
 
-# Recipes
+## Recipes
 
-## Traefik
+### Traefik
 
-### Token Based Authentication
+#### Token Based Authentication
 
 _What I Want_
 
