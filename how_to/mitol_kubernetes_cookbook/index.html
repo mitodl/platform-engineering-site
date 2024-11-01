@@ -289,6 +289,16 @@ kubectl patch -n open-metadata vaultauth open-metadata-auth -p '{&quot;metadata&
 kubectl patch -n open-metadata vaultauth open-metadata-auth -p '{&quot;metadata&quot;:{&quot;finalizers&quot;:null}}' --type=merge
 kubectl patch -n open-metadata vaultconnection open-metadata-vault-connection -p '{&quot;metadata&quot;:{&quot;finalizers&quot;:null}}' --type=merge
 kubectl patch -n operations vaultstaticsecret vault-kv-global-odl-wildcard -p '{&quot;metadata&quot;:{&quot;finalizers&quot;:null}}' --type=merge
+</code></pre>
+<h3 id="get-overview-of-a-namespace">Get Overview Of a Namespace</h3>
+<p>Shows things like open ports, pod status and the like.</p>
+<pre><code class="language-bash">kubectl get all -n open-metadata
+</code></pre>
+<h3 id="get-information-status-on-a-particular-resource">Get Information / Status On A Particular Resource</h3>
+<pre><code class="language-bash">kubectl describe &lt;resource&gt; &lt;optional-resource-name&gt; -n &lt;namespace&gt;
+</code></pre>
+<p>e.g.</p>
+<pre><code class="language-bash">kubectl describe pod -n open-metadata openmetadata-5f78b769d4-4wgs9                                                                                                                 feoh@prometheus
 </code></pre></div>
             </div>
         </div>
