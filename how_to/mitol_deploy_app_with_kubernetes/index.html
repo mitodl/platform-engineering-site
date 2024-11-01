@@ -63,7 +63,7 @@
 </li>
                                     
 <li>
-    <a href="../deploying_concourse/" class="dropdown-item">Summary</a>
+    <a href="../deploying_concourse/" class="dropdown-item">Deploying Concourse</a>
 </li>
                                     
 <li>
@@ -84,6 +84,10 @@
                                     
 <li>
     <a href="../heroku_dynosaur_management/" class="dropdown-item">Heroku Dynosaur Management</a>
+</li>
+                                    
+<li>
+    <a href="../heroku_log_drains/" class="dropdown-item">Heroku log drains</a>
 </li>
                                     
 <li>
@@ -108,6 +112,10 @@
                                     
 <li>
     <a href="../moira_certificates/" class="dropdown-item">Moira Certificates</a>
+</li>
+                                    
+<li>
+    <a href="../openedx_release_upgrades/" class="dropdown-item">How To Update The Release Version Of An Open edX Deployment</a>
 </li>
                                     
 <li>
@@ -145,16 +153,6 @@
 <li>
     <a href="../update_this_site/" class="dropdown-item">Update this site</a>
 </li>
-                                    
-  <li class="dropdown-submenu">
-    <a href="#" class="dropdown-item">Openedx</a>
-    <ul class="dropdown-menu">
-            
-<li>
-    <a href="../openedx/release_upgrades/" class="dropdown-item">How To Update The Release Version Of An Open edX Deployment</a>
-</li>
-    </ul>
-  </li>
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
@@ -318,9 +316,59 @@ architecture hangs together.</p>
 <h3 id="infrastructure">Infrastructure</h3>
 <p>All the component infrastructure required to support your application.</p>
 <h4 id="network">Network</h4>
-<p>All the networking required to support the kubernetes cluster your app lives on
-are here. For instance the k8s service and <a href="https://github.com/mitodl/ol-infrastructure/blob/3321e8499509199ffd2002bd15ac255e6ce3e2c2/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml#L17">pod
-subnets</a>.</p>
+<p>General Rules:</p>
+<ul>
+<li>There will only be one EKS cluster in any given VPC</li>
+<li>Pods and EKS nodes share the same address spaces<ul>
+<li>Pod + node address spaces reside in different availability zones</li>
+<li>Pod + node address spaces should be positioned "in the middle of the VPC"</li>
+<li>Pod + node address spaces are at least  <code>/21</code>  -&gt; ~2048 addresses per space</li>
+<li>There are at least 4 pod and node address spaces -&gt; at least ~8192 addresses per cluster</li>
+</ul>
+</li>
+<li>Service Address spaces are arbitrary but CANNOT be a subnet of the VPC.<ul>
+<li>Service address spaces should not overlap from cluster to cluster</li>
+<li>Service address spaces jump +60 on the third octet for CI-&gt;QA-&gt;Production</li>
+<li>Service address spaces are at least <code>/23</code> -&gt; ~512 addresses per space</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>VPC</th>
+<th>CI</th>
+<th>QA</th>
+<th>Production</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operations</td>
+<td>Services:<br/>10.110.20.0/23<br/>Pods:<br/>172.16.128.0/21<br/>172.16.136.0/21<br/>172.16.144.0/21<br/>172.16.152.0/21</td>
+<td>Services:<br/><strong><em>10.110.84.0/23</em></strong><br/>Pods:<br/>10.1.128.0/21<br/>10.1.136.0/21<br/>10.1.144.0/21<br/>10.1.152.0/21</td>
+<td><strong><em>Services:<br/>10.110.140.0/23<br/>Pods:<br/>10.0.128.0/21<br/>10.0.136.0/21<br/>10.0.144.0/21<br/>10.0.152.0/21</em></strong></td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Services:<br/>10.110.22.0/23<br/>Pods:<br/>172.23.128.0/21<br/>172.23.136.0/21<br/>172.23.144.0/21<br/>172.23.152.0/21</td>
+<td>Services:<br/>10.110.82.0/23<br/>Pods:<br/>10.2.128.0/21<br/>10.2.136.0/21<br/>10.2.144.0/21<br/>10.2.152.0/21</td>
+<td><strong><em>Services:<br/>10.110.142.0/23<br/>Pods:<br/>10.3.128.0/21<br/>10.3.136.0/21<br/>10.3.144.0/21<br/>10.3.152.0/21</em></strong></td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+<p>Networking Configuration YAML</p>
+<ul>
+<li><a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml">src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml</a></li>
+<li><a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml">src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml</a></li>
+<li><a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml">src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml</a></li>
+</ul>
 <h4 id="eks-cluster">EKS Cluster</h4>
 <p><a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/eks/Pulumi.infrastructure.aws.eks.data.QA.yaml">This</a> is the beating heart of where your kubernetes cluster is defined in Pulumi.
 It contains a multitude of configuration optioons including namespaces defined

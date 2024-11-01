@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Heroku Dynosaur Management - Platform Engineering Documentation Site</title>
+        <title>Heroku log drains - Platform Engineering Documentation Site</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../css/brands.min.css" rel="stylesheet">
@@ -83,11 +83,11 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">Heroku Dynosaur Management</a>
+    <a href="../heroku_dynosaur_management/" class="dropdown-item">Heroku Dynosaur Management</a>
 </li>
                                     
 <li>
-    <a href="../heroku_log_drains/" class="dropdown-item">Heroku log drains</a>
+    <a href="./" class="dropdown-item active" aria-current="page">Heroku log drains</a>
 </li>
                                     
 <li>
@@ -199,12 +199,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../heroku_config_vars/" class="nav-link">
+                                <a rel="prev" href="../heroku_dynosaur_management/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../heroku_log_drains/" class="nav-link">
+                                <a rel="next" href="../import_existing_resources_with_pulumi/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -256,12 +256,13 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#heroku-dynosaur-management" class="nav-link">Heroku Dynosaur Management</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#pipeline" class="nav-link">Pipeline</a>
+            <li class="nav-item" data-bs-level="2"><a href="#configure-a-log-drain" class="nav-link">Configure a Log Drain</a>
               <ul class="nav flex-column">
               </ul>
             </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#references" class="nav-link">References</a>
+              <ul class="nav flex-column">
               </ul>
             </li>
         </ul>
@@ -269,12 +270,28 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="heroku-dynosaur-management">Heroku Dynosaur Management</h1>
-<h2 id="pipeline">Pipeline</h2>
-<p>The pipeline can be found <a href="https://cicd.odl.mit.edu/teams/infrastructure/pipelines/misc-heroku-dyno-management">here</a>.
-And the pipeline definition can be found <a href="https://github.com/mitodl/ol-infrastructure/tree/main/src/ol_concourse/pipelines/infrastructure/heroku/pipeline.py">here</a>.</p>
-<p>There are two dicts in the pipeline defintion which define the various production and QA applications. The definition of each includes the name of the application as the key to the dict, and a substructure that lists the application owner and a list of dyno name/qty/size combinations. The owner is needed to perform an apiKey lookup from pre-existing SOPS data within the repo. </p>
-<p>At the moment we are not resetting the web node counts / configurations because HireFire has a hand in managing those. </p></div>
+<h2 id="configure-a-log-drain">Configure a Log Drain</h2>
+<p>To get logs from heroku applications -&gt; Grafana we need to configure a 'log drain' in heroku for each application. This is pretty straight forward but does require collecting a few pieces of information first:</p>
+<ul>
+<li>The address of the 'vector-log-proxy'</li>
+<li>log-proxy-ci.odl.mit.edu</li>
+<li>log-proxy-qa.odl.mit.edu</li>
+<li>log-proxy.odl.mit.edu</li>
+<li>The basic auth password for the 'vector-log-proxy' server.</li>
+<li><code>sops -d src/bridge/secrets/vector/vector_log_proxy.ci.yaml</code>  heroku section, username: vector-log-proxy</li>
+<li><code>sops -d src/bridge/secrets/vector/vector_log_proxy.qa.yaml</code>  heroku section, username: vector-log-proxy</li>
+<li><code>sops -d src/bridge/secrets/vector/vector_log_proxy.production.yaml</code>  heroku section, username: vector-log-proxy</li>
+</ul>
+<p>Next we configure the log drain using the heroku-cli. There is no web interface for configuring this.</p>
+<pre><code>heroku drains:add -a &lt;HEROKU_APP_NAME&gt; 'https://vector-log-proxy:&lt;PASSWORD_FROM_SOPS&gt;@&lt;URL_FROM_ABOVE&gt;:9000/events?app_name=&lt;APP_NAME_WO_ENV_INFO&gt;&amp;environment=&lt;ENV&gt;&amp;service=heroku'
+</code></pre>
+<p>And you'll get a response like: </p>
+<pre><code>Successfully added drain https://vector-log-proxy:&lt;The rest of the URL you just used&gt;
+</code></pre>
+<p><code>app_name</code>, <code>environment</code>, and <code>service</code> all refer directly to the organization fields used to categorize the logs in Grafana.</p>
+<h2 id="references">References</h2>
+<p>https://devcenter.heroku.com/articles/logplex
+https://devcenter.heroku.com/articles/log-drains#https-drains</p></div>
             </div>
         </div>
 
