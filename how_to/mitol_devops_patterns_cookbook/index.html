@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Summary - Platform Engineering Documentation Site</title>
+        <title>MIT OL Devops Patterns Cookbook - Platform Engineering Documentation Site</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../css/brands.min.css" rel="stylesheet">
@@ -67,7 +67,7 @@
 </li>
                                     
 <li>
-    <a href="../enable_rapid_response_edxapp/" class="dropdown-item">Reference</a>
+    <a href="../enable_rapid_response_edxapp/" class="dropdown-item">Enable Rapid Responde in edxapp</a>
 </li>
                                     
 <li>
@@ -87,10 +87,6 @@
 </li>
                                     
 <li>
-    <a href="../heroku_log_drains/" class="dropdown-item">Heroku log drains</a>
-</li>
-                                    
-<li>
     <a href="../import_existing_resources_with_pulumi/" class="dropdown-item">Importing Resources That Already Exist Into Your Pulumi Stack</a>
 </li>
                                     
@@ -99,7 +95,11 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">Summary</a>
+    <a href="./" class="dropdown-item active" aria-current="page">MIT OL Devops Patterns Cookbook</a>
+</li>
+                                    
+<li>
+    <a href="../mitol_kubernetes_cookbook/" class="dropdown-item">MIT OL Kubernetes Cookbook</a>
 </li>
                                     
 <li>
@@ -115,7 +115,7 @@
 </li>
                                     
 <li>
-    <a href="../pulumi_aws_classic_5_to_6_upgrade/" class="dropdown-item">Pulumi aws classic 5 to 6 upgrade</a>
+    <a href="../pulumi_aws_classic_5_to_6_upgrade/" class="dropdown-item">Pulumi AWS Classic 4 To 5 Upgrade</a>
 </li>
                                     
 <li>
@@ -206,7 +206,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../mitol_openedx_retirement_pipeline/" class="nav-link">
+                                <a rel="next" href="../mitol_kubernetes_cookbook/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -258,14 +258,13 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#summary" class="nav-link">Summary</a>
+            <li class="nav-item" data-bs-level="1"><a href="#mit-ol-devops-patterns-cookbook" class="nav-link">MIT OL Devops Patterns Cookbook</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#summary" class="nav-link">Summary</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
-            <li class="nav-item" data-bs-level="1"><a href="#recipes" class="nav-link">Recipes</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#traefik" class="nav-link">Traefik</a>
+            <li class="nav-item" data-bs-level="2"><a href="#recipes" class="nav-link">Recipes</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -276,7 +275,8 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="summary">Summary</h1>
+<h1 id="mit-ol-devops-patterns-cookbook">MIT OL Devops Patterns Cookbook</h1>
+<h2 id="summary">Summary</h2>
 <p>This document will serve as a place to put patterns and best practices.</p>
 <p>The goal is to ease the path for both new builders and experienced builders by
 helping narrow down the bevvy of choices and present a workable best practice
@@ -286,9 +286,9 @@ intend to start with the recipes broken down by infrastructure components.</p>
 <p>Example of what I mean are Docker, Traefik, Pyinfra and the like.</p>
 <p>Please write your recipes in the following form with <em>What I Want</em> and <em>How To
 Build It</em> as bold subsections.</p>
-<h1 id="recipes">Recipes</h1>
-<h2 id="traefik">Traefik</h2>
-<h3 id="token-based-authentication">Token Based Authentication</h3>
+<h2 id="recipes">Recipes</h2>
+<h3 id="traefik">Traefik</h3>
+<h4 id="token-based-authentication">Token Based Authentication</h4>
 <p><em>What I Want</em></p>
 <p>I want Traefik to allow requests only from clients that pass a particular token
 in the HTTP headers of the request. Here's an example <code>curl</code> from Tika with the
