@@ -27,4 +27,19 @@ kubectl patch -n open-metadata vaultconnection open-metadata-vault-connection -p
 kubectl patch -n operations vaultstaticsecret vault-kv-global-odl-wildcard -p '{"metadata":{"finalizers":null}}' --type=merge
 ```
 
+### Get Overview Of a Namespace
 
+Shows things like open ports, pod status and the like.
+```bash
+kubectl get all -n open-metadata
+```
+
+### Get Information / Status On A Particular Resource
+
+```bash
+kubectl describe <resource> <optional-resource-name> -n <namespace>
+```
+e.g.
+```bash
+kubectl describe pod -n open-metadata openmetadata-5f78b769d4-4wgs9                                                                                                                 feoh@prometheus
+```
