@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>The Problem - Platform Engineering Documentation Site</title>
+        <title>Concourse github Issues Workflow User Guide - Platform Engineering Documentation Site</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../css/brands.min.css" rel="stylesheet">
@@ -55,7 +55,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">The Problem</a>
+    <a href="./" class="dropdown-item active" aria-current="page">Concourse github Issues Workflow User Guide</a>
 </li>
                                     
 <li>
@@ -256,19 +256,17 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#the-problem" class="nav-link">The Problem</a>
+            <li class="nav-item" data-bs-level="1"><a href="#concourse-github-issues-workflow-user-guide" class="nav-link">Concourse github Issues Workflow User Guide</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#the-problem" class="nav-link">The Problem</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
-            <li class="nav-item" data-bs-level="1"><a href="#the-ask" class="nav-link">The Ask</a>
+            <li class="nav-item" data-bs-level="2"><a href="#the-ask" class="nav-link">The Ask</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
-            <li class="nav-item" data-bs-level="1"><a href="#the-solution" class="nav-link">The Solution</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#a-traffic-light-for-deploys" class="nav-link">A Traffic Light For Deploys</a>
+            <li class="nav-item" data-bs-level="2"><a href="#the-solution" class="nav-link">The Solution</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -279,7 +277,8 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="the-problem">The Problem</h1>
+<h1 id="concourse-github-issues-workflow-user-guide">Concourse github Issues Workflow User Guide</h1>
+<h2 id="the-problem">The Problem</h2>
 <p>Here at MIT OL we use <a href="https://concourse-ci.org/">Concourse CI</a>. It's an
 incredibly powerful package for managing complex continuous integration
 workflows, and we leverage its power in all kinds of interesting ways.</p>
@@ -287,18 +286,18 @@ workflows, and we leverage its power in all kinds of interesting ways.</p>
 difficult to get one's head around and understand. As an example,
 <a href="https://cicd.odl.mit.edu/teams/infrastructure/pipelines/docker-packer-pulumi-edxapp-global">this</a>
 is our edx platform meta-pipeline.</p>
-<h1 id="the-ask">The Ask</h1>
+<h2 id="the-ask">The Ask</h2>
 <p>Most of the time, there are exactly two questions software developers wants
 answered when it comes to deploying their software:</p>
 <ol>
 <li>How can I tell when my code has been deployed to $X?</li>
 <li>How can I trigger my code to be deployed to $X?</li>
 </ol>
-<h1 id="the-solution">The Solution</h1>
+<h2 id="the-solution">The Solution</h2>
 <p>Thankfully, our director Tobias came up with an excellent and novel solution.
 What's one of the most common non code mechanism developers use to govern their work?</p>
 <p>Github Issues!</p>
-<h2 id="a-traffic-light-for-deploys">A Traffic Light For Deploys</h2>
+<h3 id="a-traffic-light-for-deploys">A Traffic Light For Deploys</h3>
 <p>Now that you've indulged me with a full page of setup. Let's get down to brass
 tacks and answer those two most common questions devs have about their deploys:</p>
 <ol>
