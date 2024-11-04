@@ -53,3 +53,33 @@ e.g.
 ```bash
 kubectl describe pod -n open-metadata openmetadata-5f78b769d4-4wgs9                                                                                                                 feoh@prometheus
 ```
+
+### Pulumi Server Side Complaints
+
+Sometimes pulumi will complain about being unable to manage a field or something on k8s resources. Something like this: 
+
+```bash
+
+Diagnostics:
+  pulumi:pulumi:Stack (ol-infrastructure-open_metadata-application-applications.open_metadata.CI):
+    error: preview failed
+
+  kubernetes:core/v1:ServiceAccount (open-metadata-vault-service-account):
+    error: Preview failed: 1 error occurred:
+    	* the Kubernetes API server reported that "open-metadata/open-metadata-vault" failed to fully initialize or become live: Server-Side Apply field conflict detected. See https://www.pulumi.com/registry/packages/kubernetes/how-to-guides/managing-resources-with-server-side-apply/#handle-field-conflicts-on-existing-resources for troubleshooting help.
+    The resource managed by field manager "pulumi-kubernetes-51b738f0" had an apply conflict: Apply failed with 1 conflict: conflict with "pulumi-kubernetes-cef7f602": .metadata.labels.pulumi_stack
+
+  kubernetes:rbac.authorization.k8s.io/v1:ClusterRoleBinding (open-metadata-vault-cluster-role-binding):
+    error: Preview failed: 1 error occurred:
+    	* the Kubernetes API server reported that "open-metadata-vault:cluster-auth" failed to fully initialize or become live: Server-Side Apply field conflict detected. See https://www.pulumi.com/registry/packages/kubernetes/how-to-guides/managing-resources-with-server-side-apply/#handle-field-conflicts-on-existing-resources for troubleshooting help.
+    The resource managed by field manager "pulumi-kubernetes-0e168a03" had an apply conflict: Apply failed with 2 conflicts: conflicts with "pulumi-kubernetes-0754bbed":
+    - .metadata.labels.pulumi_stack
+    conflicts with "pulumi-kubernetes-f4f83ba0":
+    - .metadata.labels.pulumi_stack
+```
+
+Easiest thing to do is set an env var on execution which will bring the questionable fields back into pulumi management and keep you moving. There is still probably a bigger issue at play, though.
+
+```bash
+PULUMI_K8S_ENABLE_PATCH_FORCE="true" pr pulumi up -s applications.open_metadata.CI
+```
