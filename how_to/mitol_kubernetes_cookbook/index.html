@@ -271,6 +271,12 @@
 
 <h1 id="mit-ol-kubernetes-cookbook">MIT OL Kubernetes Cookbook</h1>
 <h2 id="kubectl-recipes">kubectl Recipes</h2>
+<h3 id="port-forward-to-a-pod">Port-forward to a pod</h3>
+<p>https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/</p>
+<pre><code class="language-bash">kubectl port-forward &lt;podname&gt; &lt;local port&gt;:&lt;remote port&gt; -n &lt;namespace&gt;
+
+kubectl port-forward grafana-alloy-dnqj2 12345:12345 -n operations
+</code></pre>
 <h3 id="get-a-pgsql-prompt">Get a pgsql Prompt</h3>
 <pre><code class="language-bash">kubectl run -i --tty postgres --image=postgres --restart=Never -n airbyte -- sh
 </code></pre>
