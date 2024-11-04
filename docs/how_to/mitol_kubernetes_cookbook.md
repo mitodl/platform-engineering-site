@@ -2,6 +2,16 @@
 
 ## kubectl Recipes
 
+### Port-forward to a pod
+
+https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/
+
+```bash
+kubectl port-forward <podname> <local port>:<remote port> -n <namespace>
+
+kubectl port-forward grafana-alloy-dnqj2 12345:12345 -n operations
+```
+
 ### Get a pgsql Prompt
 
 ```bash
