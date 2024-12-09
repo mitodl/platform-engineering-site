@@ -290,6 +290,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-bs-level="2"><a href="#updating-an-mitol-openedx-branch-with-the-latest" class="nav-link">Updating An MITOL OpenEdX Branch With The Latest</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-bs-level="2"><a href="#troubleshooting" class="nav-link">Troubleshooting</a>
               <ul class="nav flex-column">
               </ul>
@@ -457,6 +461,19 @@ application in the <code>ReleaseMap</code> at the appropriate location.</p>
   be necessary to manually ensure that all database migrations are run properly. It will
   be attempted automatically on deployment, but there are often conflicts between the
   existing database state and the migration logic that require intervention.</li>
+</ul>
+<h2 id="updating-an-mitol-openedx-branch-with-the-latest">Updating An MITOL OpenEdX Branch With The Latest</h2>
+<p>This involves updating our edx-platform fork and rebasing the correct branch.</p>
+<p>For instance, to update our forked OpenEdX Sumac branch for MITxOnline, you
+would:</p>
+<ul>
+<li>Check out our fork of the edx-platform repo - <code>gh repo clone
+mitodl/edx-platform</code></li>
+<li>Change to the right branch - <code>git checkout mitx/sumac</code></li>
+<li>Update all the things - <code>git fetch --all</code></li>
+<li>Rebase from upstream - <code>git pull --rebase upstream open-release/sumac.master</code></li>
+<li>Check the results, and if correct push the branch - <code>git push origin
+mitx/sumac --force</code></li>
 </ul>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h3 id="openedx-redwood">OpenEdX Redwood</h3>
