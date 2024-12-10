@@ -177,6 +177,21 @@ application in the `ReleaseMap` at the appropriate location.
   be attempted automatically on deployment, but there are often conflicts between the
   existing database state and the migration logic that require intervention.
 
+## Updating An MITOL OpenEdX Branch With The Latest
+
+This involves updating our edx-platform fork and rebasing the correct branch.
+
+For instance, to update our forked OpenEdX Sumac branch for MITxOnline, you
+would:
+
+* Check out our fork of the edx-platform repo - `gh repo clone
+mitodl/edx-platform`
+* Change to the right branch - `git checkout mitx/sumac`
+* Update all the things - `git fetch --all`
+* Rebase from upstream - `git pull --rebase upstream open-release/sumac.master`
+* Check the results, and if correct push the branch - `git push origin
+mitx/sumac --force`
+
 ## Troubleshooting
 
 ### OpenEdX Redwood
