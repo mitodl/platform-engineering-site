@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>reCAPTCHA Errors - Platform Engineering Documentation Site</title>
+        <title>Proving That A Particular OpenEdX Build Was Deployed To a Product Environment - Platform Engineering Documentation Site</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../css/brands.min.css" rel="stylesheet">
@@ -51,7 +51,7 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../OpenEdX_Prove_Build_Was_Deployed/" class="dropdown-item">Proving That A Particular OpenEdX Build Was Deployed To a Product Environment</a>
+    <a href="./" class="dropdown-item active" aria-current="page">Proving That A Particular OpenEdX Build Was Deployed To a Product Environment</a>
 </li>
                                     
 <li>
@@ -139,7 +139,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">reCAPTCHA Errors</a>
+    <a href="../recaptcha/" class="dropdown-item">reCAPTCHA Errors</a>
 </li>
                                     
 <li>
@@ -211,12 +211,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../pulumi_aws_classic_5_to_6_upgrade/" class="nav-link">
+                                <a rel="prev" href="../../discoveries/fargate_service_discovery/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../restore_vault_backups/" class="nav-link">
+                                <a rel="next" href="../access_openedx_djange_manage/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -268,8 +268,16 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#recaptcha-errors" class="nav-link">reCAPTCHA Errors</a>
+            <li class="nav-item" data-bs-level="1"><a href="#proving-that-a-particular-openedx-build-was-deployed-to-a-product-environment" class="nav-link">Proving That A Particular OpenEdX Build Was Deployed To a Product Environment</a>
               <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#ami" class="nav-link">AMI</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#container-contents" class="nav-link">Container Contents</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -277,22 +285,31 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="recaptcha-errors">reCAPTCHA Errors</h1>
-<pre><code>ERROR for site owner: Invalid domain for site key.
+<h1 id="proving-that-a-particular-openedx-build-was-deployed-to-a-product-environment">Proving That A Particular OpenEdX Build Was Deployed To a Product Environment</h1>
+<p>This doc is <em>NOT</em> exhaustive. It assumes prior knowledge of our products and
+EC2. I can fill in the exhaustive details later if there's ever time :)</p>
+<p>There are two methods for determining this.</p>
+<h2 id="ami">AMI</h2>
+<ul>
+<li>Find the instance in the AWS console. For instance if looking for an XPro CI
+instance, use <code>edxapp-web-xpro-ci</code> to find an XPro CI webserver. Select it.</li>
+<li>Click "AMI" an select the instance's AMI image.</li>
+<li>Under the "Tags" tab one of the tags is <code>edx_sha</code>. That's the Git repository hash
+this container is built from.</li>
+</ul>
+<h2 id="container-contents">Container Contents</h2>
+<ul>
+<li>Log onto the EC2 instance you want to check.</li>
+<li>Get a shell inside an LMS/CMS container e.g.</li>
+</ul>
+<pre><code>cd /etc/docker/compose
+sudo -s
+docker compose exec -it cms bash
 </code></pre>
-<ol>
-<li>Need to login to google with the mitx devops username and password (vault-production -&gt; <code>platform-secrets/google</code>). It will need to do an email verification code to one of our lists if you don't have an active session.</li>
-<li>Make your way to the reCAPTCHA console located <a href="https://www.google.com/u/1/recaptcha/admin">here</a>.</li>
-<li>There is a dropdown on the top left that lets you see which site/application configuration that you're working with.</li>
-<li>Once you're on the site that you care about, there is a gear icon on the top right. Click that for the settings.</li>
-<li>Three things to verify:<ol>
-<li>Does the site key match what is listed in app configuration + vault?</li>
-<li>Does the secret key match what is listed in app configuration + vault?</li>
-<li>Is the list of domains correct?</li>
-<li>NOTE: When checking keys, look at the end of the string rather than the start. They all seem to start the same.</li>
-</ol>
-</li>
-</ol></div>
+<ul>
+<li>Once inside you can change directory to /openedx/edx-platform and run <code>git
+log</code>. That will show you the commit that built the container.</li>
+</ul></div>
             </div>
         </div>
 
