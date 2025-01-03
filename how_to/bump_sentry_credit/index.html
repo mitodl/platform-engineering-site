@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>How To Update The Release Version Of An Open edX Deployment - Platform Engineering Documentation Site</title>
+        <title>How To Bump Our Sentry Credits When We Run Out - Platform Engineering Documentation Site</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../css/brands.min.css" rel="stylesheet">
@@ -59,7 +59,7 @@
 </li>
                                     
 <li>
-    <a href="../bump_sentry_credit/" class="dropdown-item">How To Bump Our Sentry Credits When We Run Out</a>
+    <a href="./" class="dropdown-item active" aria-current="page">How To Bump Our Sentry Credits When We Run Out</a>
 </li>
                                     
 <li>
@@ -131,7 +131,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">How To Update The Release Version Of An Open edX Deployment</a>
+    <a href="../openedx_release_upgrades/" class="dropdown-item">How To Update The Release Version Of An Open edX Deployment</a>
 </li>
                                     
 <li>
@@ -215,12 +215,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../moira_certificates/" class="nav-link">
+                                <a rel="prev" href="../access_openedx_djange_manage/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../publish_to_npm/" class="nav-link">
+                                <a rel="next" href="../concourse_github_issues_user_guide/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -272,40 +272,8 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#how-to-update-the-release-version-of-an-open-edx-deployment" class="nav-link">How To Update The Release Version Of An Open edX Deployment</a>
+            <li class="nav-item" data-bs-level="1"><a href="#how-to-bump-our-sentry-credits-when-we-run-out" class="nav-link">How To Bump Our Sentry Credits When We Run Out</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#open-edx-releases" class="nav-link">Open edX Releases</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#open-learnings-open-edx-deployments" class="nav-link">Open Learning's Open edX Deployments</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#versioning-of-build-and-deploy" class="nav-link">Versioning of Build and Deploy</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#managing-supported-releases" class="nav-link">Managing Supported Releases</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#performing-an-upgrade" class="nav-link">Performing An Upgrade</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#supporting-new-applications" class="nav-link">Supporting New Applications</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#updating-an-mitol-openedx-branch-with-the-latest" class="nav-link">Updating An MITOL OpenEdX Branch With The Latest</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#troubleshooting" class="nav-link">Troubleshooting</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
               </ul>
             </li>
         </ul>
@@ -313,193 +281,18 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="how-to-update-the-release-version-of-an-open-edx-deployment">How To Update The Release Version Of An Open edX Deployment</h1>
-<h2 id="open-edx-releases">Open edX Releases</h2>
-<p>Open edX cuts new named releases <a href="https://openedx.atlassian.net/wiki/spaces/COMM/pages/3613392957/Open+edX+release+schedule">approximately every 6
-months</a>. Each
-of our deployments needs to be able to independently upgrade the respective version on
-their own schedule. MITx Residential upgrades twice per year, roughly aligned with the
-release timing of the upstream Open edX platform, whereas xPro has typically upgraded on
-an annual basis in the December timeframe.</p>
-<p>Our MITx Online deployment of Open edX is a special case in that it deploys directly
-from the master branches of the different applications and has a weekly release
-schedule.</p>
-<h2 id="open-learnings-open-edx-deployments">Open Learning's Open edX Deployments</h2>
-<p>At Open Learning we have four distinct installations of Open edX, each with their own
-release cadence and configuration requirements. For each of those deployments we have
-multiple environment stages (e.g. CI, QA, Production). Each of those deployment * stages
-combinations needs to be able to have their versions managed independently, with newer
-versions being progressively promoted to higher environments.</p>
-<p>This is further complicated by the long testing cycles for new releases in a given
-deployment. We need to be able to deploy a newer release to a lower environment stage,
-while maintaining the ability to deploy patches of the current release in a given time
-period to subsequent environments. For example, as we start testing the Palm release for
-the MITx Residential deployment we need to get it installed in the CI
-environment. Meanwhile, we may have a bug-fix or security patch that needs to be tested
-in the QA environment and propagated to Production.</p>
-<p>In addition to the cartesian product of (versions * deployments * env stages) we also
-have to manage these values across the different components of the Open edX
-ecosystem. For example, the core of the platform is called edx-platform, which in turn
-relies on:
-- a forum service
-- the edx-notes API service
-- a codejail REST API service
-- and myriad MFEs (Micro-FrontEnds).</p>
-<p>For any of these different components we may need to be able to override the repository
-and/or branch that we are building/deploying from.</p>
-<h2 id="versioning-of-build-and-deploy">Versioning of Build and Deploy</h2>
-<p>In order to support this sea of complexity we have a module of <code>bridge.settings.openedx</code>
-that has a combination of data structures and helper functions to control what
-applications and versions get deployed where and when. These values are then used in the
-build stages of the different components, as well as driving the deployment pipelines in
-Concourse that are responsible for orchestrating all of this.</p>
-<h2 id="managing-supported-releases">Managing Supported Releases</h2>
-<p>We only want to support the build and deployment of a minimal subset of Open edX
-releases. This is controlled by the Enum <code>OpenEdxSupportedRelease</code> in the
-<code>bridge.settings.openedx.types</code> module. When there is a new release created it needs to
-be added to this Enum.  For example, to add support for the Palm release a new line is
-added of the format <code>palm = ("palm", "open-release/palm.master")</code></p>
-<p>When we have upgraded all deployments past a given release we remove it from that Enum
-so that we no longer need to worry about maintaining configuration/code/etc. for that
-release.</p>
-<h2 id="performing-an-upgrade">Performing An Upgrade</h2>
-<p>There are two data structures that control the applications and versions that get
-included in a given deployment and which version to use in the respective environment
-stage. The <code>OpenLearningOpenEdxDeployment</code> Enum is the top level that sets the release
-name for the environment stage of a given deployment.</p>
-<p>There are situations where we need to customize a component that is being deployed. In
-those cases we typically create a fork of the upstream repository where we manage the
-patches that we require. The <code>ReleaseMap</code> dictionary is used to manage any overrides of
-repository and branch for a given component of the platform, as well as which components
-are included in that deployment. The <code>OpenEdxApplicationVersion</code> structure will map to
-the default repositories and branches for a given component, but supplies a
-<code>branch_override</code> and <code>origin_override</code> parameter to manage these customizations.</p>
-<p>For example, to upgrade our MITx Residential deployments to start testing the Palm
-release we change the <code>CI</code> stages of the <code>mitx</code> and <code>mitx-staging</code> deployments to use
-the <code>palm</code> value for the <code>OpenEdxSupportedRelease</code></p>
-<pre><code class="language-diff">@@ -13,7 +13,7 @@ class OpenLearningOpenEdxDeployment(Enum):
-     mitx = DeploymentEnvRelease(
-         deployment_name=&quot;mitx&quot;,
-         env_release_map=[
--            EnvRelease(&quot;CI&quot;, OpenEdxSupportedRelease[&quot;olive&quot;]),
-+            EnvRelease(&quot;CI&quot;, OpenEdxSupportedRelease[&quot;palm&quot;]),
-             EnvRelease(&quot;QA&quot;, OpenEdxSupportedRelease[&quot;olive&quot;]),
-             EnvRelease(&quot;Production&quot;, OpenEdxSupportedRelease[&quot;olive&quot;]),
-         ],
-@@ -21,7 +21,7 @@ class OpenLearningOpenEdxDeployment(Enum):
-     mitx_staging = DeploymentEnvRelease(
-         deployment_name=&quot;mitx-staging&quot;,
-         env_release_map=[
--            EnvRelease(&quot;CI&quot;, OpenEdxSupportedRelease[&quot;olive&quot;]),
-+            EnvRelease(&quot;CI&quot;, OpenEdxSupportedRelease[&quot;palm&quot;]),
-             EnvRelease(&quot;QA&quot;, OpenEdxSupportedRelease[&quot;olive&quot;]),
-             EnvRelease(&quot;Production&quot;, OpenEdxSupportedRelease[&quot;olive&quot;]),
-         ],
-</code></pre>
-<p>Because Palm is a new release for these deployments we also need to add a <code>palm</code> key to
-the <code>ReleaseMap</code> dictionary that contains the applications that are associated with
-those deployments and the appropriate <code>OpenEdxApplicationVersion</code> records for that
-deployment.</p>
-<pre><code class="language-diff">@@ -61,6 +61,122 @@ ReleaseMap: dict[
-     OpenEdxSupportedRelease,
-     dict[OpenEdxDeploymentName, list[OpenEdxApplicationVersion]],
- ] = {
-+    &quot;palm&quot;: {
-+        &quot;mitx&quot;: [
-+            OpenEdxApplicationVersion(
-+                application=&quot;edx-platform&quot;,  # type: ignore
-+                application_type=&quot;IDA&quot;,
-+                release=&quot;palm&quot;,
-+                branch_override=&quot;mitx/palm&quot;,
-+                origin_override=&quot;https://github.com/mitodl/edx-platform&quot;,
-+            ),
-             ...
-+        ],
-+        &quot;mitx-staging&quot;: [
-+            OpenEdxApplicationVersion(
-+                application=&quot;edx-platform&quot;,  # type: ignore
-+                application_type=&quot;IDA&quot;,
-+                release=&quot;palm&quot;,
-+                branch_override=&quot;mitx/palm&quot;,
-+                origin_override=&quot;https://github.com/mitodl/edx-platform&quot;,
-+            ),
-             ...
-+        ],
-+    },
-     &quot;olive&quot;: {
-         &quot;mitx&quot;: [
-             OpenEdxApplicationVersion(
-</code></pre>
-<p>All of the <a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_concourse/pipelines/open_edx/">deployment
-pipelines</a>
-for these application components are managed by a corresponding <code>meta</code> pipeline that
-will automatically update the build and pipeline configuration based on the changed
-version information as soon as it is merged into the <code>master</code> branch of
-<code>ol-infrastructure</code>.</p>
-<h2 id="supporting-new-applications">Supporting New Applications</h2>
-<p>There are two categories of applications that comprise the overall Open edX
-platform. These are "IDA"s (Independently Deployable Applications), and "MFE"s (Micro
-Front-Ends). An IDA is a Django application that can be deployed as a backend service
-and typically integrates with the edx-platform (LMS and CMS) via OAuth. An MFE is a
-ReactJS application that is deployed as a standalone site which then interacts with LMS
-and/or CMS via REST APIs.</p>
-<p>In order to ensure that we have visibility into which of these components we are
-deploying there is an Enum of
-<a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/bridge/settings/openedx/types.py#L7"><code>OpenEdxApplication</code></a>
-and
-<a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/bridge/settings/openedx/types.py#L25"><code>OpenEdxMicroFrontend</code></a>
-respectively which captures the details of which elements of the overall edX ecosystem
-we are supporting in our deployments. These Enums are then used as an attribute of the
-<a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/bridge/settings/openedx/types.py#L121"><code>OpenEdxApplicationVersion</code></a>
-model which captures the details of a specific instance of one of those
-components. These are then used in the <code>ReleaseMap</code> dict to show which versions and
-deployments include the given instance of that application and version.</p>
-<p>To add support for a new IDA or MFE you need to add a new entry to the appropriate Enum,
-and then include an instance of an <code>OpenEdxApplicationVersion</code> that points to that
-application in the <code>ReleaseMap</code> at the appropriate location.</p>
-<p><strong>Note - TMM 2023-04-14</strong></p>
-<ul>
-<li>The current configuration of our meta pipelines means that before the updates to the
-  <code>bridge.settings.openedx.version_matrix</code> module can be picked up by the <code>meta</code>
-  pipelines the <code>ol-infrastructure</code> docker image needs to be built and pushed to our
-  registry so that it can be loaded. This means that once the <a href="https://cicd.odl.mit.edu/teams/main/pipelines/ol-infrastructure-docker-container">ol-infrastructure image
-  pipeline</a>
-  completes it might be necessary to manually trigger the meta pipelines again.</li>
-<li>Once a new release is deployed to a given environment stage for the first time it may
-  be necessary to manually ensure that all database migrations are run properly. It will
-  be attempted automatically on deployment, but there are often conflicts between the
-  existing database state and the migration logic that require intervention.</li>
-</ul>
-<h2 id="updating-an-mitol-openedx-branch-with-the-latest">Updating An MITOL OpenEdX Branch With The Latest</h2>
-<p>This involves updating our edx-platform fork and rebasing the correct branch.</p>
-<p>For instance, to update our forked OpenEdX Sumac branch for MITxOnline, you
-would:</p>
-<ul>
-<li>Check out our fork of the edx-platform repo - <code>gh repo clone
-mitodl/edx-platform</code></li>
-<li>Change to the right branch - <code>git checkout mitx/sumac</code></li>
-<li>Update all the things - <code>git fetch --all</code></li>
-<li>Rebase from upstream - <code>git pull --rebase upstream open-release/sumac.master</code></li>
-<li>Check the results, and if correct push the branch - <code>git push origin
-mitx/sumac --force</code></li>
-</ul>
-<h2 id="troubleshooting">Troubleshooting</h2>
-<h3 id="openedx-redwood">OpenEdX Redwood</h3>
-<p>With each new OpenEdX release, inevitably there will be problems. For instance,
-in the Redwood release, we noticed that login for MITX CI was failing with a 500
-response code.</p>
-<p>So we ran the following Grafana query using the query builder:</p>
-<pre><code>{environment=&quot;mitx-ci&quot;, application=&quot;edxapp&quot;} |= `` | json | line_format `{{.message}}
-</code></pre>
-<p>That yielded a problem with JWT signing keys as the exception cited a signing
-failure.</p>
-<p>So we had to log onto an EC2 instance appropriate to MITX CI and run the
-following command from the lms container shell:</p>
-<pre><code>manage.py generate_jwt_signing_key
-</code></pre>
-<p>That produced public and private signing key JSON blobs, which we could then add
-to SOPS and then through the pipeline into Vault where they'll be picked up as
-Redwood deploys to the various apps and environments.</p></div>
+<h1 id="how-to-bump-our-sentry-credits-when-we-run-out">How To Bump Our Sentry Credits When We Run Out</h1>
+<p>Sometimes despite our best efforts, one of our projects spirals out of control
+and generates a HUGE number of events which can overrun our Sentry quota and
+cause errors to get dropped.</p>
+<p>The way to both review our status, check dropped events AND boost our quota is
+to surf to the <a href="https://mit-office-of-digital-learning.sentry.io">Sentry URL for MIT
+OL</a> and navigate to Settings
+-&gt; Subscription.</p>
+<p>Once there you can see all our current stats including current usage, quota
+percentage and dropped events/errors if any.</p>
+<p>Use the "Edit" button to increase our quota if necessary to get us through the
+month AFTER addressing whichever product is causing the overage.</p></div>
             </div>
         </div>
 
