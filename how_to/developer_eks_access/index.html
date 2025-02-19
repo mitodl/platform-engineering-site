@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>How To Bump Our Sentry Credits When We Run Out - Platform Engineering Documentation Site</title>
+        <title>Developer EKS Access - Platform Engineering Documentation Site</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../css/brands.min.css" rel="stylesheet">
@@ -59,10 +59,6 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">How To Bump Our Sentry Credits When We Run Out</a>
-</li>
-                                    
-<li>
     <a href="../concourse_github_issues_user_guide/" class="dropdown-item">Concourse github Issues Workflow User Guide</a>
 </li>
                                     
@@ -72,6 +68,10 @@
                                     
 <li>
     <a href="../deploying_concourse/" class="dropdown-item">Deploying Concourse</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Developer EKS Access</a>
 </li>
                                     
 <li>
@@ -215,12 +215,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../access_openedx_djange_manage/" class="nav-link">
+                                <a rel="prev" href="../deploying_concourse/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../concourse_github_issues_user_guide/" class="nav-link">
+                                <a rel="next" href="../enable_rapid_response_edxapp/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -272,8 +272,28 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#how-to-bump-our-sentry-credits-when-we-run-out" class="nav-link">How To Bump Our Sentry Credits When We Run Out</a>
+            <li class="nav-item" data-bs-level="1"><a href="#developer-eks-access" class="nav-link">Developer EKS Access</a>
               <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#pre-reqs" class="nav-link">Pre-reqs</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#overview" class="nav-link">Overview</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#extra-reading" class="nav-link">Extra Reading</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#steps" class="nav-link">Steps</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#other-interesting-kubectl-commands" class="nav-link">Other Interesting kubectl Commands</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -281,18 +301,93 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="how-to-bump-our-sentry-credits-when-we-run-out">How To Bump Our Sentry Credits When We Run Out</h1>
-<p>Sometimes despite our best efforts, one of our projects spirals out of control
-and generates a HUGE number of events which can overrun our Sentry quota and
-cause errors to get dropped.</p>
-<p>The way to both review our status, check dropped events AND boost our quota is
-to surf to the <a href="https://mit-office-of-digital-learning.sentry.io">Sentry URL for MIT
-OL</a> and navigate to Settings
--&gt; Subscription.</p>
-<p>Once there you can see all our current stats including current usage, quota
-percentage and dropped events/errors if any.</p>
-<p>Use the "Edit" button to increase our quota if necessary to get us through the
-month AFTER addressing whichever product is causing the overage.</p></div>
+<h1 id="developer-eks-access">Developer EKS Access</h1>
+<h2 id="pre-reqs">Pre-reqs</h2>
+<ul>
+<li>an environment variable <code>GITHUB_TOKEN</code> set to a classic GitHub <a href="https://github.com/settings/tokens">token</a> with <code>read:org</code> permissions.</li>
+<li>Latest (as of 02-19-2025) <code>aws-cli</code> is installed and available on your <code>$PATH</code>.</li>
+<li><code>kubectl</code> &gt;= 1.30 is installed and available on your <code>$PATH</code>. (Newer is better, usually)</li>
+<li>Cloned copy of <a href="https://github.com/mitodl/ol-infrastructure">ol-infrastructure</a></li>
+<li>Should run with a standard python install with <code>hvac</code> installed. Alternatively, follow the instructions in ol-infrastructure/README.md. </li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>This document will guide you through the process of setting up your local environment to access the EKS cluster. This will allow you to interact with applications deployed into EKS, including tailing logs and opening a shell into the running containers.</p>
+<h2 id="extra-reading">Extra Reading</h2>
+<p>For more information about <code>kubeconfig</code> files, refer to the Kubernetes documentation <a href="https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/">here</a> and <a href="https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/">here</a>.</p>
+<h2 id="steps">Steps</h2>
+<ol>
+<li>Within your cloned copy of <code>ol-infrastructure</code>, navigate to the <code>eks</code> directory at <code>src/ol_infrastructure/infrastructure/aws/eks</code>. </li>
+<li>There is a script in this directory called <code>login_helper.py</code> that will help you set up your local environment to access the EKS cluster. Run this script with the following command:</li>
+</ol>
+<pre><code class="language-bash">python login_helper.py aws_creds
+</code></pre>
+<ol>
+<li>
+<p>This will return several <code>export AWS_</code> statements on <code>stdout</code> that you can then run in your current shell. You need ALL of them. Additionally, it will include the timestamp of when these credentials will expire. By default they expire in one hour, but you can change that to 8 hours with <code>-d 480</code> argument. 8 hours is the maximum allowed.</p>
+</li>
+<li>
+<p>After running the <code>export</code> commands on your shell, run the following command to generate a <code>kubeconfig</code> file:</p>
+</li>
+</ol>
+<pre><code class="language-bash">python login_helper.py kubeconfig
+</code></pre>
+<ol>
+<li>This will generate a <code>kubeconfig</code> file on <code>stdout</code> that will define contexts to all active clusters. Each context is named for the cluster so for example <code>operations-ci</code>, <code>applications-qa</code>, and so on. </li>
+<li>You can save this <code>kubeconfig</code> file to your local machine for kubectl to use with the following:</li>
+</ol>
+<pre><code class="language-bash">python login_helper.py kubeconfig &gt; ~/.kube/config
+</code></pre>
+<ol>
+<li>Additionally, you can specify a default current context with <code>--set-current-context &lt;context&gt;</code> argument. </li>
+</ol>
+<pre><code class="language-bash">python login_helper.py kubeconfig --set-current-context applications-qa &gt; ~/.kube/config
+</code></pre>
+<ol>
+<li>Or you can set it by hand once you've saved your <code>kubeconfig</code> file:</li>
+</ol>
+<pre><code class="language-bash">kubectl config use-context applications-qa
+</code></pre>
+<ol>
+<li>You can now interact with the EKS cluster using <code>kubectl</code>. For example, to list all pods in the <code>learn-ai</code> namespace of the <code>applications-qa</code> cluster:</li>
+</ol>
+<pre><code class="language-bash">kubectl get pods -n learn-ai
+</code></pre>
+<h2 id="other-interesting-kubectl-commands">Other Interesting <code>kubectl</code> Commands</h2>
+<ul>
+<li>Get all the pods for the learn-ai namespace:</li>
+</ul>
+<pre><code class="language-bash">kubectl get pods -n learn-ai
+</code></pre>
+<ul>
+<li>Get all the pods in the learn-ai namespace with more information:</li>
+</ul>
+<pre><code class="language-bash">kubectl get pods -n learn-ai -o wide
+</code></pre>
+<ul>
+<li>Describe a pod, which can tell you interesting things like the pod's IP address, the node it's running on, and the events that have happened to it, as well as the containers that make up the pod:</li>
+</ul>
+<pre><code class="language-bash">kubectl describe pod &lt;pod-name&gt; -n learn-ai
+</code></pre>
+<ul>
+<li>Output the logs of a pod in the learn-ai namespace. <code>kubectl</code> will makes its best guess at which container to output logs from:</li>
+</ul>
+<pre><code class="language-bash">kubectl logs &lt;pod-name&gt; -n learn-ai
+</code></pre>
+<ul>
+<li>Be specific and output the logs from the <code>nginx</code> container. </li>
+</ul>
+<pre><code class="language-bash">kubectl logs &lt;pod-name&gt; -n learn-ai -c nginx
+</code></pre>
+<ul>
+<li><code>tail</code> or follow the logs of the nginx container in a pod in the learn-ai namespace:</li>
+</ul>
+<pre><code class="language-bash">kubectl logs -f &lt;pod-name&gt; -n learn-ai -c nginx 
+</code></pre>
+<ul>
+<li>Open a shell into the nginx container of a pod in the learn-ai namespace:</li>
+</ul>
+<pre><code class="language-bash">kubectl exec -it &lt;pod-name&gt; -n learn-ai -c nginx -- /bin/bash
+</code></pre></div>
             </div>
         </div>
 
