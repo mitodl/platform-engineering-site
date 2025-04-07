@@ -71,10 +71,6 @@
 </li>
                                     
 <li>
-    <a href="../developer_eks_access/" class="dropdown-item">Developer EKS Access</a>
-</li>
-                                    
-<li>
     <a href="../enable_rapid_response_edxapp/" class="dropdown-item">Enable Rapid Responde in edxapp</a>
 </li>
                                     
@@ -274,6 +270,10 @@
             
             <li class="nav-item" data-bs-level="1"><a href="#moira-certificates" class="nav-link">Moira Certificates</a>
               <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#generating-a-csr-from-the-mitws-private-key" class="nav-link">Generating a CSR From the MITWS Private Key</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-bs-level="2"><a href="#mitopen-vault-locations" class="nav-link">MITOpen Vault Locations</a>
               <ul class="nav flex-column">
               </ul>
@@ -305,6 +305,30 @@
 <li><strong>MIT_WS_CERTIFICATE</strong></li>
 <li><strong>MIT_WS_PRIVATE_KEY</strong></li>
 </ul>
+<h2 id="generating-a-csr-from-the-mitws-private-key">Generating a CSR From the MITWS Private Key</h2>
+<p>This is the OpenSSL invocation and details I used to generate the CSR for the OVS cert:</p>
+<pre><code>╭─feoh at prometheus in ~/Packages/openssl 25-04-07 - 15:22:04
+╰─○ openssl req -out app.csr -key mitws.key -new -sha256                                                                                                                                          &lt;region:us-east-1&gt;
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:US
+State or Province Name (full name) [Some-State]:Massachusetts
+Locality Name (eg, city) []:Cambridge
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:MIT
+Organizational Unit Name (eg, section) []:odl-video
+Common Name (e.g. server FQDN or YOUR name) []:video.odl.mit.edu
+Email Address []:odl-devops@mit.edu
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+</code></pre>
 <h2 id="mitopen-vault-locations">MITOpen Vault Locations</h2>
 <ul>
 <li>In all vault environments: <code>secret-mit-open/global/mit-application-certificate</code></li>
