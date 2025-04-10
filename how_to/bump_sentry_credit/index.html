@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Heroku Dynosaur Management - Platform Engineering Documentation Site</title>
+        <title>How To Bump Our Sentry Credits When We Run Out - Platform Engineering Documentation Site</title>
         <link href="../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../css/brands.min.css" rel="stylesheet">
@@ -59,7 +59,7 @@
 </li>
                                     
 <li>
-    <a href="../bump_sentry_credit/" class="dropdown-item">How To Bump Our Sentry Credits When We Run Out</a>
+    <a href="./" class="dropdown-item active" aria-current="page">How To Bump Our Sentry Credits When We Run Out</a>
 </li>
                                     
 <li>
@@ -95,7 +95,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">Heroku Dynosaur Management</a>
+    <a href="../heroku_dynosaur_management/" class="dropdown-item">Heroku Dynosaur Management</a>
 </li>
                                     
 <li>
@@ -219,12 +219,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../heroku_config_vars/" class="nav-link">
+                                <a rel="prev" href="../access_openedx_djange_manage/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../heroku_log_drains/" class="nav-link">
+                                <a rel="next" href="../concourse_github_issues_user_guide/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -276,12 +276,8 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#heroku-dynosaur-management" class="nav-link">Heroku Dynosaur Management</a>
+            <li class="nav-item" data-bs-level="1"><a href="#how-to-bump-our-sentry-credits-when-we-run-out" class="nav-link">How To Bump Our Sentry Credits When We Run Out</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#pipeline" class="nav-link">Pipeline</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
               </ul>
             </li>
         </ul>
@@ -289,12 +285,18 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="heroku-dynosaur-management">Heroku Dynosaur Management</h1>
-<h2 id="pipeline">Pipeline</h2>
-<p>The pipeline can be found <a href="https://cicd.odl.mit.edu/teams/infrastructure/pipelines/misc-heroku-dyno-management">here</a>.
-And the pipeline definition can be found <a href="https://github.com/mitodl/ol-infrastructure/tree/main/src/ol_concourse/pipelines/infrastructure/heroku/pipeline.py">here</a>.</p>
-<p>There are two dicts in the pipeline defintion which define the various production and QA applications. The definition of each includes the name of the application as the key to the dict, and a substructure that lists the application owner and a list of dyno name/qty/size combinations. The owner is needed to perform an apiKey lookup from pre-existing SOPS data within the repo. </p>
-<p>At the moment we are not resetting the web node counts / configurations because HireFire has a hand in managing those. </p></div>
+<h1 id="how-to-bump-our-sentry-credits-when-we-run-out">How To Bump Our Sentry Credits When We Run Out</h1>
+<p>Sometimes despite our best efforts, one of our projects spirals out of control
+and generates a HUGE number of events which can overrun our Sentry quota and
+cause errors to get dropped.</p>
+<p>The way to both review our status, check dropped events AND boost our quota is
+to surf to the <a href="https://mit-office-of-digital-learning.sentry.io">Sentry URL for MIT
+OL</a> and navigate to Settings
+-&gt; Subscription.</p>
+<p>Once there you can see all our current stats including current usage, quota
+percentage and dropped events/errors if any.</p>
+<p>Use the "Edit" button to increase our quota if necessary to get us through the
+month AFTER addressing whichever product is causing the overage.</p></div>
             </div>
         </div>
 
