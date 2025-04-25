@@ -1,4 +1,5 @@
 # OL Secrets Management
+
 The Engineering group in Open Learning hosts its own Hashicorp Vault clusters to handle secrets management. Part of our work is to provide OL developers access to Vault QA to perform the following tasks:
 1. Securely share secrets
 2. Generate local .env file for app development 
@@ -48,3 +49,12 @@ You should now have a .env file containing the secrets for the relevant app from
 
 ### References
 - https://developer.hashicorp.com/vault/docs/agent-and-proxy/agent/generate-config
+
+## Bonus Note : Generating IAM creds for MIT Learn local development
+
+Apparently Devs sometimes need valid IAM credentials for local development with MIT Learn. Previously people were just lifting these creds out of Heroku settings but that isn't an option now. To replace that, use the following link:
+
+https://vault-qa.odl.mit.edu/ui/vault/secrets/aws-mitx/credentials/ol-mitopen-application
+
+You will need to login with a classic github token that has `read:org` permissions. This link will allow you to generate IAM creds that last 32 days and are personal to just you rather than shared ones from the app itself. 
+
