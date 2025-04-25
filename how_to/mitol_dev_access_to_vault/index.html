@@ -290,6 +290,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-bs-level="2"><a href="#bonus-note-generating-iam-creds-for-mit-learn-local-development" class="nav-link">Bonus Note : Generating IAM creds for MIT Learn local development</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -352,7 +356,11 @@
 <h3 id="references">References</h3>
 <ul>
 <li>https://developer.hashicorp.com/vault/docs/agent-and-proxy/agent/generate-config</li>
-</ul></div>
+</ul>
+<h2 id="bonus-note-generating-iam-creds-for-mit-learn-local-development">Bonus Note : Generating IAM creds for MIT Learn local development</h2>
+<p>Apparently Devs sometimes need valid IAM credentials for local development with MIT Learn. Previously people were just lifting these creds out of Heroku settings but that isn't an option now. To replace that, use the following link:</p>
+<p>https://vault-qa.odl.mit.edu/ui/vault/secrets/aws-mitx/credentials/ol-mitopen-application</p>
+<p>You will need to login with a classic github token that has <code>read:org</code> permissions. This link will allow you to generate IAM creds that last 32 days and are personal to just you rather than shared ones from the app itself. </p></div>
             </div>
         </div>
 
