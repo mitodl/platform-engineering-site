@@ -55,9 +55,10 @@ An optional company name []:
 
 ## Certificate Usage and Expiration Tracking
 
-| Action Date | Application | Description | Who |
+| Action Date | Application | Description                                                                             | Who |
 |-------------|-------------|-------------|-----|
 | 20230625    | Open        | Replaced MIT Open certificate, expires 20240625 | MD |
 | 20230928    | OVS         | OVS Cert expired, replaced with Open certificate above, expires 20240625 | MD |
 | 20240201    | Both        | No action. Verified certificates currently in use. Updated reminder in team calendar. | MD |
 | 20240613    | Both        | Replaced both certificates with 2024-2025 versions. Reminder sent to team calendar. | MD |
+| 20250417    | OVS         | Replaced OVS certificate. Expires 20260415. IS&T INC: INC1537323                                         | CP |
