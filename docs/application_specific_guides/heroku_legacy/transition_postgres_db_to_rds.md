@@ -119,7 +119,7 @@ all the appropriate stakeholders and leadership before you do.
 At the time, it's important that you perform the following steps quickly in succession, because once you detach the current DB, the application will be down.
 Keep this as brief as possible.
 
-You may wish to cue up the commands you want to run in a text file somewhere you can eaily review them, and then cut and paste them into your shell when the
+You may wish to cue up the commands you want to run in a text file somewhere you can easily review them, and then cut and paste them into your shell when the
 time comes.
 
 ### Create An Additional DB Attachment
