@@ -13,7 +13,7 @@ The Engineering group in Open Learning hosts its own Hashicorp Vault clusters to
     - Role: `local-dev`
     * Note: Make sure to enable popups
 
-You should see a popup asking for your Keycloak username and password. Once successfully authenticated, you should see the Vault UI where we have configured a separate Vault mount `secret-sandbox` that should be used for securely sharing senisitive data with the group.
+You should see a popup asking for your Keycloak username and password. Once successfully authenticated, you should see the Vault UI where we have configured a separate Vault mount `secret-sandbox` that should be used for securely sharing sensitive data with the group.
 
 ```WARNING - DO NOT store anything permanent in that mount as there are no guarantees that they will not be deleted or overwritten. Any values stored in this mount are visible and accessible by all users of the `ol-platform-engineering` Keycloak realm which as of this writing is and should be restricted to OL Engineering staff.```
 
