@@ -1,4 +1,4 @@
-# Enable Rapid Responde in edxapp
+# Enable Rapid Response in edxapp
 
 ## Reference
 
