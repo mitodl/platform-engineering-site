@@ -222,7 +222,7 @@ _Mitigation_
 Use the AWS EC2 web console and find instances of type
 `odl-video-service-production` - detailed instructions for accessing the
 instance can be found
-[here](../../application_specific_guides/openedx/access_django_manage.md).
+[here](../application_specific_guides/openedx/access_django_manage.md).
 
 The only difference in this case is that the user is `admin` rather than
 `ubuntu`. Stop when you get a shell prompt and rejoin this document.
@@ -385,7 +385,7 @@ pipeline.
 
 You will likely need to close Concourse Github workflow issues to make this
 happen. See [its users
-guide](../../platform_services/ci_cd/concourse_github_issues_user_guide.md)
+guide](../platform_services/ci_cd/concourse_github_issues_user_guide.md)
 for details.
 
 Once that's complete, you should have mitigated this issue. Keep checking that
