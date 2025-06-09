@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>DevOps Patterns Cookbook - Platform Engineering Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Platform Engineering Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Getting Started</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../getting_started/developer_eks_access/" class="dropdown-item">Developer EKS Access</a>
+</li>
+                                    
+<li>
+    <a href="../../getting_started/vault_access_for_developers/" class="dropdown-item">Vault Access for Developers</a>
+</li>
+                                    
+<li>
+    <a href="../../getting_started/update_this_site/" class="dropdown-item">Updating This Site</a>
+</li>
+                                    
+<li>
+    <a href="../../getting_started/pe-product-infra-map/" class="dropdown-item">Applications & Services</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Platform Services</a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Secrets Management (Vault)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../platform_services/secrets_management/restore_vault_backups/" class="dropdown-item">Restoring Vault Backups</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/secrets_management/faking_it_with_consul_and_vault/" class="dropdown-item">Faking It with Consul and Vault</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Service Discovery (Consul)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../platform_services/service_discovery/consul_incantations/" class="dropdown-item">Consul Incantations</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/service_discovery/fargate_service_discovery/" class="dropdown-item">Fargate Service Discovery</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Container Orchestration (Kubernetes)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../platform_services/container_orchestration/deploying_apps_with_kubernetes/" class="dropdown-item">Deploying Apps with Kubernetes</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/container_orchestration/kubernetes_cookbook/" class="dropdown-item">Kubernetes Cookbook</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">CI/CD (Concourse)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../platform_services/ci_cd/getting_started_with_concourse/" class="dropdown-item">Getting Started with Concourse</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/ci_cd/deploying_concourse/" class="dropdown-item">Deploying Concourse</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/ci_cd/concourse_github_issues_user_guide/" class="dropdown-item">Concourse GitHub Issues User Guide</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Cloud Infrastructure (AWS & Pulumi)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="dropdown-item">Pulumi AWS Classic 5 to 6 Upgrade</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/import_existing_resources_with_pulumi/" class="dropdown-item">Importing Existing Resources with Pulumi</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="dropdown-item">Testing and Deploying Pulumi Packer Projects</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="dropdown-item">Tagging AMIs with Software Metadata</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/moira_certificates/" class="dropdown-item">Moira Certificates</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/recaptcha/" class="dropdown-item">Recaptcha</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/publishing_to_npm/" class="dropdown-item">Publishing to NPM</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Application Specific Guides</a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Open edX</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../application_specific_guides/openedx/prove_build_was_deployed/" class="dropdown-item">Proving Build Was Deployed</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/access_django_manage/" class="dropdown-item">Accessing Django Manage</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/enable_rapid_response_edxapp/" class="dropdown-item">Enabling Rapid Response edXApp</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/mysql_access/" class="dropdown-item">MySQL Access</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/retirement_pipeline/" class="dropdown-item">Retirement Pipeline</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/release_upgrades/" class="dropdown-item">Release Upgrades</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/retire_an_openedx_user/" class="dropdown-item">Retiring a User</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Heroku (Legacy)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../application_specific_guides/heroku_legacy/config_vars/" class="dropdown-item">Config Vars</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/heroku_legacy/dynosaur_management/" class="dropdown-item">Dynosaur Management</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/heroku_legacy/log_drains/" class="dropdown-item">Log Drains</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/heroku_legacy/transition_postgres_db_to_rds/" class="dropdown-item">Transitioning Postgres DB to RDS</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Monitoring & Observability</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../monitoring_observability/overview/" class="dropdown-item">Overview</a>
+</li>
+                                    
+<li>
+    <a href="../../monitoring_observability/inventory/" class="dropdown-item">Inventory</a>
+</li>
+                                    
+<li>
+    <a href="../../monitoring_observability/key_labels/" class="dropdown-item">Key Labels</a>
+</li>
+                                    
+<li>
+    <a href="../../monitoring_observability/bump_sentry_credit/" class="dropdown-item">Bumping Sentry Credit</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Runbooks & Post-Mortems</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../runbooks_post_mortems/oncall_runbook/" class="dropdown-item">On-Call Runbook</a>
+</li>
+                                    
+<li>
+    <a href="../../runbooks_post_mortems/20231030_xpro_outage/" class="dropdown-item">20231030 xPro Outage Post-Mortem</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Cookbooks & Patterns</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">DevOps Patterns Cookbook</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../../runbooks_post_mortems/20231030_xpro_outage/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                              <button id="theme-menu" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme" class="nav-link dropdown-toggle">
+                                <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                                <span class="d-lg-none ms-2">Toggle theme</span>
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="true">
+                                    <i class="fa-solid fa-sun fa-fw"></i>
+                                    <span class="ms-2">Light</span>
+                                    <i class="fa-solid fa-check ms-auto"></i>
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                                    <i class="fa-solid fa-moon fa-fw"></i>
+                                    <span class="ms-2">Dark</span>
+                                    <i class="fa-solid fa-check ms-auto d-none"></i>
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="false">
+                                    <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                                    <span class="ms-2">Auto</span>
+                                    <i class="fa-solid fa-check ms-auto d-none"></i>
+                                  </button>
+                                </li>
+                              </ul>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <script src="../../js/darkmode.js"></script>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#mit-ol-devops-patterns-cookbook" class="nav-link">MIT OL Devops Patterns Cookbook</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#summary" class="nav-link">Summary</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#recipes" class="nav-link">Recipes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="mit-ol-devops-patterns-cookbook">MIT OL Devops Patterns Cookbook</h1>
+<h2 id="summary">Summary</h2>
+<p>This document will serve as a place to put patterns and best practices.</p>
+<p>The goal is to ease the path for both new builders and experienced builders by
+helping narrow down the bevvy of choices and present a workable best practice
+solution to a given problem.</p>
+<p>There are many potential ways to organize a document like this, but for now I
+intend to start with the recipes broken down by infrastructure components.</p>
+<p>Example of what I mean are Docker, Traefik, Pyinfra and the like.</p>
+<p>Please write your recipes in the following form with <em>What I Want</em> and <em>How To
+Build It</em> as bold subsections.</p>
+<h2 id="recipes">Recipes</h2>
+<h3 id="traefik">Traefik</h3>
+<h4 id="token-based-authentication">Token Based Authentication</h4>
+<p><em>What I Want</em></p>
+<p>I want Traefik to allow requests only from clients that pass a particular token
+in the HTTP headers of the request. Here's an example <code>curl</code> from Tika with the
+actual token:</p>
+<pre><code class="language-bash">curl  --header 'X-Access-Token: &lt;crazy hex digits&gt;' https://tika-qa.odl.mit.edu
+</code></pre>
+<p><em>How To Build It</em></p>
+<p>Traefik does not contain this functionality by default, so we must leverage the
+<a href="https://plugins.traefik.io/plugins/628c9eda108ecc83915d7760/check-request-headers-plugin">checkheaders</a>
+Traefik middleware plugin.</p>
+<p>You will need to add a blob to your Traefik static configuration like this:</p>
+<pre><code>experimental:
+  plugins:
+    checkheadersplugin:
+      moduleName: &quot;github.com/dkijkuit/checkheadersplugin&quot;
+      version: &quot;v0.2.6&quot;
+</code></pre>
+<p>Since we use <a href="https://pyinfra.com/">pyinfra</a> to automate our image builds,
+you'll need to add code like <a href="https://github.com/mitodl/ol-infrastructure/blob/b71388a4e0c2d6099ccbe92236301c5c30dc6154/src/bilder/images/tika/deploy.py#L110C1-L110C1">this</a>
+to your deploy.py and a line like <a href="https://github.com/mitodl/ol-infrastructure/blob/b71388a4e0c2d6099ccbe92236301c5c30dc6154/src/bilder/images/tika/files/docker-compose.yaml#L35">this</a>
+to your docker-compose.yaml file.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Config Vars - Platform Engineering Documentation</title>
+        <link href="../../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../../css/brands.min.css" rel="stylesheet">
+        <link href="../../../css/solid.min.css" rel="stylesheet">
+        <link href="../../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../../..">Platform Engineering Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Getting Started</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../../getting_started/developer_eks_access/" class="dropdown-item">Developer EKS Access</a>
+</li>
+                                    
+<li>
+    <a href="../../../getting_started/vault_access_for_developers/" class="dropdown-item">Vault Access for Developers</a>
+</li>
+                                    
+<li>
+    <a href="../../../getting_started/update_this_site/" class="dropdown-item">Updating This Site</a>
+</li>
+                                    
+<li>
+    <a href="../../../getting_started/pe-product-infra-map/" class="dropdown-item">Applications & Services</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Platform Services</a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Secrets Management (Vault)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../../platform_services/secrets_management/restore_vault_backups/" class="dropdown-item">Restoring Vault Backups</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/secrets_management/faking_it_with_consul_and_vault/" class="dropdown-item">Faking It with Consul and Vault</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Service Discovery (Consul)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../../platform_services/service_discovery/consul_incantations/" class="dropdown-item">Consul Incantations</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/service_discovery/fargate_service_discovery/" class="dropdown-item">Fargate Service Discovery</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Container Orchestration (Kubernetes)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../../platform_services/container_orchestration/deploying_apps_with_kubernetes/" class="dropdown-item">Deploying Apps with Kubernetes</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/container_orchestration/kubernetes_cookbook/" class="dropdown-item">Kubernetes Cookbook</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">CI/CD (Concourse)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../../platform_services/ci_cd/getting_started_with_concourse/" class="dropdown-item">Getting Started with Concourse</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/ci_cd/deploying_concourse/" class="dropdown-item">Deploying Concourse</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/ci_cd/concourse_github_issues_user_guide/" class="dropdown-item">Concourse GitHub Issues User Guide</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Cloud Infrastructure (AWS & Pulumi)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../../platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="dropdown-item">Pulumi AWS Classic 5 to 6 Upgrade</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/cloud_infrastructure/import_existing_resources_with_pulumi/" class="dropdown-item">Importing Existing Resources with Pulumi</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="dropdown-item">Testing and Deploying Pulumi Packer Projects</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="dropdown-item">Tagging AMIs with Software Metadata</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/cloud_infrastructure/moira_certificates/" class="dropdown-item">Moira Certificates</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/cloud_infrastructure/recaptcha/" class="dropdown-item">Recaptcha</a>
+</li>
+            
+<li>
+    <a href="../../../platform_services/cloud_infrastructure/publishing_to_npm/" class="dropdown-item">Publishing to NPM</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Application Specific Guides</a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Open edX</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../openedx/prove_build_was_deployed/" class="dropdown-item">Proving Build Was Deployed</a>
+</li>
+            
+<li>
+    <a href="../../openedx/access_django_manage/" class="dropdown-item">Accessing Django Manage</a>
+</li>
+            
+<li>
+    <a href="../../openedx/enable_rapid_response_edxapp/" class="dropdown-item">Enabling Rapid Response edXApp</a>
+</li>
+            
+<li>
+    <a href="../../openedx/mysql_access/" class="dropdown-item">MySQL Access</a>
+</li>
+            
+<li>
+    <a href="../../openedx/retirement_pipeline/" class="dropdown-item">Retirement Pipeline</a>
+</li>
+            
+<li>
+    <a href="../../openedx/release_upgrades/" class="dropdown-item">Release Upgrades</a>
+</li>
+            
+<li>
+    <a href="../../openedx/retire_an_openedx_user/" class="dropdown-item">Retiring a User</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Heroku (Legacy)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Config Vars</a>
+</li>
+            
+<li>
+    <a href="../dynosaur_management/" class="dropdown-item">Dynosaur Management</a>
+</li>
+            
+<li>
+    <a href="../log_drains/" class="dropdown-item">Log Drains</a>
+</li>
+            
+<li>
+    <a href="../transition_postgres_db_to_rds/" class="dropdown-item">Transitioning Postgres DB to RDS</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Monitoring & Observability</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../../monitoring_observability/overview/" class="dropdown-item">Overview</a>
+</li>
+                                    
+<li>
+    <a href="../../../monitoring_observability/inventory/" class="dropdown-item">Inventory</a>
+</li>
+                                    
+<li>
+    <a href="../../../monitoring_observability/key_labels/" class="dropdown-item">Key Labels</a>
+</li>
+                                    
+<li>
+    <a href="../../../monitoring_observability/bump_sentry_credit/" class="dropdown-item">Bumping Sentry Credit</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Runbooks & Post-Mortems</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../../runbooks_post_mortems/oncall_runbook/" class="dropdown-item">On-Call Runbook</a>
+</li>
+                                    
+<li>
+    <a href="../../../runbooks_post_mortems/20231030_xpro_outage/" class="dropdown-item">20231030 xPro Outage Post-Mortem</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Cookbooks & Patterns</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../../cookbooks_patterns/devops_patterns_cookbook/" class="dropdown-item">DevOps Patterns Cookbook</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../../openedx/retire_an_openedx_user/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../dynosaur_management/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                              <button id="theme-menu" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme" class="nav-link dropdown-toggle">
+                                <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                                <span class="d-lg-none ms-2">Toggle theme</span>
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="true">
+                                    <i class="fa-solid fa-sun fa-fw"></i>
+                                    <span class="ms-2">Light</span>
+                                    <i class="fa-solid fa-check ms-auto"></i>
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                                    <i class="fa-solid fa-moon fa-fw"></i>
+                                    <span class="ms-2">Dark</span>
+                                    <i class="fa-solid fa-check ms-auto d-none"></i>
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="false">
+                                    <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                                    <span class="ms-2">Auto</span>
+                                    <i class="fa-solid fa-check ms-auto d-none"></i>
+                                  </button>
+                                </li>
+                              </ul>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <script src="../../../js/darkmode.js"></script>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#managing-heroku-config-vars-with-pulumi" class="nav-link">Managing Heroku Config Vars with Pulumi</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="managing-heroku-config-vars-with-pulumi">Managing Heroku Config Vars with Pulumi</h2>
+<h3 id="herokuappconfigassociation">heroku.app.ConfigAssociation</h3>
+<p>The resource/mechanism we are using to manage config vars in Heroku is called a 'ConfigAssociation' which is documented (here)[https://www.pulumi.com/registry/packages/heroku/api-docs/app/configassociation/]. A <code>ConfigAssociation</code> takes in an application ID and two sets of variable maps: <code>sensitive_vars</code> and <code>vars</code>. The only difference being that <code>sensitive_vars</code> will not be output during <code>up</code> operations.</p>
+<h4 id="required-config-for-the-pulumi-provider">Required config for the pulumi provider</h4>
+<p>The <code>pulumiverse_heroku</code> provider requires a configuration item in the pulumi stacks named <code>heroku:apiKey</code>. We don't want to have to encrypt that api key in two dozen different stacks so we wrapped our provider config with a <code>setup_heroku_provider()</code> function much the same way we do vault. This can be seen (here)[https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/lib/heroku.py]. In lieu of setting <code>heroku:apiKey</code> in ever stack, we can set <code>heroku:user</code> which this function will then do a lookup in the backgroun out of sops config to get the apporpriate apiKey value.</p>
+<h3 id="four-flavors-of-vars">Four Flavors of Vars</h3>
+<p>While we don't yet have a component resource or abstraction available for setting up Config Vars in a simpler fashion, we do have a basic blueprint available with the MITOpen application.</p>
+<h4 id="unchanging-values">Unchanging Values</h4>
+<p>These are not really variables because they represent Key:Value mappings that are unchanging between environments. That is, Production and QA will have the same value set for the same environment. These values are specified directly in the python code under <code>heroku_vars</code></p>
+<h4 id="simple-environment-specific-vars">Simple Environment Specific Vars</h4>
+<p>These are simple 1-to-1 mappings from a value stored in the Pulumi configuration under <code>heroku_app:vars:</code>. This map contains the variable names, in their final forms using all-caps, and the static values that are applicable to the environment.</p>
+<h4 id="interpolated-environment-specific-vars">Interpolated Environment Specific Vars</h4>
+<p>These are key:value mappings that are used in more complicated manners than a simple 1-to-1 mapping as with the simple settings. These values are stored in the Pulumi configuration under <code>heroku_app:interpolated_vars:</code> in lower-case, signifying that they do not directly become Config Vars in Heroku. These more involved interpolations take place during the construction of the <code>heroku_interpolated_vars</code> dictionary.</p>
+<h4 id="secrets">Secrets</h4>
+<p>Many Config Vars that we use represent values that can be considered secret or otherwise sensitive and should not be publicly disclosed. Nothing from these vars is derived from values stored in the Pulumi configuration, rather they are obtained either from SOPS config or directly from vault at stack application time. Secrets are complicated to work with and it is best to reach out to DevOps for assistence in getting your new secret configuration var setup.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../../js/base.js"></script>
+        <script src="../../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
