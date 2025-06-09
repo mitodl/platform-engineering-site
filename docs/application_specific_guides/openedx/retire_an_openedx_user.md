@@ -60,7 +60,7 @@ So for example if I wanted to retire myself from mitxonline production, I'd use:
 
 You should see a bunch of very voluminous output. Most of it is honestly garbage for our purposes. We'll focus on the bits we care about at the end:
 
-`2023-06-21 16:07:20,714 INFO 186970 [openedx.core.djangoapps.user_api.management.commands.retire_user] [user None] [ip None] retire_user.py:173 - User succesfully moved to the retirment pipeline`
+`2023-06-21 16:07:20,714 INFO 186970 [openedx.core.djangoapps.user_api.management.commands.retire_user] [user None] [ip None] retire_user.py:173 - User successfully moved to the retirement pipeline`
 
 The None here isn't anything to worry about. It's the system trying to prevent us from leaking PII (personally identifiable information) into the logs.
 
