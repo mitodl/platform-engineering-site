@@ -32,7 +32,7 @@ Use docker compose to connect to a container like the LMS or CMS:
 docker compose exec -it lms bash
 ```
 
-and then, once insde the container, you can find the database connection
+and then, once inside the container, you can find the database connection
 information in /openedx/edx-platform/lms/envs/lms.yaml in the DATABASES section.
 
 Be sure to choose the correct database for your environment.
