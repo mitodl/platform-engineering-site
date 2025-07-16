@@ -45,6 +45,8 @@ nav:
       - Dynosaur Management: application_specific_guides/heroku_legacy/dynosaur_management.md
       - Log Drains: application_specific_guides/heroku_legacy/log_drains.md
       - Transitioning Postgres DB to RDS: application_specific_guides/heroku_legacy/transition_postgres_db_to_rds.md
+    - OCW Studio:
+      - Updating The OCW Studio Pipeline: application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline.md
   - Monitoring & Observability:
     - Overview: monitoring_observability/overview.md
     - Inventory: monitoring_observability/inventory.md
