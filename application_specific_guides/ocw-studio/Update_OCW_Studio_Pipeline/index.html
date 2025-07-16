@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../../img/favicon.ico">
-        <title>MySQL Access - Platform Engineering Documentation</title>
+        <title>Updating The OCW Studio Pipeline - Platform Engineering Documentation</title>
         <link href="../../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../../css/brands.min.css" rel="stylesheet">
@@ -166,31 +166,31 @@
     <ul class="dropdown-menu">
             
 <li>
-    <a href="../prove_build_was_deployed/" class="dropdown-item">Proving Build Was Deployed</a>
+    <a href="../../openedx/prove_build_was_deployed/" class="dropdown-item">Proving Build Was Deployed</a>
 </li>
             
 <li>
-    <a href="../access_django_manage/" class="dropdown-item">Accessing Django Manage</a>
+    <a href="../../openedx/access_django_manage/" class="dropdown-item">Accessing Django Manage</a>
 </li>
             
 <li>
-    <a href="../enable_rapid_response_edxapp/" class="dropdown-item">Enabling Rapid Response edXApp</a>
+    <a href="../../openedx/enable_rapid_response_edxapp/" class="dropdown-item">Enabling Rapid Response edXApp</a>
 </li>
             
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">MySQL Access</a>
+    <a href="../../openedx/mysql_access/" class="dropdown-item">MySQL Access</a>
 </li>
             
 <li>
-    <a href="../retirement_pipeline/" class="dropdown-item">Retirement Pipeline</a>
+    <a href="../../openedx/retirement_pipeline/" class="dropdown-item">Retirement Pipeline</a>
 </li>
             
 <li>
-    <a href="../release_upgrades/" class="dropdown-item">Release Upgrades</a>
+    <a href="../../openedx/release_upgrades/" class="dropdown-item">Release Upgrades</a>
 </li>
             
 <li>
-    <a href="../retire_an_openedx_user/" class="dropdown-item">Retiring a User</a>
+    <a href="../../openedx/retire_an_openedx_user/" class="dropdown-item">Retiring a User</a>
 </li>
     </ul>
   </li>
@@ -222,7 +222,7 @@
     <ul class="dropdown-menu">
             
 <li>
-    <a href="../../ocw-studio/Update_OCW_Studio_Pipeline/" class="dropdown-item">Updating The OCW Studio Pipeline</a>
+    <a href="./" class="dropdown-item active" aria-current="page">Updating The OCW Studio Pipeline</a>
 </li>
     </ul>
   </li>
@@ -280,12 +280,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../enable_rapid_response_edxapp/" class="nav-link">
+                                <a rel="prev" href="../../heroku_legacy/transition_postgres_db_to_rds/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../retirement_pipeline/" class="nav-link">
+                                <a rel="next" href="../../../monitoring_observability/overview/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -337,21 +337,21 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#querying-an-mit-ol-open-edx-mysql-database" class="nav-link">Querying An MIT OL Open EdX Mysql Database</a>
+            <li class="nav-item" data-bs-level="1"><a href="#updating-the-ocw-studio-pipeline" class="nav-link">Updating the OCW Studio Pipeline</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#connect-to-an-ec2-server-that-hosts-containers-for-the-product-in-question" class="nav-link">Connect to an EC2 server that hosts containers for the product in question</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#install-a-mysql-or-mariadb-client-if-ones-not-there-already" class="nav-link">Install a mysql or mariadb client if one's not there already</a>
+            <li class="nav-item" data-bs-level="2"><a href="#make-your-change" class="nav-link">Make Your Change</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#get-the-database-credentials" class="nav-link">Get the Database Credentials</a>
+            <li class="nav-item" data-bs-level="2"><a href="#allow-doof-to-enact-his-evil-plan" class="nav-link">Allow Doof To Enact His Evil Plan</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#to-the-prompt" class="nav-link">To The Prompt!</a>
+            <li class="nav-item" data-bs-level="2"><a href="#update-the-pipeline" class="nav-link">Update The Pipeline</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#re-trigger-the-failed-pipeline" class="nav-link">Re-trigger The Failed Pipeline</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -362,40 +362,60 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="querying-an-mit-ol-open-edx-mysql-database">Querying An MIT OL Open EdX Mysql Database</h1>
-<p>This is a quick and dirty guide to connecting to the OpenEdX MySQL database for
-one of our products.</p>
-<h2 id="connect-to-an-ec2-server-that-hosts-containers-for-the-product-in-question">Connect to an EC2 server that hosts containers for the product in question</h2>
-<p>For instance, in the case of XPro CI, connect to a server in instance group
-edxapp-[web/worker]-mitxpro-ci.</p>
-<p>You can find detailed instructions on how to do this
-<a href="../access_django_manage/">here</a>.</p>
-<h2 id="install-a-mysql-or-mariadb-client-if-ones-not-there-already">Install a mysql or mariadb client if one's not there already</h2>
-<p>(If you do this in production environments, and you probably shouldn't, be sure
-to remove it when done.)</p>
-<pre><code>sudo apt install mariadb-client
+<h1 id="updating-the-ocw-studio-pipeline">Updating the OCW Studio Pipeline</h1>
+<h2 id="make-your-change">Make Your Change</h2>
+<p>In this case, we needed to pin the
+aws-cli container to a previous
+version because Amazon upgraded it
+from AL2 to AL2023 out from underneath
+us. The PR is
+<a href="https://github.com/mitodl/ocw-studio/pull/2624">here</a>.</p>
+<p>Get your PR approved.</p>
+<h2 id="allow-doof-to-enact-his-evil-plan">Allow Doof To Enact His Evil Plan</h2>
+<p>Send the message <code>@doof release notes</code>
+to <a href="https://mit.enterprise.slack.com/archives/G01JPJZQX8E">this slack
+channel</a>.</p>
+<p>Doof will prompt you to click your
+checkboxes for this release. It takes
+a bit for him to notice your change.</p>
+<p>Click the check box, and wait another
+bit while he 'sees' that. Then, when
+prompted, tell Doof to merge your
+change and deploy the Heroku app.</p>
+<p>When Doof is done the output should
+look something like:</p>
+<pre><code>
+Dr. Heinz Doofenshmirtz
+APP  10:53 AM
+My evil scheme v0.153.2 for ocw-studio has been released to production at https://ocw-studio.odl.mit.edu. And by 'released', I mean completely...um...leased.
 </code></pre>
-<p>OR</p>
-<pre><code>sudo apt install mysql-client
+<h2 id="update-the-pipeline">Update The Pipeline</h2>
+<p>Access a shell on Heroku RC by
+running:</p>
+<pre><code>heroku run --app ocw-studio-rc bash
+
 </code></pre>
-<h2 id="get-the-database-credentials">Get the Database Credentials</h2>
-<p>Use docker compose to connect to a container like the LMS or CMS:</p>
-<pre><code>docker compose exec -it lms bash
+<p>Once you get a shell prompt, run the
+following command:</p>
+<p><code>./manage.py backpopulate_pipelines -f
+ocw-www</code></p>
+<p>You may omit the -f ocw-www to update
+all pipelines.</p>
+<p>The output should look something like:</p>
+<pre><code>~ $ ./manage.py backpopulate_pipelines
+Creating website pipelines
+Started celery task ad65adf1-7f8b-4f80-8c44-9ddebe329bca to upsert pipelines for 2859 sites
+Waiting on task...
+Pipeline upserts finished, took 422.49245 seconds
+~ $
 </code></pre>
-<p>and then, once inside the container, you can find the database connection
-information in /openedx/edx-platform/lms/envs/lms.yaml in the DATABASES section.</p>
-<p>Be sure to choose the correct database for your environment.</p>
-<h2 id="to-the-prompt">To The Prompt!</h2>
-<p>Now, Ctrl-D out of the container bash you were logged into and get back to the
-host you sshed into.</p>
-<p>You can now use the mysql client to connect to the database.</p>
-<p>e.g.</p>
-<pre><code>mysql -h &lt;hostname&gt; -u &lt;username&gt; -p
-</code></pre>
-<p>You'll need to enter or paste in the password you found in the previous section
-when prompted.</p>
-<p>That should be all you need to get a mysql prompt to run queries against! Be
-careful, there are no guardrails here!</p></div>
+<h2 id="re-trigger-the-failed-pipeline">Re-trigger The Failed Pipeline</h2>
+<p>Surf to <a href="https://cicd.odl.mit.edu/teams/infrastructure/pipelines/pulumi-ocw-studio">The OCW Studio Pulumi Pipeline</a> and trigger a new build.</p>
+<p>That should be it! Assuming your
+changes worked, the pipeline should
+now succeed. If it doesn't but you're
+sure your changes are correct, ensure
+that Doof actually finished deploying.</p></div>
             </div>
         </div>
 
