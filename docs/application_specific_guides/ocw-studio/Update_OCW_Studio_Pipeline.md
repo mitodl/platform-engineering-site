@@ -76,3 +76,8 @@ changes worked, the pipeline should
 now succeed. If it doesn't but you're
 sure your changes are correct, ensure
 that Doof actually finished deploying.
+
+## For More Details
+
+See [The OCW Studio
+README](https://github.com/mitodl/ocw-studio#enabling-concourse-ci-integration)
