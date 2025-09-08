@@ -7,6 +7,7 @@ draft_docs: |
 nav:
   - Home: index.md
   - Getting Started:
+    - Emergency Oncall Break Glass Procedure: getting_started/emergency-break-glass.md
     - Developer EKS Access: getting_started/developer_eks_access.md
     - Vault Access for Developers: getting_started/vault_access_for_developers.md
     - Updating This Site: getting_started/update_this_site.md
