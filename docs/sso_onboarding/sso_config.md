@@ -62,6 +62,7 @@ We recommend **OpenID Connect (OIDC)** for most implementations due to its moder
 Gather the following information to provide to our team:
 - **Application (Client) ID**: Found in App Registration overview
 - **OpenID Connect Metadata URL**: `https://login.microsoftonline.com/[TENANT_ID]/v2.0/.well-known/openid_configuration`
+(Note: You can find your **Tenant ID** on the **Overview** page of your Microsoft Entra ID instance in the Azure portal.)
 
 ## SAML Configuration
 
@@ -130,8 +131,11 @@ Consider implementing Conditional Access policies for additional security:
 1. Create a test user in your Entra ID tenant
 2. Assign them to the application
 3. Navigate to our platform's login page
-4. Click "Sign in"
-5. Verify successful authentication and user profile information
+4. Click "Log in"
+5. Enter the email address for your test user.
+6. Click Next
+7. You should be redirected to you MS Entra service. Enter your credentials. 
+8. After successful authentication, you will be logged into the Learn web site. Confirm the test user's name on the Profile page at https://learn.mit.edu/dashboard/profile
 
 ### Troubleshooting Common Issues
 
@@ -149,7 +153,7 @@ Consider implementing Conditional Access policies for additional security:
 
 ## Information to Provide Our Team
 
-Please fill out the following google form with your configuration details.
+Please fill out the following Google Form with your configuration details: [LINK_TO_GOOGLE_FORM]
 
 ## Next Steps
 
@@ -162,7 +166,7 @@ Please fill out the following google form with your configuration details.
 ## Support
 
 For technical questions during setup:
-- Contact our integration team at: [SUPPORT_EMAIL]
+- Contact our integration team at: [mitlearn-support@mit.edu](mailto:mitlearn-support@mit.edu)
 - Include any error messages or screenshots for faster resolution
 
 For ongoing operational support after go-live:
