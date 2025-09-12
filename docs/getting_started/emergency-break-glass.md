@@ -1,11 +1,11 @@
 # Emergency Break Glass Procedure
 
-In the Slack [#devops-alerts](https://mit.enterprise.slack.com/archives/GBDLJJX51) channel,
-simple type:
+In Slack, simply type:
 
 ```
 /rootly page
 ```
+
 
 At this point you'll be presented with a dialog that looks something like this:
 
