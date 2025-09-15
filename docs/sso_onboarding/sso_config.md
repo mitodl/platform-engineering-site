@@ -7,6 +7,7 @@ This document provides guidance for configuring single sign-on (SSO) with our pl
 - [General Configuration Requirements](#general-configuration-requirements)
 - [Required Information Collection](#required-information-collection)
 - [Information to Provide Our Team](#information-to-provide-our-team)
+- [Configuration Exchange Process](#configuration-exchange-process)
 - [Testing the Integration](#testing-the-integration)
 - [Next Steps](#next-steps)
 - [Support](#support)
@@ -60,9 +61,7 @@ Your identity provider will need to be configured with the following settings:
 
 **Service Provider (SP) Details:**
 - **Entity ID**: `https://sso.ol.mit.edu/realms/olapps`
-- **Assertion Consumer Service (ACS) URL**: `https://sso.ol.mit.edu/realms/olapps/broker/saml/endpoint`
-- **Single Sign-On URL**: `https://sso.ol.mit.edu/realms/olapps/broker/saml/endpoint`
-- **Single Logout URL**: `https://sso.ol.mit.edu/realms/olapps/broker/saml/endpoint`
+- **URLs**: Will be provided by our team after initial configuration
 
 **Required Attributes:**
 - **Name ID Format**: Email address
@@ -85,6 +84,9 @@ Please collect the following information from your identity provider:
 
 ### For SAML Integration
 Please collect the following information from your identity provider:
+- **Federation Metadata URL**: If available (recommended - contains all configuration details below)
+
+**OR if metadata URL is not available, provide these individual items:**
 - **Identity Provider Entity ID**: Your IdP's unique identifier
 - **Single Sign-On URL**: Where users are redirected for authentication
 - **Single Logout URL**: Where users are redirected for logout
@@ -97,9 +99,24 @@ Please fill out the following Google Form with your configuration details: [LINK
 
 **Important**: Include all the information gathered in the [Required Information Collection](#required-information-collection) section above.
 
+## Configuration Exchange Process
+
+After you submit your information:
+
+1. **Our team will configure your organization** in our system and provide you with:
+   - Public certificate for authentication (OIDC and SAML)
+   - Organization-specific endpoints (SAML only)
+   - Service Provider metadata file (SAML only)
+
+2. **You will need to update your identity provider** with the information we provide
+
+3. **Testing can begin** once both sides have completed their configuration
+
+**Note**: SAML configurations require additional endpoint information from our team before you can complete your setup.
+
 ## Testing the Integration
 
-**Note**: Testing can only be performed after our team has configured your identity provider information in our system. We will notify you when the configuration is complete and testing can begin.
+**Note**: Testing can only be performed after the configuration exchange process above is complete.
 
 ### Test User Setup
 1. Create a test user in your identity provider
