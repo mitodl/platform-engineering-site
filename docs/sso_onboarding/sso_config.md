@@ -6,8 +6,8 @@ This document provides guidance for configuring single sign-on (SSO) with our pl
 - [Protocol Selection](#protocol-selection)
 - [General Configuration Requirements](#general-configuration-requirements)
 - [Required Information Collection](#required-information-collection)
-- [Testing the Integration](#testing-the-integration)
 - [Information to Provide Our Team](#information-to-provide-our-team)
+- [Testing the Integration](#testing-the-integration)
 - [Next Steps](#next-steps)
 - [Support](#support)
 - [Provider-Specific Examples](#provider-specific-examples)
@@ -91,7 +91,15 @@ Please collect the following information from your identity provider:
 - **X.509 Certificate**: Your IdP's signing certificate
 - **Federation Metadata URL**: If available (optional but recommended)
 
+## Information to Provide Our Team
+
+Please fill out the following Google Form with your configuration details: [LINK_TO_GOOGLE_FORM]
+
+**Important**: Include all the information gathered in the [Required Information Collection](#required-information-collection) section above.
+
 ## Testing the Integration
+
+**Note**: Testing can only be performed after our team has configured your identity provider information in our system. We will notify you when the configuration is complete and testing can begin.
 
 ### Test User Setup
 1. Create a test user in your identity provider
@@ -122,20 +130,15 @@ Please collect the following information from your identity provider:
 - **Invalid destination**: Ensure ACS URL matches exactly
 - **Clock skew issues**: Verify time synchronization between systems
 
-## Information to Provide Our Team
-
-Please fill out the following Google Form with your configuration details: [LINK_TO_GOOGLE_FORM]
-
-**Important**: Include all the information gathered in the [Required Information Collection](#required-information-collection) section above.
-
 ## Next Steps
 
 1. Choose your preferred protocol (OIDC recommended)
 2. Configure your identity provider using the requirements above
-3. Test the integration with a small group of users
-4. Provide the required configuration details to our team via the form
-5. Schedule a validation call to verify the integration
-6. Plan your user rollout and communication strategy
+3. Provide the required configuration details to our team via the form
+4. Wait for confirmation that our team has completed the configuration
+5. Test the integration with a small group of users
+6. Schedule a validation call to verify the integration
+7. Plan your user rollout and communication strategy
 
 ## Support
 
