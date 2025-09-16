@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Sso config - Platform Engineering Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Platform Engineering Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Getting Started</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../getting_started/emergency-break-glass/" class="dropdown-item">Emergency Oncall Break Glass Procedure</a>
+</li>
+                                    
+<li>
+    <a href="../../getting_started/developer_eks_access/" class="dropdown-item">Developer EKS Access</a>
+</li>
+                                    
+<li>
+    <a href="../../getting_started/vault_access_for_developers/" class="dropdown-item">Vault Access for Developers</a>
+</li>
+                                    
+<li>
+    <a href="../../getting_started/update_this_site/" class="dropdown-item">Updating This Site</a>
+</li>
+                                    
+<li>
+    <a href="../../getting_started/pe-product-infra-map/" class="dropdown-item">Applications & Services</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Platform Services</a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Secrets Management (Vault)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../platform_services/secrets_management/restore_vault_backups/" class="dropdown-item">Restoring Vault Backups</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/secrets_management/faking_it_with_consul_and_vault/" class="dropdown-item">Faking It with Consul and Vault</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Service Discovery (Consul)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../platform_services/service_discovery/consul_incantations/" class="dropdown-item">Consul Incantations</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/service_discovery/fargate_service_discovery/" class="dropdown-item">Fargate Service Discovery</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Container Orchestration (Kubernetes)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../platform_services/container_orchestration/deploying_apps_with_kubernetes/" class="dropdown-item">Deploying Apps with Kubernetes</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/container_orchestration/kubernetes_cookbook/" class="dropdown-item">Kubernetes Cookbook</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">CI/CD (Concourse)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../platform_services/ci_cd/getting_started_with_concourse/" class="dropdown-item">Getting Started with Concourse</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/ci_cd/deploying_concourse/" class="dropdown-item">Deploying Concourse</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/ci_cd/concourse_github_issues_user_guide/" class="dropdown-item">Concourse GitHub Issues User Guide</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Cloud Infrastructure (AWS & Pulumi)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="dropdown-item">Pulumi AWS Classic 5 to 6 Upgrade</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/import_existing_resources_with_pulumi/" class="dropdown-item">Importing Existing Resources with Pulumi</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="dropdown-item">Testing and Deploying Pulumi Packer Projects</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="dropdown-item">Tagging AMIs with Software Metadata</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/moira_certificates/" class="dropdown-item">Moira Certificates</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/recaptcha/" class="dropdown-item">Recaptcha</a>
+</li>
+            
+<li>
+    <a href="../../platform_services/cloud_infrastructure/publishing_to_npm/" class="dropdown-item">Publishing to NPM</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Application Specific Guides</a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Open edX</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../application_specific_guides/openedx/prove_build_was_deployed/" class="dropdown-item">Proving Build Was Deployed</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/access_django_manage/" class="dropdown-item">Accessing Django Manage</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/enable_rapid_response_edxapp/" class="dropdown-item">Enabling Rapid Response edXApp</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/mysql_access/" class="dropdown-item">MySQL Access</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/retirement_pipeline/" class="dropdown-item">Retirement Pipeline</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/release_upgrades/" class="dropdown-item">Release Upgrades</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/openedx/retire_an_openedx_user/" class="dropdown-item">Retiring a User</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Heroku (Legacy)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../application_specific_guides/heroku_legacy/config_vars/" class="dropdown-item">Config Vars</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/heroku_legacy/dynosaur_management/" class="dropdown-item">Dynosaur Management</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/heroku_legacy/log_drains/" class="dropdown-item">Log Drains</a>
+</li>
+            
+<li>
+    <a href="../../application_specific_guides/heroku_legacy/transition_postgres_db_to_rds/" class="dropdown-item">Transitioning Postgres DB to RDS</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">OCW Studio</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline/" class="dropdown-item">Updating The OCW Studio Pipeline</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Monitoring & Observability</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../monitoring_observability/overview/" class="dropdown-item">Overview</a>
+</li>
+                                    
+<li>
+    <a href="../../monitoring_observability/inventory/" class="dropdown-item">Inventory</a>
+</li>
+                                    
+<li>
+    <a href="../../monitoring_observability/key_labels/" class="dropdown-item">Key Labels</a>
+</li>
+                                    
+<li>
+    <a href="../../monitoring_observability/bump_sentry_credit/" class="dropdown-item">Bumping Sentry Credit</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Runbooks & Post-Mortems</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../runbooks_post_mortems/oncall_runbook/" class="dropdown-item">On-Call Runbook</a>
+</li>
+                                    
+<li>
+    <a href="../../runbooks_post_mortems/20231030_xpro_outage/" class="dropdown-item">20231030 xPro Outage Post-Mortem</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Cookbooks & Patterns</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../cookbooks_patterns/devops_patterns_cookbook/" class="dropdown-item">DevOps Patterns Cookbook</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item dropdown">
+                              <button id="theme-menu" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme" class="nav-link dropdown-toggle">
+                                <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                                <span class="d-lg-none ms-2">Toggle theme</span>
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="true">
+                                    <i class="fa-solid fa-sun fa-fw"></i>
+                                    <span class="ms-2">Light</span>
+                                    <i class="fa-solid fa-check ms-auto"></i>
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                                    <i class="fa-solid fa-moon fa-fw"></i>
+                                    <span class="ms-2">Dark</span>
+                                    <i class="fa-solid fa-check ms-auto d-none"></i>
+                                  </button>
+                                </li>
+                                <li>
+                                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="false">
+                                    <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                                    <span class="ms-2">Auto</span>
+                                    <i class="fa-solid fa-check ms-auto d-none"></i>
+                                  </button>
+                                </li>
+                              </ul>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <script src="../../js/darkmode.js"></script>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#overview" class="nav-link">Overview</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#prerequisites" class="nav-link">Prerequisites</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#protocol-selection" class="nav-link">Protocol Selection</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#general-configuration-requirements" class="nav-link">General Configuration Requirements</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#required-information-collection" class="nav-link">Required Information Collection</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#information-to-provide-our-team" class="nav-link">Information to Provide Our Team</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#configuration-exchange-process" class="nav-link">Configuration Exchange Process</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#testing-the-integration" class="nav-link">Testing the Integration</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#next-steps" class="nav-link">Next Steps</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#support" class="nav-link">Support</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#provider-specific-examples" class="nav-link">Provider-Specific Examples</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#microsoft-entra-id-azure-ad-oidc" class="nav-link">Microsoft Entra ID (Azure AD) - OIDC</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#microsoft-entra-id-azure-ad-saml" class="nav-link">Microsoft Entra ID (Azure AD) - SAML</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="overview">Overview</h2>
+<p>This document provides guidance for configuring single sign-on (SSO) with our platform using either OpenID Connect (OIDC) or SAML protocols. This integration allows your users to access our services using their existing organizational credentials from any compatible identity provider.</p>
+<h3 id="quick-navigation">Quick Navigation</h3>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#protocol-selection">Protocol Selection</a></li>
+<li><a href="#general-configuration-requirements">General Configuration Requirements</a></li>
+<li><a href="#required-information-collection">Required Information Collection</a></li>
+<li><a href="#information-to-provide-our-team">Information to Provide Our Team</a></li>
+<li><a href="#configuration-exchange-process">Configuration Exchange Process</a></li>
+<li><a href="#testing-the-integration">Testing the Integration</a></li>
+<li><a href="#next-steps">Next Steps</a></li>
+<li><a href="#support">Support</a></li>
+<li><a href="#provider-specific-examples">Provider-Specific Examples</a></li>
+<li><a href="#microsoft-entra-id-azure-ad---oidc">Microsoft Entra ID (Azure AD) - OIDC</a></li>
+<li><a href="#microsoft-entra-id-azure-ad---saml">Microsoft Entra ID (Azure AD) - SAML</a></li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Administrative access to your identity provider (IdP)</li>
+<li>The following information will be provided by our team:</li>
+<li>Keycloak realm URL</li>
+<li>Keycloak realm public certificate</li>
+<li>Organization-specific configuration details</li>
+</ul>
+<h2 id="protocol-selection">Protocol Selection</h2>
+<p>We recommend <strong>OpenID Connect (OIDC)</strong> for most implementations due to its modern design and ease of configuration.</p>
+<h3 id="recommended-openid-connect-oidc">Recommended: OpenID Connect (OIDC)</h3>
+<ul>
+<li><strong>Best for</strong>: Modern applications, mobile apps, API access</li>
+<li><strong>Advantages</strong>: JSON-based, built on OAuth2, excellent token management</li>
+<li><strong>Setup complexity</strong>: Low to Medium</li>
+<li><strong>Supported by</strong>: Most modern identity providers</li>
+</ul>
+<h3 id="alternative-saml-20">Alternative: SAML 2.0</h3>
+<ul>
+<li><strong>Best for</strong>: Enterprise applications, legacy system integration</li>
+<li><strong>Advantages</strong>: Mature protocol, extensive enterprise support</li>
+<li><strong>Setup complexity</strong>: Medium to High</li>
+<li><strong>Supported by</strong>: All major enterprise identity providers</li>
+</ul>
+<h2 id="general-configuration-requirements">General Configuration Requirements</h2>
+<h3 id="oidc-configuration-requirements">OIDC Configuration Requirements</h3>
+<p>Your identity provider will need to be configured with the following settings:</p>
+<p><strong>Application Registration Details:</strong>
+- <strong>Application Name</strong>: <code>MIT Learn</code> (or your preferred name)
+- <strong>Redirect URI</strong>: <code>https://sso.ol.mit.edu/realms/olapps/broker/oidc/endpoint</code>
+- <strong>Response Type</strong>: <code>code</code>
+- <strong>Grant Type</strong>: <code>authorization_code</code></p>
+<p><strong>Required Claims/Scopes:</strong>
+- <code>openid</code> (Sign users in)
+- <code>profile</code> (View users' basic profile)
+- <code>email</code> (View users' email address)</p>
+<p><strong>Authentication Method:</strong>
+- Certificate-based authentication using the public certificate provided by our team</p>
+<h3 id="saml-configuration-requirements">SAML Configuration Requirements</h3>
+<p>Your identity provider will need to be configured with the following settings:</p>
+<p><strong>Service Provider (SP) Details:</strong>
+- <strong>Entity ID</strong>: <code>https://sso.ol.mit.edu/realms/olapps</code>
+- <strong>URLs</strong>: Will be provided by our team after initial configuration</p>
+<p><strong>Required Attributes:</strong>
+- <strong>Name ID Format</strong>: Email address
+- <strong>Email</strong>: User's email address
+- <strong>Given Name</strong>: User's first name
+- <strong>Surname</strong>: User's last name
+- <strong>Display Name</strong>: User's full display name</p>
+<p><strong>Certificate Configuration:</strong>
+- <strong>Signing Algorithm</strong>: SHA-256
+- <strong>Response Signing</strong>: Required</p>
+<h2 id="required-information-collection">Required Information Collection</h2>
+<h3 id="for-oidc-integration">For OIDC Integration</h3>
+<p>Please collect the following information from your identity provider:
+- <strong>Client ID</strong>: Your application's unique identifier
+- <strong>OpenID Connect Discovery URL</strong>: Usually <code>https://[your-idp]/.well-known/openid-configuration</code>
+- <strong>Tenant/Domain Information</strong>: If applicable to your provider</p>
+<h3 id="for-saml-integration">For SAML Integration</h3>
+<p>Please collect the following information from your identity provider:
+- <strong>Federation Metadata URL</strong>: If available (recommended - contains all configuration details below)</p>
+<p><strong>OR if metadata URL is not available, provide these individual items:</strong>
+- <strong>Identity Provider Entity ID</strong>: Your IdP's unique identifier
+- <strong>Single Sign-On URL</strong>: Where users are redirected for authentication
+- <strong>Single Logout URL</strong>: Where users are redirected for logout
+- <strong>X.509 Certificate</strong>: Your IdP's signing certificate
+- <strong>Federation Metadata URL</strong>: If available (optional but recommended)</p>
+<h2 id="information-to-provide-our-team">Information to Provide Our Team</h2>
+<p>Please fill out the following <a href="https://forms.gle/bLHvhyUUC7eqJ5cN9">Google Form</a> with your configuration details.</p>
+<p><strong>Important</strong>: Include all the information gathered in the <a href="#required-information-collection">Required Information Collection</a> section above.</p>
+<h2 id="configuration-exchange-process">Configuration Exchange Process</h2>
+<p>After you submit your information:</p>
+<ol>
+<li><strong>Our team will configure your organization</strong> in our system and provide you with:</li>
+<li>Public certificate for authentication (OIDC and SAML)</li>
+<li>Organization-specific endpoints (SAML only)</li>
+<li>
+<p>Service Provider metadata file (SAML only)</p>
+</li>
+<li>
+<p><strong>You will need to update your identity provider</strong> with the information we provide</p>
+</li>
+<li>
+<p><strong>Testing can begin</strong> once both sides have completed their configuration</p>
+</li>
+</ol>
+<p><strong>Note</strong>: SAML configurations require additional endpoint information from our team before you can complete your setup.</p>
+<h2 id="testing-the-integration">Testing the Integration</h2>
+<p><strong>Note</strong>: Testing can only be performed after the configuration exchange process above is complete.</p>
+<h3 id="test-user-setup">Test User Setup</h3>
+<ol>
+<li>Create a test user in your identity provider</li>
+<li>Ensure the test user has the required attributes (email, name, etc.)</li>
+<li>Assign the test user access to the MIT Learn application</li>
+</ol>
+<h3 id="testing-steps">Testing Steps</h3>
+<ol>
+<li>Navigate to our platform's login page</li>
+<li>Click "Log in"</li>
+<li>Enter the email address for your test user</li>
+<li>Click Next</li>
+<li>You should be redirected to your identity provider for authentication</li>
+<li>Enter your credentials at your identity provider</li>
+<li>After successful authentication, you will be logged into the Learn web site</li>
+<li>Confirm the test user's name and information on the Profile page at https://learn.mit.edu/dashboard/profile</li>
+</ol>
+<h3 id="common-troubleshooting">Common Troubleshooting</h3>
+<h4 id="oidc-specific-issues">OIDC-specific Issues</h4>
+<ul>
+<li><strong>Invalid redirect URI</strong>: Verify the reply URL matches exactly</li>
+<li><strong>Token validation errors</strong>: Check clock synchronization between systems</li>
+<li><strong>Missing user attributes</strong>: Verify claim mappings in your identity provider</li>
+<li><strong>Permission denied</strong>: Ensure users are assigned to the application</li>
+</ul>
+<h4 id="saml-specific-issues">SAML-specific Issues</h4>
+<ul>
+<li><strong>Invalid SAML Response</strong>: Check certificate validity and signing configuration</li>
+<li><strong>Attribute mapping errors</strong>: Verify claim names and formats match requirements</li>
+<li><strong>Invalid destination</strong>: Ensure ACS URL matches exactly</li>
+<li><strong>Clock skew issues</strong>: Verify time synchronization between systems</li>
+</ul>
+<h2 id="next-steps">Next Steps</h2>
+<ol>
+<li>Choose your preferred protocol (OIDC recommended)</li>
+<li>Configure your identity provider using the requirements above</li>
+<li>Provide the required configuration details to our team via the form</li>
+<li>Wait for confirmation that our team has completed the configuration</li>
+<li>Test the integration with a small group of users</li>
+<li>Schedule a validation call to verify the integration</li>
+<li>Plan your user rollout and communication strategy</li>
+</ol>
+<h2 id="support">Support</h2>
+<p>For technical questions during setup:
+- Contact our integration team at: <a href="mailto:mitlearn-support@mit.edu">mitlearn-support@mit.edu</a>
+- Include any error messages or screenshots for faster resolution</p>
+<p>For ongoing operational support after go-live:
+- Use your standard support channels
+- SSO-related issues should include user Principal Name and timestamp</p>
+<hr />
+<h2 id="provider-specific-examples">Provider-Specific Examples</h2>
+<p>The following sections provide detailed, step-by-step instructions for specific identity providers. Use these as reference implementations of the general requirements outlined above.</p>
+<h2 id="microsoft-entra-id-azure-ad-oidc">Microsoft Entra ID (Azure AD) - OIDC</h2>
+<h3 id="step-1-create-application-registration-in-entra-id">Step 1: Create Application Registration in Entra ID</h3>
+<ol>
+<li>Navigate to the Azure portal (portal.azure.com)</li>
+<li>Go to <strong>Microsoft Entra ID</strong> → <strong>App registrations</strong></li>
+<li>Click <strong>New registration</strong></li>
+<li>Configure the following settings:</li>
+<li><strong>User-facing display name for this application</strong>: <code>MIT Learn</code></li>
+<li><strong>Supported account types</strong>: Depends on their setup and what accounts they want to allow</li>
+<li><strong>Redirect URI</strong>: Web - <code>https://sso.ol.mit.edu/realms/olapps/broker/oidc/endpoint</code></li>
+<li>Click <strong>Register</strong></li>
+</ol>
+<h3 id="step-2-configure-application-registration-secrets">Step 2: Configure Application Registration Secrets</h3>
+<ol>
+<li>In your new application, go to <strong>Certificates &amp; secrets</strong></li>
+<li>Select the <strong>Certificates</strong> tab and click <strong>Upload certificate</strong></li>
+<li>Upload Public certificate provided to you by our team</li>
+</ol>
+<h3 id="step-3-configure-application-registration-api-permissions">Step 3: Configure Application Registration API permissions</h3>
+<ol>
+<li>In your new application, go to <strong>API permissions</strong></li>
+<li>Ensure the following Microsoft Graph permissions:</li>
+<li><code>openid</code> (Sign users in)</li>
+<li><code>profile</code> (View users' basic profile)</li>
+<li><code>email</code> (View users' email address)</li>
+<li><code>User.Read</code> (Sign in and read user profile)</li>
+</ol>
+<h3 id="step-4-collect-configuration-details">Step 4: Collect Configuration Details</h3>
+<p>Gather the following information to provide to our team:
+- <strong>Application (Client) ID</strong>: Found in App Registration overview
+- <strong>OpenID Connect Metadata URL</strong>: <code>https://login.microsoftonline.com/[TENANT_ID]/v2.0/.well-known/openid_configuration</code></p>
+<p>(Note: You can find your <strong>Tenant ID</strong> on the <strong>Overview</strong> page of your Microsoft Entra ID instance in the Azure portal.)</p>
+<h2 id="microsoft-entra-id-azure-ad-saml">Microsoft Entra ID (Azure AD) - SAML</h2>
+<h3 id="step-1-create-enterprise-application-in-entra-id">Step 1: Create Enterprise Application in Entra ID</h3>
+<ol>
+<li>Navigate to the Azure portal (portal.azure.com)</li>
+<li>Go to <strong>Microsoft Entra ID</strong> → <strong>Enterprise applications</strong></li>
+<li>Click <strong>New application</strong></li>
+<li>Click <strong>Create your own application</strong></li>
+<li>Configure the following settings:</li>
+<li><strong>Name</strong>: <code>MIT Learn</code></li>
+<li><strong>What are you looking to do with your application?</strong>: Select "Integrate any other application you don't find in the gallery (Non-gallery)"</li>
+<li>Click <strong>Create</strong></li>
+</ol>
+<h3 id="step-2-configure-basic-saml-configuration">Step 2: Configure Basic SAML Configuration</h3>
+<ol>
+<li>In your new enterprise application, go to <strong>Single sign-on</strong></li>
+<li>Select <strong>SAML</strong> as the single sign-on method</li>
+<li>In the <strong>Basic SAML Configuration</strong> section, click <strong>Edit</strong></li>
+<li>Configure the following settings:</li>
+<li><strong>Identifier (Entity ID)</strong>: <code>https://sso.ol.mit.edu/realms/olapps</code></li>
+<li><strong>Reply URL (Assertion Consumer Service URL)</strong>: <code>https://sso.ol.mit.edu/realms/olapps/broker/saml/endpoint</code></li>
+<li><strong>Sign on URL</strong>: <code>https://sso.ol.mit.edu/realms/olapps/broker/saml/endpoint</code></li>
+<li><strong>Relay State</strong>: Leave blank</li>
+<li><strong>Logout URL</strong>: <code>https://sso.ol.mit.edu/realms/olapps/broker/saml/endpoint</code></li>
+<li>Click <strong>Save</strong></li>
+</ol>
+<h3 id="step-3-configure-attributes-claims">Step 3: Configure Attributes &amp; Claims</h3>
+<ol>
+<li>In the <strong>Attributes &amp; Claims</strong> section, click <strong>Edit</strong></li>
+<li>Ensure the following claims are present:</li>
+<li><strong>Unique User Identifier (Name ID)</strong>: user.userprincipalname</li>
+<li><strong>emailaddress</strong>: user.mail</li>
+<li><strong>givenname</strong>: user.givenname</li>
+<li><strong>surname</strong>: user.surname</li>
+<li><strong>name</strong>: user.displayname</li>
+<li>Set <strong>Name identifier format</strong> to <strong>Email address</strong></li>
+<li>Click <strong>Save</strong></li>
+</ol>
+<h3 id="step-4-configure-saml-signing-certificate">Step 4: Configure SAML Signing Certificate</h3>
+<ol>
+<li>In the <strong>SAML Certificates</strong> section, note the following:</li>
+<li><strong>App Federation Metadata Url</strong>: Copy this URL to provide to our team</li>
+<li><strong>Certificate (Base64)</strong>: Download this certificate</li>
+<li><strong>Federation Metadata XML</strong>: Download this file</li>
+<li>In the <strong>Advanced Certificate Settings</strong>, ensure:</li>
+<li><strong>Signing Option</strong>: Sign SAML response</li>
+<li><strong>Signing Algorithm</strong>: SHA-256</li>
+</ol>
+<h3 id="step-5-collect-configuration-details">Step 5: Collect Configuration Details</h3>
+<p>Gather the following information to provide to our team:
+- <strong>Azure AD Identifier (Entity ID)</strong>: Found in the Set up [Application Name] section
+- <strong>Login URL</strong>: Found in the Set up [Application Name] section
+- <strong>Logout URL</strong>: Found in the Set up [Application Name] section
+- <strong>App Federation Metadata URL</strong>: From Step 4
+- <strong>Certificate (Base64)</strong>: Downloaded file from Step 4
+- <strong>Federation Metadata XML</strong>: Downloaded file from Step 4</p>
+<h3 id="security-considerations-for-entra-id">Security Considerations for Entra ID</h3>
+<h4 id="conditional-access-policies">Conditional Access Policies</h4>
+<p>Consider implementing Conditional Access policies for additional security:
+- Require multi-factor authentication
+- Restrict access based on location or device compliance
+- Implement risk-based access controls</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
