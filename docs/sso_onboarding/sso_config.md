@@ -95,7 +95,7 @@ Please collect the following information from your identity provider:
 
 ## Information to Provide Our Team
 
-Please fill out the following Google Form with your configuration details: [LINK_TO_GOOGLE_FORM]
+Please fill out the following [Google Form](https://forms.gle/bLHvhyUUC7eqJ5cN9) with your configuration details.
 
 **Important**: Include all the information gathered in the [Required Information Collection](#required-information-collection) section above.
 
