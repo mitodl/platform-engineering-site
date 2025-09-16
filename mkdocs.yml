@@ -60,3 +60,5 @@ nav:
     - 20231030 xPro Outage Post-Mortem: runbooks_post_mortems/20231030_xpro_outage.md
   - Cookbooks & Patterns:
     - DevOps Patterns Cookbook: cookbooks_patterns/devops_patterns_cookbook.md
+  - Partner Documentation:
+    - Integrating With MIT Learn SSO: sso_onboarding/sso_config.md
