@@ -230,16 +230,6 @@
 </li>
     </ul>
   </li>
-                                    
-  <li class="dropdown-submenu">
-    <a href="#" class="dropdown-item">Renovate</a>
-    <ul class="dropdown-menu">
-            
-<li>
-    <a href="../../application_specific_guides/renovate/updating_renovate_config/" class="dropdown-item">Updating And Validating Renovate Configuration</a>
-</li>
-    </ul>
-  </li>
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
@@ -415,12 +405,12 @@
               </ul>
             </li>
             
-            <li class="nav-item" data-bs-level="2"><a href="#microsoft-entra-id-azure-ad-oidc" class="nav-link">Microsoft Entra ID (Azure AD) - OIDC</a>
+            <li class="nav-item" data-bs-level="2"><a href="#microsoft-entra-id-oidc" class="nav-link">Microsoft Entra ID OIDC</a>
               <ul class="nav flex-column">
               </ul>
             </li>
             
-            <li class="nav-item" data-bs-level="2"><a href="#microsoft-entra-id-azure-ad-saml" class="nav-link">Microsoft Entra ID (Azure AD) - SAML</a>
+            <li class="nav-item" data-bs-level="2"><a href="#microsoft-entra-id-saml" class="nav-link">Microsoft Entra ID SAML</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -443,8 +433,8 @@
 <li><a href="#next-steps">Next Steps</a></li>
 <li><a href="#support">Support</a></li>
 <li><a href="#provider-specific-examples">Provider-Specific Examples</a></li>
-<li><a href="#microsoft-entra-id-azure-ad---oidc">Microsoft Entra ID (Azure AD) - OIDC</a></li>
-<li><a href="#microsoft-entra-id-azure-ad---saml">Microsoft Entra ID (Azure AD) - SAML</a></li>
+<li><a href="#microsoft-entra-id-oidc">Microsoft Entra ID - OIDC</a></li>
+<li><a href="#microsoft-entra-id-saml">Microsoft Entra ID - SAML</a></li>
 </ul>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
@@ -587,7 +577,7 @@
 <hr />
 <h2 id="provider-specific-examples">Provider-Specific Examples</h2>
 <p>The following sections provide detailed, step-by-step instructions for specific identity providers. Use these as reference implementations of the general requirements outlined above.</p>
-<h2 id="microsoft-entra-id-azure-ad-oidc">Microsoft Entra ID (Azure AD) - OIDC</h2>
+<h2 id="microsoft-entra-id-oidc">Microsoft Entra ID OIDC</h2>
 <h3 id="step-1-create-application-registration-in-entra-id">Step 1: Create Application Registration in Entra ID</h3>
 <ol>
 <li>Navigate to the Azure portal (portal.azure.com)</li>
@@ -619,7 +609,7 @@
 - <strong>Application (Client) ID</strong>: Found in App Registration overview
 - <strong>OpenID Connect Metadata URL</strong>: <code>https://login.microsoftonline.com/[TENANT_ID]/v2.0/.well-known/openid_configuration</code></p>
 <p>(Note: You can find your <strong>Tenant ID</strong> on the <strong>Overview</strong> page of your Microsoft Entra ID instance in the Azure portal.)</p>
-<h2 id="microsoft-entra-id-azure-ad-saml">Microsoft Entra ID (Azure AD) - SAML</h2>
+<h2 id="microsoft-entra-id-saml">Microsoft Entra ID SAML</h2>
 <h3 id="step-1-create-enterprise-application-in-entra-id">Step 1: Create Enterprise Application in Entra ID</h3>
 <ol>
 <li>Navigate to the Azure portal (portal.azure.com)</li>
