@@ -12,8 +12,8 @@ This document provides guidance for configuring single sign-on (SSO) with our pl
 - [Next Steps](#next-steps)
 - [Support](#support)
 - [Provider-Specific Examples](#provider-specific-examples)
-  - [Microsoft Entra ID (Azure AD) - OIDC](#microsoft-entra-id-azure-ad---oidc)
-  - [Microsoft Entra ID (Azure AD) - SAML](#microsoft-entra-id-azure-ad---saml)
+  - [Microsoft Entra ID - OIDC](#microsoft-entra-id-oidc)
+  - [Microsoft Entra ID - SAML](#microsoft-entra-id-saml)
 
 ## Prerequisites
 - Administrative access to your identity provider (IdP)
@@ -173,7 +173,7 @@ For ongoing operational support after go-live:
 
 The following sections provide detailed, step-by-step instructions for specific identity providers. Use these as reference implementations of the general requirements outlined above.
 
-## Microsoft Entra ID (Azure AD) - OIDC
+## Microsoft Entra ID OIDC
 
 ### Step 1: Create Application Registration in Entra ID
 1. Navigate to the Azure portal (portal.azure.com)
@@ -205,7 +205,7 @@ Gather the following information to provide to our team:
 
 (Note: You can find your **Tenant ID** on the **Overview** page of your Microsoft Entra ID instance in the Azure portal.)
 
-## Microsoft Entra ID (Azure AD) - SAML
+## Microsoft Entra ID SAML
 
 ### Step 1: Create Enterprise Application in Entra ID
 1. Navigate to the Azure portal (portal.azure.com)
