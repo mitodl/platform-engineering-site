@@ -50,7 +50,11 @@ nav:
       - Transitioning Postgres DB to RDS: application_specific_guides/heroku_legacy/transition_postgres_db_to_rds.md
     - OCW Studio:
       - Updating The OCW Studio Pipeline: application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline.md
-  - Monitoring & Observability:
+    - ODL-bot / Doof:
+      - Updating odlbot/doof Github Access Token: application_specific_guides/odlbot/Resetting_Doof_Github_Token.md
+    - Renovate: 
+      - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
+  - Monitoring And Observability:
     - Overview: monitoring_observability/overview.md
     - Inventory: monitoring_observability/inventory.md
     - Key Labels: monitoring_observability/key_labels.md
