@@ -54,6 +54,8 @@ nav:
       - Updating odlbot/doof Github Access Token: application_specific_guides/odlbot/Resetting_Doof_Github_Token.md
     - Renovate: 
       - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
+    - JupyterHub:
+      - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
   - Monitoring And Observability:
     - Overview: monitoring_observability/overview.md
     - Inventory: monitoring_observability/inventory.md
