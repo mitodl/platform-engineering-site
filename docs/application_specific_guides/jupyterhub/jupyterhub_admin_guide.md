@@ -23,17 +23,17 @@ Culling is performed via the [jupyterhub-idle-culler](https://github.com/jupyter
 ### Adding a New Course
 At the moment, adding a new course involves a few manual steps:
 
-1. Create a new repository in the [ol-notebooks-qa](https://github.mit.edu/ol-notebooks) org using the [template repo](https://github.mit.edu/ol-notebooks/ol-notebook-repo-template).
+1. Create a new repository in the [ol-notebooks](https://github.mit.edu/ol-notebooks) org using the [template repo](https://github.mit.edu/ol-notebooks/ol-notebook-repo-template).
 2. Author your changes. If you started from the template repo, the only required changes you'll need to make are adding your notebooks and data, adding any dependencies to either requirements.txt or the Dockerfile, and ensuring that the Dockerfile copies your notebooks and data into the ${NB_USER} home directory.
 3. Make changes to ol-infrastructure to add a new image build job in Concourse. This involves adding a new job to the [jupyter_courses.py](https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_concourse/pipelines/container_images/jupyter_courses.py) file and provisioning the new pipeline via fly command. Additionally, add the new image to the QueryStringKubeSpawner's `KNOWN_IMAGES` in [dynamicImageConfig.py](https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py) and to `COURSE_NAMES` in [JupyterHub's Pulumi code](https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/__main__.py).
-    - Here's a example PR which added a new course called `uai_source-uai.intro`: https://github.com/mitodl/ol-infrastructure/pull/3630
+    - Here's an example PR which added a new course called `uai_source-uai.intro`: https://github.com/mitodl/ol-infrastructure/pull/3630
 4. Apply your ol-infrastructure changes to the dev/stage/prod environments and unpause your new Concourse job to start building the image.
 5. Once the image is built and pushed to ECR, you should be able to start a new notebook server using the new image. You can construct the URL using the following format: `https://nb.learn.mit.edu/tmplogin?course=<IMAGE_TAG>&notebook=<URL_ENCODED_PATH_TO_NOTEBOOK_FILE>`.
     - For example, if your image URI is `610119931565.dkr.ecr.us-east-1.amazonaws.com/ol-course-notebooks:uai_source-uai.intro` and your notebook is at `lectures/lecture1/mod5_lec1.ipynb`, the URL would be `https://nb.learn.mit.edu/tmplogin?course=uai_source-uai.intro&notebook=lectures%2Flecture1%2Fmod5_lec1.ipynb`.
 6. Once started, it's good practice to run the entire notebook. This will help you catch any dependency issues or let you know if the notebook uses too much memory to execute.
 
 ### Updating an Existing Course
-The steps for updating a new course is a subset of the steps for adding a new course:
+The steps for updating a new course are a subset of the steps for adding a new course:
 
 1. Author your changes in the course repo. If it is an update to an existing course, it should already have a Concourse build pipeline which will automatically attempt to build an updated image.
 2. Once the image is built, you should be able to start a notebook server with the updated image automatically. If you adjusted the notebook directory structure, you may need to construct a new URL, but you will not need to make any additional infrastructure changes.
@@ -41,5 +41,5 @@ The steps for updating a new course is a subset of the steps for adding a new co
 
 ### Troubleshooting
 If you run into issues, here are some common things to check:
-- If you get the wrong image when you log in, verify that you've specified the right course parameter and that the value is in `KNOWN_IMAGES` in `jupyterhub_config.py`.
+- If you get the wrong image when you log in, verify that you've specified the right course parameter and that the value is in `KNOWN_IMAGES` in `dynamicImageConfig.py`.
 - If the image starts but you get a 404, verify that the notebook path is correct and URL encoded.
