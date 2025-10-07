@@ -18,6 +18,12 @@ Jupyterhub domains are currently gated by an SSO login to the olapps Keycloak re
 
 Culling is performed via the [jupyterhub-idle-culler](https://github.com/jupyterhub/jupyterhub-idle-culler) configured via [Helm chart](https://z2jh.jupyter.org/en/latest/resources/reference.html#cull). It currently culls both running, inactive servers as well as users. Culling users is important as we will accumulate UUID-keyed users and sessions in the database over time.
 
+# Monitoring
+
+We maintain a [Grafana dashboard](https://mitolproduction.grafana.net/d/ds6qvrm/jupyter-notebooks) which shows some basic metrics about the Jupyterhub deployment. This includes:
+    - kube_pod_container_info: shows which images notebook containers are currently running.
+    - kube_pod_container_status_restarts_total: shows how many times notebook containers have restarted. This being non-zero may be indicative of OOMKills.
+
 ## Authoring Workflow
 
 ### Adding a New Course
