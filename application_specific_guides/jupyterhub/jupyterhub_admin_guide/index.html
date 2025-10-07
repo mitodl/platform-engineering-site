@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../../../img/favicon.ico">
-        <title>Updating odlbot/doof Github Access Token - Platform Engineering Documentation</title>
+        <title>JupyterHub Admin Guide - Platform Engineering Documentation</title>
         <link href="../../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../../css/fontawesome.min.css" rel="stylesheet">
         <link href="../../../css/brands.min.css" rel="stylesheet">
@@ -236,7 +236,7 @@
     <ul class="dropdown-menu">
             
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">Updating odlbot/doof Github Access Token</a>
+    <a href="../../odlbot/Resetting_Doof_Github_Token.md" class="dropdown-item">Updating odlbot/doof Github Access Token</a>
 </li>
     </ul>
   </li>
@@ -247,6 +247,16 @@
             
 <li>
     <a href="../../renovate/updating_renovate_config/" class="dropdown-item">Updating Renovate Configuration</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">JupyterHub</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">JupyterHub Admin Guide</a>
 </li>
     </ul>
   </li>
@@ -313,12 +323,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../../ocw-studio/Update_OCW_Studio_Pipeline/" class="nav-link">
+                                <a rel="prev" href="../../renovate/updating_renovate_config/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../../renovate/updating_renovate_config/" class="nav-link">
+                                <a rel="next" href="../../../monitoring_observability/overview/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -370,8 +380,22 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#resetting-odlbot-doofs-github-access-token" class="nav-link">Resetting odlbot / Doof's Github Access Token</a>
+            <li class="nav-item" data-bs-level="1"><a href="#architecture" class="nav-link">Architecture</a>
               <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#image-building" class="nav-link">Image Building</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#jupyterhub" class="nav-link">Jupyterhub</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#authoring-workflow" class="nav-link">Authoring Workflow</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -379,21 +403,45 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="resetting-odlbot-doofs-github-access-token">Resetting odlbot / Doof's Github Access Token</h1>
-<p>From time to time we need to go through the fire drill of rotating all our github access
-tokens.</p>
-<p>If you need to reset  Doof's you'll need to login to gtihub with the mitx-devops@mit.edu
-account.</p>
-<p>You can get the 2FA code from Vault in the platform-secrets github secret.</p>
-<p>Find the personal access token once logged in by clicking the account icon in the top right,
-then choosing Settings -&gt; Developer Settings -&gt; Personal Access Tokens (Classic)</p>
-<p>Doof actually gets deployed to heroku. log in to heroku.com with the mitx-devops account.</p>
-<p>You can find user, pass and 2FA in vault under platform-secrets/heroku.</p>
-<p>Once logged in, click the odl-release-bot application. Then click Settings and navigate to
-"Reveal Config Vars".</p>
-<p>Now use the web form to edit the value of the GITHUB_ACCESS_TOKEN variable. Replace its
-current contents with the new token you just generated on the Github site.</p>
-<p>That's it! Doof should be back in no time :)</p></div>
+<h1 id="architecture">Architecture</h1>
+<p><img alt="Jupyterhub Architectural Diagram" src="../jupyterhub_box_diagram.svg" /></p>
+<h1 id="image-building">Image Building</h1>
+<p>https://github.mit.edu/ol-notebooks is an org containing a template repository and all course repositories. Each course repository contains a Dockerfile and requirements.txt file alongside any Jupyter notebooks and data.</p>
+<p>Concourse runs a <a href="https://cicd.odl.mit.edu/?search=team%3A%22infrastructure%22%20group%3A%22jupyter_notebook_docker_image_build%22">parameterized job</a> which pulls from the course repositories, constructs a docker image to bundle everything together and push to a <a href="https://us-east-1.console.aws.amazon.com/ecr/repositories/private/610119931565/ol-course-notebooks?region=us-east-1">private ECR repository</a> we maintain. The dockerfiles use the <a href="https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-pytorch-notebook">official Jupyter pytorch docker images</a> as a base and install tensorflow as well. The code to provision the pipelines is <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_concourse/pipelines/container_images/jupyter_courses.py">here</a> and the Pulumi code to set up the ECR repository is <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/infrastructure/aws/ecr/__main__.py">here</a>.</p>
+<h1 id="jupyterhub">Jupyterhub</h1>
+<p>Jupyterhub will use the <a href="https://github.com/jupyterhub/kubespawner">KubeSpawner library</a> (with some very slight modifications to enable <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py">image selection via query param</a>) to allow users to start up and interact with a set of images we maintain. For courses, this will involve Jupyterhub starting up a notebook server for the user by pulling the corresponding course image from ECR.</p>
+<p>The backing database is a Postgres RDS instance.</p>
+<p>Images are pre-pulled via <a href="https://z2jh.jupyter.org/en/stable/administrator/optimization.html#pulling-images-before-users-arrive">continuous-pre-puller</a> daemonsets. This is currently configured to pull all 4 existing images we build and maintain via specification of an extraImages block.</p>
+<p>Jupyterhub domains are currently gated by an SSO login to the olapps Keycloak realm. Once authenticated with Keycloak, Jupyterhub is set up to use the TmpAuthenticator class. When accessing the /tmplogin endpoint provided by the authenticator, Jupyterhub will unconditionally authenticate users as a random UUID. This ensures that users can spin up ephemeral notebooks provided they are able to authenticate with MIT Learn.</p>
+<p>Culling is performed via the <a href="https://github.com/jupyterhub/jupyterhub-idle-culler">jupyterhub-idle-culler</a> configured via <a href="https://z2jh.jupyter.org/en/latest/resources/reference.html#cull">Helm chart</a>. It currently culls both running, inactive servers as well as users. Culling users is important as we will accumulate UUID-keyed users and sessions in the database over time.</p>
+<h2 id="authoring-workflow">Authoring Workflow</h2>
+<h3 id="adding-a-new-course">Adding a New Course</h3>
+<p>At the moment, adding a new course involves a few manual steps:</p>
+<ol>
+<li>Create a new repository in the <a href="https://github.mit.edu/ol-notebooks">ol-notebooks-qa</a> org using the <a href="https://github.mit.edu/ol-notebooks/ol-notebook-repo-template">template repo</a>.</li>
+<li>Author your changes. If you started from the template repo, the only required changes you'll need to make are adding your notebooks and data, adding any dependencies to either requirements.txt or the Dockerfile, and ensuring that the Dockerfile copies your notebooks and data into the ${NB_USER} home directory.</li>
+<li>Make changes to ol-infrastructure to add a new image build job in Concourse. This involves adding a new job to the <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_concourse/pipelines/container_images/jupyter_courses.py">jupyter_courses.py</a> file and provisioning the new pipeline via fly command. Additionally, add the new image to the QueryStringKubeSpawner's <code>KNOWN_IMAGES</code> in <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py">dynamicImageConfig.py</a> and to <code>COURSE_NAMES</code> in <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/__main__.py">JupyterHub's Pulumi code</a>.<ul>
+<li>Here's a example PR which added a new course called <code>uai_source-uai.intro</code>: https://github.com/mitodl/ol-infrastructure/pull/3630</li>
+</ul>
+</li>
+<li>Apply your ol-infrastructure changes to the dev/stage/prod environments and unpause your new Concourse job to start building the image.</li>
+<li>Once the image is built and pushed to ECR, you should be able to start a new notebook server using the new image. You can construct the URL using the following format: <code>https://nb.learn.mit.edu/tmplogin?course=&lt;IMAGE_TAG&gt;&amp;notebook=&lt;URL_ENCODED_PATH_TO_NOTEBOOK_FILE&gt;</code>.<ul>
+<li>For example, if your image URI is <code>610119931565.dkr.ecr.us-east-1.amazonaws.com/ol-course-notebooks:uai_source-uai.intro</code> and your notebook is at <code>lectures/lecture1/mod5_lec1.ipynb</code>, the URL would be <code>https://nb.learn.mit.edu/tmplogin?course=uai_source-uai.intro&amp;notebook=lectures%2Flecture1%2Fmod5_lec1.ipynb</code>.</li>
+</ul>
+</li>
+<li>Once started, it's good practice to run the entire notebook. This will help you catch any dependency issues or let you know if the notebook uses too much memory to execute.</li>
+</ol>
+<h3 id="updating-an-existing-course">Updating an Existing Course</h3>
+<p>The steps for updating a new course is a subset of the steps for adding a new course:</p>
+<ol>
+<li>Author your changes in the course repo. If it is an update to an existing course, it should already have a Concourse build pipeline which will automatically attempt to build an updated image.</li>
+<li>Once the image is built, you should be able to start a notebook server with the updated image automatically. If you adjusted the notebook directory structure, you may need to construct a new URL, but you will not need to make any additional infrastructure changes.</li>
+<li>Test the updated image by running through the notebook as you would for a new one.</li>
+</ol>
+<h3 id="troubleshooting">Troubleshooting</h3>
+<p>If you run into issues, here are some common things to check:
+- If you get the wrong image when you log in, verify that you've specified the right course parameter and that the value is in <code>KNOWN_IMAGES</code> in <code>jupyterhub_config.py</code>.
+- If the image starts but you get a 404, verify that the notebook path is correct and URL encoded.</p></div>
             </div>
         </div>
 
