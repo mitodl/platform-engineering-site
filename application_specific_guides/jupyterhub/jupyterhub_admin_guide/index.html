@@ -232,16 +232,6 @@
   </li>
                                     
   <li class="dropdown-submenu">
-    <a href="#" class="dropdown-item">ODL-bot / Doof</a>
-    <ul class="dropdown-menu">
-            
-<li>
-    <a href="../../odlbot/Resetting_Doof_Github_Token.md" class="dropdown-item">Updating odlbot/doof Github Access Token</a>
-</li>
-    </ul>
-  </li>
-                                    
-  <li class="dropdown-submenu">
     <a href="#" class="dropdown-item">Renovate</a>
     <ul class="dropdown-menu">
             
@@ -392,6 +382,11 @@
             
             <li class="nav-item" data-bs-level="1"><a href="#jupyterhub" class="nav-link">Jupyterhub</a>
               <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#monitoring" class="nav-link">Monitoring</a>
+              <ul class="nav flex-column">
             <li class="nav-item" data-bs-level="2"><a href="#authoring-workflow" class="nav-link">Authoring Workflow</a>
               <ul class="nav flex-column">
               </ul>
@@ -414,14 +409,20 @@
 <p>Images are pre-pulled via <a href="https://z2jh.jupyter.org/en/stable/administrator/optimization.html#pulling-images-before-users-arrive">continuous-pre-puller</a> daemonsets. This is currently configured to pull all 4 existing images we build and maintain via specification of an extraImages block.</p>
 <p>Jupyterhub domains are currently gated by an SSO login to the olapps Keycloak realm. Once authenticated with Keycloak, Jupyterhub is set up to use the TmpAuthenticator class. When accessing the /tmplogin endpoint provided by the authenticator, Jupyterhub will unconditionally authenticate users as a random UUID. This ensures that users can spin up ephemeral notebooks provided they are able to authenticate with MIT Learn.</p>
 <p>Culling is performed via the <a href="https://github.com/jupyterhub/jupyterhub-idle-culler">jupyterhub-idle-culler</a> configured via <a href="https://z2jh.jupyter.org/en/latest/resources/reference.html#cull">Helm chart</a>. It currently culls both running, inactive servers as well as users. Culling users is important as we will accumulate UUID-keyed users and sessions in the database over time.</p>
+<h1 id="monitoring">Monitoring</h1>
+<p>We maintain a <a href="https://mitolproduction.grafana.net/d/ds6qvrm/jupyter-notebooks">Grafana dashboard</a> which shows some basic metrics about the Jupyterhub deployment. This includes:</p>
+<ul>
+<li><code>kube_pod_container_info</code>: shows which images notebook containers are currently running.</li>
+<li><code>kube_pod_container_status_restarts_total</code>: shows how many times notebook containers have restarted. This being non-zero may be indicative of OOMKills.</li>
+</ul>
 <h2 id="authoring-workflow">Authoring Workflow</h2>
 <h3 id="adding-a-new-course">Adding a New Course</h3>
 <p>At the moment, adding a new course involves a few manual steps:</p>
 <ol>
-<li>Create a new repository in the <a href="https://github.mit.edu/ol-notebooks">ol-notebooks-qa</a> org using the <a href="https://github.mit.edu/ol-notebooks/ol-notebook-repo-template">template repo</a>.</li>
+<li>Create a new repository in the <a href="https://github.mit.edu/ol-notebooks">ol-notebooks</a> org using the <a href="https://github.mit.edu/ol-notebooks/ol-notebook-repo-template">template repo</a>.</li>
 <li>Author your changes. If you started from the template repo, the only required changes you'll need to make are adding your notebooks and data, adding any dependencies to either requirements.txt or the Dockerfile, and ensuring that the Dockerfile copies your notebooks and data into the ${NB_USER} home directory.</li>
 <li>Make changes to ol-infrastructure to add a new image build job in Concourse. This involves adding a new job to the <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_concourse/pipelines/container_images/jupyter_courses.py">jupyter_courses.py</a> file and provisioning the new pipeline via fly command. Additionally, add the new image to the QueryStringKubeSpawner's <code>KNOWN_IMAGES</code> in <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py">dynamicImageConfig.py</a> and to <code>COURSE_NAMES</code> in <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/__main__.py">JupyterHub's Pulumi code</a>.<ul>
-<li>Here's a example PR which added a new course called <code>uai_source-uai.intro</code>: https://github.com/mitodl/ol-infrastructure/pull/3630</li>
+<li>Here's an example PR which added a new course called <code>uai_source-uai.intro</code>: https://github.com/mitodl/ol-infrastructure/pull/3630</li>
 </ul>
 </li>
 <li>Apply your ol-infrastructure changes to the dev/stage/prod environments and unpause your new Concourse job to start building the image.</li>
@@ -432,7 +433,7 @@
 <li>Once started, it's good practice to run the entire notebook. This will help you catch any dependency issues or let you know if the notebook uses too much memory to execute.</li>
 </ol>
 <h3 id="updating-an-existing-course">Updating an Existing Course</h3>
-<p>The steps for updating a new course is a subset of the steps for adding a new course:</p>
+<p>The steps for updating a new course are a subset of the steps for adding a new course:</p>
 <ol>
 <li>Author your changes in the course repo. If it is an update to an existing course, it should already have a Concourse build pipeline which will automatically attempt to build an updated image.</li>
 <li>Once the image is built, you should be able to start a notebook server with the updated image automatically. If you adjusted the notebook directory structure, you may need to construct a new URL, but you will not need to make any additional infrastructure changes.</li>
@@ -440,7 +441,7 @@
 </ol>
 <h3 id="troubleshooting">Troubleshooting</h3>
 <p>If you run into issues, here are some common things to check:
-- If you get the wrong image when you log in, verify that you've specified the right course parameter and that the value is in <code>KNOWN_IMAGES</code> in <code>jupyterhub_config.py</code>.
+- If you get the wrong image when you log in, verify that you've specified the right course parameter and that the value is in <code>KNOWN_IMAGES</code> in <code>dynamicImageConfig.py</code>.
 - If the image starts but you get a 404, verify that the notebook path is correct and URL encoded.</p></div>
             </div>
         </div>
