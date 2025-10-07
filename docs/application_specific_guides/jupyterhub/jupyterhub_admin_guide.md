@@ -21,8 +21,9 @@ Culling is performed via the [jupyterhub-idle-culler](https://github.com/jupyter
 # Monitoring
 
 We maintain a [Grafana dashboard](https://mitolproduction.grafana.net/d/ds6qvrm/jupyter-notebooks) which shows some basic metrics about the Jupyterhub deployment. This includes:
-    - kube_pod_container_info: shows which images notebook containers are currently running.
-    - kube_pod_container_status_restarts_total: shows how many times notebook containers have restarted. This being non-zero may be indicative of OOMKills.
+
+- kube_pod_container_info: shows which images notebook containers are currently running.
+- kube_pod_container_status_restarts_total: shows how many times notebook containers have restarted. This being non-zero may be indicative of OOMKills.
 
 ## Authoring Workflow
 
