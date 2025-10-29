@@ -40,7 +40,7 @@ At the moment, adding a new course involves a few manual steps:
 4. Apply your ol-infrastructure changes to the dev/stage/prod environments and unpause your new Concourse job to start building the image.
 5. Once the image is built and pushed to ECR, you should be able to start a new notebook server using the new image. You can construct the URL using the following format: `https://nb.learn.mit.edu/tmplogin?course=<IMAGE_TAG>&notebook=<URL_ENCODED_PATH_TO_NOTEBOOK_FILE>`.
     - For example, if your image URI is `610119931565.dkr.ecr.us-east-1.amazonaws.com/ol-course-notebooks:uai_source-uai.intro` and your notebook is at `lectures/lecture1/mod5_lec1.ipynb`, the URL would be `https://nb.learn.mit.edu/tmplogin?course=uai_source-uai.intro&notebook=lectures%2Flecture1%2Fmod5_lec1.ipynb`.
-6. Lastly, open the link run the entire notebook. This will help you catch any dependency issues or let you know if the notebook uses too much memory to execute. See the Troubleshooting section for more details on common failure modes you might encounter.
+6. Lastly, open the link and run the entire notebook. This will help you catch any dependency issues or let you know if the notebook uses too much memory to execute. See the Troubleshooting section for more details on common failure modes you might encounter.
 
 ### Updating an Existing Course
 The steps for updating a new course are a subset of the steps for adding a new course:
