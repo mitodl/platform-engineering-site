@@ -2,7 +2,7 @@
 
 The Engineering group in Open Learning hosts its own Hashicorp Vault clusters to handle secrets management. Part of our work is to provide OL developers access to Vault QA to perform the following tasks:
 1. Securely share secrets
-2. Generate local .env file for app development 
+2. Generate local .env file for app development
 
 ## Requirements
 - A Keycloak account in the `ol-platform-engineering` realm. If you currently do not have one, please ping someone in Platform Engineering to set you up.
@@ -56,5 +56,4 @@ Apparently Devs sometimes need valid IAM credentials for local development with 
 
 https://vault-qa.odl.mit.edu/ui/vault/secrets/aws-mitx/credentials/ol-mitopen-application
 
-You will need to login with a classic github token that has `read:org` permissions. This link will allow you to generate IAM creds that last 32 days and are personal to just you rather than shared ones from the app itself. 
-
+You will need to login with a classic github token that has `read:org` permissions. This link will allow you to generate IAM creds that last 32 days and are personal to just you rather than shared ones from the app itself.

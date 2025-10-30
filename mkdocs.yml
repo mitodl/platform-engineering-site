@@ -1,79 +1,80 @@
+---
 site_name: Platform Engineering Documentation
 theme:
   name: material
   user_color_mode_toggle: true
   features:
-    - content.code.copy
+  - content.code.copy
 draft_docs: |
   drafts/
 markdown_extensions:
-  - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
-  - pymdownx.snippets # enables things like the copy button on codeblocks
-  - pymdownx.superfences # enables codeblocks inside other envs, like within a list
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.snippets   # enables things like the copy button on codeblocks
+- pymdownx.superfences   # enables codeblocks inside other envs, like within a list
 nav:
-  - Home: index.md
-  - Getting Started:
-      - Emergency Oncall Break Glass Procedure: getting_started/emergency-break-glass.md
-      - Developer EKS Access: getting_started/developer_eks_access.md
-      - Vault Access for Developers: getting_started/vault_access_for_developers.md
-      - Updating This Site: getting_started/update_this_site.md
-      - Applications & Services: getting_started/pe-product-infra-map.md
-  - Platform Services:
-      - Secrets Management (Vault):
-          - Restoring Vault Backups: platform_services/secrets_management/restore_vault_backups.md
-          - Faking It with Consul and Vault: platform_services/secrets_management/faking_it_with_consul_and_vault.md
-      - Service Discovery (Consul):
-          - Consul Incantations: platform_services/service_discovery/consul_incantations.md
-          - Fargate Service Discovery: platform_services/service_discovery/fargate_service_discovery.md
-      - Container Orchestration (Kubernetes):
-          - Deploying Apps with Kubernetes: platform_services/container_orchestration/deploying_apps_with_kubernetes.md
-          - Kubernetes Cookbook: platform_services/container_orchestration/kubernetes_cookbook.md
-      - CI/CD (Concourse):
-          - Getting Started with Concourse: platform_services/ci_cd/getting_started_with_concourse.md
-          - Deploying Concourse: platform_services/ci_cd/deploying_concourse.md
-          - Concourse GitHub Issues User Guide: platform_services/ci_cd/concourse_github_issues_user_guide.md
-      - Cloud Infrastructure (AWS & Pulumi):
-          - Pulumi AWS Classic 5 to 6 Upgrade: platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade.md
-          - Importing Existing Resources with Pulumi: platform_services/cloud_infrastructure/import_existing_resources_with_pulumi.md
-          - Testing and Deploying Pulumi Packer Projects: platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects.md
-          - Tagging AMIs with Software Metadata: platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata.md
-          - Moira Certificates: platform_services/cloud_infrastructure/moira_certificates.md
-          - Recaptcha: platform_services/cloud_infrastructure/recaptcha.md
-          - Publishing to NPM: platform_services/cloud_infrastructure/publishing_to_npm.md
-  - Application Specific Guides:
-      - Open edX:
-          - Proving Build Was Deployed: application_specific_guides/openedx/prove_build_was_deployed.md
-          - Accessing Django Manage: application_specific_guides/openedx/access_django_manage.md
-          - Enabling Rapid Response edXApp: application_specific_guides/openedx/enable_rapid_response_edxapp.md
-          - MySQL Access: application_specific_guides/openedx/mysql_access.md
-          - Retirement Pipeline: application_specific_guides/openedx/retirement_pipeline.md
-          - Release Upgrades: application_specific_guides/openedx/release_upgrades.md
-          - Retiring a User: application_specific_guides/openedx/retire_an_openedx_user.md
-      - Heroku (Legacy):
-          - Config Vars: application_specific_guides/heroku_legacy/config_vars.md
-          - Dynosaur Management: application_specific_guides/heroku_legacy/dynosaur_management.md
-          - Log Drains: application_specific_guides/heroku_legacy/log_drains.md
-          - Transitioning Postgres DB to RDS: application_specific_guides/heroku_legacy/transition_postgres_db_to_rds.md
-      - OCW Studio:
-          - Updating The OCW Studio Pipeline: application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline.md
-      - Doof (Odlbot):
-          - Resetting Doof Github Token: application_specific_guides/odlbot/Resetting_Doof_Github_Token.md
-      - Renovate:
-          - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
-      - JupyterHub:
-          - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
-  - Monitoring And Observability:
-      - Overview: monitoring_observability/overview.md
-      - Inventory: monitoring_observability/inventory.md
-      - Key Labels: monitoring_observability/key_labels.md
-      - Bumping Sentry Credit: monitoring_observability/bump_sentry_credit.md
-  - Runbooks & Post-Mortems:
-      - On-Call Runbook: runbooks_post_mortems/oncall_runbook.md
-      - 20231030 xPro Outage Post-Mortem: runbooks_post_mortems/20231030_xpro_outage.md
-  - Cookbooks & Patterns:
-      - DevOps Patterns Cookbook: cookbooks_patterns/devops_patterns_cookbook.md
-  - Partner Documentation:
-      - Integrating With MIT Learn SSO: sso_onboarding/sso_config.md
+- Home: index.md
+- Getting Started:
+  - Emergency Oncall Break Glass Procedure: getting_started/emergency-break-glass.md
+  - Developer EKS Access: getting_started/developer_eks_access.md
+  - Vault Access for Developers: getting_started/vault_access_for_developers.md
+  - Updating This Site: getting_started/update_this_site.md
+  - Applications & Services: getting_started/pe-product-infra-map.md
+- Platform Services:
+  - Secrets Management (Vault):
+    - Restoring Vault Backups: platform_services/secrets_management/restore_vault_backups.md
+    - Faking It with Consul and Vault: platform_services/secrets_management/faking_it_with_consul_and_vault.md
+  - Service Discovery (Consul):
+    - Consul Incantations: platform_services/service_discovery/consul_incantations.md
+    - Fargate Service Discovery: platform_services/service_discovery/fargate_service_discovery.md
+  - Container Orchestration (Kubernetes):
+    - Deploying Apps with Kubernetes: platform_services/container_orchestration/deploying_apps_with_kubernetes.md
+    - Kubernetes Cookbook: platform_services/container_orchestration/kubernetes_cookbook.md
+  - CI/CD (Concourse):
+    - Getting Started with Concourse: platform_services/ci_cd/getting_started_with_concourse.md
+    - Deploying Concourse: platform_services/ci_cd/deploying_concourse.md
+    - Concourse GitHub Issues User Guide: platform_services/ci_cd/concourse_github_issues_user_guide.md
+  - Cloud Infrastructure (AWS & Pulumi):
+    - Pulumi AWS Classic 5 to 6 Upgrade: platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade.md
+    - Importing Existing Resources with Pulumi: platform_services/cloud_infrastructure/import_existing_resources_with_pulumi.md
+    - Testing and Deploying Pulumi Packer Projects: platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects.md
+    - Tagging AMIs with Software Metadata: platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata.md
+    - Moira Certificates: platform_services/cloud_infrastructure/moira_certificates.md
+    - Recaptcha: platform_services/cloud_infrastructure/recaptcha.md
+    - Publishing to NPM: platform_services/cloud_infrastructure/publishing_to_npm.md
+- Application Specific Guides:
+  - Open edX:
+    - Proving Build Was Deployed: application_specific_guides/openedx/prove_build_was_deployed.md
+    - Accessing Django Manage: application_specific_guides/openedx/access_django_manage.md
+    - Enabling Rapid Response edXApp: application_specific_guides/openedx/enable_rapid_response_edxapp.md
+    - MySQL Access: application_specific_guides/openedx/mysql_access.md
+    - Retirement Pipeline: application_specific_guides/openedx/retirement_pipeline.md
+    - Release Upgrades: application_specific_guides/openedx/release_upgrades.md
+    - Retiring a User: application_specific_guides/openedx/retire_an_openedx_user.md
+  - Heroku (Legacy):
+    - Config Vars: application_specific_guides/heroku_legacy/config_vars.md
+    - Dynosaur Management: application_specific_guides/heroku_legacy/dynosaur_management.md
+    - Log Drains: application_specific_guides/heroku_legacy/log_drains.md
+    - Transitioning Postgres DB to RDS: application_specific_guides/heroku_legacy/transition_postgres_db_to_rds.md
+  - OCW Studio:
+    - Updating The OCW Studio Pipeline: application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline.md
+  - Doof (Odlbot):
+    - Resetting Doof Github Token: application_specific_guides/odlbot/Resetting_Doof_Github_Token.md
+  - Renovate:
+    - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
+  - JupyterHub:
+    - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
+- Monitoring And Observability:
+  - Overview: monitoring_observability/overview.md
+  - Inventory: monitoring_observability/inventory.md
+  - Key Labels: monitoring_observability/key_labels.md
+  - Bumping Sentry Credit: monitoring_observability/bump_sentry_credit.md
+- Runbooks & Post-Mortems:
+  - On-Call Runbook: runbooks_post_mortems/oncall_runbook.md
+  - 20231030 xPro Outage Post-Mortem: runbooks_post_mortems/20231030_xpro_outage.md
+- Cookbooks & Patterns:
+  - DevOps Patterns Cookbook: cookbooks_patterns/devops_patterns_cookbook.md
+- Partner Documentation:
+  - Integrating With MIT Learn SSO: sso_onboarding/sso_config.md

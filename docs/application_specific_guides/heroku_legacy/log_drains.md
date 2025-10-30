@@ -17,7 +17,7 @@ Next we configure the log drain using the heroku-cli. There is no web interface 
 heroku drains:add -a <HEROKU_APP_NAME> 'https://vector-log-proxy:<PASSWORD_FROM_SOPS>@<URL_FROM_ABOVE>:9000/events?app_name=<APP_NAME_WO_ENV_INFO>&environment=<ENV>&service=heroku'
 ```
 
-And you'll get a response like: 
+And you'll get a response like:
 
 ```
 Successfully added drain https://vector-log-proxy:<The rest of the URL you just used>

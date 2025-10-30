@@ -24,4 +24,3 @@ Now use the web form to edit the value of the GITHUB_ACCESS_TOKEN variable. Repl
 current contents with the new token you just generated on the Github site.
 
 That's it! Doof should be back in no time :)
-

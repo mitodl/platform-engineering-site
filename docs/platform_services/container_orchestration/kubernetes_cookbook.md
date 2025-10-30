@@ -56,7 +56,7 @@ kubectl describe pod -n open-metadata openmetadata-5f78b769d4-4wgs9             
 
 ### Pulumi Server Side Complaints
 
-Sometimes pulumi will complain about being unable to manage a field or something on k8s resources. Something like this: 
+Sometimes pulumi will complain about being unable to manage a field or something on k8s resources. Something like this:
 
 ```bash
 
