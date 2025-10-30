@@ -232,6 +232,16 @@
   </li>
                                     
   <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Doof (Odlbot)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../../application_specific_guides/odlbot/Resetting_Doof_Github_Token/" class="dropdown-item">Resetting Doof Github Token</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
     <a href="#" class="dropdown-item">Renovate</a>
     <ul class="dropdown-menu">
             
@@ -483,7 +493,6 @@ architecture hangs together.</p>
 </tr>
 </tbody>
 </table>
-<p>Additionally there are four 'public' subnets per VPC used exclusively for NAT gateways. These are not terribly important and are documented in the yaml configration. NAT gateways are somewhat expensive so we have two ways of deploying them. "single" deploys one NAT gateway in the first availability zone only. "all" deploys a NAT gateway in each availability zone. "all" is preferred for production environments.</p>
 <p>Networking Configuration YAML</p>
 <ul>
 <li><a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml">src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml</a></li>

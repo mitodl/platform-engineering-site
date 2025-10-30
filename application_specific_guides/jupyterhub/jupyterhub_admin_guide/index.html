@@ -232,6 +232,16 @@
   </li>
                                     
   <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Doof (Odlbot)</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../odlbot/Resetting_Doof_Github_Token/" class="dropdown-item">Resetting Doof Github Token</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
     <a href="#" class="dropdown-item">Renovate</a>
     <ul class="dropdown-menu">
             
@@ -420,8 +430,13 @@
 <p>At the moment, adding a new course involves a few manual steps:</p>
 <ol>
 <li>Create a new repository in the <a href="https://github.mit.edu/ol-notebooks">ol-notebooks</a> org using the <a href="https://github.mit.edu/ol-notebooks/ol-notebook-repo-template">template repo</a>.</li>
-<li>Author your changes. If you started from the template repo, the only required changes you'll need to make are adding your notebooks and data, adding any dependencies to either requirements.txt or the Dockerfile, and ensuring that the Dockerfile copies your notebooks and data into the ${NB_USER} home directory.</li>
+<li>Author your changes. If you started from the template repo, the only required changes you'll need to make are adding your notebooks and data, adding any dependencies to either requirements.txt or the Dockerfile, and ensuring that the Dockerfile copies your notebooks and data into the ${NB_USER} home directory. Sometimes this will be done for you by the course authors.<ul>
+<li>Here's an example of a PR which adds a notebook and data files to a fresh course repo: https://github.mit.edu/ol-notebooks/UAI_SOURCE-UAI.ST.1-1T2026/pull/1</li>
+<li>Note that there's a 100mb limit on files checked into the repo. If the course requires larger data files, they need to either be hosted externally or compressed and unzipped at runtime.</li>
+</ul>
+</li>
 <li>Make changes to ol-infrastructure to add a new image build job in Concourse. This involves adding a new job to the <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_concourse/pipelines/container_images/jupyter_courses.py">jupyter_courses.py</a> file and provisioning the new pipeline via fly command. Additionally, add the new image to the QueryStringKubeSpawner's <code>KNOWN_IMAGES</code> in <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py">dynamicImageConfig.py</a> and to <code>COURSE_NAMES</code> in <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/__main__.py">JupyterHub's Pulumi code</a>.<ul>
+<li>If the notebook requires GPU resources, also add the new course to the <code>GPU_ENABLED_COURSES</code> in <code>dynamicImageConfig.py</code></li>
 <li>Here's an example PR which added a new course called <code>uai_source-uai.intro</code>: https://github.com/mitodl/ol-infrastructure/pull/3630</li>
 </ul>
 </li>
@@ -430,7 +445,7 @@
 <li>For example, if your image URI is <code>610119931565.dkr.ecr.us-east-1.amazonaws.com/ol-course-notebooks:uai_source-uai.intro</code> and your notebook is at <code>lectures/lecture1/mod5_lec1.ipynb</code>, the URL would be <code>https://nb.learn.mit.edu/tmplogin?course=uai_source-uai.intro&amp;notebook=lectures%2Flecture1%2Fmod5_lec1.ipynb</code>.</li>
 </ul>
 </li>
-<li>Once started, it's good practice to run the entire notebook. This will help you catch any dependency issues or let you know if the notebook uses too much memory to execute.</li>
+<li>Lastly, open the link and run the entire notebook. This will help you catch any dependency issues or let you know if the notebook uses too much memory to execute. See the Troubleshooting section for more details on common failure modes you might encounter.</li>
 </ol>
 <h3 id="updating-an-existing-course">Updating an Existing Course</h3>
 <p>The steps for updating a new course are a subset of the steps for adding a new course:</p>
@@ -440,9 +455,23 @@
 <li>Test the updated image by running through the notebook as you would for a new one.</li>
 </ol>
 <h3 id="troubleshooting">Troubleshooting</h3>
-<p>If you run into issues, here are some common things to check:
-- If you get the wrong image when you log in, verify that you've specified the right course parameter and that the value is in <code>KNOWN_IMAGES</code> in <code>dynamicImageConfig.py</code>.
-- If the image starts but you get a 404, verify that the notebook path is correct and URL encoded.</p></div>
+<p>If you run into issues attempting to run a course image, here are some common things to check:</p>
+<ul>
+<li>If you get the wrong image when you log in, verify that you've specified the right course parameter and that the value is in <code>KNOWN_IMAGES</code> in <code>dynamicImageConfig.py</code>.</li>
+<li>If the image starts but you get a 404, verify that the notebook path is correct and URL encoded.</li>
+<li>You may need to change the <code>COPY</code> command in the dockerfile depending on the file structure of the repo. By default it expects all files to be in the root and handles copying it correctly, but by convention existing courses use file structures like <code>assignments/assignment1/mod1_assign1.ipynb</code>, which requires a Dockerfile change.</li>
+<li>If a notebook starts misbehaving while you're running code, it may be an OOMKill. This can manifest in a few ways such as being unable to run more code, or a popup mentioning that the file on disk has changed unexpectedly.</li>
+<li>Validating this directly is tricky and the most direct way to validate it is by watching <code>top</code> in a shell on the pod running your notebook. However, for cases where the OOMKill results in the pod restarting, it should appear on <a href="https://mitolproduction.grafana.net/d/ds6qvrm/jupyter-notebooks?orgId=1&amp;from=now-6h&amp;to=now&amp;timezone=browser&amp;viewPanel=panel-2">this graph</a> </li>
+<li>The code itself may have issues. The specific way it manifests varies widely, but a few common ones are:</li>
+<li>Missing dependencies, resulting in import errors. If an inline <code>!pip install</code> resolves the issue, add the pinned dependency to requirements.txt.</li>
+<li>Missing data files, resulting in a <code>FileNotFoundError</code>. Typically this involves asking the course authors to provide you with the data, or ensuring that the file is where the code expects it to be.</li>
+<li>GPU-related issues when using PyTorch or Tensorflow.<ul>
+<li>Notebooks that use Tensorflow features may need to use a Tensorflow-specific base image. Modify the <code>FROM</code> directive in the course's Dockerfile as seen <a href="https://github.mit.edu/ol-notebooks/UAI_SOURCE-UAI.12-3T2025/commit/5e29f917408adc5899982607dbf06f85fb2b0530">here</a></li>
+<li>Ensure that if a course needs a GPU-enabled node that the course it is added to the <code>GPU_ENABLED_COURSES</code> set in <a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py#L49-L63">dynamicImageConfig.py</a></li>
+</ul>
+</li>
+<li>Code output seems suspicious or incorrect when compared to the provided notebook content. Sometimes this is obvious (e.g. a plot that looks nonsensical), other times it may be more subtle (e.g. a model training to suspiciously low accuracy). In these cases, it's best to reach out to the course authors for help if you're not an expert in the course material.</li>
+</ul></div>
             </div>
         </div>
 
