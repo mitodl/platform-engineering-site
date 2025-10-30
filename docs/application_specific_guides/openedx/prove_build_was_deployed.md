@@ -24,4 +24,3 @@ docker compose exec -it cms bash
 ```
 - Once inside you can change directory to /openedx/edx-platform and run `git
 log`. That will show you the commit that built the container.
-

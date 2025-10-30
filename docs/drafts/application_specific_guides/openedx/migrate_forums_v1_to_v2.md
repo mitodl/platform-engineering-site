@@ -31,5 +31,3 @@ new Python based v2 forums.
 	  shell we used in the previous step:
 	  ```
 	  ```
-
-

@@ -49,7 +49,7 @@ General Rules:
     - Service address spaces are at least `/23` -> ~512 addresses per space
 
 
-| VPC | CI | QA | Production| 
+| VPC | CI | QA | Production|
 |--|--|--|--|
 | Applications |Services:<br/>10.110.24.0/23<br/>Pods:<br/>172.18.128.0/21<br/>172.18.136.0/21<br/>172.18.144.0/21<br/>172.18.152.0/21 | Services:<br/>10.110.84.0/23<br/>Pods:<br/>10.12.128.0/21<br/>10.12.136.0/21<br/>10.12.144.0/21<br/>10.12.152.0/21 | Services:<br/>10.110.144.0/23<br/>Pods:<br/>10.13.128.0/21<br/>10.13.136.0/21<br/>10.13.144.0/21<br/>10.13.152.0/21 |
 | Data |Services:<br/>10.110.22.0/23<br/>Pods:<br/>172.23.128.0/21<br/>172.23.136.0/21<br/>172.23.144.0/21<br/>172.23.152.0/21 | Services:<br/>10.110.82.0/23<br/>Pods:<br/>10.2.128.0/21<br/>10.2.136.0/21<br/>10.2.144.0/21<br/>10.2.152.0/21 | Services:<br/>10.110.142.0/23<br/>Pods:<br/>10.3.128.0/21<br/>10.3.136.0/21<br/>10.3.144.0/21<br/>10.3.152.0/21 |
@@ -57,7 +57,7 @@ General Rules:
 | ... | ... | ... | ... |
 
 Networking Configuration YAML
- 
+
  - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml)
  - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml)
  - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml)
@@ -89,7 +89,7 @@ sections.
 
 ### Networking
 
-You'll need to choose pod and service subnets for your cluster. 
+You'll need to choose pod and service subnets for your cluster.
 
 For now, use the example of the data-qa
 cluster's definitions and pay attention to the relationship between the subnets
