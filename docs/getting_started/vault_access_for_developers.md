@@ -28,7 +28,7 @@ You should see a popup asking for your Keycloak username and password. Once succ
     - Login to Vault from the CLI:
         - `vault login -method=oidc role="local-dev"`
     - Run the following to generate vault client config:
-        ```
+        ```bash
         vault agent generate-config -type="env-template" \
         -exec="./app_vars.sh" \
         -path="secret-dev/*" \
