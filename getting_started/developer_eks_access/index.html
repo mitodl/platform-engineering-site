@@ -2271,48 +2271,47 @@
 </span></code></pre></div>
 </li>
 </ol>
-<div class="admonition tip">
+<div class="admonition">
 <p class="admonition-title">Tip</p>
-<p><code>login_helper</code> sends progress logs to stderr; only relevant output goes to stoud. The <code>aws_creds</code> and <code>kubeconfig</code> steps can easily be combined in a private script (<a href="https://gist.github.com/ChristopherChudzicki/f2a660200edbcb196608d59ac53b4f92">example</a>).</p>
+<p>type: tip</p>
+<p><code>login_helper</code> sends progress logs to stderr; only relevant output goes to stdout. The <code>aws_creds</code> and <code>kubeconfig</code> steps can easily be combined in a private script (<a href="https://gist.github.com/ChristopherChudzicki/f2a660200edbcb196608d59ac53b4f92">example</a>).</p>
 </div>
 <h2 id="other-interesting-kubectl-commands">Other Interesting <code>kubectl</code> Commands</h2>
 <ul>
-<li>
-<p>Get all the pods for the learn-ai namespace:</p>
+<li>Get all the pods for the learn-ai namespace:</li>
+</ul>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>learn-ai
 </span></code></pre></div>
-</li>
-<li>
-<p>Get all the pods in the learn-ai namespace with more information:</p>
+<ul>
+<li>Get all the pods in the learn-ai namespace with more information:</li>
+</ul>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>learn-ai<span class="w"> </span>-o<span class="w"> </span>wide
 </span></code></pre></div>
-</li>
-<li>
-<p>Describe a pod, which can tell you interesting things like the pod's IP address, the node it's running on, and the events that have happened to it, as well as the containers that make up the pod:</p>
+<ul>
+<li>Describe a pod, which can tell you interesting things like the pod's IP address, the node it's running on, and the events that have happened to it, as well as the containers that make up the pod:</li>
+</ul>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>describe<span class="w"> </span>pod<span class="w"> </span>&lt;pod-name&gt;<span class="w"> </span>-n<span class="w"> </span>learn-ai
 </span></code></pre></div>
-</li>
-<li>
-<p>Output the logs of a pod in the learn-ai namespace. <code>kubectl</code> will makes its best guess at which container to output logs from:</p>
+<ul>
+<li>Output the logs of a pod in the learn-ai namespace. <code>kubectl</code> will makes its best guess at which container to output logs from:</li>
+</ul>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>&lt;pod-name&gt;<span class="w"> </span>-n<span class="w"> </span>learn-ai
 </span></code></pre></div>
-</li>
-<li>
-<p>Be specific and output the logs from the <code>nginx</code> container.</p>
+<ul>
+<li>Be specific and output the logs from the <code>nginx</code> container.</li>
+</ul>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>&lt;pod-name&gt;<span class="w"> </span>-n<span class="w"> </span>learn-ai<span class="w"> </span>-c<span class="w"> </span>nginx
 </span></code></pre></div>
-</li>
-<li>
-<p><code>tail</code> or follow the logs of the nginx container in a pod in the learn-ai namespace:</p>
+<ul>
+<li><code>tail</code> or follow the logs of the nginx container in a pod in the learn-ai namespace:</li>
+</ul>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>&lt;pod-name&gt;<span class="w"> </span>-n<span class="w"> </span>learn-ai<span class="w"> </span>-c<span class="w"> </span>nginx
 </span></code></pre></div>
-</li>
-<li>
-<p>Open a shell into the nginx container of a pod in the learn-ai namespace:</p>
+<ul>
+<li>Open a shell into the nginx container of a pod in the learn-ai namespace:</li>
+</ul>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>&lt;pod-name&gt;<span class="w"> </span>-n<span class="w"> </span>learn-ai<span class="w"> </span>-c<span class="w"> </span>nginx<span class="w"> </span>--<span class="w"> </span>/bin/bash
 </span></code></pre></div>
-</li>
-</ul>
 
 
 
