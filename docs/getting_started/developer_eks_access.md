@@ -59,7 +59,7 @@ For more information about `kubeconfig` files, refer to the Kubernetes documenta
     ```
 
 /// admonition | Tip
-type: tip
+    type: tip
 
 `login_helper` sends progress logs to stderr; only relevant output goes to stdout. The `aws_creds` and `kubeconfig` steps can easily be combined in a private script ([example](https://gist.github.com/ChristopherChudzicki/f2a660200edbcb196608d59ac53b4f92)).
 ///
