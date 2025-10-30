@@ -59,7 +59,7 @@ For more information about `kubeconfig` files, refer to the Kubernetes documenta
     ```
 
 /// admonition | Tip
-    type: tip
+type: tip
 
 `login_helper` sends progress logs to stderr; only relevant output goes to stdout. The `aws_creds` and `kubeconfig` steps can easily be combined in a private script ([example](https://gist.github.com/ChristopherChudzicki/f2a660200edbcb196608d59ac53b4f92)).
 ///
@@ -68,42 +68,42 @@ For more information about `kubeconfig` files, refer to the Kubernetes documenta
 
 - Get all the pods for the learn-ai namespace:
 
-  ```bash
-  kubectl get pods -n learn-ai
-  ```
+    ```bash
+    kubectl get pods -n learn-ai
+    ```
 
 - Get all the pods in the learn-ai namespace with more information:
 
-  ```bash
-  kubectl get pods -n learn-ai -o wide
-  ```
+    ```bash
+    kubectl get pods -n learn-ai -o wide
+    ```
 
 - Describe a pod, which can tell you interesting things like the pod's IP address, the node it's running on, and the events that have happened to it, as well as the containers that make up the pod:
 
-  ```bash
-  kubectl describe pod <pod-name> -n learn-ai
-  ```
+    ```bash
+    kubectl describe pod <pod-name> -n learn-ai
+    ```
 
 - Output the logs of a pod in the learn-ai namespace. `kubectl` will makes its best guess at which container to output logs from:
 
-  ```bash
-  kubectl logs <pod-name> -n learn-ai
-  ```
+    ```bash
+    kubectl logs <pod-name> -n learn-ai
+    ```
 
 - Be specific and output the logs from the `nginx` container.
 
-  ```bash
-  kubectl logs <pod-name> -n learn-ai -c nginx
-  ```
+    ```bash
+    kubectl logs <pod-name> -n learn-ai -c nginx
+    ```
 
 - `tail` or follow the logs of the nginx container in a pod in the learn-ai namespace:
 
-  ```bash
-  kubectl logs -f <pod-name> -n learn-ai -c nginx
-  ```
+    ```bash
+    kubectl logs -f <pod-name> -n learn-ai -c nginx
+    ```
 
 - Open a shell into the nginx container of a pod in the learn-ai namespace:
 
-  ```bash
-  kubectl exec -it <pod-name> -n learn-ai -c nginx -- /bin/bash
-  ```
+    ```bash
+    kubectl exec -it <pod-name> -n learn-ai -c nginx -- /bin/bash
+    ```
