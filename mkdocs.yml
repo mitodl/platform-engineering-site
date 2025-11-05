@@ -1,4 +1,3 @@
----
 site_name: Platform Engineering Documentation
 theme:
   name: material
@@ -55,6 +54,11 @@ nav:
     - Retirement Pipeline: application_specific_guides/openedx/retirement_pipeline.md
     - Release Upgrades: application_specific_guides/openedx/release_upgrades.md
     - Retiring a User: application_specific_guides/openedx/retire_an_openedx_user.md
+    - ProctorTrack:
+      - Integration Overview: application_specific_guides/openedx/proctoring/proctortrack_integration_overview.md
+      - JS Architecture: application_specific_guides/openedx/proctoring/proctoring_js_architecture.md
+      - Build Fix: application_specific_guides/openedx/proctoring/earthfile_fix.md
+      - Workers JSON Build Requirements: application_specific_guides/openedx/proctoring/workers_json_requirements.md
   - Heroku (Legacy):
     - Config Vars: application_specific_guides/heroku_legacy/config_vars.md
     - Dynosaur Management: application_specific_guides/heroku_legacy/dynosaur_management.md
