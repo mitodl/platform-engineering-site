@@ -9,22 +9,22 @@
       
       
       
-        <link rel="prev" href="../release_upgrades/">
+        <link rel="prev" href="../../retire_an_openedx_user/">
       
       
-        <link rel="next" href="../proctoring/proctortrack_integration_overview/">
+        <link rel="next" href="../proctoring_js_architecture/">
       
       
-      <link rel="icon" href="../../../assets/images/favicon.png">
+      <link rel="icon" href="../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
     
     
       
-        <title>Retiring a User - Platform Engineering Documentation</title>
+        <title>Integration Overview - Platform Engineering Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.84d31ad4.min.css">
       
       
 
@@ -43,7 +43,7 @@
       
     
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-retire-an-mit-online-learning-openedx-user" class="md-skip">
+        <a href="#open-edx-proctoring-build-issues-investigation-summary" class="md-skip">
           Skip to content
         </a>
       
@@ -78,7 +78,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="Platform Engineering Documentation" class="md-header__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
+    <a href="../../../.." title="Platform Engineering Documentation" class="md-header__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Retiring a User
+              Integration Overview
             
           </span>
         </div>
@@ -176,7 +176,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="Platform Engineering Documentation" class="md-nav__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
+    <a href="../../../.." title="Platform Engineering Documentation" class="md-nav__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -194,7 +194,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../../../.." class="md-nav__link">
         
   
   
@@ -254,7 +254,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/emergency-break-glass/" class="md-nav__link">
+      <a href="../../../../getting_started/emergency-break-glass/" class="md-nav__link">
         
   
   
@@ -277,7 +277,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/developer_eks_access/" class="md-nav__link">
+      <a href="../../../../getting_started/developer_eks_access/" class="md-nav__link">
         
   
   
@@ -300,7 +300,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/vault_access_for_developers/" class="md-nav__link">
+      <a href="../../../../getting_started/vault_access_for_developers/" class="md-nav__link">
         
   
   
@@ -323,7 +323,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/update_this_site/" class="md-nav__link">
+      <a href="../../../../getting_started/update_this_site/" class="md-nav__link">
         
   
   
@@ -346,7 +346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/pe-product-infra-map/" class="md-nav__link">
+      <a href="../../../../getting_started/pe-product-infra-map/" class="md-nav__link">
         
   
   
@@ -452,7 +452,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/secrets_management/restore_vault_backups/" class="md-nav__link">
+      <a href="../../../../platform_services/secrets_management/restore_vault_backups/" class="md-nav__link">
         
   
   
@@ -475,7 +475,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/secrets_management/faking_it_with_consul_and_vault/" class="md-nav__link">
+      <a href="../../../../platform_services/secrets_management/faking_it_with_consul_and_vault/" class="md-nav__link">
         
   
   
@@ -544,7 +544,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/service_discovery/consul_incantations/" class="md-nav__link">
+      <a href="../../../../platform_services/service_discovery/consul_incantations/" class="md-nav__link">
         
   
   
@@ -567,7 +567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/service_discovery/fargate_service_discovery/" class="md-nav__link">
+      <a href="../../../../platform_services/service_discovery/fargate_service_discovery/" class="md-nav__link">
         
   
   
@@ -636,7 +636,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/container_orchestration/deploying_apps_with_kubernetes/" class="md-nav__link">
+      <a href="../../../../platform_services/container_orchestration/deploying_apps_with_kubernetes/" class="md-nav__link">
         
   
   
@@ -659,7 +659,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/container_orchestration/kubernetes_cookbook/" class="md-nav__link">
+      <a href="../../../../platform_services/container_orchestration/kubernetes_cookbook/" class="md-nav__link">
         
   
   
@@ -728,7 +728,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/ci_cd/getting_started_with_concourse/" class="md-nav__link">
+      <a href="../../../../platform_services/ci_cd/getting_started_with_concourse/" class="md-nav__link">
         
   
   
@@ -751,7 +751,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/ci_cd/deploying_concourse/" class="md-nav__link">
+      <a href="../../../../platform_services/ci_cd/deploying_concourse/" class="md-nav__link">
         
   
   
@@ -774,7 +774,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/ci_cd/concourse_github_issues_user_guide/" class="md-nav__link">
+      <a href="../../../../platform_services/ci_cd/concourse_github_issues_user_guide/" class="md-nav__link">
         
   
   
@@ -843,7 +843,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="md-nav__link">
+      <a href="../../../../platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="md-nav__link">
         
   
   
@@ -866,7 +866,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/import_existing_resources_with_pulumi/" class="md-nav__link">
+      <a href="../../../../platform_services/cloud_infrastructure/import_existing_resources_with_pulumi/" class="md-nav__link">
         
   
   
@@ -889,7 +889,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="md-nav__link">
+      <a href="../../../../platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="md-nav__link">
         
   
   
@@ -912,7 +912,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="md-nav__link">
+      <a href="../../../../platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="md-nav__link">
         
   
   
@@ -935,7 +935,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/moira_certificates/" class="md-nav__link">
+      <a href="../../../../platform_services/cloud_infrastructure/moira_certificates/" class="md-nav__link">
         
   
   
@@ -958,7 +958,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/recaptcha/" class="md-nav__link">
+      <a href="../../../../platform_services/cloud_infrastructure/recaptcha/" class="md-nav__link">
         
   
   
@@ -981,7 +981,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/publishing_to_npm/" class="md-nav__link">
+      <a href="../../../../platform_services/cloud_infrastructure/publishing_to_npm/" class="md-nav__link">
         
   
   
@@ -1099,7 +1099,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../prove_build_was_deployed/" class="md-nav__link">
+      <a href="../../prove_build_was_deployed/" class="md-nav__link">
         
   
   
@@ -1122,7 +1122,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../access_django_manage/" class="md-nav__link">
+      <a href="../../access_django_manage/" class="md-nav__link">
         
   
   
@@ -1145,7 +1145,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../enable_rapid_response_edxapp/" class="md-nav__link">
+      <a href="../../enable_rapid_response_edxapp/" class="md-nav__link">
         
   
   
@@ -1168,7 +1168,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mysql_access/" class="md-nav__link">
+      <a href="../../mysql_access/" class="md-nav__link">
         
   
   
@@ -1191,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../retirement_pipeline/" class="md-nav__link">
+      <a href="../../retirement_pipeline/" class="md-nav__link">
         
   
   
@@ -1214,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../release_upgrades/" class="md-nav__link">
+      <a href="../../release_upgrades/" class="md-nav__link">
         
   
   
@@ -1229,6 +1229,69 @@
   
 
               
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../retire_an_openedx_user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Retiring a User
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_8" id="__nav_4_1_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    ProctorTrack
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1_8">
+            <span class="md-nav__icon md-icon"></span>
+            ProctorTrack
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1251,7 +1314,7 @@
   
   
   <span class="md-ellipsis">
-    Retiring a User
+    Integration Overview
     
   </span>
   
@@ -1264,7 +1327,7 @@
   
   
   <span class="md-ellipsis">
-    Retiring a User
+    Integration Overview
     
   </span>
   
@@ -1287,64 +1350,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+  <a href="#problem-statement" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-Requisites
+      Problem Statement
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#look-up-this-users-username" class="md-nav__link">
+  <a href="#root-cause" class="md-nav__link">
     <span class="md-ellipsis">
-      Look Up This User's username
+      Root Cause
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#get-yourself-connected" class="md-nav__link">
+  <a href="#key-findings" class="md-nav__link">
     <span class="md-ellipsis">
-      Get Yourself Connected
+      Key Findings
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prepare-your-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prepare Your Environment
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get-to-the-retiring-already" class="md-nav__link">
-    <span class="md-ellipsis">
-      Get To The Retiring Already!
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Get To The Retiring Already!">
+    <nav class="md-nav" aria-label="Key Findings">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-invocation" class="md-nav__link">
+  <a href="#js-10-vs-js-20-are-not-different-versions" class="md-nav__link">
     <span class="md-ellipsis">
-      The Invocation
+      JS 1.0 vs JS 2.0 Are NOT Different Versions
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#priming-the-pump-well-pipeline-in-this-case" class="md-nav__link">
+  <a href="#build-time-requirements-cannot-be-eliminated" class="md-nav__link">
     <span class="md-ellipsis">
-      Priming The Pump (Well, Pipeline In This Case)
+      Build-Time Requirements Cannot Be Eliminated
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#settings-have-been-required-since-2018" class="md-nav__link">
+    <span class="md-ellipsis">
+      Settings Have Been Required Since 2018
     </span>
   </a>
   
@@ -1352,6 +1406,201 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Solution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Changes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentation Index
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Reference
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#build-process-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build Process Flow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#required-files-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Files Check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#required-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#required-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Environment Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verify-fix-worked" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify Fix Worked
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-misconceptions-clarified" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Misconceptions Clarified
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Timeline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Timeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#december-2018" class="md-nav__link">
+    <span class="md-ellipsis">
+      December 2018
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#october-2019" class="md-nav__link">
+    <span class="md-ellipsis">
+      October 2019
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#may-2021" class="md-nav__link">
+    <span class="md-ellipsis">
+      May 2021
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#november-2024" class="md-nav__link">
+    <span class="md-ellipsis">
+      November 2024
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contributing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Repository Links
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      License
+    </span>
+  </a>
   
 </li>
       
@@ -1370,69 +1619,8 @@
   
   
   
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_1_8" id="__nav_4_1_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    ProctorTrack
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_1_8">
-            <span class="md-nav__icon md-icon"></span>
-            ProctorTrack
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../proctoring/proctortrack_integration_overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Integration Overview
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../proctoring/proctoring_js_architecture/" class="md-nav__link">
+      <a href="../proctoring_js_architecture/" class="md-nav__link">
         
   
   
@@ -1455,7 +1643,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../proctoring/earthfile_fix/" class="md-nav__link">
+      <a href="../earthfile_fix/" class="md-nav__link">
         
   
   
@@ -1478,7 +1666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../proctoring/workers_json_requirements/" class="md-nav__link">
+      <a href="../workers_json_requirements/" class="md-nav__link">
         
   
   
@@ -1555,7 +1743,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../heroku_legacy/config_vars/" class="md-nav__link">
+      <a href="../../../heroku_legacy/config_vars/" class="md-nav__link">
         
   
   
@@ -1578,7 +1766,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../heroku_legacy/dynosaur_management/" class="md-nav__link">
+      <a href="../../../heroku_legacy/dynosaur_management/" class="md-nav__link">
         
   
   
@@ -1601,7 +1789,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../heroku_legacy/log_drains/" class="md-nav__link">
+      <a href="../../../heroku_legacy/log_drains/" class="md-nav__link">
         
   
   
@@ -1624,7 +1812,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../heroku_legacy/transition_postgres_db_to_rds/" class="md-nav__link">
+      <a href="../../../heroku_legacy/transition_postgres_db_to_rds/" class="md-nav__link">
         
   
   
@@ -1693,7 +1881,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ocw-studio/Update_OCW_Studio_Pipeline/" class="md-nav__link">
+      <a href="../../../ocw-studio/Update_OCW_Studio_Pipeline/" class="md-nav__link">
         
   
   
@@ -1762,7 +1950,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../odlbot/Resetting_Doof_Github_Token/" class="md-nav__link">
+      <a href="../../../odlbot/Resetting_Doof_Github_Token/" class="md-nav__link">
         
   
   
@@ -1831,7 +2019,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../renovate/updating_renovate_config/" class="md-nav__link">
+      <a href="../../../renovate/updating_renovate_config/" class="md-nav__link">
         
   
   
@@ -1900,7 +2088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../jupyterhub/jupyterhub_admin_guide/" class="md-nav__link">
+      <a href="../../../jupyterhub/jupyterhub_admin_guide/" class="md-nav__link">
         
   
   
@@ -1976,7 +2164,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/overview/" class="md-nav__link">
+      <a href="../../../../monitoring_observability/overview/" class="md-nav__link">
         
   
   
@@ -1999,7 +2187,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/inventory/" class="md-nav__link">
+      <a href="../../../../monitoring_observability/inventory/" class="md-nav__link">
         
   
   
@@ -2022,7 +2210,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/key_labels/" class="md-nav__link">
+      <a href="../../../../monitoring_observability/key_labels/" class="md-nav__link">
         
   
   
@@ -2045,7 +2233,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/bump_sentry_credit/" class="md-nav__link">
+      <a href="../../../../monitoring_observability/bump_sentry_credit/" class="md-nav__link">
         
   
   
@@ -2113,7 +2301,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/oncall_runbook/" class="md-nav__link">
+      <a href="../../../../runbooks_post_mortems/oncall_runbook/" class="md-nav__link">
         
   
   
@@ -2136,7 +2324,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/20231030_xpro_outage/" class="md-nav__link">
+      <a href="../../../../runbooks_post_mortems/20231030_xpro_outage/" class="md-nav__link">
         
   
   
@@ -2204,7 +2392,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../cookbooks_patterns/devops_patterns_cookbook/" class="md-nav__link">
+      <a href="../../../../cookbooks_patterns/devops_patterns_cookbook/" class="md-nav__link">
         
   
   
@@ -2272,7 +2460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../sso_onboarding/sso_config/" class="md-nav__link">
+      <a href="../../../../sso_onboarding/sso_config/" class="md-nav__link">
         
   
   
@@ -2322,64 +2510,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
+  <a href="#problem-statement" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-Requisites
+      Problem Statement
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#look-up-this-users-username" class="md-nav__link">
+  <a href="#root-cause" class="md-nav__link">
     <span class="md-ellipsis">
-      Look Up This User's username
+      Root Cause
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#get-yourself-connected" class="md-nav__link">
+  <a href="#key-findings" class="md-nav__link">
     <span class="md-ellipsis">
-      Get Yourself Connected
+      Key Findings
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prepare-your-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prepare Your Environment
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get-to-the-retiring-already" class="md-nav__link">
-    <span class="md-ellipsis">
-      Get To The Retiring Already!
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Get To The Retiring Already!">
+    <nav class="md-nav" aria-label="Key Findings">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-invocation" class="md-nav__link">
+  <a href="#js-10-vs-js-20-are-not-different-versions" class="md-nav__link">
     <span class="md-ellipsis">
-      The Invocation
+      JS 1.0 vs JS 2.0 Are NOT Different Versions
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#priming-the-pump-well-pipeline-in-this-case" class="md-nav__link">
+  <a href="#build-time-requirements-cannot-be-eliminated" class="md-nav__link">
     <span class="md-ellipsis">
-      Priming The Pump (Well, Pipeline In This Case)
+      Build-Time Requirements Cannot Be Eliminated
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#settings-have-been-required-since-2018" class="md-nav__link">
+    <span class="md-ellipsis">
+      Settings Have Been Required Since 2018
     </span>
   </a>
   
@@ -2387,6 +2566,201 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Solution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Changes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentation Index
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Reference
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#build-process-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build Process Flow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#required-files-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Files Check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#required-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#required-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Environment Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verify-fix-worked" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify Fix Worked
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-misconceptions-clarified" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Misconceptions Clarified
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Timeline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Timeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#december-2018" class="md-nav__link">
+    <span class="md-ellipsis">
+      December 2018
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#october-2019" class="md-nav__link">
+    <span class="md-ellipsis">
+      October 2019
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#may-2021" class="md-nav__link">
+    <span class="md-ellipsis">
+      May 2021
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#november-2024" class="md-nav__link">
+    <span class="md-ellipsis">
+      November 2024
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contributing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Repository Links
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      License
+    </span>
+  </a>
   
 </li>
       
@@ -2406,58 +2780,254 @@
 
 
 
-<h1 id="how-to-retire-an-mit-online-learning-openedx-user">How To Retire An MIT Online Learning OpenEdX User</h1>
-<h2 id="pre-requisites">Pre-Requisites</h2>
+<h1 id="open-edx-proctoring-build-issues-investigation-summary">Open edX Proctoring Build Issues - Investigation Summary</h1>
+<p><strong>Investigation Date:</strong> November 5, 2024<br />
+<strong>Context:</strong> MIT Open Learning (MIT ODL) Open edX Deployment<br />
+<strong>Issue:</strong> Missing proctoring JavaScript worker bundles in compiled static assets</p>
+<h2 id="problem-statement">Problem Statement</h2>
+<p>The MIT ODL Earthfile-based Docker build for Open edX was not generating the required JavaScript worker bundles for proctoring functionality, specifically for the Proctortrack proctoring provider.</p>
+<p><strong>Missing files:</strong>
+- <code>workers.json</code> - Configuration file consumed by webpack
+- <code>webpack-worker-stats.json</code> - Build manifest for worker bundles
+- <code>edx-proctoring-proctortrack.js</code> - The actual worker bundle</p>
+<h2 id="root-cause">Root Cause</h2>
+<p>The build process had three missing components:</p>
+<ol>
+<li><strong>Missing Django settings</strong> (<code>NODE_MODULES_ROOT</code> and <code>ENV_ROOT</code>) in custom <code>assets.not_py</code> files</li>
+<li><strong>No Django initialization step</strong> before webpack runs in the Earthfile</li>
+<li><strong>Silent error suppression</strong> (<code>2&gt; /dev/null</code>) hiding webpack failures</li>
+</ol>
+<p>These caused <code>workers.json</code> to never be generated, resulting in webpack silently skipping the worker bundle builds.</p>
+<h2 id="key-findings">Key Findings</h2>
+<h3 id="js-10-vs-js-20-are-not-different-versions">JS 1.0 vs JS 2.0 Are NOT Different Versions</h3>
+<p>The terms "JS 1.0" and "JS 2.0" caused confusion. They do <strong>NOT</strong> refer to:
+- Different versions of proctoring JavaScript
+- Different build processes
+- Different webpack configurations</p>
+<p>They <strong>ONLY</strong> refer to how the JavaScript worker URL is delivered to the frontend:
+- <strong>JS 1.0:</strong> Embedded in Django template context variables (legacy LMS)
+- <strong>JS 2.0:</strong> Returned via REST API responses (modern MFE)</p>
+<p><strong>Both require the exact same build process</strong> - the only difference is the delivery mechanism at runtime.</p>
+<h3 id="build-time-requirements-cannot-be-eliminated">Build-Time Requirements Cannot Be Eliminated</h3>
+<p>The <code>JS_ENV_EXTRA_CONFIG</code> environment variable <strong>cannot be eliminated</strong> because:</p>
+<ol>
+<li>
+<p>Proctortrack's JavaScript code directly references it at lines 3-4:
+   <div class="language-javascript highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">CDN_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">JS_ENV_EXTRA_CONFIG</span><span class="p">.</span><span class="nx">PROCTORTRACK_CDN_URL</span><span class="p">;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">KEY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">JS_ENV_EXTRA_CONFIG</span><span class="p">.</span><span class="nx">PROCTORTRACK_CONFIG_KEY</span><span class="p">;</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p>Webpack's <code>DefinePlugin</code> replaces these at <strong>compile time</strong> (not runtime):
+   <div class="language-javascript highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="ow">new</span><span class="w"> </span><span class="nx">webpack</span><span class="p">.</span><span class="nx">DefinePlugin</span><span class="p">({</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="s1">&#39;process.env.JS_ENV_EXTRA_CONFIG&#39;</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">JS_ENV_EXTRA_CONFIG</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">})</span>
+</span></code></pre></div></p>
+</li>
+</ol>
+<p>The MFE approach (JS 2.0) does NOT eliminate this requirement - it only changes how the worker bundle URL is delivered to the frontend.</p>
+<h3 id="settings-have-been-required-since-2018">Settings Have Been Required Since 2018</h3>
+<p>The <code>NODE_MODULES_ROOT</code> and <code>ENV_ROOT</code> settings are <strong>not new</strong>:</p>
 <ul>
-<li>You'll need the email address the user registered under. e.g. cpatti@mit.edu</li>
-<li>You'll need the pre-requisites defined in <a href="../access_django_manage/">How To Access An MIT OL OpenEdX Django Admin manage.py</a>.</li>
+<li><strong>December 14, 2018:</strong> <code>make_worker_config()</code> function added (commit c160a7a9)</li>
+<li><strong>December 17, 2018:</strong> <code>NODE_MODULES_ROOT</code> check added (commit dd1f37a7)</li>
+<li><strong>October 23, 2019:</strong> <code>ENV_ROOT</code> explicitly used (commit a7cd6847)</li>
 </ul>
-<h2 id="look-up-this-users-username">Look Up This User's username</h2>
-<p>You'll need to have Django admin and superuser access to the product you're looking to retire users for.</p>
-<p>Anyone who has the requisite access already can help. pdpinch@ and the Devops team are good folks to ask.</p>
-<p>Next, you'll need to login to the admin web UI for the application we'll be working with. You can find that
-URL from the <a href="https://github.mit.edu/odl-engineering/project-status/wiki/App-Links">Application Links Page</a>.</p>
-<p>Find the product in question (e.g. mitxonline) and choose the LMS url for the environment you want (e.g. production) as a base.
-Then add /admin on to the end. Ensure there's only one slash before /admin or things will go awry.</p>
-<p>In our case, since we are looking to retire users from mitxonline, we'll use https://courses.mitxonline.mit.edu/admin</p>
-<p>Find the Users link on that page, click it. Now type the email address into the search box and click Search.</p>
-<p>This should yield the user's username. Copy that off into a safe place as we'll need it for the next section.</p>
-<h2 id="get-yourself-connected">Get Yourself Connected</h2>
-<p>First, follow the step by step instructions defined in <a href="../access_django_manage/">How To Access An MIT OL OpenEdX Django Admin manage.py</a>.</p>
-<p>This will land you at a shell prompt of the OpenEdX worker for the product in question.</p>
-<p>It should look something like:</p>
-<p><code>ubuntu@ip-10-22-3-162:~$</code></p>
-<h2 id="prepare-your-environment">Prepare Your Environment</h2>
-<p>Next you'll need to prepare your UNIX shell's environment to be able to run the manage.py command.</p>
-<p>Type: <code>sudo su - edxapp -s /bin/bash</code></p>
-<p>Then type <code>source edxapp_env</code>.</p>
-<p>At this point you should be ready to run the user retirement command.</p>
-<h2 id="get-to-the-retiring-already">Get To The Retiring Already!</h2>
-<h3 id="the-invocation">The Invocation</h3>
-<p>Here's the command you'll use to retire a user.</p>
-<p><code>python edx-platform/manage.py lms retire_user --user_email &lt;user email&gt; --username '&lt;username&gt;'</code></p>
-<p>The single quotes around username are important in case there are any spaces in there. Otherwise the shell will mis-parse the command and throw an error.</p>
-<p>So for example if I wanted to retire myself from mitxonline production, I'd use:</p>
-<p><code>python edx-platform/manage.py lms retire_user --user_email cpatti@mit.edu --username 'ChrisPatti'</code></p>
-<p>You should see a bunch of very voluminous output. Most of it is honestly garbage for our purposes. We'll focus on the bits we care about at the end:</p>
-<p><code>2023-06-21 16:07:20,714 INFO 186970 [openedx.core.djangoapps.user_api.management.commands.retire_user] [user None] [ip None] retire_user.py:173 - User successfully moved to the retirement pipeline</code></p>
-<p>The None here isn't anything to worry about. It's the system trying to prevent us from leaking PII (personally identifiable information) into the logs.</p>
-<p>At this point if all went well, we're done with our edx worker shell prompt for now so we can log out. Always be super careful to not leave production shells open
-unnecessarily. You'd be surprised how many systems have been brought down by someone not realizing they're in the wrong terminal :)</p>
-<h3 id="priming-the-pump-well-pipeline-in-this-case">Priming The Pump (Well, Pipeline In This Case)</h3>
-<p>Now that we've successfully staged our user for retirement, we need to tell the retirement pipeline to actually retire the user.</p>
+<p>These settings have been in standard <code>lms/envs/common.py</code> for <strong>6+ years</strong>. The MIT ODL custom settings files didn't inherit them because they import from <code>openedx.core.lib.derived.common</code> instead of <code>lms.envs.common</code>.</p>
+<h2 id="solution">Solution</h2>
+<h3 id="required-changes">Required Changes</h3>
+<ol>
+<li>
+<p><strong>Update <code>settings/lms/assets.not_py</code> and <code>settings/cms/assets.not_py</code>:</strong>
+   <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Add after STATIC_ROOT_BASE:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">NODE_MODULES_ROOT</span> <span class="o">=</span> <span class="s2">&quot;/openedx/edx-platform/node_modules&quot;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">ENV_ROOT</span> <span class="o">=</span> <span class="s2">&quot;/openedx&quot;</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Update Earthfile build targets</strong> (both nonprod and production):
+   <div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a># Add before npm run webpack:
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>&amp;&amp; echo &quot;=== Generating workers.json ===&quot; \
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>&amp;&amp; python manage.py lms shell --settings=mitol.assets -c &quot;print(&#39;Django initialized&#39;)&quot; \
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>&amp;&amp; echo &quot;=== Contents of workers.json ===&quot; \
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>&amp;&amp; cat /openedx/workers.json \
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>&amp;&amp; echo &quot;=== Running webpack ===&quot; \
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>&amp;&amp; npm run webpack \  # Remove 2&gt; /dev/null
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Keep <code>JS_ENV_EXTRA_CONFIG</code></strong> - it's required by proctortrack's implementation</p>
+</li>
+</ol>
+<h2 id="documentation-index">Documentation Index</h2>
+<p>This investigation produced four detailed documents:</p>
+<ol>
+<li><strong><a href="../proctoring_js_architecture/">proctoring_js_architecture.md</a></strong></li>
+<li>Explains JS 1.0 vs JS 2.0 in detail</li>
+<li>Documents both approaches with code examples</li>
+<li>Clarifies build-time vs runtime configuration</li>
+<li>
+<p><strong>Read this first</strong> to understand the architecture</p>
+</li>
+<li>
+<p><strong><a href="../workers_json_requirements/">workers_json_requirements.md</a></strong></p>
+</li>
+<li>Complete documentation of <code>workers.json</code> generation</li>
+<li>Required Django settings explained</li>
+<li>Verification steps and troubleshooting</li>
+<li>
+<p>Historical timeline of the feature</p>
+</li>
+<li>
+<p><strong><a href="../earthfile_fix/">earthfile_fix.md</a></strong></p>
+</li>
+<li>Step-by-step fix for MIT ODL Earthfile</li>
+<li>Before/after code comparisons</li>
+<li>Verification procedures</li>
+<li>Testing instructions</li>
+<li>
+<p><strong>Use this for implementation</strong></p>
+</li>
+<li>
+<p><strong><a href="./README.md">README.md</a></strong> (this file)</p>
+</li>
+<li>Executive summary</li>
+<li>Quick reference</li>
+<li>Links to detailed docs</li>
+</ol>
+<h2 id="quick-reference">Quick Reference</h2>
+<h3 id="build-process-flow">Build Process Flow</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>1. Django app initialization (manage.py shell)
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>   └─&gt; edx_proctoring.apps.ready()
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>       └─&gt; make_worker_config()
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>           └─&gt; Generates workers.json
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>2. Webpack reads workers.json
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>   └─&gt; Builds worker bundles
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>       └─&gt; Generates webpack-worker-stats.json
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>3. Django-webpack-loader reads webpack-worker-stats.json
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>   └─&gt; Returns bundle URLs at runtime
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>       └─&gt; JS 1.0: Template context
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>       └─&gt; JS 2.0: API response
+</span></code></pre></div>
+<h3 id="required-files-check">Required Files Check</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># After successful build, these must exist:</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>/openedx/workers.json
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>/openedx/staticfiles/webpack-worker-stats.json
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>/openedx/staticfiles/bundles/edx-proctoring-proctortrack.js
+</span></code></pre></div>
+<h3 id="required-settings">Required Settings</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># In both lms/assets.not_py and cms/assets.not_py:</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">NODE_MODULES_ROOT</span> <span class="o">=</span> <span class="s2">&quot;/openedx/edx-platform/node_modules&quot;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">ENV_ROOT</span> <span class="o">=</span> <span class="s2">&quot;/openedx&quot;</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">PROCTORING_BACKENDS</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="s2">&quot;DEFAULT&quot;</span><span class="p">:</span> <span class="s2">&quot;proctortrack&quot;</span><span class="p">,</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="s2">&quot;proctortrack&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>        <span class="s2">&quot;client_id&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>        <span class="s2">&quot;client_secret&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>        <span class="s2">&quot;base_url&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="p">},</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="required-environment-variables">Required Environment Variables</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># At webpack build time:</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">JS_ENV_EXTRA_CONFIG</span><span class="o">=</span><span class="s1">&#39;{&quot;PROCTORTRACK_CDN_URL&quot;:&quot;https://...&quot;,&quot;PROCTORTRACK_CONFIG_KEY&quot;:&quot;...&quot;}&#39;</span>
+</span></code></pre></div>
+<h2 id="testing">Testing</h2>
+<h3 id="verify-fix-worked">Verify Fix Worked</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># 1. Build with changes</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>earthly<span class="w"> </span>+build-static-assets-nonprod
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># 2. Check build logs for:</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1">#    &quot;=== Generating workers.json ===&quot;</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1">#    &quot;{...}&quot; (JSON content)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1">#    &quot;=== Running webpack ===&quot;</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="c1">#    Webpack progress output (no errors)</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="c1"># 3. Extract and verify files</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>tar<span class="w"> </span>-xzf<span class="w"> </span>staticfiles-nonprod.tar.gz<span class="w"> </span>-C<span class="w"> </span>/tmp/test
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>ls<span class="w"> </span>-la<span class="w"> </span>/tmp/test/openedx/workers.json
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>ls<span class="w"> </span>-la<span class="w"> </span>/tmp/test/openedx/staticfiles/webpack-worker-stats.json<span class="w">  </span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>ls<span class="w"> </span>-la<span class="w"> </span>/tmp/test/openedx/staticfiles/bundles/edx-proctoring-proctortrack.js
+</span></code></pre></div>
+<h2 id="common-misconceptions-clarified">Common Misconceptions Clarified</h2>
+<table>
+<thead>
+<tr>
+<th>❌ Misconception</th>
+<th>✅ Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"JS 2.0 eliminates build-time config"</td>
+<td>Both JS 1.0 and 2.0 need identical build process</td>
+</tr>
+<tr>
+<td>"MFE approach doesn't need workers.json"</td>
+<td>MFE still needs worker bundles built by webpack</td>
+</tr>
+<tr>
+<td>"JS_ENV_EXTRA_CONFIG is only for build time"</td>
+<td>It's needed because proctortrack code references it</td>
+</tr>
+<tr>
+<td>"These are new requirements"</td>
+<td>Settings required since December 2018 (6+ years)</td>
+</tr>
+<tr>
+<td>"JS 2.0 is a new proctoring system"</td>
+<td>It's just a different URL delivery method</td>
+</tr>
+</tbody>
+</table>
+<h2 id="timeline">Timeline</h2>
+<h3 id="december-2018">December 2018</h3>
 <ul>
-<li>Surf to the appropriate concourse URL for the entironment you're working with:</li>
-<li><a href="https://cicd-ci.odl.mit.edu">CI</a></li>
-<li><a href="https://cicd-qa.odl.mit.edu/">QA</a></li>
-<li><a href="https://cicd.odl.mit.edu">Production</a></li>
+<li>Worker bundle system introduced</li>
+<li><code>NODE_MODULES_ROOT</code> required from day 1</li>
+<li>Used to support proctoring providers with JavaScript components</li>
 </ul>
-<p>and search for 'tubular'. You'll want the tubular pipeline in the group associated with whichever product you're working with. In our case, it'd be
-  the <a href="https://cicd.odl.mit.edu/teams/mitxonline/pipelines/misc-cloud-tubular">misc-cloud-tubular pipeline in the mitxonline group</a>.
-- Click the green + icon with a circle around it in the upper right of your screen. This will trigger a run of this pipeline.
-- If all goes well, you should see each stage go green one by one. You can click on any stage to see more detail around what that stage is doing.
-  You can see an example of a successful pipeline run <a href="https://cicd.odl.mit.edu/teams/mitxonline/pipelines/misc-cloud-tubular/jobs/deploy-tubular-world/builds/26">here</a></p>
-<p>At this point, if the pipeline is green, congratulations are in order! This user had been retired!</p>
+<h3 id="october-2019">October 2019</h3>
+<ul>
+<li><code>ENV_ROOT</code> explicitly required for output path</li>
+<li>Part of Python 3 compatibility updates</li>
+</ul>
+<h3 id="may-2021">May 2021</h3>
+<ul>
+<li>MFE support added (JS 2.0)</li>
+<li>API endpoints return <code>desktop_application_js_url</code></li>
+<li>Build requirements unchanged</li>
+</ul>
+<h3 id="november-2024">November 2024</h3>
+<ul>
+<li>MIT ODL discovers missing worker bundles</li>
+<li>Investigation reveals missing Django settings</li>
+<li>Documentation created to prevent future confusion</li>
+</ul>
+<h2 id="contributing">Contributing</h2>
+<p>If you encounter similar issues:</p>
+<ol>
+<li>Check Django settings include <code>NODE_MODULES_ROOT</code> and <code>ENV_ROOT</code></li>
+<li>Verify Django initialization happens before webpack</li>
+<li>Don't suppress webpack errors during debugging</li>
+<li>Check <code>workers.json</code> exists and has correct content</li>
+<li>Verify webpack-worker-stats.json is generated</li>
+</ol>
+<h2 id="repository-links">Repository Links</h2>
+<ul>
+<li>edx-proctoring: https://github.com/openedx/edx-proctoring</li>
+<li>edx-proctoring-proctortrack: https://github.com/verificient/edx-proctoring-proctortrack</li>
+<li>frontend-lib-special-exams: https://github.com/openedx/frontend-lib-special-exams</li>
+<li>edx-platform: https://github.com/openedx/edx-platform</li>
+<li>MIT ODL infrastructure: https://github.com/mitodl/ol-infrastructure</li>
+</ul>
+<h2 id="license">License</h2>
+<p>This documentation is provided as-is for educational and operational purposes.</p>
+<hr />
+<p><strong>Questions or issues?</strong> Reference the detailed documentation files linked above.</p>
 
 
 
@@ -2506,10 +3076,10 @@ unnecessarily. You'd be surprised how many systems have been brought down by som
     
     
       
-      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy"], "search": "../../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
     
   </body>
