@@ -49,14 +49,40 @@ General Rules:
     - Service address spaces are at least `/23` -> ~512 addresses per space
 
 
-| VPC | CI | QA | Production|
-|--|--|--|--|
-| Applications |Services:<br/>10.110.24.0/23<br/>Pods:<br/>172.18.128.0/21<br/>172.18.136.0/21<br/>172.18.144.0/21<br/>172.18.152.0/21 | Services:<br/>10.110.84.0/23<br/>Pods:<br/>10.12.128.0/21<br/>10.12.136.0/21<br/>10.12.144.0/21<br/>10.12.152.0/21 | Services:<br/>10.110.144.0/23<br/>Pods:<br/>10.13.128.0/21<br/>10.13.136.0/21<br/>10.13.144.0/21<br/>10.13.152.0/21 |
-| Data |Services:<br/>10.110.22.0/23<br/>Pods:<br/>172.23.128.0/21<br/>172.23.136.0/21<br/>172.23.144.0/21<br/>172.23.152.0/21 | Services:<br/>10.110.82.0/23<br/>Pods:<br/>10.2.128.0/21<br/>10.2.136.0/21<br/>10.2.144.0/21<br/>10.2.152.0/21 | Services:<br/>10.110.142.0/23<br/>Pods:<br/>10.3.128.0/21<br/>10.3.136.0/21<br/>10.3.144.0/21<br/>10.3.152.0/21 |
-| Operations |Services:<br/>10.110.20.0/23<br/>Pods:<br/>172.16.128.0/21<br/>172.16.136.0/21<br/>172.16.144.0/21<br/>172.16.152.0/21 | Services:<br/>10.110.80.0/23<br/>Pods:<br/>10.1.128.0/21<br/>10.1.136.0/21<br/>10.1.144.0/21<br/>10.1.152.0/21 | Services:<br/>10.110.140.0/23<br/>Pods:<br/>10.0.128.0/21<br/>10.0.136.0/21<br/>10.0.144.0/21<br/>10.0.152.0/21 |
-| ... | ... | ... | ... |
+#### Operations VPC
 
-Additionally there are four 'public' subnets per VPC used exclusively for NAT gateways. These are not terribly important and are documented in the yaml configration. NAT gateways are somewhat expensive so we have two ways of deploying them. "single" deploys one NAT gateway in the first availability zone only. "all" deploys a NAT gateway in each availability zone. "all" is preferred for production environments.
+| Environment | Services | Pods |
+|-------------|----------|------|
+| CI | 10.110.20.0/23 | 172.16.128.0/21<br/>172.16.136.0/21<br/>172.16.144.0/21<br/>172.16.152.0/21 |
+| QA | 10.110.80.0/23 | 10.1.128.0/21<br/>10.1.136.0/21<br/>10.1.144.0/21<br/>10.1.152.0/21 |
+| Production | 10.110.140.0/23 | 10.0.128.0/21<br/>10.0.136.0/21<br/>10.0.144.0/21<br/>10.0.152.0/21 |
+
+#### Data VPC
+
+| Environment | Services | Pods |
+|-------------|----------|------|
+| CI | 10.110.22.0/23 | 172.23.128.0/21<br/>172.23.136.0/21<br/>172.23.144.0/21<br/>172.23.152.0/21 |
+| QA | 10.110.82.0/23 | 10.2.128.0/21<br/>10.2.136.0/21<br/>10.2.144.0/21<br/>10.2.152.0/21 |
+| Production | 10.110.142.0/23 | 10.3.128.0/21<br/>10.3.136.0/21<br/>10.3.144.0/21<br/>10.3.152.0/21 |
+
+#### Applications VPC
+
+| Environment | Services | Pods |
+|-------------|----------|------|
+| CI | 10.110.24.0/23 | 172.18.128.0/21<br/>172.18.136.0/21<br/>172.18.144.0/21<br/>172.18.152.0/21 |
+| QA | 10.110.84.0/23 | 10.12.128.0/21<br/>10.12.136.0/21<br/>10.12.144.0/21<br/>10.12.152.0/21 |
+| Production | 10.110.144.0/23 | 10.13.128.0/21<br/>10.13.136.0/21<br/>10.13.144.0/21<br/>10.13.152.0/21 |
+
+#### Residential VPC 
+
+| Environment | Services | Pods |
+|-------------|----------|------|
+| CI | 10.110.26.0/23 | 172.19.128.0/21<br/>172.19.136.0/21<br/>172.19.144.0/21<br/>172.19.152.0/21 |
+| QA | 10.110.86.0/23 | 10.5.128.0/21<br/>10.5.136.0/21<br/>10.5.144.0/21<br/>10.5.152.0/21 |
+| Production | 10.110.146.0/23 | 10.7.128.0/21<br/>10.7.136.0/21<br/>10.7.144.0/21<br/>10.7.152.0/21 |
+
+
+Additionally there are four 'public' subnets per VPC used exclusively for NAT gateways. These are not terribly important and are documented in the yaml configration. NAT gateways are somewhat expensive so we have two ways of deploying them. `single` deploys one NAT gateway in the first availability zone only. `all` deploys a NAT gateway in each availability zone. `all` is preferred for production environments.
 
 Networking Configuration YAML
 
