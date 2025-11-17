@@ -56,6 +56,8 @@ General Rules:
 | Operations |Services:<br/>10.110.20.0/23<br/>Pods:<br/>172.16.128.0/21<br/>172.16.136.0/21<br/>172.16.144.0/21<br/>172.16.152.0/21 | Services:<br/>10.110.80.0/23<br/>Pods:<br/>10.1.128.0/21<br/>10.1.136.0/21<br/>10.1.144.0/21<br/>10.1.152.0/21 | Services:<br/>10.110.140.0/23<br/>Pods:<br/>10.0.128.0/21<br/>10.0.136.0/21<br/>10.0.144.0/21<br/>10.0.152.0/21 |
 | ... | ... | ... | ... |
 
+Additionally there are four 'public' subnets per VPC used exclusively for NAT gateways. These are not terribly important and are documented in the yaml configration. NAT gateways are somewhat expensive so we have two ways of deploying them. "single" deploys one NAT gateway in the first availability zone only. "all" deploys a NAT gateway in each availability zone. "all" is preferred for production environments.
+
 Networking Configuration YAML
 
  - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml)
