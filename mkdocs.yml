@@ -12,7 +12,11 @@ markdown_extensions:
     line_spans: __span
     pygments_lang_class: true
 - pymdownx.snippets   # enables things like the copy button on codeblocks
-- pymdownx.superfences   # enables codeblocks inside other envs, like within a list
+- pymdownx.superfences:
+    custom_fences:
+      - name: mermaid
+        class: mermaid
+        format: !!python/name:pymdownx.superfences.fence_code_format
 - pymdownx.blocks.admonition
 - pymdownx.details
 nav:
@@ -72,6 +76,8 @@ nav:
     - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
   - JupyterHub:
     - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
+  - MIT Learn:
+    - MIT Learn Service Diagram: application_specific_guides/mit-learn/mit_learn_service_diagram.md
 - Monitoring And Observability:
   - Overview: monitoring_observability/overview.md
   - Inventory: monitoring_observability/inventory.md
