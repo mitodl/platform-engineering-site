@@ -304,6 +304,28 @@ cpatti@ip-0-2-195:~$
 
 ## OpenEdX Residential MITx
 
+### MITx Residential Login fails
+
+You may need to re-run the SAML puller.
+
+In the `residential-production` K8s cluster, under the `mitx-openedx` namespace, find a pod with 'lms-webapp' in its name and  
+open a shell. In Headlamp just click on the CLI icon.
+
+You can also use kubectl, being sure you're in the correct cluster and namespace context. The invocation will look
+something like this:
+
+```
+kubectl exec -it mitx-production-edxapp-lms-webapp-5b99b7c465-9rrps -c lms-edxapp -- /bin/bash
+```
+
+Once you've shelled in, simply run the following command:
+
+```
+./manage.py lms saml --pull
+```
+
+That will likely resolve the error. TODO: Include examples from log files signposting this exact error.
+
 ### Task handler raised error: "OperationalError(1045, "Access denied for user 'v-edxa-fmT0KbL5X'@'10.7.0.237' (using password: YES)
 
 _Diagnosis_
