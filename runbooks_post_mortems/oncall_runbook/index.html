@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -3020,6 +3020,18 @@ In my case, this is what I ran and the output I got:</p>
 </span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>cpatti@ip-0-2-195:~$
 </span></code></pre></div>
 <h2 id="openedx-residential-mitx">OpenEdX Residential MITx</h2>
+<h3 id="mitx-residential-login-fails">MITx Residential Login fails</h3>
+<p>You may need to re-run the SAML puller.</p>
+<p>In the <code>residential-production</code> K8s cluster, under the <code>mitx-openedx</code> namespace, find a pod with 'lms-webapp' in its name and<br />
+open a shell. In Headlamp just click on the CLI icon.</p>
+<p>You can also use kubectl, being sure you're in the correct cluster and namespace context. The invocation will look
+something like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl exec -it mitx-production-edxapp-lms-webapp-5b99b7c465-9rrps -c lms-edxapp -- /bin/bash
+</span></code></pre></div>
+<p>Once you've shelled in, simply run the following command:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>./manage.py lms saml --pull
+</span></code></pre></div>
+<p>That will likely resolve the error. TODO: Include examples from log files signposting this exact error.</p>
 <h3 id="task-handler-raised-error-operationalerror1045-access-denied-for-user-v-edxa-fmt0kbl5x1070237-using-password-yes">Task handler raised error: "OperationalError(1045, "Access denied for user 'v-edxa-fmT0KbL5X'@'10.7.0.237' (using password: YES)</h3>
 <p><em>Diagnosis</em></p>
 <p>If the oncall receives this page, instances credentials to access Vault and the
@@ -3087,11 +3099,11 @@ only parts of the sync. You can find documentation on the command you'll run
 <p>Since XPro runs on Heroku, you'll need to get a Heroku console shell to run the
 management command. You can get to that shell by logging into heroku with the
 Heroku CLI and running:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>heroku run /bin/bash -a xpro-production
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>heroku run /bin/bash -a xpro-production
 </span></code></pre></div>
 <p>It takes a while but you will eventually get your shell prompt.</p>
 <p>From there, run the following commands. To sync all variants:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>./manage.py sync_db_to_hubspot create
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>./manage.py sync_db_to_hubspot create
 </span></code></pre></div>
 <p>If you're asked to run only one, for example deals, you can consult the
 documentation linked above and see that you should add the <code>--deals</code> flag to the
@@ -3134,12 +3146,12 @@ pgbouncer is in trouble on reddit, likely because its credentials are out of
 date.</p>
 <p>You can get a view into what's happening by logging into the node cited in the
 disk usage ticket and typing:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>salt reddit-production* state.sls reddit.config,pgbouncer
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>salt reddit-production* state.sls reddit.config,pgbouncer
 </span></code></pre></div>
 <p><em>Mitigation</em></p>
 <p>Once you've determined that pgbouncer is indeed sad, you can try a restart /
 credential refresh with the following command:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>salt reddit-production* state.sls reddit.config
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>salt reddit-production* state.sls reddit.config
 </span></code></pre></div>
 
 
@@ -3190,10 +3202,10 @@ credential refresh with the following command:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
