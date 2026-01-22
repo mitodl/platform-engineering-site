@@ -319,5 +319,3 @@ The difference is purely in **how the URL is delivered to the frontend at runtim
 ## See Also
 
 - [workers.json Generation Requirements](./workers_json_requirements.md)
-- [Proctortrack Build Configuration Issues](./proctortrack_build_issues.md)
-- [Earthfile Missing Configuration](./earthfile_analysis.md)

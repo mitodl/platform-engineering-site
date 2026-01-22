@@ -370,5 +370,3 @@ var workerConfig = function() {
 ## See Also
 
 - [Proctoring JS Architecture](./proctoring_js_architecture.md)
-- [Earthfile Configuration Issues](./earthfile_analysis.md)
-- [Proctortrack Build Issues](./proctortrack_build_issues.md)

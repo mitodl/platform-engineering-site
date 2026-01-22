@@ -51,6 +51,7 @@ nav:
     - Publishing to NPM: platform_services/cloud_infrastructure/publishing_to_npm.md
 - Application Specific Guides:
   - Open edX:
+    - MITx Online Bulk Rescore: application_specific_guides/openedx/mitxonline_bulk_rescore.md
     - Proving Build Was Deployed: application_specific_guides/openedx/prove_build_was_deployed.md
     - Accessing Django Manage: application_specific_guides/openedx/access_django_manage.md
     - Enabling Rapid Response edXApp: application_specific_guides/openedx/enable_rapid_response_edxapp.md

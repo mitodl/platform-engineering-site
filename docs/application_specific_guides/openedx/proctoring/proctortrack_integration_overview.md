@@ -114,11 +114,6 @@ This investigation produced four detailed documents:
    - Testing instructions
    - **Use this for implementation**
 
-4. **[README.md](./README.md)** (this file)
-   - Executive summary
-   - Quick reference
-   - Links to detailed docs
-
 ## Quick Reference
 
 ### Build Process Flow

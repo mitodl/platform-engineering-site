@@ -350,4 +350,3 @@ The MIT ODL custom `assets.not_py` settings files didn't inherit from standard `
 
 - [Proctoring JS Architecture](./proctoring_js_architecture.md)
 - [workers.json Generation Requirements](./workers_json_requirements.md)
-- [Proctortrack Specific Issues](./proctortrack_build_issues.md)
