@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../prove_build_was_deployed/">
+        <link rel="prev" href="../../../platform_services/cloud_infrastructure/publishing_to_npm/">
       
       
-        <link rel="next" href="../enable_rapid_response_edxapp/">
+        <link rel="next" href="../prove_build_was_deployed/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>Accessing Django Manage - Platform Engineering Documentation</title>
+        <title>MITx Online Bulk Rescore - Platform Engineering Documentation</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-access-an-openedx-django-admin-managepy" class="md-skip">
+        <a href="#mitx-online-bulk-rescore" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Accessing Django Manage
+              MITx Online Bulk Rescore
             
           </span>
         </div>
@@ -1289,10 +1289,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../mitxonline_bulk_rescore/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1308,6 +1317,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -1345,37 +1355,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Accessing Django Manage
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../access_django_manage/" class="md-nav__link">
         
   
   
@@ -1391,59 +1374,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pre-requisites
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#finding-the-right-ec2-instance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Finding The Right EC2 Instance
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#making-the-connection" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Making The Connection
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2813,47 +2743,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pre-requisites
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#finding-the-right-ec2-instance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Finding The Right EC2 Instance
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#making-the-connection" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Making The Connection
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -2869,37 +2758,15 @@
 
 
 
-<h1 id="how-to-access-an-openedx-django-admin-managepy">How To Access An OpenEdX Django Admin manage.py</h1>
-<h2 id="pre-requisites">Pre-requisites</h2>
-<p>You will need the following pieces of information to get started:
-- The product you want to access e.g. mitxonline, ocw-studio, xpro, mitx
-- The environment you want - one of ci, qa, or production.
-- Valid credentials to login to the MIT Open Learning AWS Account
-  - You should most likely have been given these as a part of your onboarding.
-- The MIT oldevops AWS key file - oldevops.pem which at the time of this document's
-  writing can be accessed from (TBD: I forget and have asaked my team to remind me.)</p>
-<h2 id="finding-the-right-ec2-instance">Finding The Right EC2 Instance</h2>
-<ol>
-<li>Log into the AWS console / web UI with your MIT issued credentials.</li>
-<li>Click the service selector (the tightly grouped bunch of white square boxes in the upper left) and choose EC2.</li>
-<li>Now click "Instances (running)"</li>
-<li>You will now see a text box with the prompt "Find instances by attribute..."</li>
-<li>In this box, type 'edxapp-worker-<product>-<environment>' - for instance, for mitxonline production you would type
-   'edxapp-worker-mitxonline-production' and hit enter/return.</li>
-<li>You should now see a list of instances named edxapp-worker-mitxonline-production</li>
-<li>You'll need to temporarily add ssh access to the security group for your instance. Right click on the first instance
-   in the list and pick Security, then Change Security Groups. Type 'ssh' into the 'add security groups' text box. You
-   should see a group appropriate to your product, in the case of mitxonline-production I see mitxonline-production-public-ssh.
-   Select that group and click "Add security group" then click the orange Save button at the bottom of the page.</li>
-<li>Now, left click on the first instance in the list which should expand into instance detail. Click the little square within a
-   square Copy icon next to the "Public IPV4 Address".</li>
-</ol>
-<h2 id="making-the-connection">Making The Connection</h2>
-<p>From your laptop, use the oldevops.pem key to ssh to the ubuntu user on the machine whose IP you copied from the previous step.</p>
-<p>So for instance:</p>
-<p><code>ssh -i oldevops.pem ubuntu@34.204.173.109</code></p>
-<p>At this point you should be good to go and should see a prompt that looks something like:</p>
-<p><code>ubuntu@ip-10-22-3-162:~$</code></p>
+<h1 id="mitx-online-bulk-rescore">MITx Online Bulk Rescore</h1>
+<p>The one-liner for the bulk rescore is:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl exec -it $(kubectl get pods --context applications-production -n mitxonline-openedx --selector=[ol.mit.edu/component=edxapp-lms-webapp](http://ol.mit.edu/component=edxapp-lms-webapp) -o json | jq -r &#39;.items[0].metadata.name&#39;) -n mitxonline-openedx --context applications-production -- python manage.py lms shell &lt; scripts/openedx/bulk_rescore_courses.py
+</span></code></pre></div>
+First step is to modify that <a href="https://github.com/mitodl/ol-infrastructure/blob/main/scripts/openedx/bulk_rescore_courses.py#L296">bulk_rescore_courses</a>
+file to include the list of course IDs that you want to run the rescore on.</p>
+<p>For example:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&quot;course-v1:MITxT+10.50.CH01x+1T2025&quot;,
+</span></code></pre></div>
 
 
 
