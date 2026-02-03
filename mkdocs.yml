@@ -87,6 +87,7 @@ nav:
 - Runbooks & Post-Mortems:
   - On-Call Runbook: runbooks_post_mortems/oncall_runbook.md
   - 20231030 xPro Outage Post-Mortem: runbooks_post_mortems/20231030_xpro_outage.md
+  - Clear User Grades In Open edX: runbooks_post_mortems/openedx_clear_user_grades.md
 - Cookbooks & Patterns:
   - DevOps Patterns Cookbook: cookbooks_patterns/devops_patterns_cookbook.md
 - Partner Documentation:
