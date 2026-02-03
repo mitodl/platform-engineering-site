@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../../runbooks_post_mortems/openedx_clear_user_grades/">
+        <link rel="prev" href="../20231030_xpro_outage/">
       
       
-        <link rel="next" href="../../sso_onboarding/sso_config/">
+        <link rel="next" href="../../cookbooks_patterns/devops_patterns_cookbook/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>DevOps Patterns Cookbook - Platform Engineering Documentation</title>
+        <title>Clear User Grades In Open edX - Platform Engineering Documentation</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#mit-ol-devops-patterns-cookbook" class="md-skip">
+        <a href="#runbook-delete-student-grades-for-a-specific-user-in-a-course" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              DevOps Patterns Cookbook
+              Clear User Grades In Open edX
             
           </span>
         </div>
@@ -2439,18 +2439,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
           <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
@@ -2471,7 +2473,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2489,7 +2491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../runbooks_post_mortems/oncall_runbook/" class="md-nav__link">
+      <a href="../oncall_runbook/" class="md-nav__link">
         
   
   
@@ -2517,7 +2519,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../runbooks_post_mortems/20231030_xpro_outage/" class="md-nav__link">
+      <a href="../20231030_xpro_outage/" class="md-nav__link">
         
   
   
@@ -2542,90 +2544,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../runbooks_post_mortems/openedx_clear_user_grades/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Clear User Grades In Open edX
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cookbooks & Patterns
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cookbooks & Patterns
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
     
   
   
@@ -2645,7 +2563,7 @@
   <span class="md-ellipsis">
     
   
-    DevOps Patterns Cookbook
+    Clear User Grades In Open edX
   
 
     
@@ -2663,7 +2581,7 @@
   <span class="md-ellipsis">
     
   
-    DevOps Patterns Cookbook
+    Clear User Grades In Open edX
   
 
     
@@ -2689,10 +2607,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#key-grade-models-in-open-edx" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Summary
+        Key Grade Models in Open edX
       
     </span>
   </a>
@@ -2700,34 +2618,99 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#recipes" class="md-nav__link">
+  <a href="#when-to-use-this-runbook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recipes
+        When to Use This Runbook
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Recipes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#traefik" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Traefik
+        Prerequisites
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Traefik">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Instructions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Instructions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#token-based-authentication" class="md-nav__link">
+  <a href="#1-open-django-shell" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Token Based Authentication
+        1. Open Django Shell
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-define-required-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Define Required Values
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-delete-course-level-grades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Delete Course-Level Grades
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-delete-all-subsection-grades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Delete All Subsection Grades
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-delete-all-subsection-grade-overrides-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Delete All Subsection Grade Overrides (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-delete-individual-problemblock-scores-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Delete Individual Problem/Block Scores (Optional)
       
     </span>
   </a>
@@ -2738,9 +2721,59 @@
     </nav>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#complete-script-all-in-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete Script (All-in-One)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#important-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Important Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2748,6 +2781,88 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cookbooks & Patterns
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cookbooks & Patterns
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks_patterns/devops_patterns_cookbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DevOps Patterns Cookbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -2869,10 +2984,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#key-grade-models-in-open-edx" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Summary
+        Key Grade Models in Open edX
       
     </span>
   </a>
@@ -2880,34 +2995,99 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#recipes" class="md-nav__link">
+  <a href="#when-to-use-this-runbook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recipes
+        When to Use This Runbook
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Recipes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#traefik" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Traefik
+        Prerequisites
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Traefik">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step-by-Step Instructions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Instructions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#token-based-authentication" class="md-nav__link">
+  <a href="#1-open-django-shell" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Token Based Authentication
+        1. Open Django Shell
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-define-required-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Define Required Values
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-delete-course-level-grades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Delete Course-Level Grades
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-delete-all-subsection-grades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Delete All Subsection Grades
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-delete-all-subsection-grade-overrides-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Delete All Subsection Grade Overrides (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-delete-individual-problemblock-scores-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Delete Individual Problem/Block Scores (Optional)
       
     </span>
   </a>
@@ -2918,9 +3098,59 @@
     </nav>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#complete-script-all-in-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete Script (All-in-One)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#important-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Important Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2941,41 +3171,226 @@
 
 
 
-<h1 id="mit-ol-devops-patterns-cookbook">MIT OL Devops Patterns Cookbook</h1>
-<h2 id="summary">Summary</h2>
-<p>This document will serve as a place to put patterns and best practices.</p>
-<p>The goal is to ease the path for both new builders and experienced builders by
-helping narrow down the bevvy of choices and present a workable best practice
-solution to a given problem.</p>
-<p>There are many potential ways to organize a document like this, but for now I
-intend to start with the recipes broken down by infrastructure components.</p>
-<p>Example of what I mean are Docker, Traefik, Pyinfra and the like.</p>
-<p>Please write your recipes in the following form with <em>What I Want</em> and <em>How To
-Build It</em> as bold subsections.</p>
-<h2 id="recipes">Recipes</h2>
-<h3 id="traefik">Traefik</h3>
-<h4 id="token-based-authentication">Token Based Authentication</h4>
-<p><em>What I Want</em></p>
-<p>I want Traefik to allow requests only from clients that pass a particular token
-in the HTTP headers of the request. Here's an example <code>curl</code> from Tika with the
-actual token:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w">  </span>--header<span class="w"> </span><span class="s1">&#39;X-Access-Token: &lt;crazy hex digits&gt;&#39;</span><span class="w"> </span>https://tika-qa.odl.mit.edu
+<h1 id="runbook-delete-student-grades-for-a-specific-user-in-a-course">Runbook: Delete Student Grades for a Specific User in a Course</h1>
+<p>This runbook provides step-by-step instructions for deleting all grades for a specific student in a specific course using the Django shell.</p>
+<h2 id="key-grade-models-in-open-edx">Key Grade Models in Open edX</h2>
+<ul>
+<li><strong>PersistentCourseGrade</strong>: Course-level grade (overall progress and pass/fail status)</li>
+<li><strong>PersistentSubsectionGrade</strong>: Grades for individual subsections (chapters)</li>
+<li><strong>PersistentSubsectionGradeOverride</strong>: Manual overrides to subsection grades</li>
+<li><strong>StudentModule</strong>: Individual problem/block scores and state</li>
+</ul>
+<h2 id="when-to-use-this-runbook">When to Use This Runbook</h2>
+<ul>
+<li>Removing a student's grades due to academic integrity violations</li>
+<li>Testing/debugging grade calculations</li>
+<li>Correcting erroneous bulk grade imports</li>
+<li>Student de-enrollment cleanup</li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Activate the virtual environment and navigate to platform root</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>/path/to/edx-platform
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
 </span></code></pre></div>
-<p><em>How To Build It</em></p>
-<p>Traefik does not contain this functionality by default, so we must leverage the
-<a href="https://plugins.traefik.io/plugins/628c9eda108ecc83915d7760/check-request-headers-plugin">checkheaders</a>
-Traefik middleware plugin.</p>
-<p>You will need to add a blob to your Traefik static configuration like this:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>experimental:
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  plugins:
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    checkheadersplugin:
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>      moduleName: &quot;github.com/dkijkuit/checkheadersplugin&quot;
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>      version: &quot;v0.2.6&quot;
+<h2 id="step-by-step-instructions">Step-by-Step Instructions</h2>
+<h3 id="1-open-django-shell">1. Open Django Shell</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>manage.py<span class="w"> </span>shell<span class="w"> </span>-s<span class="w"> </span>lms
 </span></code></pre></div>
-<p>Since we use <a href="https://pyinfra.com/">pyinfra</a> to automate our image builds,
-you'll need to add code like <a href="https://github.com/mitodl/ol-infrastructure/blob/b71388a4e0c2d6099ccbe92236301c5c30dc6154/src/bilder/images/tika/deploy.py#L110C1-L110C1">this</a>
-to your deploy.py and a line like <a href="https://github.com/mitodl/ol-infrastructure/blob/b71388a4e0c2d6099ccbe92236301c5c30dc6154/src/bilder/images/tika/files/docker-compose.yaml#L35">this</a>
-to your docker-compose.yaml file.</p>
+<h3 id="2-define-required-values">2. Define Required Values</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_user_model</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">opaque_keys.edx.keys</span><span class="w"> </span><span class="kn">import</span> <span class="n">CourseKey</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Define the user and course</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">USERNAME</span> <span class="o">=</span> <span class="s1">&#39;student_username&#39;</span>  <span class="c1"># Replace with actual username</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">COURSE_ID</span> <span class="o">=</span> <span class="s1">&#39;course-v1:OrgX+SC101+2024&#39;</span>  <span class="c1"># Replace with actual course ID</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># Get the user object</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">User</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">USERNAME</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">user_id</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1"># Parse the course key</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">course_key</span> <span class="o">=</span> <span class="n">CourseKey</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">COURSE_ID</span><span class="p">)</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User ID: </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Course Key: </span><span class="si">{</span><span class="n">course_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="3-delete-course-level-grades">3. Delete Course-Level Grades</h3>
+<p>Delete the student's overall course grade:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lms.djangoapps.grades.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">PersistentCourseGrade</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">try</span><span class="p">:</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">grade</span> <span class="o">=</span> <span class="n">PersistentCourseGrade</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="n">course_id</span><span class="o">=</span><span class="n">course_key</span><span class="p">)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleting course grade: </span><span class="si">{</span><span class="n">grade</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">grade</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Course-level grade deleted&quot;</span><span class="p">)</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">except</span> <span class="n">PersistentCourseGrade</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✗ No course-level grade found&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="4-delete-all-subsection-grades">4. Delete All Subsection Grades</h3>
+<p>Delete grades for all subsections/chapters in the course:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lms.djangoapps.grades.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">PersistentSubsectionGrade</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">count</span> <span class="o">=</span> <span class="n">PersistentSubsectionGrade</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">course_id</span><span class="o">=</span><span class="n">course_key</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Deleted </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> subsection grades&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="5-delete-all-subsection-grade-overrides-optional">5. Delete All Subsection Grade Overrides (Optional)</h3>
+<p>If there are any manual grade overrides, delete them:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lms.djangoapps.grades.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">PersistentSubsectionGradeOverride</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">overrides</span> <span class="o">=</span> <span class="n">PersistentSubsectionGradeOverride</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">grade__user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">grade__course_id</span><span class="o">=</span><span class="n">course_key</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">)</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">count</span> <span class="o">=</span> <span class="n">overrides</span><span class="o">.</span><span class="n">delete</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Deleted </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> subsection grade overrides&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="6-delete-individual-problemblock-scores-optional">6. Delete Individual Problem/Block Scores (Optional)</h3>
+<p>If you also want to delete individual problem submissions and state:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lms.djangoapps.courseware.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">StudentModule</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">count</span> <span class="o">=</span> <span class="n">StudentModule</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">student_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">course_id</span><span class="o">=</span><span class="n">course_key</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Deleted </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> StudentModule records (problem submissions)&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="complete-script-all-in-one">Complete Script (All-in-One)</h2>
+<p>Run this entire script at once to delete all grades for a student in a course:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_user_model</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">opaque_keys.edx.keys</span><span class="w"> </span><span class="kn">import</span> <span class="n">CourseKey</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lms.djangoapps.grades.models</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">PersistentCourseGrade</span><span class="p">,</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">PersistentSubsectionGrade</span><span class="p">,</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">PersistentSubsectionGradeOverride</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="p">)</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lms.djangoapps.courseware.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">StudentModule</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="c1"># Configuration</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">USERNAME</span> <span class="o">=</span> <span class="s1">&#39;student_username&#39;</span>  <span class="c1"># CHANGE THIS</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="n">COURSE_ID</span> <span class="o">=</span> <span class="s1">&#39;course-v1:OrgX+SC101+2024&#39;</span>  <span class="c1"># CHANGE THIS</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="c1"># Get user</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="n">User</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">USERNAME</span><span class="p">)</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="n">user_id</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="n">course_key</span> <span class="o">=</span> <span class="n">CourseKey</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">COURSE_ID</span><span class="p">)</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleting grades for user_id=</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">, course=</span><span class="si">{</span><span class="n">COURSE_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="c1"># Delete course-level grade</span>
+</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="k">try</span><span class="p">:</span>
+</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>    <span class="n">PersistentCourseGrade</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="n">course_id</span><span class="o">=</span><span class="n">course_key</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Deleted PersistentCourseGrade&quot;</span><span class="p">)</span>
+</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="k">except</span> <span class="n">PersistentCourseGrade</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✗ No PersistentCourseGrade found&quot;</span><span class="p">)</span>
+</span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>
+</span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="c1"># Delete subsection grades</span>
+</span><span id="__span-7-31"><a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="n">count</span> <span class="o">=</span> <span class="n">PersistentSubsectionGrade</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+</span><span id="__span-7-32"><a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>    <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+</span><span id="__span-7-33"><a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a>    <span class="n">course_id</span><span class="o">=</span><span class="n">course_key</span>
+</span><span id="__span-7-34"><a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-7-35"><a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Deleted </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> PersistentSubsectionGrade records&quot;</span><span class="p">)</span>
+</span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a>
+</span><span id="__span-7-37"><a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="c1"># Delete grade overrides</span>
+</span><span id="__span-7-38"><a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a><span class="n">count</span> <span class="o">=</span> <span class="n">PersistentSubsectionGradeOverride</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+</span><span id="__span-7-39"><a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a>    <span class="n">grade__user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+</span><span id="__span-7-40"><a id="__codelineno-7-40" name="__codelineno-7-40" href="#__codelineno-7-40"></a>    <span class="n">grade__course_id</span><span class="o">=</span><span class="n">course_key</span>
+</span><span id="__span-7-41"><a id="__codelineno-7-41" name="__codelineno-7-41" href="#__codelineno-7-41"></a><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-7-42"><a id="__codelineno-7-42" name="__codelineno-7-42" href="#__codelineno-7-42"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Deleted </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> PersistentSubsectionGradeOverride records&quot;</span><span class="p">)</span>
+</span><span id="__span-7-43"><a id="__codelineno-7-43" name="__codelineno-7-43" href="#__codelineno-7-43"></a>
+</span><span id="__span-7-44"><a id="__codelineno-7-44" name="__codelineno-7-44" href="#__codelineno-7-44"></a><span class="c1"># Delete problem submissions (optional)</span>
+</span><span id="__span-7-45"><a id="__codelineno-7-45" name="__codelineno-7-45" href="#__codelineno-7-45"></a><span class="n">count</span> <span class="o">=</span> <span class="n">StudentModule</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+</span><span id="__span-7-46"><a id="__codelineno-7-46" name="__codelineno-7-46" href="#__codelineno-7-46"></a>    <span class="n">student_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+</span><span id="__span-7-47"><a id="__codelineno-7-47" name="__codelineno-7-47" href="#__codelineno-7-47"></a>    <span class="n">course_id</span><span class="o">=</span><span class="n">course_key</span>
+</span><span id="__span-7-48"><a id="__codelineno-7-48" name="__codelineno-7-48" href="#__codelineno-7-48"></a><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-7-49"><a id="__codelineno-7-49" name="__codelineno-7-49" href="#__codelineno-7-49"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Deleted </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> StudentModule records&quot;</span><span class="p">)</span>
+</span><span id="__span-7-50"><a id="__codelineno-7-50" name="__codelineno-7-50" href="#__codelineno-7-50"></a>
+</span><span id="__span-7-51"><a id="__codelineno-7-51" name="__codelineno-7-51" href="#__codelineno-7-51"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+</span><span id="__span-7-52"><a id="__codelineno-7-52" name="__codelineno-7-52" href="#__codelineno-7-52"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Grade deletion complete!&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="verification">Verification</h2>
+<p>After deletion, verify that grades were removed:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lms.djangoapps.grades.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">PersistentCourseGrade</span><span class="p">,</span> <span class="n">PersistentSubsectionGrade</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># Check course grade</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">try</span><span class="p">:</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">grade</span> <span class="o">=</span> <span class="n">PersistentCourseGrade</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="n">course_id</span><span class="o">=</span><span class="n">course_key</span><span class="p">)</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ Course grade still exists: </span><span class="si">{</span><span class="n">grade</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">except</span> <span class="n">PersistentCourseGrade</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Course grade successfully deleted&quot;</span><span class="p">)</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="c1"># Check subsection grades</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">count</span> <span class="o">=</span> <span class="n">PersistentSubsectionGrade</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    <span class="n">course_id</span><span class="o">=</span><span class="n">course_key</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ All subsection grades deleted&quot;</span><span class="p">)</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="k">else</span><span class="p">:</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> subsection grades still exist&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="important-notes">Important Notes</h2>
+<ul>
+<li><strong>Backup First</strong>: Consider backing up the database before running destructive operations</li>
+<li><strong>Student Re-enrollment</strong>: Deleting grades does NOT unenroll the student from the course</li>
+<li><strong>History/Audit Trail</strong>: SimpleHistory may retain records of deleted grades for audit purposes</li>
+<li><strong>Cached Data</strong>: Deleting grades clears the RequestCache, but consider restarting if issues persist</li>
+<li><strong>Permissions</strong>: Ensure you have database write permissions before running these commands</li>
+</ul>
+<h2 id="related-models">Related Models</h2>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Purpose</th>
+<th>Deletion Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PersistentCourseGrade</code></td>
+<td>Overall course grade &amp; pass status</td>
+<td>Recalculated on next submission</td>
+</tr>
+<tr>
+<td><code>PersistentSubsectionGrade</code></td>
+<td>Grade per subsection/chapter</td>
+<td>Recalculated on next submission</td>
+</tr>
+<tr>
+<td><code>StudentModule</code></td>
+<td>Individual problem scores &amp; state</td>
+<td>Lost forever (can't resubmit old work)</td>
+</tr>
+<tr>
+<td><code>StudentModuleHistory</code></td>
+<td>Audit trail of state changes</td>
+<td>Not automatically deleted</td>
+</tr>
+</tbody>
+</table>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong>User not found</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># List all users matching a pattern</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">username__icontains</span><span class="o">=</span><span class="s1">&#39;student&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p><strong>Course not found</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># List all courses a user is enrolled in</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">common.djangoapps.student.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">CourseEnrollment</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">CourseEnrollment</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s1">&#39;course_id&#39;</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p><strong>Permission denied</strong>:
+- Ensure you're using an admin/staff shell session
+- Check database user privileges
+- May need to run with elevated permissions or on database primary (not replica)</p>
 
 
 
