@@ -73,6 +73,7 @@ nav:
     - Updating The OCW Studio Pipeline: application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline.md
   - Doof (Odlbot):
     - Resetting Doof Github Token: application_specific_guides/odlbot/Resetting_Doof_Github_Token.md
+    - Resetting Doof NPMJS Token: application_specific_guides/odlbot/Resetting_Doof_NPM_Token.md
   - Renovate:
     - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
   - JupyterHub:
