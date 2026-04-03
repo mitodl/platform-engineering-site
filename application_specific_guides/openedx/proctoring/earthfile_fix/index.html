@@ -241,7 +241,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Getting Started & How-Tos
   
 
     
@@ -257,7 +257,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Getting Started & How-Tos
   
 
           </label>
@@ -270,7 +270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../getting_started/emergency-break-glass/" class="md-nav__link">
+      <a href="../../../../getting_started_and_how_tos/emergency-break-glass/" class="md-nav__link">
         
   
   
@@ -298,7 +298,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../getting_started/developer_eks_access/" class="md-nav__link">
+      <a href="../../../../getting_started_and_how_tos/developer_eks_access/" class="md-nav__link">
         
   
   
@@ -326,7 +326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../getting_started/vault_access_for_developers/" class="md-nav__link">
+      <a href="../../../../getting_started_and_how_tos/vault_access_for_developers/" class="md-nav__link">
         
   
   
@@ -354,7 +354,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../getting_started/update_this_site/" class="md-nav__link">
+      <a href="../../../../getting_started_and_how_tos/update_this_site/" class="md-nav__link">
         
   
   
@@ -382,7 +382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../getting_started/pe-product-infra-map/" class="md-nav__link">
+      <a href="../../../../getting_started_and_how_tos/pe-product-infra-map/" class="md-nav__link">
         
   
   
@@ -390,6 +390,34 @@
     
   
     Applications & Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting_started_and_how_tos/impersonate_users_keycloak/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Impersonating Users in Keycloak
   
 
     
@@ -3490,8 +3518,8 @@
 
 
 <h1 id="earthfile-configuration-fix-for-proctoring-worker-bundles">Earthfile Configuration Fix for Proctoring Worker Bundles</h1>
-<p><strong>Date:</strong> November 5, 2024<br />
-<strong>Issue:</strong> Missing <code>workers.json</code> and <code>webpack-worker-stats.json</code> in compiled assets<br />
+<p><strong>Date:</strong> November 5, 2024
+<strong>Issue:</strong> Missing <code>workers.json</code> and <code>webpack-worker-stats.json</code> in compiled assets
 <strong>Root Cause:</strong> Django initialization step missing from build process</p>
 <h2 id="problem-summary">Problem Summary</h2>
 <p>The MIT ODL Earthfile build process for Open edX is missing critical steps to generate proctoring JavaScript worker bundles. This results in:</p>
@@ -3546,7 +3574,7 @@
 </span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">STATIC_ROOT_BASE</span> <span class="o">=</span> <span class="s2">&quot;/openedx/staticfiles&quot;</span>
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s2">&quot;secret&quot;</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s2">&quot;secret&quot;</span>  <span class="c1"># pragma: allowlist secret</span>
 </span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">XQUEUE_INTERFACE</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;django_auth&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 </span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{}}</span>
 </span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
@@ -3695,7 +3723,7 @@
 <h3 id="webpack-defineplugin">Webpack DefinePlugin</h3>
 <div class="language-javascript highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">// webpack.common.config.js</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="ow">new</span><span class="w"> </span><span class="nx">webpack</span><span class="p">.</span><span class="nx">DefinePlugin</span><span class="p">({</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="s1">&#39;process.env.JS_ENV_EXTRA_CONFIG&#39;</span><span class="o">:</span><span class="w"> </span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="s1">&#39;process.env.JS_ENV_EXTRA_CONFIG&#39;</span><span class="o">:</span>
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">        </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">JS_ENV_EXTRA_CONFIG</span><span class="p">)</span>
 </span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">})</span>
 </span></code></pre></div>
@@ -3780,7 +3808,7 @@
 <p>These settings have been <strong>required since December 2018</strong> (6+ years):</p>
 <ul>
 <li><strong>December 14, 2018:</strong> <code>make_worker_config()</code> function added</li>
-<li><strong>December 17, 2018:</strong> <code>NODE_MODULES_ROOT</code> requirement added  </li>
+<li><strong>December 17, 2018:</strong> <code>NODE_MODULES_ROOT</code> requirement added</li>
 <li><strong>October 23, 2019:</strong> <code>ENV_ROOT</code> explicitly used for output path</li>
 </ul>
 <p>The MIT ODL custom <code>assets.not_py</code> settings files didn't inherit from standard <code>lms/envs/common.py</code>, so they never got these settings. The build appeared to work because webpack's try/catch silently caught the error.</p>

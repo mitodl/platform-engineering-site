@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../..">
+        <link rel="prev" href="../update_this_site/">
       
       
-        <link rel="next" href="../developer_eks_access/">
+        <link rel="next" href="../impersonate_users_keycloak/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>Emergency Oncall Break Glass Procedure - Platform Engineering Documentation</title>
+        <title>Applications & Services - Platform Engineering Documentation</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#emergency-break-glass-procedure" class="md-skip">
+        <a href="#this-document-will-help-map-formal-product-names-to-infrastructure" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Emergency Oncall Break Glass Procedure
+              Applications & Services
             
           </span>
         </div>
@@ -243,7 +243,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Getting Started & How-Tos
   
 
     
@@ -259,7 +259,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Getting Started & How-Tos
   
 
           </label>
@@ -269,19 +269,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../emergency-break-glass/" class="md-nav__link">
         
   
   
@@ -297,7 +288,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -391,10 +381,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../pe-product-infra-map/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Applications & Services
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -402,6 +419,76 @@
     
   
     Applications & Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#projects-that-live-in-kubernetes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Projects That Live In Kubernetes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pre-k8s-projects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pre K8s Projects
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../impersonate_users_keycloak/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Impersonating Users in Keycloak
   
 
     
@@ -2825,6 +2912,36 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#projects-that-live-in-kubernetes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Projects That Live In Kubernetes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pre-k8s-projects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pre K8s Projects
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2840,18 +2957,83 @@
 
 
 
-<h1 id="emergency-break-glass-procedure">Emergency Break Glass Procedure</h1>
-<p>In Slack, simply type:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>/rootly page
-</span></code></pre></div>
-<p>At this point you'll be presented with a dialog that looks something like this:</p>
-<p><img alt="Rootly Page Dialog in Slack" src="../img/Rootly-Page-Dialog.png" /></p>
-<p>Under "What's the Problem?" give a very short description of the issue.</p>
-<p>Under "Who Do You Want To Notify?" choose the Platform Engineering Team in the dropdown.</p>
-<p>Don't bother with the detailed Description, you'll want those details in the Slack channel or
-Github issue.</p>
-<p>Click "Start Paging" and that's it. You've successfully signalled an emergency and broken
-glass.</p>
+<h1 id="this-document-will-help-map-formal-product-names-to-infrastructure">This Document Will Help Map Formal Product Names To Infrastructure</h1>
+<h2 id="projects-that-live-in-kubernetes">Projects That Live In Kubernetes</h2>
+<table>
+<thead>
+<tr>
+<th>Formal Product Name</th>
+<th>Kubernetes Cluster</th>
+<th>Environments (e.g. CI, QA, Production)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MIT Learn</td>
+<td>Applications</td>
+<td>CI, QA, Production</td>
+</tr>
+<tr>
+<td>MIT Learn AI</td>
+<td>Applications</td>
+<td>CI, QA, Production</td>
+</tr>
+<tr>
+<td>MITx Online</td>
+<td>Applications</td>
+<td>CI, QA, Production</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pre-k8s-projects">Pre K8s Projects</h2>
+<p>Nota Bene: For infra like Consul or Vault, we're not enumerating each combination because
+you get the idea :)</p>
+<table>
+<thead>
+<tr>
+<th>Formal Product Name</th>
+<th>EC2 Instance Greoup Name</th>
+<th>Deployment Technology</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MIT x Residential</td>
+<td>edxapp-worker-mitx-production,</td>
+<td>docker compose</td>
+</tr>
+<tr>
+<td></td>
+<td>edxapp-web-mitx-production,</td>
+<td>docker compose</td>
+</tr>
+<tr>
+<td>ODL Video Service</td>
+<td>odl-video-service-production</td>
+<td>docker compose</td>
+</tr>
+<tr>
+<td>OpenEdX Forum V2</td>
+<td>open-edx-forum-server-production</td>
+<td></td>
+</tr>
+<tr>
+<td>Consul</td>
+<td>consul-mitx-production</td>
+<td></td>
+</tr>
+<tr>
+<td>OpenEdX Notes</td>
+<td>edx-notes-server-mitx-production</td>
+<td>docker compose</td>
+</tr>
+<tr>
+<td>Hashicorp Vault</td>
+<td>vault-server-operations-production</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 
 

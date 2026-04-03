@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../update_this_site/">
+        <link rel="prev" href="../pe-product-infra-map/">
       
       
         <link rel="next" href="../../platform_services/secrets_management/restore_vault_backups/">
@@ -23,7 +23,7 @@
     
     
       
-        <title>Applications & Services - Platform Engineering Documentation</title>
+        <title>Impersonating Users in Keycloak - Platform Engineering Documentation</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#this-document-will-help-map-formal-product-names-to-infrastructure" class="md-skip">
+        <a href="#impersonating-users-in-keycloak" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Applications & Services
+              Impersonating Users in Keycloak
             
           </span>
         </div>
@@ -243,7 +243,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Getting Started & How-Tos
   
 
     
@@ -259,7 +259,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Getting Started & How-Tos
   
 
           </label>
@@ -381,37 +381,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Applications & Services
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../pe-product-infra-map/" class="md-nav__link">
         
   
   
@@ -427,47 +400,43 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+    </li>
   
+
+              
+            
+              
+                
   
   
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#projects-that-live-in-kubernetes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Projects That Live In Kubernetes
-      
-    </span>
-  </a>
   
-</li>
+    <li class="md-nav__item md-nav__item--active">
       
-        <li class="md-nav__item">
-  <a href="#pre-k8s-projects" class="md-nav__link">
-    <span class="md-ellipsis">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
-        Pre K8s Projects
       
-    </span>
-  </a>
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
   
-</li>
-      
-    </ul>
   
-</nav>
+  <span class="md-ellipsis">
+    
+  
+    Impersonating Users in Keycloak
+  
+
+    
+  </span>
+  
+  
+
+      </a>
       
     </li>
   
@@ -2884,36 +2853,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#projects-that-live-in-kubernetes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Projects That Live In Kubernetes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pre-k8s-projects" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pre K8s Projects
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -2929,83 +2868,28 @@
 
 
 
-<h1 id="this-document-will-help-map-formal-product-names-to-infrastructure">This Document Will Help Map Formal Product Names To Infrastructure</h1>
-<h2 id="projects-that-live-in-kubernetes">Projects That Live In Kubernetes</h2>
-<table>
-<thead>
-<tr>
-<th>Formal Product Name</th>
-<th>Kubernetes Cluster</th>
-<th>Environments (e.g. CI, QA, Production)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>MIT Learn</td>
-<td>Applications</td>
-<td>CI, QA, Production</td>
-</tr>
-<tr>
-<td>MIT Learn AI</td>
-<td>Applications</td>
-<td>CI, QA, Production</td>
-</tr>
-<tr>
-<td>MITx Online</td>
-<td>Applications</td>
-<td>CI, QA, Production</td>
-</tr>
-</tbody>
-</table>
-<h2 id="pre-k8s-projects">Pre K8s Projects</h2>
-<p>Nota Bene: For infra like Consul or Vault, we're not enumerating each combination because
-you get the idea :)</p>
-<table>
-<thead>
-<tr>
-<th>Formal Product Name</th>
-<th>EC2 Instance Greoup Name</th>
-<th>Deployment Technology</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>MIT x Residential</td>
-<td>edxapp-worker-mitx-production,</td>
-<td>docker compose</td>
-</tr>
-<tr>
-<td></td>
-<td>edxapp-web-mitx-production,</td>
-<td>docker compose</td>
-</tr>
-<tr>
-<td>ODL Video Service</td>
-<td>odl-video-service-production</td>
-<td>docker compose</td>
-</tr>
-<tr>
-<td>OpenEdX Forum V2</td>
-<td>open-edx-forum-server-production</td>
-<td></td>
-</tr>
-<tr>
-<td>Consul</td>
-<td>consul-mitx-production</td>
-<td></td>
-</tr>
-<tr>
-<td>OpenEdX Notes</td>
-<td>edx-notes-server-mitx-production</td>
-<td>docker compose</td>
-</tr>
-<tr>
-<td>Hashicorp Vault</td>
-<td>vault-server-operations-production</td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<h1 id="impersonating-users-in-keycloak">Impersonating Users in Keycloak</h1>
+<div class="admonition warning">
+<p class="admonition-title">Tip</p>
+<p>Be careful impersonating users! Do not take unnecessary actions on their behalf.</p>
+<ul>
+<li>Use a separate browser profile to help ensure you know which user you are using.</li>
+<li>Log out of the user's account when you're done.</li>
+</ul>
+</div>
+<ol>
+<li>Log in to the Keycloak Admin Console, https://sso.ol.mit.edu/admin/olapps/console/<ul>
+<li>As Devops for access.</li>
+</ul>
+</li>
+<li>Select the Users tab on left navigation.</li>
+<li>Search for the user you want to impersonate.</li>
+<li>Click the user's username to navigate to the user detail view.</li>
+<li>From the "Action" dropdown in the top-left, select "Impersonate".<ul>
+<li>We use a single realm, so this will limit your access to the admin console in your current browser session.</li>
+</ul>
+</li>
+</ol>
 
 
 

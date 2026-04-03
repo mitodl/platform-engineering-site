@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../vault_access_for_developers/">
+        <link rel="prev" href="../developer_eks_access/">
       
       
-        <link rel="next" href="../pe-product-infra-map/">
+        <link rel="next" href="../update_this_site/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>Updating This Site - Platform Engineering Documentation</title>
+        <title>Vault Access for Developers - Platform Engineering Documentation</title>
       
     
     
@@ -63,6 +63,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#ol-secrets-management" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -95,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Updating This Site
+              Vault Access for Developers
             
           </span>
         </div>
@@ -238,7 +243,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Getting Started & How-Tos
   
 
     
@@ -254,7 +259,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Getting Started & How-Tos
   
 
           </label>
@@ -320,10 +325,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../vault_access_for_developers/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vault Access for Developers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -339,6 +371,87 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-securely-share-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Securely share secrets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-generate-local-env-file-for-app-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Generate local .env file for app development
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Generate local .env file for app development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bonus-note-generating-iam-creds-for-mit-learn-local-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bonus Note : Generating IAM creds for MIT Learn local development
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -348,17 +461,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../update_this_site/" class="md-nav__link">
         
   
   
@@ -374,7 +480,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -395,6 +500,34 @@
     
   
     Applications & Services
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../impersonate_users_keycloak/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Impersonating Users in Keycloak
   
 
     
@@ -2815,6 +2948,77 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-securely-share-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Securely share secrets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-generate-local-env-file-for-app-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Generate local .env file for app development
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Generate local .env file for app development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bonus-note-generating-iam-creds-for-mit-learn-local-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bonus Note : Generating IAM creds for MIT Learn local development
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -2831,15 +3035,67 @@
 
 
 
-  <h1>Updating This Site</h1>
-
-<ol>
-<li>Run <code>uv sync</code> to install dependencies.</li>
-<li>Make your changes to the Markdown files or add new ones.</li>
-<li>Run <code>uv run mkdocs build</code> to build the site.</li>
-<li>Run <code>uv run mkdocs serve</code> to preview the site locally.</li>
-<li>When you're happy, run <code>uv run mkdocs gh-deploy</code> to push the changes to the GitHub Pages site.</li>
-</ol>
+<h1 id="ol-secrets-management">OL Secrets Management</h1>
+<p>The Engineering group in Open Learning hosts its own Hashicorp Vault clusters to handle secrets management. Part of our work is to provide OL developers access to Vault QA to perform the following tasks:
+1. Securely share secrets
+2. Generate local .env file for app development</p>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>A Keycloak account in the <code>ol-platform-engineering</code> realm. If you currently do not have one, please ping someone in Platform Engineering to set you up.</li>
+</ul>
+<h2 id="1-securely-share-secrets">1. Securely share secrets</h2>
+<ul>
+<li>Log in to <a href="https://vault-qa.odl.mit.edu">Vault QA</a><ul>
+<li>Method: <code>OIDC</code></li>
+<li>Role: <code>local-dev</code></li>
+<li>Note: Make sure to enable popups</li>
+</ul>
+</li>
+</ul>
+<p>You should see a popup asking for your Keycloak username and password. Once successfully authenticated, you should see the Vault UI where we have configured a separate Vault mount <code>secret-sandbox</code> that should be used for securely sharing sensitive data with the group.</p>
+<p><code>WARNING - DO NOT store anything permanent in that mount as there are no guarantees that they will not be deleted or overwritten. Any values stored in this mount are visible and accessible by all users of the `ol-platform-engineering` Keycloak realm which as of this writing is and should be restricted to OL Engineering staff.</code></p>
+<h2 id="2-generate-local-env-file-for-app-development">2. Generate local .env file for app development</h2>
+<ul>
+<li><a href="https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-install">Install Hashicorp Vault</a></li>
+<li>Download the relevant app vars shell script from the repo (Ex. app_vars.sh)</li>
+<li>In your terminal do the following:<ul>
+<li>Set Vault's url as an environment variable<ul>
+<li><code>export VAULT_ADDR=https://vault-qa.odl.mit.edu</code></li>
+</ul>
+</li>
+<li>Login to Vault from the CLI:<ul>
+<li><code>vault login -method=oidc role="local-dev"</code></li>
+</ul>
+</li>
+<li>Run the following to generate vault client config:
+    <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>vault<span class="w"> </span>agent<span class="w"> </span>generate-config<span class="w"> </span>-type<span class="o">=</span><span class="s2">&quot;env-template&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>-exec<span class="o">=</span><span class="s2">&quot;./app_vars.sh&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>-path<span class="o">=</span><span class="s2">&quot;secret-dev/*&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>-path<span class="o">=</span><span class="s2">&quot;secret-operations/mailgun&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>-path<span class="o">=</span><span class="s2">&quot;secret-operations/global/embedly&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>-path<span class="o">=</span><span class="s2">&quot;secret-operations/global/odlbot-github-access-token&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>-path<span class="o">=</span><span class="s2">&quot;secret-operations/global/mit-smtp&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>-path<span class="o">=</span><span class="s2">&quot;secret-operations/global/update-search-data-webhook-key&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>-path<span class="o">=</span><span class="s2">&quot;secret-operations/sso/mitlearn&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>-path<span class="o">=</span><span class="s2">&quot;secret-operations/tika/access-token&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>agent-config.hcl
+</span></code></pre></div></li>
+<li>Start the vault agent:<ul>
+<li><code>vault agent -config=agent-config.hcl -log-level=error</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>You should now have a .env file containing the secrets for the relevant app from vault.</p>
+<h3 id="references">References</h3>
+<ul>
+<li>https://developer.hashicorp.com/vault/docs/agent-and-proxy/agent/generate-config</li>
+</ul>
+<h2 id="bonus-note-generating-iam-creds-for-mit-learn-local-development">Bonus Note : Generating IAM creds for MIT Learn local development</h2>
+<p>Apparently Devs sometimes need valid IAM credentials for local development with MIT Learn. Previously people were just lifting these creds out of Heroku settings but that isn't an option now. To replace that, use the following link:</p>
+<p>https://vault-qa.odl.mit.edu/ui/vault/secrets/aws-mitx/credentials/ol-mitopen-application</p>
+<p>You will need to login with a classic github token that has <code>read:org</code> permissions. This link will allow you to generate IAM creds that last 32 days and are personal to just you rather than shared ones from the app itself.</p>
 
 
 
