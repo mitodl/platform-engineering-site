@@ -1,4 +1,4 @@
-1. Clone the repo at https://github.com/mitodl/platform-engineering-site?tab=readme-ov-file
+1. Clone the repo at https://github.com/mitodl/platform-engineering-site
 2. Run `uv sync` to install dependencies.
 3. Make your changes to the Markdown files or add new ones.
 4. Run `uv run mkdocs build` to build the site.
