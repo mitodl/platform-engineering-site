@@ -1,7 +1,7 @@
 # Earthfile Configuration Fix for Proctoring Worker Bundles
 
-**Date:** November 5, 2024  
-**Issue:** Missing `workers.json` and `webpack-worker-stats.json` in compiled assets  
+**Date:** November 5, 2024
+**Issue:** Missing `workers.json` and `webpack-worker-stats.json` in compiled assets
 **Root Cause:** Django initialization step missing from build process
 
 ## Problem Summary
@@ -19,13 +19,13 @@ The MIT ODL Earthfile build process for Open edX is missing critical steps to ge
 build-static-assets-nonprod:
   FROM +fetch-translations
   ENV JS_ENV_EXTRA_CONFIG '{"PROCTORTRACK_CDN_URL": "...", "PROCTORTRACK_CONFIG_KEY": "..."}'
-  
+
   # Install some editable packages
   RUN pip install ...
-  
+
   ENV STATIC_ROOT_LMS=/openedx/staticfiles/
   ENV NODE_ENV=prod
-  
+
   # Current broken sequence:
   RUN mkdir -p $STATIC_ROOT_LMS && npm run postinstall \
     && npm run compile-sass -- --theme-dir /openedx/themes/ --theme $DEPLOYMENT_NAME \
@@ -65,7 +65,7 @@ COMPREHENSIVE_THEME_DIRS.append("/openedx/themes")
 
 STATIC_ROOT_BASE = "/openedx/staticfiles"
 
-SECRET_KEY = "secret"
+SECRET_KEY = "secret"  # pragma: allowlist secret
 XQUEUE_INTERFACE = {"django_auth": None, "url": None}
 DATABASES = {"default": {}}
 
@@ -159,7 +159,7 @@ RUN mkdir -p $STATIC_ROOT_LMS && npm run postinstall \
    ```bash
    # Changed from:
    npm run webpack 2> /dev/null
-   
+
    # To:
    npm run webpack
    ```
@@ -241,7 +241,7 @@ const KEY = process.env.JS_ENV_EXTRA_CONFIG.PROCTORTRACK_CONFIG_KEY;
 ```javascript
 // webpack.common.config.js
 new webpack.DefinePlugin({
-    'process.env.JS_ENV_EXTRA_CONFIG': 
+    'process.env.JS_ENV_EXTRA_CONFIG':
         JSON.parse(process.env.JS_ENV_EXTRA_CONFIG)
 })
 ```
@@ -341,7 +341,7 @@ ls -la /tmp/test-static/openedx/staticfiles/bundles/edx-proctoring-proctortrack.
 These settings have been **required since December 2018** (6+ years):
 
 - **December 14, 2018:** `make_worker_config()` function added
-- **December 17, 2018:** `NODE_MODULES_ROOT` requirement added  
+- **December 17, 2018:** `NODE_MODULES_ROOT` requirement added
 - **October 23, 2019:** `ENV_ROOT` explicitly used for output path
 
 The MIT ODL custom `assets.not_py` settings files didn't inherit from standard `lms/envs/common.py`, so they never got these settings. The build appeared to work because webpack's try/catch silently caught the error.
