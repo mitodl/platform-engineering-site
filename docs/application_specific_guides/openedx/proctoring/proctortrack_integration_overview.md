@@ -1,7 +1,7 @@
 # Open edX Proctoring Build Issues - Investigation Summary
 
-**Investigation Date:** November 5, 2024  
-**Context:** MIT Open Learning (MIT ODL) Open edX Deployment  
+**Investigation Date:** November 5, 2024
+**Context:** MIT Open Learning (MIT ODL) Open edX Deployment
 **Issue:** Missing proctoring JavaScript worker bundles in compiled static assets
 
 ## Problem Statement
@@ -184,7 +184,7 @@ earthly +build-static-assets-nonprod
 # 3. Extract and verify files
 tar -xzf staticfiles-nonprod.tar.gz -C /tmp/test
 ls -la /tmp/test/openedx/workers.json
-ls -la /tmp/test/openedx/staticfiles/webpack-worker-stats.json  
+ls -la /tmp/test/openedx/staticfiles/webpack-worker-stats.json
 ls -la /tmp/test/openedx/staticfiles/bundles/edx-proctoring-proctortrack.js
 ```
 

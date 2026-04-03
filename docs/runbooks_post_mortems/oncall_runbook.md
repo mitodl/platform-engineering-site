@@ -308,7 +308,7 @@ cpatti@ip-0-2-195:~$
 
 You may need to re-run the SAML puller.
 
-In the `residential-production` K8s cluster, under the `mitx-openedx` namespace, find a pod with 'lms-webapp' in its name and  
+In the `residential-production` K8s cluster, under the `mitx-openedx` namespace, find a pod with 'lms-webapp' in its name and
 open a shell. In Headlamp just click on the CLI icon.
 
 You can also use kubectl, being sure you're in the correct cluster and namespace context. The invocation will look

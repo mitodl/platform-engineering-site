@@ -1,6 +1,6 @@
 # workers.json Generation Requirements
 
-**Date:** November 5, 2024  
+**Date:** November 5, 2024
 **Related to:** Open edX Proctoring JavaScript Build Process
 
 ## Overview
@@ -51,10 +51,10 @@ class EdxProctoringConfig(AppConfig):
                 self.backends[name] = extension.plugin(**options)
             except KeyError:
                 pass
-        
+
         # Generate workers.json
         make_worker_config(
-            list(self.backends.values()), 
+            list(self.backends.values()),
             out=os.path.join(settings.ENV_ROOT, 'workers.json')
         )
 ```
@@ -69,25 +69,25 @@ def make_worker_config(backends, out='/tmp/workers.json'):
     # CRITICAL: Returns False if NODE_MODULES_ROOT not set
     if not getattr(settings, 'NODE_MODULES_ROOT', None):
         return False
-    
+
     config = {}
     for backend in backends:
         try:
             # Get the npm_module attribute from backend
             package = backend.npm_module
-            
+
             # Read package.json from node_modules
             package_file = os.path.join(
-                settings.NODE_MODULES_ROOT, 
-                package, 
+                settings.NODE_MODULES_ROOT,
+                package,
                 'package.json'
             )
             with open(package_file, 'r', encoding='utf-8') as package_fp:
                 package_json = json.load(package_fp)
-            
+
             # Get the main entry point
             main_file = package_json['main']
-            
+
             # Add to config
             config[package] = [
                 'babel-polyfill',
@@ -103,7 +103,7 @@ def make_worker_config(backends, out='/tmp/workers.json'):
             )
         except KeyError:
             warnings.warn(f'{package_file!r} does not contain a `main` entry')
-    
+
     if config:
         try:
             with open(out, 'wb+') as outfp:
@@ -120,8 +120,8 @@ def make_worker_config(backends, out='/tmp/workers.json'):
 
 ### 1. NODE_MODULES_ROOT
 
-**Required:** Yes  
-**Purpose:** Points to the directory containing installed NPM packages  
+**Required:** Yes
+**Purpose:** Points to the directory containing installed NPM packages
 **Typical Value:** `/openedx/edx-platform/node_modules`
 
 ```python
@@ -135,8 +135,8 @@ NODE_MODULES_ROOT = "/openedx/edx-platform/node_modules"
 
 ### 2. ENV_ROOT
 
-**Required:** Yes  
-**Purpose:** Parent directory where `workers.json` will be written  
+**Required:** Yes
+**Purpose:** Parent directory where `workers.json` will be written
 **Typical Value:** `/openedx`
 
 ```python
@@ -150,15 +150,15 @@ ENV_ROOT = "/openedx"
 
 ### 3. PROCTORING_BACKENDS
 
-**Required:** Yes  
-**Purpose:** Configuration for proctoring backends  
+**Required:** Yes
+**Purpose:** Configuration for proctoring backends
 
 ```python
 PROCTORING_BACKENDS = {
     "DEFAULT": "proctortrack",
     "proctortrack": {
         "client_id": "your-client-id",
-        "client_secret": "your-client-secret",
+        "client_secret": "your-client-secret",  # pragma: allowlist secret
         "base_url": "https://testing.verificient.com",
     },
 }

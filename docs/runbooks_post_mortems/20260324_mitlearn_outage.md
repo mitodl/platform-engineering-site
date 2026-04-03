@@ -4,48 +4,48 @@ The purpose of this document is explicitly not to find fault. It is a mechanism 
 
 ## Timeline Of Events
 
-- 2:54 PM Nathan [reported](https://mitodl.slack.com/archives/C03K5HYGPT9/p1774378450272239) the outage. Linked [Sentry](https://mit-office-of-digital-learning.sentry.io/issues/?environment=production&project=4506260054540288&statsPeriod=30d) issue  
-- Right after the initial report Shankar posited that it might be QDrant cluster related. Tobias very quickly realized it was the learn production DB.  
-- 3:02 Shankar thought it might be related to a pgdump snapshot he created  
-- 3:02 Nathan thought we were in the clear.  
-- 3:03 Tobias reported that the issue had consumed all usable storage space and that whatever it was it started at 18:35 UTC  
-- 3:04 Shankar realized it probably wasn’t his snapshot  
-- 3:06 Nathan postulated that it might have been the [query pattern change](https://github.com/mitodl/mit-learn/pull/3091) he authored in the release that just rolled out.  
-- 3:09 Nathan posted a link to the commit above.  
-- 3:13 Tobias pointed out that the crux of the problem was massive thrash on the temporary filesystem inside the Postgres DB server  
-- 3:17 Nathan posted that it’s definitely his change and that he would be rolling back  
-- Dan posted the FreeStorageSpace metric which he found worrying: ![][image1]  
-- 3:28 Nathan posted some [details](https://mitodl.slack.com/archives/C03K5HYGPT9/p1774380490742369?thread_ts=1774378450.272239&cid=C03K5HYGPT9) about the proximal nature of the problem:   
-  - I think the problem is at least partially based on how DRF computes the count field on the paginated response, it just naively does SELECT COUNT \* ($QUERY)  and I think my change that put an aggregation inside the main query was fine on datasets with smaller ordinality but not in prod  
-- 3:30 Dan reported seeing lots of 504s in Sentry  
-- 4:31Tobias declared the learn production DB was up and stable  
-- 4:50 Tobias checked in again and resumed mitigation attempts  
-- 4:51 Peter reported a 503 error from [learn.mit.edu](http://learn.mit.edu) and that the platform was in fact not fixed  
-- 4:59 Tobias deleted the read replica in an attempt to give the DB breathing room to catch up and flush the buffered WAL files.  
-- 5:00 PM I posted a scary looking CheckpointLag metric: ![][image2]  
-- 5:08 Tobias dropped the replication slot to try to speed up cleanup. This ultimately had minimal effect.  
-- 5:26 initial reports by Carey that the site was back up, but the DiskQueueDepth metric was still very unhealthy. This is THE critical path metric for RDS health: ![][image3]  
-- 5:38 Tobias tried a VACUUM ANALYZE to help the DB reclaim space, but DiskQueueDepth was still climbing. This ultimately may have contributed to the problem more than solving by causing a number of additional queries to kick off.  
-- 6:23 PM Tobias [posted](https://mitodl.slack.com/archives/C03K5HYGPT9/p1774391036393269) about the backup finishing and his conversation with AWS support that helped him safely kill some long running queries, freeing up space and processing cycles to help with recovery.  
-- ? Tobias executed the following query to kill all long-running processes that were contributing to the deadlock  
+- 2:54 PM Nathan [reported](https://mitodl.slack.com/archives/C03K5HYGPT9/p1774378450272239) the outage. Linked [Sentry](https://mit-office-of-digital-learning.sentry.io/issues/?environment=production&project=4506260054540288&statsPeriod=30d) issue
+- Right after the initial report Shankar posited that it might be QDrant cluster related. Tobias very quickly realized it was the learn production DB.
+- 3:02 Shankar thought it might be related to a pgdump snapshot he created
+- 3:02 Nathan thought we were in the clear.
+- 3:03 Tobias reported that the issue had consumed all usable storage space and that whatever it was it started at 18:35 UTC
+- 3:04 Shankar realized it probably wasn’t his snapshot
+- 3:06 Nathan postulated that it might have been the [query pattern change](https://github.com/mitodl/mit-learn/pull/3091) he authored in the release that just rolled out.
+- 3:09 Nathan posted a link to the commit above.
+- 3:13 Tobias pointed out that the crux of the problem was massive thrash on the temporary filesystem inside the Postgres DB server
+- 3:17 Nathan posted that it’s definitely his change and that he would be rolling back
+- Dan posted the FreeStorageSpace metric which he found worrying: ![][image1]
+- 3:28 Nathan posted some [details](https://mitodl.slack.com/archives/C03K5HYGPT9/p1774380490742369?thread_ts=1774378450.272239&cid=C03K5HYGPT9) about the proximal nature of the problem:
+  - I think the problem is at least partially based on how DRF computes the count field on the paginated response, it just naively does SELECT COUNT \* ($QUERY)  and I think my change that put an aggregation inside the main query was fine on datasets with smaller ordinality but not in prod
+- 3:30 Dan reported seeing lots of 504s in Sentry
+- 4:31Tobias declared the learn production DB was up and stable
+- 4:50 Tobias checked in again and resumed mitigation attempts
+- 4:51 Peter reported a 503 error from [learn.mit.edu](http://learn.mit.edu) and that the platform was in fact not fixed
+- 4:59 Tobias deleted the read replica in an attempt to give the DB breathing room to catch up and flush the buffered WAL files.
+- 5:00 PM I posted a scary looking CheckpointLag metric: ![][image2]
+- 5:08 Tobias dropped the replication slot to try to speed up cleanup. This ultimately had minimal effect.
+- 5:26 initial reports by Carey that the site was back up, but the DiskQueueDepth metric was still very unhealthy. This is THE critical path metric for RDS health: ![][image3]
+- 5:38 Tobias tried a VACUUM ANALYZE to help the DB reclaim space, but DiskQueueDepth was still climbing. This ultimately may have contributed to the problem more than solving by causing a number of additional queries to kick off.
+- 6:23 PM Tobias [posted](https://mitodl.slack.com/archives/C03K5HYGPT9/p1774391036393269) about the backup finishing and his conversation with AWS support that helped him safely kill some long running queries, freeing up space and processing cycles to help with recovery.
+- ? Tobias executed the following query to kill all long-running processes that were contributing to the deadlock
 ```sql
-  SELECT pg\_terminate\_backend(pid)  
-  FROM pg\_stat\_activity  
+  SELECT pg\_terminate\_backend(pid)
+  FROM pg\_stat\_activity
   WHERE state \= 'active' AND now() \- query\_start \> interval '10 minutes';
 ```
 
-- 6:24 PM I posted one of the most awesome recovery metrics I’ve seen in my operational career:![][image4]  
+- 6:24 PM I posted one of the most awesome recovery metrics I’ve seen in my operational career:![][image4]
 - Incident Ends
 
 ## Whys?
 
-- Why was [learn.mit.edu](http://learn.mit.edu) down?  
-  - A set of query pattern changes introduced in a deployed release caused DRF and Postgres to fill up storage and temp space and thrash causing a traffic jam inside the Postgres DB server (Nathan?)  
-- Why were these changes introduced?  
-  - Learning resource APIs are slow, particularly the featured resources API, and Sentry flagged a large query to fetch all view events to determine the count of them as the most likely suspect.  
-- Why was this problem so hard to foresee? This change received careful review by our two most senior engineers.  
-  - No issues were identified locally or on RC  
-  - Data scale and system load on production are substantially different  
+- Why was [learn.mit.edu](http://learn.mit.edu) down?
+  - A set of query pattern changes introduced in a deployed release caused DRF and Postgres to fill up storage and temp space and thrash causing a traffic jam inside the Postgres DB server (Nathan?)
+- Why were these changes introduced?
+  - Learning resource APIs are slow, particularly the featured resources API, and Sentry flagged a large query to fetch all view events to determine the count of them as the most likely suspect.
+- Why was this problem so hard to foresee? This change received careful review by our two most senior engineers.
+  - No issues were identified locally or on RC
+  - Data scale and system load on production are substantially different
   - It wasn’t obvious from current system health that the addition of a supposedly efficient COUNT aggregation would explode disk space usage
 
 ## Incident Summary
@@ -54,63 +54,63 @@ The purpose of this document is explicitly not to find fault. It is a mechanism 
 
 ## Action Items
 
-- Chris \- explore enabling enhanced analytics on production learn DB  
-- Tobias \- Document rollback steps on PE doc site. Long term: Make easy rollback a part of our new release management framework.  
-- Chris \- Alert on DiskQueueDepth for production databases \- not too noisy  
-- Chris \- Alert on response times for API and site \- more than 30% above norms  
-- Chris \- Gameday for example production database outage  
-  - Chris \- Rootly \- incident management  
-    - Auto channel \- all comms in one place  
-    - Auto incident transcript  
-    - Outage Runbook  
-      - Keep it light  
-      - Start a zoom call  
-      - The oncall should actively monitor metrics to ensure a return to baseline  
-      - Need a person to handle comms \- keep stakeholders from pinging and distracting key mitigators  
-- Chris \- Use SQL terminate query below as well as modified version to detect very long running queries for selective termination into a production Postgres runbook  
-- Chris C \- write issue citing the need for redesign of Learn Resource View Event model because right now we only use it for counts  
-- Chris \- Use anonymized production data generation tools to bulk RC up to where production is in terms of data volume.  
-  - We need a production scale system that we can load test  
-    - Has anonymized data from production  
-    - Separate infra from RC so we can load test without negatively affecting RC (sometimes used by stakeholders for testing)  
-    - Tonic AI (probably too pricey. Alternatives?)  
-      - Educational discount  
-    - [Database Anonymization for Testing](https://docs.google.com/document/d/1Cq7UIJy5W_sC35nugokN6Rjn76ItcnhwO2yaoWJkt5I/edit?usp=sharing) \- Gemini deep research report  
+- Chris \- explore enabling enhanced analytics on production learn DB
+- Tobias \- Document rollback steps on PE doc site. Long term: Make easy rollback a part of our new release management framework.
+- Chris \- Alert on DiskQueueDepth for production databases \- not too noisy
+- Chris \- Alert on response times for API and site \- more than 30% above norms
+- Chris \- Gameday for example production database outage
+  - Chris \- Rootly \- incident management
+    - Auto channel \- all comms in one place
+    - Auto incident transcript
+    - Outage Runbook
+      - Keep it light
+      - Start a zoom call
+      - The oncall should actively monitor metrics to ensure a return to baseline
+      - Need a person to handle comms \- keep stakeholders from pinging and distracting key mitigators
+- Chris \- Use SQL terminate query below as well as modified version to detect very long running queries for selective termination into a production Postgres runbook
+- Chris C \- write issue citing the need for redesign of Learn Resource View Event model because right now we only use it for counts
+- Chris \- Use anonymized production data generation tools to bulk RC up to where production is in terms of data volume.
+  - We need a production scale system that we can load test
+    - Has anonymized data from production
+    - Separate infra from RC so we can load test without negatively affecting RC (sometimes used by stakeholders for testing)
+    - Tonic AI (probably too pricey. Alternatives?)
+      - Educational discount
+    - [Database Anonymization for Testing](https://docs.google.com/document/d/1Cq7UIJy5W_sC35nugokN6Rjn76ItcnhwO2yaoWJkt5I/edit?usp=sharing) \- Gemini deep research report
     - [https://www.greenmask.io/](https://www.greenmask.io/) looks promising
 
 ## Appendix: Raw Data, Theories, And Misc.
 
-- Nathan and Tobias will post details about EXPLAIN query results and any other relevant details to the incident.  
-- Gist of explains: [https://gist.github.com/rhysyngsun/35b464a980f703f8c9d8ce736eea2eb5](https://gist.github.com/rhysyngsun/35b464a980f703f8c9d8ce736eea2eb5)  
-- [AWS Support Case](https://support.console.aws.amazon.com/support/home#/case/?displayId=177438982400398&language=en) summary:   
-  You reached out today because your RDS PostgreSQL instance "ol-mitlearn-db-production" in us-east-1 encountered a storage-full issue after a recent application release. Therefore you reached out to get assistance from AWS in regards to bringing the instance back online to serve application requests.  
-    
-  The database was able to complete the backup after we connected in the chat. Shortly thereafter, you were able to successfully establish a connection to the database and terminate the long-running queries, which allowed the disk queue depth and free storage space to return to normal values.  
-    
-  Recommendations to Prevent Similar Recurrences  
-  1\. Query Testing and Validation:  
-          \- Test ORM query changes in a staging environment with production-like data volumes  
-          \- Use EXPLAIN ANALYZE to review query execution plans and estimated resource usage  
-          \- Monitor temp file generation using log\_temp\_files parameter during testing  
-    
-    
-  2\. Parameter Tuning:  
-          \- Set 'temp\_file\_limit' to prevent runaway queries. This setting constrains the total space used at any instant by all temporary files used by a given PostgreSQL session.  
-          \- Enable logging of temp files above a threshold using 'log\_temp\_files'.  
-          \- Based on query execution plan, you may consider tuning 'work\_mem' or 'shared\_buffers' to reduce disk reads/writes. However, increasing these parameters will consume more memory that could potentially result in a database "out of memory" failover event if not carefully configured.  
-    
-       \[+\] PostgreSQL \- temp\_file\_limit  \- [https://www.postgresql.org/docs/current/runtime-config-resource.html](https://www.postgresql.org/docs/current/runtime-config-resource.html)   
-       \[+\] PostgreSQL \- log\_temp\_files \- [https://www.postgresql.org/docs/current/runtime-config-logging.html](https://www.postgresql.org/docs/current/runtime-config-logging.html)   
-    
-    
-  3\.  Consider RDS Optimized Reads:   
-  For workloads with high temp file usage, use RDS Optimized Read instances that place temp files on local NVMe storage instead of EBS.  
-    
-  When you use an RDS for PostgreSQL DB instance or Multi-AZ DB cluster that has RDS Optimized Reads turned on, it achieves up to 50% faster query performance using the local Non-Volatile Memory Express (NVMe) based solid state drive (SSD) block-level storage. You can achieve faster query processing by placing the temporary tables that are generated by PostgreSQL on the local storage, which reduces the traffic to Elastic Block Storage (EBS) over the network. \[1\]  
-    
-       \[1\] Improving query performance for RDS for PostgreSQL with Amazon RDS Optimized Reads \- [https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER\_PostgreSQL.optimizedreads.html](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PostgreSQL.optimizedreads.html)   
-    
-  
+- Nathan and Tobias will post details about EXPLAIN query results and any other relevant details to the incident.
+- Gist of explains: [https://gist.github.com/rhysyngsun/35b464a980f703f8c9d8ce736eea2eb5](https://gist.github.com/rhysyngsun/35b464a980f703f8c9d8ce736eea2eb5)
+- [AWS Support Case](https://support.console.aws.amazon.com/support/home#/case/?displayId=177438982400398&language=en) summary:
+  You reached out today because your RDS PostgreSQL instance "ol-mitlearn-db-production" in us-east-1 encountered a storage-full issue after a recent application release. Therefore you reached out to get assistance from AWS in regards to bringing the instance back online to serve application requests.
+
+  The database was able to complete the backup after we connected in the chat. Shortly thereafter, you were able to successfully establish a connection to the database and terminate the long-running queries, which allowed the disk queue depth and free storage space to return to normal values.
+
+  Recommendations to Prevent Similar Recurrences
+  1\. Query Testing and Validation:
+          \- Test ORM query changes in a staging environment with production-like data volumes
+          \- Use EXPLAIN ANALYZE to review query execution plans and estimated resource usage
+          \- Monitor temp file generation using log\_temp\_files parameter during testing
+
+
+  2\. Parameter Tuning:
+          \- Set 'temp\_file\_limit' to prevent runaway queries. This setting constrains the total space used at any instant by all temporary files used by a given PostgreSQL session.
+          \- Enable logging of temp files above a threshold using 'log\_temp\_files'.
+          \- Based on query execution plan, you may consider tuning 'work\_mem' or 'shared\_buffers' to reduce disk reads/writes. However, increasing these parameters will consume more memory that could potentially result in a database "out of memory" failover event if not carefully configured.
+
+       \[+\] PostgreSQL \- temp\_file\_limit  \- [https://www.postgresql.org/docs/current/runtime-config-resource.html](https://www.postgresql.org/docs/current/runtime-config-resource.html)
+       \[+\] PostgreSQL \- log\_temp\_files \- [https://www.postgresql.org/docs/current/runtime-config-logging.html](https://www.postgresql.org/docs/current/runtime-config-logging.html)
+
+
+  3\.  Consider RDS Optimized Reads:
+  For workloads with high temp file usage, use RDS Optimized Read instances that place temp files on local NVMe storage instead of EBS.
+
+  When you use an RDS for PostgreSQL DB instance or Multi-AZ DB cluster that has RDS Optimized Reads turned on, it achieves up to 50% faster query performance using the local Non-Volatile Memory Express (NVMe) based solid state drive (SSD) block-level storage. You can achieve faster query processing by placing the temporary tables that are generated by PostgreSQL on the local storage, which reduces the traffic to Elastic Block Storage (EBS) over the network. \[1\]
+
+       \[1\] Improving query performance for RDS for PostgreSQL with Amazon RDS Optimized Reads \- [https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER\_PostgreSQL.optimizedreads.html](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PostgreSQL.optimizedreads.html)
+
+
 
 - We deployed the fix to the view count to just use a precomputed column. Response times in production went from ~13-15s to 150-200ms for the affected APIs. Before: ![][image5] After: ![][image6]
 

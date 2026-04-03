@@ -1,7 +1,7 @@
 # Open edX Proctoring JavaScript Architecture: JS 1.0 vs JS 2.0
 
-**Date:** November 5, 2024  
-**Author:** Investigation of edx-proctoring and edx-platform integration  
+**Date:** November 5, 2024
+**Author:** Investigation of edx-proctoring and edx-platform integration
 **Version:** 1.0
 
 ## Executive Summary
@@ -44,11 +44,11 @@ In the traditional LMS courseware interface, proctoring JavaScript is loaded dir
        package = getattr(self, 'npm_module', self.__class__.__module__.split('.', maxsplit=1)[0])
        bundle_chunks = get_files(package, config="WORKERS")
        js_url = bundle_chunks[0]["url"]
-       
+
        if not urlparse(js_url).scheme:
            if hasattr(settings, 'LMS_ROOT_URL'):
                js_url = settings.LMS_ROOT_URL + js_url
-       
+
        return js_url
    ```
 
@@ -80,7 +80,7 @@ In the traditional LMS courseware interface, proctoring JavaScript is loaded dir
        var blobUrl = window.URL.createObjectURL(blob);
        return new Worker(blobUrl);
    }
-   
+
    var proctoringBackendWorker = createWorker(
        edx.courseware.proctored_exam.configuredWorkerURL
    );
@@ -144,10 +144,10 @@ The Learning Microfrontend (MFE) fetches exam attempt data via API, which includ
    ```javascript
    // frontend-lib-special-exams/src/data/messages/handlers.js
    const useWorker = window.Worker && activeAttempt && workerUrl;
-   
+
    if (useWorker) {
        workerPromiseForEventNames(
-           actionToMessageTypesMap.start, 
+           actionToMessageTypesMap.start,
            workerUrl
        )(startIntervalInMilliseconds, attemptExternalId)
    }
@@ -184,10 +184,10 @@ The Learning Microfrontend (MFE) fetches exam attempt data via API, which includ
        self.backends = {}
        for extension in ExtensionManager(namespace='openedx.proctoring'):
            self.backends[name] = extension.plugin(**options)
-       
+
        # Generates workers.json
        make_worker_config(
-           list(self.backends.values()), 
+           list(self.backends.values()),
            out=os.path.join(settings.ENV_ROOT, 'workers.json')
        )
    ```
@@ -198,13 +198,13 @@ The Learning Microfrontend (MFE) fetches exam attempt data via API, which includ
    def make_worker_config(backends, out='/tmp/workers.json'):
        if not getattr(settings, 'NODE_MODULES_ROOT', None):
            return False
-       
+
        config = {}
        for backend in backends:
            package = backend.npm_module  # e.g., 'edx-proctoring-proctortrack'
            package_file = os.path.join(
-               settings.NODE_MODULES_ROOT, 
-               package, 
+               settings.NODE_MODULES_ROOT,
+               package,
                'package.json'
            )
            with open(package_file, 'r') as f:
@@ -214,7 +214,7 @@ The Learning Microfrontend (MFE) fetches exam attempt data via API, which includ
                'babel-polyfill',
                os.path.join(settings.NODE_MODULES_ROOT, package, main_file)
            ]
-       
+
        with open(out, 'wb+') as outfp:
            outfp.write(json.dumps(config).encode('utf-8'))
    ```
@@ -236,7 +236,7 @@ The Learning Microfrontend (MFE) fetches exam attempt data via API, which includ
                            filename: 'webpack-worker-stats.json'
                        }),
                        new webpack.DefinePlugin({
-                           'process.env.JS_ENV_EXTRA_CONFIG': 
+                           'process.env.JS_ENV_EXTRA_CONFIG':
                                JSON.parse(process.env.JS_ENV_EXTRA_CONFIG)
                        })
                    ]
