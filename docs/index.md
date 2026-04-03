@@ -3,7 +3,7 @@
 # Handy Links
 
 ## For Engineering
-- [Oncall Emergency Break Glass](getting_started/emergency-break-glass.md)
+- [Oncall Emergency Break Glass](getting_started_and_how_tos/emergency-break-glass.md)
 - [Celery Monitoring Production](https://celery-monitoring.odl.mit.edu/)
 - [Concourse Pipelines Production](https://cicd.odl.mit.edu/)
 - [Directory of MIT OL's Applications](https://github.mit.edu/odl-engineering/project-status/wiki/App-Links)

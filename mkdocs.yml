@@ -22,11 +22,12 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started & How-Tos:
-      - Emergency Oncall Break Glass Procedure: getting_started/emergency-break-glass.md
-      - Developer EKS Access: getting_started/developer_eks_access.md
-      - Vault Access for Developers: getting_started/vault_access_for_developers.md
-      - Updating This Site: getting_started/update_this_site.md
-      - Applications & Services: getting_started/pe-product-infra-map.md
+      - Emergency Oncall Break Glass Procedure: getting_started_and_how_tos/emergency-break-glass.md
+      - Developer EKS Access: getting_started_and_how_tos/developer_eks_access.md
+      - Vault Access for Developers: getting_started_and_how_tos/vault_access_for_developers.md
+      - Updating This Site: getting_started_and_how_tos/update_this_site.md
+      - Applications & Services: getting_started_and_how_tos/pe-product-infra-map.md
+      - Impersonating Users in Keycloak: getting_started_and_how_tos/impersonate_users_keycloak.md
   - Platform Services:
       - Secrets Management (Vault):
           - Restoring Vault Backups: platform_services/secrets_management/restore_vault_backups.md
