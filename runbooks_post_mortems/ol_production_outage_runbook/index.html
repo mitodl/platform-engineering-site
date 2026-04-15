@@ -2658,10 +2658,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#start-a-zoom-call" class="md-nav__link">
+  <a href="#deputize-a-communications-lead" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Start a Zoom Call
+        Deputize a Communications Lead
       
     </span>
   </a>
@@ -2669,10 +2669,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#deputize-a-communications-lead" class="md-nav__link">
+  <a href="#gather-critical-outage-contributors-on-the-incident-slack-channel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Deputize a Communications Lead
+        Gather Critical Outage Contributors On The Incident Slack Channel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#start-a-zoom-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start a Zoom Call
       
     </span>
   </a>
@@ -2707,10 +2718,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#postmortem" class="md-nav__link">
+  <a href="#postmortem-retrospective" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Postmortem
+        Postmortem (Retrospective)
       
     </span>
   </a>
@@ -3031,10 +3042,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#start-a-zoom-call" class="md-nav__link">
+  <a href="#deputize-a-communications-lead" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Start a Zoom Call
+        Deputize a Communications Lead
       
     </span>
   </a>
@@ -3042,10 +3053,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#deputize-a-communications-lead" class="md-nav__link">
+  <a href="#gather-critical-outage-contributors-on-the-incident-slack-channel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Deputize a Communications Lead
+        Gather Critical Outage Contributors On The Incident Slack Channel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#start-a-zoom-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Start a Zoom Call
       
     </span>
   </a>
@@ -3080,10 +3102,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#postmortem" class="md-nav__link">
+  <a href="#postmortem-retrospective" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Postmortem
+        Postmortem (Retrospective)
       
     </span>
   </a>
@@ -3110,27 +3132,37 @@
 <h1 id="ol-production-outage-runbook">OL Production Outage Runbook</h1>
 <p>This runbook serves as a guide to best practices for handling production outages at MIT OL.</p>
 <h2 id="when-an-outage-is-reported">When an Outage Is Reported</h2>
-<p>Once a production outage is reported and is not mitigated within 1 to 2 minutes, the following sequence of events should be set in motion.</p>
+<p>Once a production outage is reported and is not mitigated within 5 minutes, the following sequence of events should be set in motion.</p>
 <h3 id="on-call-creates-a-new-rootly-incident">On-Call Creates a New Rootly Incident</h3>
+<p>In the #team-engineering Slack channel, the oncall types:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>/rootly new
+</span></code></pre></div>
+<p>Rootly will prompt you for everything you need from there. Incident name, severity, etc.</p>
+<p>You should probably include the environment (production in this case!) in the incident name.</p>
 <p>This will automatically do several things for us:</p>
 <ul>
+<li>Creates a new specific Slack channel for the incident. e.g. "#mitlearn-production-db-outage"</li>
 <li>Record all Slack traffic during the incident</li>
 <li>Create a timeline</li>
 <li>Track action items during and after the incident</li>
 </ul>
+<h3 id="deputize-a-communications-lead">Deputize a Communications Lead</h3>
+<p>During a severe or prolonged outage, it can be difficult for stakeholders to focus on mitigation while also handling
+administrative tasks, responding to Slack pings from interested third parties and the like.</p>
+<p>Assign someone who is not directly involved in mitigation to handle this.</p>
+<h3 id="gather-critical-outage-contributors-on-the-incident-slack-channel">Gather Critical Outage Contributors On The Incident Slack Channel</h3>
+<p>The Comms lead should ensure that in addition to the oncall any other parties like the devs for that product area
+in the incident specific Slack channel Rootly creates.</p>
 <h3 id="start-a-zoom-call">Start a Zoom Call</h3>
 <p>Ensure the invite link is posted in the Slack channel where the incident is being managed. This allows real-time coordination among key participants.</p>
 <p>If available, the communications lead should echo key points from the discussion into Slack so they are captured in the incident record.</p>
-<h3 id="deputize-a-communications-lead">Deputize a Communications Lead</h3>
-<p>During a severe or prolonged outage, it can be difficult for stakeholders to focus on mitigation while also responding to Slack pings from interested third parties. Assign someone who is not directly involved in mitigation to handle communications, primarily by answering questions from others.</p>
-<p>Ensure they are in the Slack channel so they receive implicit updates. At each milestone, provide explicit updates they can pass along.</p>
 <h3 id="keep-time">Keep Time</h3>
 <p>Someone, possibly the communications lead, should track the overall duration of the outage, as well as whether a given mitigation is taking too long and whether a different approach may be warranted. Ultimately this is the on-call engineer’s judgment, but it can be hard to avoid tunnel vision in stressful situations.</p>
 <h3 id="incident-wrap-up">Incident Wrap-Up</h3>
 <p>The on-call engineer ends the incident in Rootly. This closes out the incident document and begins the retrospective process, during which action items can be assigned to responsible individuals and a more formal incident document can be filed on the Platform Engineering team <a href="https://pe.ol.mit.edu">website</a> for posterity.</p>
-<h2 id="postmortem">Postmortem</h2>
+<h2 id="postmortem-retrospective">Postmortem (Retrospective)</h2>
 <p>The on-call engineer who handled the incident is also responsible for preparing a postmortem, if one is warranted. Postmortems are useful whenever there is a significant outage or when questions remain about the exact nature of the incident.</p>
-<p>We should err on the side of holding one, because learning from past mistakes is how we raise the bar for ourselves as a team.</p>
+<p>Rootly will do a lot of the hard work of generating a Retrospective / Post Mortem document</p>
 
 
 
