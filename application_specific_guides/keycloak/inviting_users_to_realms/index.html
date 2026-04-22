@@ -9,25 +9,25 @@
       
       
       
-        <link rel="prev" href="../../runbooks_post_mortems/openedx_clear_user_grades/">
+        <link rel="prev" href="../../mit-learn/mit_learn_service_diagram/">
       
       
-        <link rel="next" href="../../sso_onboarding/sso_config/">
+        <link rel="next" href="../../../monitoring_observability/overview/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>DevOps Patterns Cookbook - Platform Engineering Documentation</title>
+        <title>Inviting New Users to Keycloak Realms - Platform Engineering Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -46,7 +46,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#mit-ol-devops-patterns-cookbook" class="md-skip">
+        <a href="#inviting-new-users-to-keycloak-domains" class="md-skip">
           Skip to content
         </a>
       
@@ -80,7 +80,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Platform Engineering Documentation" class="md-header__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
+    <a href="../../.." title="Platform Engineering Documentation" class="md-header__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              DevOps Patterns Cookbook
+              Inviting New Users to Keycloak Realms
             
           </span>
         </div>
@@ -178,7 +178,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Platform Engineering Documentation" class="md-nav__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
+    <a href="../../.." title="Platform Engineering Documentation" class="md-nav__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -196,7 +196,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -270,7 +270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started_and_how_tos/emergency-break-glass/" class="md-nav__link">
+      <a href="../../../getting_started_and_how_tos/emergency-break-glass/" class="md-nav__link">
         
   
   
@@ -298,7 +298,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started_and_how_tos/developer_eks_access/" class="md-nav__link">
+      <a href="../../../getting_started_and_how_tos/developer_eks_access/" class="md-nav__link">
         
   
   
@@ -326,7 +326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started_and_how_tos/vault_access_for_developers/" class="md-nav__link">
+      <a href="../../../getting_started_and_how_tos/vault_access_for_developers/" class="md-nav__link">
         
   
   
@@ -354,7 +354,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started_and_how_tos/update_this_site/" class="md-nav__link">
+      <a href="../../../getting_started_and_how_tos/update_this_site/" class="md-nav__link">
         
   
   
@@ -382,7 +382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started_and_how_tos/pe-product-infra-map/" class="md-nav__link">
+      <a href="../../../getting_started_and_how_tos/pe-product-infra-map/" class="md-nav__link">
         
   
   
@@ -410,7 +410,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started_and_how_tos/impersonate_users_keycloak/" class="md-nav__link">
+      <a href="../../../getting_started_and_how_tos/impersonate_users_keycloak/" class="md-nav__link">
         
   
   
@@ -539,7 +539,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/secrets_management/restore_vault_backups/" class="md-nav__link">
+      <a href="../../../platform_services/secrets_management/restore_vault_backups/" class="md-nav__link">
         
   
   
@@ -567,7 +567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/secrets_management/faking_it_with_consul_and_vault/" class="md-nav__link">
+      <a href="../../../platform_services/secrets_management/faking_it_with_consul_and_vault/" class="md-nav__link">
         
   
   
@@ -650,7 +650,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/service_discovery/consul_incantations/" class="md-nav__link">
+      <a href="../../../platform_services/service_discovery/consul_incantations/" class="md-nav__link">
         
   
   
@@ -678,7 +678,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/service_discovery/fargate_service_discovery/" class="md-nav__link">
+      <a href="../../../platform_services/service_discovery/fargate_service_discovery/" class="md-nav__link">
         
   
   
@@ -761,7 +761,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/container_orchestration/deploying_apps_with_kubernetes/" class="md-nav__link">
+      <a href="../../../platform_services/container_orchestration/deploying_apps_with_kubernetes/" class="md-nav__link">
         
   
   
@@ -789,7 +789,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/container_orchestration/kubernetes_cookbook/" class="md-nav__link">
+      <a href="../../../platform_services/container_orchestration/kubernetes_cookbook/" class="md-nav__link">
         
   
   
@@ -872,7 +872,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/ci_cd/getting_started_with_concourse/" class="md-nav__link">
+      <a href="../../../platform_services/ci_cd/getting_started_with_concourse/" class="md-nav__link">
         
   
   
@@ -900,7 +900,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/ci_cd/deploying_concourse/" class="md-nav__link">
+      <a href="../../../platform_services/ci_cd/deploying_concourse/" class="md-nav__link">
         
   
   
@@ -928,7 +928,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/ci_cd/concourse_github_issues_user_guide/" class="md-nav__link">
+      <a href="../../../platform_services/ci_cd/concourse_github_issues_user_guide/" class="md-nav__link">
         
   
   
@@ -1011,7 +1011,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="md-nav__link">
+      <a href="../../../platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="md-nav__link">
         
   
   
@@ -1039,7 +1039,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/cloud_infrastructure/import_existing_resources_with_pulumi/" class="md-nav__link">
+      <a href="../../../platform_services/cloud_infrastructure/import_existing_resources_with_pulumi/" class="md-nav__link">
         
   
   
@@ -1067,7 +1067,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="md-nav__link">
+      <a href="../../../platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="md-nav__link">
         
   
   
@@ -1095,7 +1095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="md-nav__link">
+      <a href="../../../platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="md-nav__link">
         
   
   
@@ -1123,7 +1123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/cloud_infrastructure/moira_certificates/" class="md-nav__link">
+      <a href="../../../platform_services/cloud_infrastructure/moira_certificates/" class="md-nav__link">
         
   
   
@@ -1151,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/cloud_infrastructure/recaptcha/" class="md-nav__link">
+      <a href="../../../platform_services/cloud_infrastructure/recaptcha/" class="md-nav__link">
         
   
   
@@ -1179,7 +1179,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../platform_services/cloud_infrastructure/publishing_to_npm/" class="md-nav__link">
+      <a href="../../../platform_services/cloud_infrastructure/publishing_to_npm/" class="md-nav__link">
         
   
   
@@ -1219,18 +1219,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -1251,7 +1253,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1316,7 +1318,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/mitxonline_bulk_rescore/" class="md-nav__link">
+      <a href="../../openedx/mitxonline_bulk_rescore/" class="md-nav__link">
         
   
   
@@ -1344,7 +1346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/prove_build_was_deployed/" class="md-nav__link">
+      <a href="../../openedx/prove_build_was_deployed/" class="md-nav__link">
         
   
   
@@ -1372,7 +1374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/access_django_manage/" class="md-nav__link">
+      <a href="../../openedx/access_django_manage/" class="md-nav__link">
         
   
   
@@ -1400,7 +1402,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/enable_rapid_response_edxapp/" class="md-nav__link">
+      <a href="../../openedx/enable_rapid_response_edxapp/" class="md-nav__link">
         
   
   
@@ -1428,7 +1430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/mysql_access/" class="md-nav__link">
+      <a href="../../openedx/mysql_access/" class="md-nav__link">
         
   
   
@@ -1456,7 +1458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/retirement_pipeline/" class="md-nav__link">
+      <a href="../../openedx/retirement_pipeline/" class="md-nav__link">
         
   
   
@@ -1484,7 +1486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/release_upgrades/" class="md-nav__link">
+      <a href="../../openedx/release_upgrades/" class="md-nav__link">
         
   
   
@@ -1512,7 +1514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/retire_an_openedx_user/" class="md-nav__link">
+      <a href="../../openedx/retire_an_openedx_user/" class="md-nav__link">
         
   
   
@@ -1587,7 +1589,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/proctoring/proctortrack_integration_overview/" class="md-nav__link">
+      <a href="../../openedx/proctoring/proctortrack_integration_overview/" class="md-nav__link">
         
   
   
@@ -1615,7 +1617,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/proctoring/proctoring_js_architecture/" class="md-nav__link">
+      <a href="../../openedx/proctoring/proctoring_js_architecture/" class="md-nav__link">
         
   
   
@@ -1643,7 +1645,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/proctoring/earthfile_fix/" class="md-nav__link">
+      <a href="../../openedx/proctoring/earthfile_fix/" class="md-nav__link">
         
   
   
@@ -1671,7 +1673,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/openedx/proctoring/workers_json_requirements/" class="md-nav__link">
+      <a href="../../openedx/proctoring/workers_json_requirements/" class="md-nav__link">
         
   
   
@@ -1762,7 +1764,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/heroku_legacy/config_vars/" class="md-nav__link">
+      <a href="../../heroku_legacy/config_vars/" class="md-nav__link">
         
   
   
@@ -1790,7 +1792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/heroku_legacy/dynosaur_management/" class="md-nav__link">
+      <a href="../../heroku_legacy/dynosaur_management/" class="md-nav__link">
         
   
   
@@ -1818,7 +1820,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/heroku_legacy/log_drains/" class="md-nav__link">
+      <a href="../../heroku_legacy/log_drains/" class="md-nav__link">
         
   
   
@@ -1846,7 +1848,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/heroku_legacy/transition_postgres_db_to_rds/" class="md-nav__link">
+      <a href="../../heroku_legacy/transition_postgres_db_to_rds/" class="md-nav__link">
         
   
   
@@ -1929,7 +1931,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline/" class="md-nav__link">
+      <a href="../../ocw-studio/Update_OCW_Studio_Pipeline/" class="md-nav__link">
         
   
   
@@ -2012,7 +2014,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/ocw_site/accessing_s3_audit_logs/" class="md-nav__link">
+      <a href="../../ocw_site/accessing_s3_audit_logs/" class="md-nav__link">
         
   
   
@@ -2095,7 +2097,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/odlbot/Resetting_Doof_Github_Token/" class="md-nav__link">
+      <a href="../../odlbot/Resetting_Doof_Github_Token/" class="md-nav__link">
         
   
   
@@ -2123,7 +2125,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/odlbot/Resetting_Doof_NPM_Token/" class="md-nav__link">
+      <a href="../../odlbot/Resetting_Doof_NPM_Token/" class="md-nav__link">
         
   
   
@@ -2206,7 +2208,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/renovate/updating_renovate_config/" class="md-nav__link">
+      <a href="../../renovate/updating_renovate_config/" class="md-nav__link">
         
   
   
@@ -2289,7 +2291,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/jupyterhub/jupyterhub_admin_guide/" class="md-nav__link">
+      <a href="../../jupyterhub/jupyterhub_admin_guide/" class="md-nav__link">
         
   
   
@@ -2372,7 +2374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../application_specific_guides/mit-learn/mit_learn_service_diagram/" class="md-nav__link">
+      <a href="../../mit-learn/mit_learn_service_diagram/" class="md-nav__link">
         
   
   
@@ -2405,18 +2407,20 @@
                 
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" checked>
         
           
           <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
@@ -2437,7 +2441,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4_9">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2452,10 +2456,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../application_specific_guides/keycloak/inviting_users_to_realms/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inviting New Users to Keycloak Realms
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2471,6 +2502,76 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-access-to-keycloak-admin-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Access to Keycloak Admin Console
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting Access to Keycloak Admin Console">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-the-creds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Get The Creds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to-the-admin-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        To The Admin Console!
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actually-inviting-the-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actually Inviting The Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2545,7 +2646,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../monitoring_observability/overview/" class="md-nav__link">
+      <a href="../../../monitoring_observability/overview/" class="md-nav__link">
         
   
   
@@ -2573,7 +2674,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../monitoring_observability/inventory/" class="md-nav__link">
+      <a href="../../../monitoring_observability/inventory/" class="md-nav__link">
         
   
   
@@ -2601,7 +2702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../monitoring_observability/key_labels/" class="md-nav__link">
+      <a href="../../../monitoring_observability/key_labels/" class="md-nav__link">
         
   
   
@@ -2629,7 +2730,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../monitoring_observability/bump_sentry_credit/" class="md-nav__link">
+      <a href="../../../monitoring_observability/bump_sentry_credit/" class="md-nav__link">
         
   
   
@@ -2711,7 +2812,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../runbooks_post_mortems/oncall_runbook/" class="md-nav__link">
+      <a href="../../../runbooks_post_mortems/oncall_runbook/" class="md-nav__link">
         
   
   
@@ -2739,7 +2840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../runbooks_post_mortems/ol_production_outage_runbook/" class="md-nav__link">
+      <a href="../../../runbooks_post_mortems/ol_production_outage_runbook/" class="md-nav__link">
         
   
   
@@ -2767,7 +2868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../runbooks_post_mortems/20231030_xpro_outage/" class="md-nav__link">
+      <a href="../../../runbooks_post_mortems/20231030_xpro_outage/" class="md-nav__link">
         
   
   
@@ -2795,7 +2896,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../runbooks_post_mortems/20260324_mitlearn_outage/" class="md-nav__link">
+      <a href="../../../runbooks_post_mortems/20260324_mitlearn_outage/" class="md-nav__link">
         
   
   
@@ -2823,7 +2924,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../runbooks_post_mortems/openedx_clear_user_grades/" class="md-nav__link">
+      <a href="../../../runbooks_post_mortems/openedx_clear_user_grades/" class="md-nav__link">
         
   
   
@@ -2855,20 +2956,18 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
           <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
@@ -2889,7 +2988,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2904,37 +3003,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DevOps Patterns Cookbook
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../cookbooks_patterns/devops_patterns_cookbook/" class="md-nav__link">
         
   
   
@@ -2950,82 +3022,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#recipes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Recipes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Recipes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#traefik" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Traefik
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Traefik">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#token-based-authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Token Based Authentication
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3092,7 +3088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sso_onboarding/sso_config/" class="md-nav__link">
+      <a href="../../../sso_onboarding/sso_config/" class="md-nav__link">
         
   
   
@@ -3147,53 +3143,47 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#getting-access-to-keycloak-admin-console" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Summary
+        Getting Access to Keycloak Admin Console
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#recipes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Recipes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Recipes">
+    <nav class="md-nav" aria-label="Getting Access to Keycloak Admin Console">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#traefik" class="md-nav__link">
+  <a href="#get-the-creds" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Traefik
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Traefik">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#token-based-authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Token Based Authentication
+        Get The Creds
       
     </span>
   </a>
   
 </li>
         
-      </ul>
-    </nav>
+          <li class="md-nav__item">
+  <a href="#to-the-admin-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        To The Admin Console!
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actually-inviting-the-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actually Inviting The Users
+      
+    </span>
+  </a>
   
 </li>
         
@@ -3219,41 +3209,28 @@
 
 
 
-<h1 id="mit-ol-devops-patterns-cookbook">MIT OL Devops Patterns Cookbook</h1>
-<h2 id="summary">Summary</h2>
-<p>This document will serve as a place to put patterns and best practices.</p>
-<p>The goal is to ease the path for both new builders and experienced builders by
-helping narrow down the bevvy of choices and present a workable best practice
-solution to a given problem.</p>
-<p>There are many potential ways to organize a document like this, but for now I
-intend to start with the recipes broken down by infrastructure components.</p>
-<p>Example of what I mean are Docker, Traefik, Pyinfra and the like.</p>
-<p>Please write your recipes in the following form with <em>What I Want</em> and <em>How To
-Build It</em> as bold subsections.</p>
-<h2 id="recipes">Recipes</h2>
-<h3 id="traefik">Traefik</h3>
-<h4 id="token-based-authentication">Token Based Authentication</h4>
-<p><em>What I Want</em></p>
-<p>I want Traefik to allow requests only from clients that pass a particular token
-in the HTTP headers of the request. Here's an example <code>curl</code> from Tika with the
-actual token:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w">  </span>--header<span class="w"> </span><span class="s1">&#39;X-Access-Token: &lt;crazy hex digits&gt;&#39;</span><span class="w"> </span>https://tika-qa.odl.mit.edu
-</span></code></pre></div>
-<p><em>How To Build It</em></p>
-<p>Traefik does not contain this functionality by default, so we must leverage the
-<a href="https://plugins.traefik.io/plugins/628c9eda108ecc83915d7760/check-request-headers-plugin">checkheaders</a>
-Traefik middleware plugin.</p>
-<p>You will need to add a blob to your Traefik static configuration like this:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>experimental:
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  plugins:
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    checkheadersplugin:
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>      moduleName: &quot;github.com/dkijkuit/checkheadersplugin&quot;
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>      version: &quot;v0.2.6&quot;
-</span></code></pre></div>
-<p>Since we use <a href="https://pyinfra.com/">pyinfra</a> to automate our image builds,
-you'll need to add code like <a href="https://github.com/mitodl/ol-infrastructure/blob/b71388a4e0c2d6099ccbe92236301c5c30dc6154/src/bilder/images/tika/deploy.py#L110C1-L110C1">this</a>
-to your deploy.py and a line like <a href="https://github.com/mitodl/ol-infrastructure/blob/b71388a4e0c2d6099ccbe92236301c5c30dc6154/src/bilder/images/tika/files/docker-compose.yaml#L35">this</a>
-to your docker-compose.yaml file.</p>
+<h1 id="inviting-new-users-to-keycloak-domains">Inviting New users To Keycloak Domains</h1>
+<h2 id="getting-access-to-keycloak-admin-console">Getting Access to Keycloak Admin Console</h2>
+<h3 id="get-the-creds">Get The Creds</h3>
+<p>Browse to <a href="https://vault-production.odl.mit.edu">Vault Production</a> and be sure you can login successfully with your
+Github token.</p>
+<p>Once you've done that, navigate to the <a href="https://vault-production.odl.mit.edu/ui/vault/secrets/secret-keycloak/kv/keycloak-secrets/details?version=1">Keycloak
+Secret</a> and
+copy out the admin username (Psst. It's just admin) and admin password.</p>
+<h3 id="to-the-admin-console">To The Admin Console!</h3>
+<p>Now browse to the <a href="https://sso.ol.mit.edu/realms/master/protocol/openid-connect/auth?client_id=security-admin-console&amp;redirect_uri=https%3A%2F%2Fsso.ol.mit.edu%2Fadmin%2Fmaster%2Fconsole%2F&amp;state=4cd72daa-ed0a-434d-a953-56e352809416&amp;response_mode=query&amp;response_type=code&amp;scope=openid&amp;nonce=5dbae732-e882-42a2-854e-3a9e1207ab8e&amp;code_challenge=AiGAUtPNSYmDIz2TVo0yUbb8SNbRFzuD3Ex7aDz7bPI&amp;code_challenge_method=S256">Keycloak Admin
+Console</a>
+and use the credentials we fetched in the previous step to login.</p>
+<p>You should now see a "Welcome to Keycloak!" page. You're in!</p>
+<h3 id="actually-inviting-the-users">Actually Inviting The Users</h3>
+<p>First, navigate to the domain you want to invite users to.</p>
+<p>Click the hamburger menu (Square with three lines) in the upper right, and click "Manage Realms".</p>
+<p>Now click the realm you want to invite users to, say "ol-platform-engineering".</p>
+<p>Again, go back to the hamburger menu and click "Organizations". Choose the relevant one.
+(Probably MIT or Arbisoft for employees of those orgs, respectively.)</p>
+<p>You'll see an "Invitations" tab under "Members". Click that and then click "Invite Member".</p>
+<p>Enter their first name, last name and correct E-mail in the dialog, click Submit, and you'll see
+a notification about the invite being sent. You're done!</p>
 
 
 
@@ -3303,10 +3280,10 @@ to your docker-compose.yaml file.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
