@@ -83,6 +83,8 @@ nav:
           - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
       - MIT Learn:
           - MIT Learn Service Diagram: application_specific_guides/mit-learn/mit_learn_service_diagram.md
+      - Keycloak:
+          - Inviting New Users to Keycloak Realms: application_specific_guides/keycloak/inviting_users_to_realms.md
   - Monitoring And Observability:
       - Overview: monitoring_observability/overview.md
       - Inventory: monitoring_observability/inventory.md
