@@ -9,25 +9,25 @@
       
       
       
-        <link rel="prev" href="../../renovate/updating_renovate_config/">
+        <link rel="prev" href="../20260324_mitlearn_outage/">
       
       
-        <link rel="next" href="../../mit-learn/mit_learn_service_diagram/">
+        <link rel="next" href="../openedx_clear_user_grades/">
       
       
         
       
       
-      <link rel="icon" href="../../../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>JupyterHub Admin Guide - Platform Engineering Documentation</title>
+        <title>20260603 MIT XPro Certificate Outage Post Mortem - Platform Engineering Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -46,7 +46,7 @@
       
     
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architecture" class="md-skip">
+        <a href="#mix-xpro-outage-7" class="md-skip">
           Skip to content
         </a>
       
@@ -80,7 +80,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="Platform Engineering Documentation" class="md-header__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
+    <a href="../.." title="Platform Engineering Documentation" class="md-header__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              JupyterHub Admin Guide
+              20260603 MIT XPro Certificate Outage Post Mortem
             
           </span>
         </div>
@@ -178,7 +178,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="Platform Engineering Documentation" class="md-nav__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
+    <a href="../.." title="Platform Engineering Documentation" class="md-nav__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -196,7 +196,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -270,7 +270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/emergency-break-glass/" class="md-nav__link">
+      <a href="../../getting_started_and_how_tos/emergency-break-glass/" class="md-nav__link">
         
   
   
@@ -298,7 +298,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/developer_eks_access/" class="md-nav__link">
+      <a href="../../getting_started_and_how_tos/developer_eks_access/" class="md-nav__link">
         
   
   
@@ -326,7 +326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/vault_access_for_developers/" class="md-nav__link">
+      <a href="../../getting_started_and_how_tos/vault_access_for_developers/" class="md-nav__link">
         
   
   
@@ -354,7 +354,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/update_this_site/" class="md-nav__link">
+      <a href="../../getting_started_and_how_tos/update_this_site/" class="md-nav__link">
         
   
   
@@ -382,7 +382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/pe-product-infra-map/" class="md-nav__link">
+      <a href="../../getting_started_and_how_tos/pe-product-infra-map/" class="md-nav__link">
         
   
   
@@ -410,7 +410,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/impersonate_users_keycloak/" class="md-nav__link">
+      <a href="../../getting_started_and_how_tos/impersonate_users_keycloak/" class="md-nav__link">
         
   
   
@@ -539,7 +539,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/secrets_management/restore_vault_backups/" class="md-nav__link">
+      <a href="../../platform_services/secrets_management/restore_vault_backups/" class="md-nav__link">
         
   
   
@@ -567,7 +567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/secrets_management/faking_it_with_consul_and_vault/" class="md-nav__link">
+      <a href="../../platform_services/secrets_management/faking_it_with_consul_and_vault/" class="md-nav__link">
         
   
   
@@ -650,7 +650,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/service_discovery/consul_incantations/" class="md-nav__link">
+      <a href="../../platform_services/service_discovery/consul_incantations/" class="md-nav__link">
         
   
   
@@ -678,7 +678,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/service_discovery/fargate_service_discovery/" class="md-nav__link">
+      <a href="../../platform_services/service_discovery/fargate_service_discovery/" class="md-nav__link">
         
   
   
@@ -761,7 +761,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/container_orchestration/deploying_apps_with_kubernetes/" class="md-nav__link">
+      <a href="../../platform_services/container_orchestration/deploying_apps_with_kubernetes/" class="md-nav__link">
         
   
   
@@ -789,7 +789,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/container_orchestration/kubernetes_cookbook/" class="md-nav__link">
+      <a href="../../platform_services/container_orchestration/kubernetes_cookbook/" class="md-nav__link">
         
   
   
@@ -872,7 +872,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/ci_cd/getting_started_with_concourse/" class="md-nav__link">
+      <a href="../../platform_services/ci_cd/getting_started_with_concourse/" class="md-nav__link">
         
   
   
@@ -900,7 +900,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/ci_cd/deploying_concourse/" class="md-nav__link">
+      <a href="../../platform_services/ci_cd/deploying_concourse/" class="md-nav__link">
         
   
   
@@ -928,7 +928,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/ci_cd/concourse_github_issues_user_guide/" class="md-nav__link">
+      <a href="../../platform_services/ci_cd/concourse_github_issues_user_guide/" class="md-nav__link">
         
   
   
@@ -1011,7 +1011,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="md-nav__link">
         
   
   
@@ -1039,7 +1039,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/import_existing_resources_with_pulumi/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/import_existing_resources_with_pulumi/" class="md-nav__link">
         
   
   
@@ -1067,7 +1067,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="md-nav__link">
         
   
   
@@ -1095,7 +1095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="md-nav__link">
         
   
   
@@ -1123,7 +1123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/moira_certificates/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/moira_certificates/" class="md-nav__link">
         
   
   
@@ -1151,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/recaptcha/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/recaptcha/" class="md-nav__link">
         
   
   
@@ -1179,7 +1179,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../platform_services/cloud_infrastructure/publishing_to_npm/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/publishing_to_npm/" class="md-nav__link">
         
   
   
@@ -1219,20 +1219,18 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -1253,7 +1251,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1318,7 +1316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/mitxonline_bulk_rescore/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/mitxonline_bulk_rescore/" class="md-nav__link">
         
   
   
@@ -1346,7 +1344,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/prove_build_was_deployed/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/prove_build_was_deployed/" class="md-nav__link">
         
   
   
@@ -1374,7 +1372,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/access_django_manage/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/access_django_manage/" class="md-nav__link">
         
   
   
@@ -1402,7 +1400,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/enable_rapid_response_edxapp/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/enable_rapid_response_edxapp/" class="md-nav__link">
         
   
   
@@ -1430,7 +1428,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/mysql_access/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/mysql_access/" class="md-nav__link">
         
   
   
@@ -1458,7 +1456,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/retirement_pipeline/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/retirement_pipeline/" class="md-nav__link">
         
   
   
@@ -1486,7 +1484,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/release_upgrades/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/release_upgrades/" class="md-nav__link">
         
   
   
@@ -1514,7 +1512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/retire_an_openedx_user/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/retire_an_openedx_user/" class="md-nav__link">
         
   
   
@@ -1589,7 +1587,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/proctoring/proctortrack_integration_overview/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/proctoring/proctortrack_integration_overview/" class="md-nav__link">
         
   
   
@@ -1617,7 +1615,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/proctoring/proctoring_js_architecture/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/proctoring/proctoring_js_architecture/" class="md-nav__link">
         
   
   
@@ -1645,7 +1643,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/proctoring/earthfile_fix/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/proctoring/earthfile_fix/" class="md-nav__link">
         
   
   
@@ -1673,7 +1671,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../openedx/proctoring/workers_json_requirements/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/proctoring/workers_json_requirements/" class="md-nav__link">
         
   
   
@@ -1764,7 +1762,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../heroku_legacy/config_vars/" class="md-nav__link">
+      <a href="../../application_specific_guides/heroku_legacy/config_vars/" class="md-nav__link">
         
   
   
@@ -1792,7 +1790,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../heroku_legacy/dynosaur_management/" class="md-nav__link">
+      <a href="../../application_specific_guides/heroku_legacy/dynosaur_management/" class="md-nav__link">
         
   
   
@@ -1820,7 +1818,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../heroku_legacy/log_drains/" class="md-nav__link">
+      <a href="../../application_specific_guides/heroku_legacy/log_drains/" class="md-nav__link">
         
   
   
@@ -1848,7 +1846,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../heroku_legacy/transition_postgres_db_to_rds/" class="md-nav__link">
+      <a href="../../application_specific_guides/heroku_legacy/transition_postgres_db_to_rds/" class="md-nav__link">
         
   
   
@@ -1931,7 +1929,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ocw-studio/Update_OCW_Studio_Pipeline/" class="md-nav__link">
+      <a href="../../application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline/" class="md-nav__link">
         
   
   
@@ -2014,7 +2012,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ocw_site/accessing_s3_audit_logs/" class="md-nav__link">
+      <a href="../../application_specific_guides/ocw_site/accessing_s3_audit_logs/" class="md-nav__link">
         
   
   
@@ -2097,7 +2095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../odlbot/Resetting_Doof_Github_Token/" class="md-nav__link">
+      <a href="../../application_specific_guides/odlbot/Resetting_Doof_Github_Token/" class="md-nav__link">
         
   
   
@@ -2125,7 +2123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../odlbot/Resetting_Doof_NPM_Token/" class="md-nav__link">
+      <a href="../../application_specific_guides/odlbot/Resetting_Doof_NPM_Token/" class="md-nav__link">
         
   
   
@@ -2208,7 +2206,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../renovate/updating_renovate_config/" class="md-nav__link">
+      <a href="../../application_specific_guides/renovate/updating_renovate_config/" class="md-nav__link">
         
   
   
@@ -2241,20 +2239,18 @@
                 
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
         
           
           <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
@@ -2275,7 +2271,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_7">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2290,19 +2286,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../application_specific_guides/jupyterhub/jupyterhub_admin_guide/" class="md-nav__link">
         
   
   
@@ -2318,7 +2305,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -2386,7 +2372,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mit-learn/mit_learn_service_diagram/" class="md-nav__link">
+      <a href="../../application_specific_guides/mit-learn/mit_learn_service_diagram/" class="md-nav__link">
         
   
   
@@ -2469,7 +2455,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../keycloak/inviting_users_to_realms/" class="md-nav__link">
+      <a href="../../application_specific_guides/keycloak/inviting_users_to_realms/" class="md-nav__link">
         
   
   
@@ -2559,7 +2545,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/overview/" class="md-nav__link">
+      <a href="../../monitoring_observability/overview/" class="md-nav__link">
         
   
   
@@ -2587,7 +2573,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/inventory/" class="md-nav__link">
+      <a href="../../monitoring_observability/inventory/" class="md-nav__link">
         
   
   
@@ -2615,7 +2601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/key_labels/" class="md-nav__link">
+      <a href="../../monitoring_observability/key_labels/" class="md-nav__link">
         
   
   
@@ -2643,7 +2629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/bump_sentry_credit/" class="md-nav__link">
+      <a href="../../monitoring_observability/bump_sentry_credit/" class="md-nav__link">
         
   
   
@@ -2675,18 +2661,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
           <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
@@ -2707,7 +2695,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2725,7 +2713,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/oncall_runbook/" class="md-nav__link">
+      <a href="../oncall_runbook/" class="md-nav__link">
         
   
   
@@ -2753,7 +2741,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/ol_production_outage_runbook/" class="md-nav__link">
+      <a href="../ol_production_outage_runbook/" class="md-nav__link">
         
   
   
@@ -2781,7 +2769,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/20231030_xpro_outage/" class="md-nav__link">
+      <a href="../20231030_xpro_outage/" class="md-nav__link">
         
   
   
@@ -2809,7 +2797,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/20260324_mitlearn_outage/" class="md-nav__link">
+      <a href="../20260324_mitlearn_outage/" class="md-nav__link">
         
   
   
@@ -2834,10 +2822,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/20260603_xpro_outage/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20260603 MIT XPro Certificate Outage Post Mortem
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2853,6 +2868,181 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timestamps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🕐 Timestamps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔗 Links
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ---
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ---
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="---">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2026-06-03-xpro-production-outage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2026-06-03 - XPro Production Outage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#leadup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Leadup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fault" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fault
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#root-causes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Root causes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mitigation-and-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mitigation and resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lessons-learnt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lessons learnt
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ---
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2865,7 +3055,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/openedx_clear_user_grades/" class="md-nav__link">
+      <a href="../openedx_clear_user_grades/" class="md-nav__link">
         
   
   
@@ -2947,7 +3137,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../cookbooks_patterns/devops_patterns_cookbook/" class="md-nav__link">
+      <a href="../../cookbooks_patterns/devops_patterns_cookbook/" class="md-nav__link">
         
   
   
@@ -3029,7 +3219,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../sso_onboarding/sso_config/" class="md-nav__link">
+      <a href="../../sso_onboarding/sso_config/" class="md-nav__link">
         
   
   
@@ -3077,6 +3267,169 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timestamps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🕐 Timestamps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔗 Links
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ---
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ---
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="---">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2026-06-03-xpro-production-outage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2026-06-03 - XPro Production Outage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#leadup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Leadup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fault" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fault
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#root-causes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Root causes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mitigation-and-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mitigation and resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lessons-learnt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lessons learnt
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ---
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3092,70 +3445,161 @@
 
 
 
-<h1 id="architecture">Architecture</h1>
-<p><img alt="Jupyterhub Architectural Diagram" src="../jupyterhub_box_diagram.svg" /></p>
-<h1 id="image-building">Image Building</h1>
-<p>https://github.mit.edu/ol-notebooks is an org containing a template repository and all course repositories. Each course repository contains a Dockerfile and requirements.txt file alongside any Jupyter notebooks and data.</p>
-<p>Concourse runs a <a href="https://cicd.odl.mit.edu/?search=team%3A%22infrastructure%22%20group%3A%22jupyter_notebook_docker_image_build%22">parameterized job</a> which pulls from the course repositories, constructs a docker image to bundle everything together and push to a <a href="https://us-east-1.console.aws.amazon.com/ecr/repositories/private/610119931565/ol-course-notebooks?region=us-east-1">private ECR repository</a> we maintain. The dockerfiles use the <a href="https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-pytorch-notebook">official Jupyter pytorch docker images</a> as a base and install tensorflow as well. The code to provision the pipelines is <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_concourse/pipelines/container_images/jupyter_courses.py">here</a> and the Pulumi code to set up the ECR repository is <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/infrastructure/aws/ecr/__main__.py">here</a>.</p>
-<h1 id="jupyterhub">Jupyterhub</h1>
-<p>Jupyterhub will use the <a href="https://github.com/jupyterhub/kubespawner">KubeSpawner library</a> (with some very slight modifications to enable <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py">image selection via query param</a>) to allow users to start up and interact with a set of images we maintain. For courses, this will involve Jupyterhub starting up a notebook server for the user by pulling the corresponding course image from ECR.</p>
-<p>The backing database is a Postgres RDS instance.</p>
-<p>Images are pre-pulled via <a href="https://z2jh.jupyter.org/en/stable/administrator/optimization.html#pulling-images-before-users-arrive">continuous-pre-puller</a> daemonsets. This is currently configured to pull all 4 existing images we build and maintain via specification of an extraImages block.</p>
-<p>Jupyterhub domains are currently gated by an SSO login to the olapps Keycloak realm. Once authenticated with Keycloak, Jupyterhub is set up to use the TmpAuthenticator class. When accessing the /tmplogin endpoint provided by the authenticator, Jupyterhub will unconditionally authenticate users as a random UUID. This ensures that users can spin up ephemeral notebooks provided they are able to authenticate with MIT Learn.</p>
-<p>Culling is performed via the <a href="https://github.com/jupyterhub/jupyterhub-idle-culler">jupyterhub-idle-culler</a> configured via <a href="https://z2jh.jupyter.org/en/latest/resources/reference.html#cull">Helm chart</a>. It currently culls both running, inactive servers as well as users. Culling users is important as we will accumulate UUID-keyed users and sessions in the database over time.</p>
-<h1 id="monitoring">Monitoring</h1>
-<p>We maintain a <a href="https://mitolproduction.grafana.net/d/ds6qvrm/jupyter-notebooks">Grafana dashboard</a> which shows some basic metrics about the Jupyterhub deployment. This includes:</p>
+<h1 id="mix-xpro-outage-7"><strong>MIX XPro Outage #7</strong></h1>
+<h2 id="overview"><strong>Overview</strong></h2>
+<p>Author: Christoper Patti<br />
+Severity:   SEV1<br />
+Types:    Customer Facing</p>
+<h4 id="timestamps"><strong>🕐 Timestamps</strong></h4>
+<p>Started At: June 3 3:38 PM EDT<br />
+Mitigated At: June 3 4:38 PM EDT<br />
+Resolved At: June 3 4:38 PM EDT</p>
+<h4 id="links"><strong>🔗 Links</strong></h4>
+<p><a href="https://rootly.com/account/incidents/7-https-xpro-mit-edu-outage">Incident Page</a>  |  <a href="https://slack.com/app_redirect?channel=C0B821X9N3G&amp;team=T04JRPJF6">Slack channel</a></p>
+<h4 id="-">---</h4>
+<p><strong>Summary</strong></p>
+<p>503 certificate renewal error</p>
+<h2 id="-_1">---</h2>
+<p><strong>📝 Retrospective</strong></p>
+<h3 id="2026-06-03-xpro-production-outage"><strong>2026-06-03 - XPro Production Outage</strong></h3>
+<h3 id="leadup"><strong>Leadup</strong></h3>
+<p>We received an alert at 3:38 PM first that the XPro Production CMS and then the main XPro app were vending 503 errors to customers.</p>
+<p><a href="https://rootly.com/account/alerts/MIBSZ8">CMS Alert</a>
+<a href="https://rootly.com/account/alerts/B6RY2m">Main XPro Site Alert</a></p>
+<h3 id="fault"><strong>Fault</strong></h3>
+<p>The SSL certificate for <a href="https://xpro.mit.edu">https://xpro.mit.edu</a> failed to renew</p>
+<h3 id="detection"><strong>Detection</strong></h3>
+<p>Tobias asked Claude to scan the logs and diagnose the issue at 4:27 PM<br />
+Sequence diagnosis from Claude:<br />
+Root Cause: xpro-cert — Certificate Expired, ACME Order Gone Stale</p>
+<p>### Timeline</p>
+<p>┌──────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐<br />
+ │ Date                 │ Event                                                                                                                                 │<br />
+ ├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤<br />
+ │ 2026-03-05           │ Certificate issued (revision 1), valid for 90 days                                                                                    │<br />
+ ├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤<br />
+ │ 2026-05-04           │ Renewal triggered (30-day window) — xpro-cert-2 CertificateRequest + Order xpro-cert-2-1040610603 created                             │<br />
+ ├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤<br />
+ │ 2026-05-04 → +7 days │ DNS-01 challenge xpro-cert-2-…-3359721776 for xpro-web.odl.mit.edu never completed → Let's Encrypt deactivated the ACME authorization │<br />
+ ├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤<br />
+ │ \~30 days later       │ Challenge state: expired; LE garbage-collected order 507326254665 from their side                                                     │<br />
+ ├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤<br />
+ │ 2026-06-03 19:29 UTC │ Certificate expired                                                                                                                   │<br />
+ ├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤<br />
+ │ 2026-06-03 20:16 UTC │ cert-manager pod restarted (was at 3m59s age) — re-evaluated the order                                                                │<br />
+ ├──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤<br />
+ │ 2026-06-03 20:18 UTC │ cert-manager hit LE API → 404: No order for ID 507326254665 → marked issuance Failed                                                  │<br />
+ └──────────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘</p>
+<p>### Current State</p>
+<p>Certificate xpro-cert:       READY=False, Reason=Expired+Failed<br />
+   CertificateRequest xpro-cert-2: APPROVED but READY=False (Failed)<br />
+   Order xpro-cert-2-1040610603:   state=errored (LE returned 404)<br />
+   Challenge xpro-cert-2-…:        state=expired</p>
+<p>### Why did the DNS-01 challenge fail 30 days ago?</p>
+<p>The ClusterIssuer correctly selects dns01.route53: {} for *.odl.mit.edu. The challenge expired — meaning cert-manager either:<br />
+ 1. Created the _acme-challenge.xpro-web.odl.mit.edu TXT record in Route53 but Let's Encrypt's validation never succeeded (IAM permissions, DNS propagation issue, or the cert-manager pod was unstable), or<br />
+ 2. cert-manager crashed before it could place the record (that cert-manager pod restart at 20:16 today suggests instability — worth checking if this was a recurring pattern over the past 30 days)</p>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>Immediate Fix</p>
+<p>cert-manager is stuck because it sees FailedIssuanceAttempts=1 and its backoff hasn't elapsed yet. Delete the failed CertificateRequest — cert-manager will immediately create a new one and retry:</p>
+<p>```bash<br />
+   # Delete the stale CertificateRequest (the Order is owned by it and will be GC'd)<br />
+   kubectl --context applications-production delete certificaterequest xpro-cert-2 -n xpro</p>
+<p># Also clean up the stale first request<br />
+   kubectl --context applications-production delete certificaterequest xpro-cert-1 -n xpro</p>
+<p># Watch the new attempt<br />
+   kubectl --context applications-production get certificaterequests,orders,challenges -n xpro -w  </p>
+<p>cert-manager will create xpro-cert-3, a new Order, and a new DNS-01 challenge for _acme-challenge.xpro-web.odl.mit.edu in Route53.</p>
+<p>Investigate the cert-manager Restart</p>
+<p>Check whether this pod has been crashing repeatedly over the past 30 days (which would explain the challenge never completing):</p>
+<p>bash<br />
+   # Check restart count and previous logs<br />
+   kubectl --context applications-production get pod -n operations cert-manager-79db76488d-zxscj -o jsonpath='{.status.containerStatuses[0].restartCount}'</p>
+<p># Previous terminated container logs<br />
+   kubectl --context applications-production logs -n operations cert-manager-79db76488d-zxscj --previous 2&gt;&amp;1 | tail -50  </p>
+<p>Relevant Code Reference</p>
+<p>In src/ol_infrastructure/applications/xpro/_main_.py (line \~`cert_manager_certificate`), the cert is configured as:</p>
+<p>python<br />
+   OLCertManagerCertConfig(<br />
+       application_name="xpro",<br />
+       k8s_namespace="xpro",<br />
+       create_apisixtls_resource=True,<br />
+       dest_secret_name="xpro-tls-pair",<br />
+       dns_names=[app_domain],   # → "xpro-web.odl.mit.edu"<br />
+   )  </p>
+<p>xpro-web.odl.mit.edu correctly matches the .odl.mit.edu selector in the ClusterIssuer, so it uses DNS-01 via Route53. The Pulumi code itself is correct — this is a runtime cert-manager/ACME issue, not a code defect.<br />
+```</p>
+<h3 id="root-causes"><strong>Root causes</strong></h3>
 <ul>
-<li><code>kube_pod_container_info</code>: shows which images notebook containers are currently running.</li>
-<li><code>kube_pod_container_status_restarts_total</code>: shows how many times notebook containers have restarted. This being non-zero may be indicative of OOMKills.</li>
+<li><strong>Why was the XPro production site vending 503 cert invalid errors to customers?</strong><br />
+<strong>- Because the Kubernetes CertManager renewal attempt had failed and its backoff period had not expired.</strong>  </li>
+<li><strong>Why did the Kubernetes ACME CertManager renewal fail?</strong><br />
+<strong>- Because 30 days prior a bug in our Pulumi fastly code errantly instructed Fastly to generate a certificate for the XPro back-end in addition to the front-end which it properly controls.</strong>   </li>
+<li><strong>Why did the Pulumi fastly code fail?</strong><br />
+<strong>- Because a for loop omitted a necessary conditional to skip the back-end domain</strong></li>
 </ul>
-<h2 id="authoring-workflow">Authoring Workflow</h2>
-<h3 id="adding-a-new-course">Adding a New Course</h3>
-<p>At the moment, adding a new course involves a few manual steps:</p>
-<ol>
-<li>Create a new repository in the <a href="https://github.mit.edu/ol-notebooks">ol-notebooks</a> org using the <a href="https://github.mit.edu/ol-notebooks/ol-notebook-repo-template">template repo</a>.</li>
-<li>Author your changes. If you started from the template repo, the only required changes you'll need to make are adding your notebooks and data, adding any dependencies to either requirements.txt or the Dockerfile, and ensuring that the Dockerfile copies your notebooks and data into the ${NB_USER} home directory. Sometimes this will be done for you by the course authors.<ul>
-<li>Here's an example of a PR which adds a notebook and data files to a fresh course repo: https://github.mit.edu/ol-notebooks/UAI_SOURCE-UAI.ST.1-1T2026/pull/1</li>
-<li>Note that there's a 100mb limit on files checked into the repo. If the course requires larger data files, they need to either be hosted externally or compressed and unzipped at runtime.</li>
-</ul>
-</li>
-<li>Make changes to ol-infrastructure to add a new image build job in Concourse. This involves adding a new job to the <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_concourse/pipelines/container_images/jupyter_courses.py">jupyter_courses.py</a> file and provisioning the new pipeline via fly command. Additionally, add the new image to the QueryStringKubeSpawner's <code>KNOWN_IMAGES</code> in <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py">dynamicImageConfig.py</a> and to <code>COURSE_NAMES</code> in <a href="https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/__main__.py">JupyterHub's Pulumi code</a>.<ul>
-<li>If the notebook requires GPU resources, also add the new course to the <code>GPU_ENABLED_COURSES</code> in <code>dynamicImageConfig.py</code></li>
-<li>Here's an example PR which added a new course called <code>uai_source-uai.intro</code>: https://github.com/mitodl/ol-infrastructure/pull/3630</li>
-</ul>
-</li>
-<li>Apply your ol-infrastructure changes to the dev/stage/prod environments and unpause your new Concourse job to start building the image.</li>
-<li>Once the image is built and pushed to ECR, you should be able to start a new notebook server using the new image. You can construct the URL using the following format: <code>https://nb.learn.mit.edu/tmplogin?course=&lt;IMAGE_TAG&gt;&amp;notebook=&lt;URL_ENCODED_PATH_TO_NOTEBOOK_FILE&gt;</code>.<ul>
-<li>For example, if your image URI is <code>610119931565.dkr.ecr.us-east-1.amazonaws.com/ol-course-notebooks:uai_source-uai.intro</code> and your notebook is at <code>lectures/lecture1/mod5_lec1.ipynb</code>, the URL would be <code>https://nb.learn.mit.edu/tmplogin?course=uai_source-uai.intro&amp;notebook=lectures%2Flecture1%2Fmod5_lec1.ipynb</code>.</li>
-</ul>
-</li>
-<li>Lastly, open the link and run the entire notebook. This will help you catch any dependency issues or let you know if the notebook uses too much memory to execute. See the Troubleshooting section for more details on common failure modes you might encounter.</li>
-</ol>
-<h3 id="updating-an-existing-course">Updating an Existing Course</h3>
-<p>The steps for updating a new course are a subset of the steps for adding a new course:</p>
-<ol>
-<li>Author your changes in the course repo. If it is an update to an existing course, it should already have a Concourse build pipeline which will automatically attempt to build an updated image.</li>
-<li>Once the image is built, you should be able to start a notebook server with the updated image automatically. If you adjusted the notebook directory structure, you may need to construct a new URL, but you will not need to make any additional infrastructure changes.</li>
-<li>Test the updated image by running through the notebook as you would for a new one.</li>
-</ol>
-<h3 id="troubleshooting">Troubleshooting</h3>
-<p>If you run into issues attempting to run a course image, here are some common things to check:</p>
-<ul>
-<li>If you get the wrong image when you log in, verify that you've specified the right course parameter and that the value is in <code>KNOWN_IMAGES</code> in <code>dynamicImageConfig.py</code>.</li>
-<li>If the image starts but you get a 404, verify that the notebook path is correct and URL encoded.</li>
-<li>You may need to change the <code>COPY</code> command in the dockerfile depending on the file structure of the repo. By default it expects all files to be in the root and handles copying it correctly, but by convention existing courses use file structures like <code>assignments/assignment1/mod1_assign1.ipynb</code>, which requires a Dockerfile change.</li>
-<li>If a notebook starts misbehaving while you're running code, it may be an OOMKill. This can manifest in a few ways such as being unable to run more code, or a popup mentioning that the file on disk has changed unexpectedly.</li>
-<li>Validating this directly is tricky and the most direct way to validate it is by watching <code>top</code> in a shell on the pod running your notebook. However, for cases where the OOMKill results in the pod restarting, it should appear on <a href="https://mitolproduction.grafana.net/d/ds6qvrm/jupyter-notebooks?orgId=1&amp;from=now-6h&amp;to=now&amp;timezone=browser&amp;viewPanel=panel-2">this graph</a></li>
-<li>The code itself may have issues. The specific way it manifests varies widely, but a few common ones are:</li>
-<li>Missing dependencies, resulting in import errors. If an inline <code>!pip install</code> resolves the issue, add the pinned dependency to requirements.txt.</li>
-<li>Missing data files, resulting in a <code>FileNotFoundError</code>. Typically this involves asking the course authors to provide you with the data, or ensuring that the file is where the code expects it to be.</li>
-<li>GPU-related issues when using PyTorch or Tensorflow.<ul>
-<li>Notebooks that use Tensorflow features may need to use a Tensorflow-specific base image. Modify the <code>FROM</code> directive in the course's Dockerfile as seen <a href="https://github.mit.edu/ol-notebooks/UAI_SOURCE-UAI.12-3T2025/commit/5e29f917408adc5899982607dbf06f85fb2b0530">here</a></li>
-<li>Ensure that if a course needs a GPU-enabled node that the course it is added to the <code>GPU_ENABLED_COURSES</code> set in <a href="https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py#L49-L63">dynamicImageConfig.py</a></li>
-</ul>
-</li>
-<li>Code output seems suspicious or incorrect when compared to the provided notebook content. Sometimes this is obvious (e.g. a plot that looks nonsensical), other times it may be more subtle (e.g. a model training to suspiciously low accuracy). In these cases, it's best to reach out to the course authors for help if you're not an expert in the course material.</li>
-</ul>
+<h3 id="mitigation-and-resolution"><strong>Mitigation and resolution</strong></h3>
+<p>As Claude suggested Tobias deleted and re-created the certificate object manually which resolved the immediate issue.</p>
+<h3 id="lessons-learnt"><strong>Lessons learnt</strong></h3>
+<p>We prevented this problem from recurring <a href="https://github.com/mitodl/ol-infrastructure/pull/4713">with this pull request</a>. We welcome feedback on how we might test for this kind of edge case in a generalized way. Trying to test the subtle interactions of 3 cloud services is highly problematic.</p>
+<h2 id="-_2">---</h2>
+<p><strong>⌛ Timeline</strong></p>
+<p><a href="https://rootly.com/account/incidents/7-https-xpro-mit-edu-outage?tab=timeline">View on Rootly</a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;">User</th>
+<th style="text-align: left;">Event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">June 3 4:08 PM EDT</td>
+<td style="text-align: left;">web</td>
+<td style="text-align: left;">Christoper Patti</td>
+<td style="text-align: left;">Christoper Patti created this incident</td>
+</tr>
+<tr>
+<td style="text-align: left;">June 3 3:38 PM EDT</td>
+<td style="text-align: left;">web</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Initial alert received</td>
+</tr>
+<tr>
+<td style="text-align: left;">June 3 4:08 PM EDT</td>
+<td style="text-align: left;">web</td>
+<td style="text-align: left;">Christoper Patti</td>
+<td style="text-align: left;">Started date has been set to June 3 4:08 PM EDT  </td>
+</tr>
+<tr>
+<td style="text-align: left;">June 3 4:08 PM EDT</td>
+<td style="text-align: left;">web</td>
+<td style="text-align: left;">Rootly</td>
+<td style="text-align: left;">  <a href="https://slack.com/app_redirect?channel=C0B821X9N3G&amp;team=T04JRPJF6">Slack Channel</a> has been created</td>
+</tr>
+<tr>
+<td style="text-align: left;">June 3 4:38 PM EDT</td>
+<td style="text-align: left;">web</td>
+<td style="text-align: left;">Tobias Macey</td>
+<td style="text-align: left;">Incident has been resolved</td>
+</tr>
+<tr>
+<td style="text-align: left;">June 3 4:38 PM EDT</td>
+<td style="text-align: left;">web</td>
+<td style="text-align: left;">Tobias Macey</td>
+<td style="text-align: left;">Mitigated date has been set to June 3 4:38 PM EDT  </td>
+</tr>
+<tr>
+<td style="text-align: left;">June 3 4:38 PM EDT</td>
+<td style="text-align: left;">web</td>
+<td style="text-align: left;">Tobias Macey</td>
+<td style="text-align: left;">Resolved date has been set to June 3 4:38 PM EDT  </td>
+</tr>
+</tbody>
+</table>
+<hr />
 
 
 
@@ -3205,10 +3649,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
