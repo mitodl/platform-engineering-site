@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../inventory/">
+        <link rel="prev" href="../bump_sentry_credit/">
       
       
-        <link rel="next" href="../bump_sentry_credit/">
+        <link rel="next" href="../../runbooks_post_mortems/oncall_runbook/">
       
       
         
@@ -23,7 +23,7 @@
     
     
       
-        <title>Key Labels - Platform Engineering Documentation</title>
+        <title>Managing Rootly - Platform Engineering Documentation</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#key-labels-used-by-odl" class="md-skip">
+        <a href="#managing-rootly-with-ol-rootly-manager" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Key Labels
+              Managing Rootly
             
           </span>
         </div>
@@ -2600,37 +2600,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Key Labels
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../key_labels/" class="md-nav__link">
         
   
   
@@ -2646,59 +2619,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#environments" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Environments
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#services" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Services
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#applications" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Applications
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2736,10 +2656,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../rootly_management/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managing Rootly
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2755,6 +2702,258 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-code-managed-rootly-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why code-managed Rootly config?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --report
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --export
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-import-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --import [FILE]
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-pulumi-import-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --pulumi-import [FILE]
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-day-to-day-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The day-to-day workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resource-types-managed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resource types managed
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alert-routing-in-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alert routing in depth
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-llms-to-map-alerts-to-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using LLMs to map alerts to services
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using LLMs to map alerts to services">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-general-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The general pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapping-a-new-alert-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mapping a new alert source
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auditing-coverage-gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auditing coverage gaps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bulk-renaming-or-restructuring-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk renaming or restructuring services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generating-descriptions-for-undocumented-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generating descriptions for undocumented services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tips-for-effective-llm-assisted-rootly-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tips for effective LLM-assisted Rootly work
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migrating-to-pulumi-iac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migrating to Pulumi IaC
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -3180,10 +3379,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#environments" class="md-nav__link">
+  <a href="#why-code-managed-rootly-config" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Environments
+        Why code-managed Rootly config?
       
     </span>
   </a>
@@ -3191,10 +3390,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#services" class="md-nav__link">
+  <a href="#repository" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Services
+        Repository
       
     </span>
   </a>
@@ -3202,10 +3401,209 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#applications" class="md-nav__link">
+  <a href="#setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Applications
+        Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --report
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --export
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-import-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --import [FILE]
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-pulumi-import-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --pulumi-import [FILE]
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-day-to-day-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The day-to-day workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resource-types-managed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resource types managed
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alert-routing-in-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alert routing in depth
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-llms-to-map-alerts-to-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using LLMs to map alerts to services
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using LLMs to map alerts to services">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-general-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The general pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapping-a-new-alert-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mapping a new alert source
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auditing-coverage-gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auditing coverage gaps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bulk-renaming-or-restructuring-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk renaming or restructuring services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generating-descriptions-for-undocumented-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generating descriptions for undocumented services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tips-for-effective-llm-assisted-rootly-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tips for effective LLM-assisted Rootly work
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migrating-to-pulumi-iac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migrating to Pulumi IaC
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
       
     </span>
   </a>
@@ -3229,40 +3627,189 @@
 
 
 
-<h1 id="key-labels-used-by-odl">Key Labels used by ODL</h1>
+<h1 id="managing-rootly-with-ol-rootly-manager">Managing Rootly with ol-rootly-manager</h1>
+<p><a href="https://rootly.com/">Rootly</a> is our on-call and incident management platform. It handles alert routing, escalation policies, service definitions, status pages, and incident workflows. We manage Rootly configuration as code using the <a href="https://github.com/mitodl/ol-rootly-manager"><code>ol-rootly-manager</code></a> Python CLI.</p>
+<h2 id="why-code-managed-rootly-config">Why code-managed Rootly config?</h2>
+<p>Rootly's web UI is easy to use but makes drift and accidental changes hard to detect. Managing configuration in code gives us:</p>
+<ul>
+<li><strong>Auditability</strong> — every change is a commit with a diff and author</li>
+<li><strong>Idempotency</strong> — safe to re-run; nothing is created twice</li>
+<li><strong>Bulk edits</strong> — add or rename a service across hundreds of alert routes in one pass</li>
+<li><strong>Review workflow</strong> — changes go through PRs before they reach production Rootly</li>
+</ul>
+<h2 id="repository">Repository</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>~/src/mit/ol-rootly-manager/
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── main.py        # CLI entrypoint
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── data.py        # exported Rootly state (source of truth for --import)
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── pyproject.toml
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>└── uv.lock
+</span></code></pre></div>
+<h2 id="setup">Setup</h2>
+<p>Requires Python 3.14+ and <a href="https://docs.astral.sh/uv/">uv</a>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ROOTLY_API_KEY</span><span class="o">=</span>&lt;your-api-key&gt;
+</span></code></pre></div>
+<p>Retrieve the API key from the team Vault path or 1Password vault. The key needs read/write access to all Rootly resource types.</p>
+<h2 id="commands">Commands</h2>
+<h3 id="-report"><code>--report</code></h3>
+<p>Prints a human-readable summary of every resource currently in Rootly — services, roles, teams, alert sources, alert routes, and escalation policies.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>main.py<span class="w"> </span>--report
+</span></code></pre></div>
+<p>Use this for a quick sanity check after applying changes, or to look up a resource ID without going to the UI.</p>
+<h3 id="-export"><code>--export</code></h3>
+<p>Fetches all Rootly resources and writes them to <code>data.py</code> as Python data structures. This is <strong>read-only</strong> against Rootly; it only overwrites the local file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>main.py<span class="w"> </span>--export
+</span></code></pre></div>
+<p>Run this to capture the current live state before making edits, or to pull in changes that were made through the Rootly UI and reconcile them back into the file.</p>
+<h3 id="-import-file"><code>--import [FILE]</code></h3>
+<p>Creates or updates Rootly resources from a Python data file (defaults to <code>data.py</code>). The operation is idempotent — existing resources are updated and missing ones are created.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>main.py<span class="w"> </span>--import<span class="w">           </span><span class="c1"># uses data.py</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>main.py<span class="w"> </span>--import<span class="w"> </span>my_data.py
+</span></code></pre></div>
+<p>This is the primary write path. Edit <code>data.py</code>, review the diff, then run <code>--import</code> to apply.</p>
+<h3 id="-pulumi-import-file"><code>--pulumi-import [FILE]</code></h3>
+<p>Generates a <a href="https://www.pulumi.com/docs/cli/commands/pulumi_import/">Pulumi bulk-import JSON file</a> listing every Rootly resource with its Pulumi type and UUID. <strong>Strictly read-only.</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>main.py<span class="w"> </span>--pulumi-import<span class="w">                  </span><span class="c1"># writes pulumi_imports.json</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>main.py<span class="w"> </span>--pulumi-import<span class="w"> </span>my_imports.json
+</span></code></pre></div>
+<p>See <a href="#migrating-to-pulumi-iac">Migrating to Pulumi IaC</a> below.</p>
+<h2 id="the-day-to-day-workflow">The day-to-day workflow</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>export ──► edit data.py ──► import
+</span></code></pre></div>
 <ol>
-<li><strong>environment</strong> : The 'tier'. For example, dev, QA, Production.</li>
-<li><strong>service</strong> : The product provided. For example, 'MITx', 'Residential', 'OCW'</li>
-<li><strong>application</strong> : The application within the service, for example, edxapp, django, consul</li>
+<li>Run <code>--export</code> to capture current state into <code>data.py</code></li>
+<li>Edit <code>data.py</code> directly — add services, adjust alert route rules, update escalation policies, etc.</li>
+<li>Run <code>--import</code> to apply the changes</li>
 </ol>
-<p>There may be multiple instances (environments) of a service. A service is comprised of applications.</p>
-<h2 id="environments">Environments</h2>
+<p>For large structural changes (new application launch, team reorganisation), commit <code>data.py</code> changes in a PR so they get reviewed before being applied.</p>
+<h2 id="resource-types-managed">Resource types managed</h2>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>What it controls</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Services</strong></td>
+<td>Named components (e.g. <code>MIT Learn - Django Webapp</code>) that alerts and incidents attach to</td>
+</tr>
+<tr>
+<td><strong>Teams</strong></td>
+<td>On-call groups; own services and receive escalations</td>
+</tr>
+<tr>
+<td><strong>Roles</strong></td>
+<td>Incident roles (Incident Commander, Communications Lead, etc.)</td>
+</tr>
+<tr>
+<td><strong>Alert Sources</strong></td>
+<td>Inbound integrations (Datadog, CloudWatch, Sentry, etc.)</td>
+</tr>
+<tr>
+<td><strong>Alert Routes</strong></td>
+<td>Rules that match incoming alerts and route them to services</td>
+</tr>
+<tr>
+<td><strong>Escalation Policies</strong></td>
+<td>Who gets paged and in what order when an alert fires</td>
+</tr>
+</tbody>
+</table>
+<h2 id="alert-routing-in-depth">Alert routing in depth</h2>
+<p>Alert routes are the most complex resource. Each route is attached to one or more alert sources and contains an ordered list of <strong>rules</strong>. Each rule has:</p>
 <ul>
-<li>ci</li>
-<li>production</li>
-<li>qa</li>
+<li>A <strong>condition group</strong> — one or more payload field checks (e.g. <code>$.Message.AlarmName contains "learn-ai"</code>)</li>
+<li>A <strong>destination</strong> — the service (or team) the matching alert is tagged to</li>
 </ul>
-<h2 id="services">Services</h2>
+<p>Example rule from our CloudWatch route:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;learn-ai AlarmName to MIT Learn AI - Django Webapp&#39;</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="s1">&#39;condition_type&#39;</span><span class="p">:</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="s1">&#39;condition_groups&#39;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="s1">&#39;conditions&#39;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>            <span class="s1">&#39;property_field_type&#39;</span><span class="p">:</span> <span class="s1">&#39;payload&#39;</span><span class="p">,</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>            <span class="s1">&#39;property_field_name&#39;</span><span class="p">:</span> <span class="s1">&#39;$.Message.AlarmName&#39;</span><span class="p">,</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>            <span class="s1">&#39;property_field_condition_type&#39;</span><span class="p">:</span> <span class="s1">&#39;contains&#39;</span><span class="p">,</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>            <span class="s1">&#39;property_field_value&#39;</span><span class="p">:</span> <span class="s1">&#39;learn-ai&#39;</span><span class="p">,</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>        <span class="p">}]</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="p">}],</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    <span class="s1">&#39;destination&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;Service&#39;</span><span class="p">,</span> <span class="s1">&#39;target_id&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;uuid&gt;&#39;</span><span class="p">},</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Rules are evaluated top-to-bottom; the first match wins. A rule with <code>fallback_rule: True</code> catches anything that did not match an earlier rule.</p>
+<hr />
+<h2 id="using-llms-to-map-alerts-to-services">Using LLMs to map alerts to services</h2>
+<p>Alert routing is a judgment call: given an alert name or payload, which of our ~50+ services should own it? When setting up new alert sources or reviewing unmapped alerts, we use Claude to accelerate this work.</p>
+<h3 id="the-general-pattern">The general pattern</h3>
+<ol>
+<li>Run <code>--export</code> to get fresh data in <code>data.py</code></li>
+<li>Open a Claude Code session in the repo directory</li>
+<li>Feed Claude the relevant context and ask for routing suggestions</li>
+<li>Review Claude's output, edit <code>data.py</code>, and run <code>--import</code></li>
+</ol>
+<h3 id="mapping-a-new-alert-source">Mapping a new alert source</h3>
+<p>When a new integration (e.g. a new CloudWatch namespace) starts sending alerts and none of the existing rules cover its alarm names:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Open ol-rootly-manager in Claude Code.
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Prompt:
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>&quot;Look at the SERVICES list in data.py and the ALERT_ROUTES list.
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a> Here are the CloudWatch alarm names coming in from our new ECS namespace:
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>   - mitlearn-ecs-api-cpu-high
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>   - mitlearn-ecs-worker-memory
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>   - mitlearn-ecs-redis-connections
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a> Suggest alert route rules (in the same dict format as the existing rules
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a> in ALERT_ROUTES) that tag each alarm to the most appropriate service.&quot;
+</span></code></pre></div>
+<p>Claude will read the service names and existing route patterns from <code>data.py</code>, infer naming conventions, and generate ready-to-paste rule dicts. Review them, adjust the <code>target_id</code> UUIDs to match the correct services (use <code>--report</code> to look up IDs), then paste into the relevant route in <code>data.py</code>.</p>
+<h3 id="auditing-coverage-gaps">Auditing coverage gaps</h3>
+<p>To find alarms that are routing to the fallback rule (i.e. not matched by any specific rule):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Prompt:
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>&quot;Read ALERT_ROUTES in data.py.
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a> Which routes have a fallback rule? List all services in SERVICES that
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a> do NOT appear as a destination target_id in any route rule.&quot;
+</span></code></pre></div>
+<p>This surfaces services that exist but will never receive a routed alert — usually meaning either the service is new and routes haven't been written yet, or the service name changed and old route rules are pointing to a stale UUID.</p>
+<h3 id="bulk-renaming-or-restructuring-services">Bulk renaming or restructuring services</h3>
+<p>When a service is renamed (e.g. <code>XPro - Open edX - LMS</code> → <code>MIT XPro - LMS</code>) or split into sub-services, alert route rules that reference the old service by UUID need updating:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Prompt:
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>&quot;In data.py, the service named &#39;MIT XPro - Open edX - LMS - Webapp&#39; is
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a> being split into two services: &#39;MIT XPro - LMS - Webapp&#39; and
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a> &#39;MIT XPro - LMS - Celery Worker&#39;.
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a> Identify every alert route rule whose destination target_id is &lt;old-uuid&gt;
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a> and suggest which of the two new services each alarm name most likely
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a> belongs to, based on the rule name and condition values.&quot;
+</span></code></pre></div>
+<h3 id="generating-descriptions-for-undocumented-services">Generating descriptions for undocumented services</h3>
+<p>Many services in <code>data.py</code> have blank <code>description</code> fields. Claude can suggest descriptions based on naming conventions and context from your other services:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Prompt:
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>&quot;Look at the SERVICES list in data.py. For every service where description
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a> is an empty string, suggest a one-sentence description based on the
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a> service name and the descriptions of similar services.
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a> Output as a Python list of (name, suggested_description) tuples.&quot;
+</span></code></pre></div>
+<h3 id="tips-for-effective-llm-assisted-rootly-work">Tips for effective LLM-assisted Rootly work</h3>
 <ul>
-<li>bootcamps</li>
-<li>micromasters</li>
-<li>mitx-online</li>
-<li>mitx-residential</li>
-<li>ocw</li>
-<li>open</li>
-<li>xpro</li>
+<li><strong>Always export first.</strong> Claude works from the file on disk; stale state leads to wrong suggestions.</li>
+<li><strong>Name-based matching is reliable.</strong> Our alarm names (e.g. <code>mitlearn</code>, <code>learn-ai</code>, <code>xpro</code>, <code>rds</code>) closely follow our service naming conventions, so Claude can match them accurately without deep Rootly knowledge.</li>
+<li><strong>Verify UUIDs.</strong> Claude can identify the right service by name, but UUIDs must be confirmed — use <code>--report</code> or search <code>data.py</code> after Claude gives you a service name.</li>
+<li><strong>Review before importing.</strong> Treat Claude's output as a first draft. Check that each <code>target_id</code> maps to a real service and that rule ordering makes sense (more specific rules before broader ones).</li>
+<li><strong>Commit the result.</strong> After a successful <code>--import</code>, commit <code>data.py</code> so the change is tracked.</li>
 </ul>
-<h2 id="applications">Applications</h2>
+<hr />
+<h2 id="migrating-to-pulumi-iac">Migrating to Pulumi IaC</h2>
+<p>The tool can generate a Pulumi bulk-import file to bring Rootly resources under Infrastructure as Code management in <code>ol-infrastructure</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>main.py<span class="w"> </span>--pulumi-import
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># then, from the Pulumi monitoring stack directory:</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>pulumi<span class="w"> </span>import<span class="w"> </span>--file<span class="w"> </span>/path/to/pulumi_imports.json<span class="w"> </span>--generate-code
+</span></code></pre></div>
+<p>Once imported, Pulumi owns those resources. Manual UI edits will be <strong>reverted</strong> on the next <code>pulumi up</code>. The recommended approach is to start with one resource, verify <code>pulumi preview</code> shows no diff, then expand from there.</p>
+<p>See the <code>README.md</code> in <code>ol-rootly-manager</code> for the full Pulumi import workflow.</p>
+<h2 id="related">Related</h2>
 <ul>
-<li>concourse</li>
-<li>consul</li>
-<li>django</li>
-<li>edxapp</li>
-<li>elasticsearch</li>
-<li>heroku-app</li>
-<li>nginx</li>
-<li>redis</li>
-<li>vault</li>
+<li><a href="../overview/">Monitoring Overview</a></li>
+<li><a href="https://docs.rootly.com/api">Rootly API docs</a></li>
+<li><a href="https://github.com/mitodl/ol-rootly-manager">ol-rootly-manager repository</a></li>
 </ul>
 
 
