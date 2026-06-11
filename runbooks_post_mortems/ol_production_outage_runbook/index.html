@@ -2857,6 +2857,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#update-mit-learn-status-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update MIT Learn Status Page
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#keep-time" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3269,6 +3280,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#update-mit-learn-status-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update MIT Learn Status Page
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#keep-time" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3350,6 +3372,16 @@ in the incident specific Slack channel Rootly creates.</p>
 <h3 id="start-a-zoom-call">Start a Zoom Call</h3>
 <p>Ensure the invite link is posted in the Slack channel where the incident is being managed. This allows real-time coordination among key participants.</p>
 <p>If available, the communications lead should echo key points from the discussion into Slack so they are captured in the incident record.</p>
+<h3 id="update-mit-learn-status-page">Update MIT Learn Status Page</h3>
+<p>If the outage affects MIT Learn, the communications lead should update the public status page to inform users.</p>
+<p>In the incident Slack channel, post the following command to create a status page incident:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>/rootly update_status_page
+</span></code></pre></div>
+<p>Rootly will prompt you to select the status page, choose the affected components, set the incident impact level, and provide a message describing the current situation.</p>
+<p>When the outage is resolved, <strong>the status page must be updated again to close out the incident and return the page to its normal state.</strong> Failure to do this leaves users seeing an incorrect outage notice. Use the same command:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>/rootly update_status_page
+</span></code></pre></div>
+<p>This time, mark the incident as resolved and set all affected components back to their normal (operational) status.</p>
 <h3 id="keep-time">Keep Time</h3>
 <p>Someone, possibly the communications lead, should track the overall duration of the outage, as well as whether a given mitigation is taking too long and whether a different approach may be warranted. Ultimately this is the on-call engineer’s judgment, but it can be hard to avoid tunnel vision in stressful situations.</p>
 <h3 id="incident-wrap-up">Incident Wrap-Up</h3>
