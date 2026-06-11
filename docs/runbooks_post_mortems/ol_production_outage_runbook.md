@@ -43,6 +43,26 @@ Ensure the invite link is posted in the Slack channel where the incident is bein
 
 If available, the communications lead should echo key points from the discussion into Slack so they are captured in the incident record.
 
+### Update MIT Learn Status Page
+
+If the outage affects MIT Learn, the communications lead should update the public status page to inform users.
+
+In the incident Slack channel, post the following command to create a status page incident:
+
+```
+/rootly update_status_page
+```
+
+Rootly will prompt you to select the status page, choose the affected components, set the incident impact level, and provide a message describing the current situation.
+
+When the outage is resolved, **the status page must be updated again to close out the incident and return the page to its normal state.** Failure to do this leaves users seeing an incorrect outage notice. Use the same command:
+
+```
+/rootly update_status_page
+```
+
+This time, mark the incident as resolved and set all affected components back to their normal (operational) status.
+
 ### Keep Time
 
 Someone, possibly the communications lead, should track the overall duration of the outage, as well as whether a given mitigation is taking too long and whether a different approach may be warranted. Ultimately this is the on-call engineer’s judgment, but it can be hard to avoid tunnel vision in stressful situations.
