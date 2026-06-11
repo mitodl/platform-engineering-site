@@ -90,6 +90,7 @@ nav:
       - Inventory: monitoring_observability/inventory.md
       - Key Labels: monitoring_observability/key_labels.md
       - Bumping Sentry Credit: monitoring_observability/bump_sentry_credit.md
+      - Managing Rootly: monitoring_observability/rootly_management.md
   - Runbooks & Post-Mortems:
       - On-Call Runbook: runbooks_post_mortems/oncall_runbook.md
       - OL Production Outage Runbook: runbooks_post_mortems/ol_production_outage_runbook.md
