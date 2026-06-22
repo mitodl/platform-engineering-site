@@ -82,7 +82,12 @@ nav:
       - JupyterHub:
           - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
       - MIT Learn:
-          - MIT Learn Service Diagram: application_specific_guides/mit-learn/mit_learn_service_diagram.md
+          - Architecture & Data Flows: application_specific_guides/mit-learn/architecture/index.md
+          - System Context: application_specific_guides/mit-learn/architecture/system-context.md
+          - Containers: application_specific_guides/mit-learn/architecture/container.md
+          - Data Flows: application_specific_guides/mit-learn/architecture/data-flows.md
+          - Dependencies & Cycles: application_specific_guides/mit-learn/architecture/dependencies-and-cycles.md
+          - Infrastructure References: application_specific_guides/mit-learn/architecture/infrastructure-references.md
       - Keycloak:
           - Inviting New Users to Keycloak Realms: application_specific_guides/keycloak/inviting_users_to_realms.md
   - Monitoring And Observability:

@@ -15,3 +15,12 @@ dependencies = [
     # gh-pages branch (the same tool mkdocs gh-deploy used).
     "ghp-import>=2.1",
 ]
+
+[dependency-groups]
+# Tooling for architecture_maps/c4gen (the C4 data-flow generator).
+# `extract` additionally needs the witan-code tool installed separately.
+c4gen = [
+    "pydantic>=2",
+    "pyyaml>=6",
+    "cyclopts>=3",
+]

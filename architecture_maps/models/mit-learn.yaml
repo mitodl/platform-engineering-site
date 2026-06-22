@@ -1,0 +1,305 @@
+meta:
+  name: MIT Learn
+  primary_system: mit-learn
+  api_container: django-web
+  description: >-
+    MIT Learn is the central discovery surface for MIT's open and paid learning
+    offerings. A Next.js frontend serves learners; a Django/DRF backend exposes
+    the API, runs full-text and vector search, and ingests course/resource
+    metadata from across the MIT SOA and the open web via Celery ETL pipelines.
+    A separate learn-ai service powers conversational/agentic discovery.
+
+actors:
+  - id: learner
+    name: Learner
+    description: Browses, searches, saves, and asks AI about courses and learning resources.
+  - id: staff
+    name: Staff / Curator
+    description: Curates learning paths, featured lists, and editorial content via the API/admin.
+
+systems:
+  # ---- primary system ------------------------------------------------
+  - id: mit-learn
+    name: MIT Learn
+    kind: internal
+    repo: https://github.com/mitodl/mit-learn
+    description: Course & learning-resource discovery platform (Django API + Next.js UI).
+    containers:
+      - id: nextjs
+        name: Next.js Frontend
+        technology: Next.js App Router / React (Node 22)
+        description: >-
+          Server-rendered UI. Calls the API both server-side (SSR/RSC prefetch)
+          and from the browser via NEXT_PUBLIC_MITOL_API_BASE_URL.
+        shape: container
+        source: { repo: https://github.com/mitodl/mit-learn, path: frontends/main }
+      - id: nginx
+        name: Nginx
+        technology: Nginx
+        description: Reverse proxy in front of Django; serves static assets.
+        shape: container
+      - id: django-web
+        name: Django Web API
+        technology: Django + DRF (Granian/uWSGI, Python 3.12)
+        description: REST API, auth, search orchestration, admin, webhooks, vector-search endpoints.
+        shape: container
+        source: { repo: https://github.com/mitodl/mit-learn, path: main }
+      - id: celery-edx
+        name: Celery — edx_content queue
+        technology: Celery worker
+        description: ETL ingestion of course/resource metadata and content files from providers.
+        shape: container
+      - id: celery-default
+        name: Celery — default queue
+        technology: Celery worker
+        description: Search indexing, subscription-digest email, feeds/scrapes, housekeeping.
+        shape: container
+      - id: celery-embeddings
+        name: Celery — embeddings queue
+        technology: Celery worker
+        description: Generates vector embeddings for semantic/vector search.
+        shape: container
+      - id: beat
+        name: Celery Beat (RedBeat)
+        technology: RedBeat (Redis-backed)
+        description: >-
+          Schedules periodic ETL, indexing, and embedding tasks. Runs embedded in
+          the worker (-B) locally; split out in production.
+        shape: container
+      - id: postgres
+        name: PostgreSQL
+        technology: PostgreSQL 16 (RDS in prod)
+        description: System of record for resources, users, lists, and editorial data.
+        shape: db
+      - id: redis
+        name: Redis / Valkey
+        technology: Redis 8 (ElastiCache Valkey in prod)
+        description: Django cache, Celery broker/result backend, and RedBeat schedule store.
+        shape: queue
+      - id: opensearch
+        name: OpenSearch
+        technology: OpenSearch
+        description: Full-text search index over learning resources (alias-swapped reindex).
+        shape: db
+      - id: tika
+        name: Apache Tika
+        technology: Tika 2.5 (sidecar)
+        description: Extracts text from documents/content for indexing and embeddings.
+        shape: container
+      - id: s3
+        name: S3 App Storage
+        technology: AWS S3
+        description: File/media storage for app assets and ETL artifacts.
+        shape: container
+
+  # ---- platform / shared infra --------------------------------------
+  - id: fastly
+    name: Fastly CDN
+    kind: external
+    description: TLS termination, caching, and compression; routes to UI and the API gateway.
+  - id: apisix
+    name: APISIX Gateway
+    kind: external
+    description: >-
+      Shared API gateway enforcing OIDC (via Keycloak). Proxies the MIT Learn API,
+      the learn-ai service (/ai/*), and MITx Online (/mitxonline/*).
+  - id: keycloak
+    name: Keycloak (SSO)
+    kind: external
+    description: OAuth2/OIDC identity provider (realm olapps) issuing/introspecting JWTs.
+  - id: vault
+    name: HashiCorp Vault
+    kind: external
+    description: Secrets and dynamic database credentials injected at runtime.
+  - id: learn-ai
+    name: learn-ai
+    kind: external
+    repo: https://github.com/mitodl/learn-ai
+    description: AI sidecar (Django + DRF + Channels/ASGI) powering conversational/agentic discovery.
+  - id: qdrant
+    name: Qdrant
+    kind: external
+    description: Externally hosted vector database for semantic search.
+  - id: litellm
+    name: LiteLLM Proxy
+    kind: external
+    description: OpenAI-compatible proxy fronting LLMs (and optional embeddings) for learn-ai.
+  - id: openai
+    name: LLM Provider (OpenAI-compatible)
+    kind: external
+    description: Backing model for completions behind LiteLLM (e.g. gpt-4o-mini).
+  - id: mailgun
+    name: Mailgun
+    kind: external
+    description: Transactional/digest email delivery (via anymail).
+  - id: posthog
+    name: PostHog
+    kind: external
+    description: Product analytics and feature flags; exports raw events to S3 (Parquet).
+
+  # ---- SOA peers -----------------------------------------------------
+  - id: mitxonline
+    name: MITx Online
+    kind: external
+    repo: https://github.com/mitodl/mitxonline
+    description: MITx Online course/enrollment platform; SOA peer (catalog source + consumer).
+  - id: micromasters
+    name: MicroMasters
+    kind: external
+    repo: https://github.com/mitodl/micromasters
+    description: MicroMasters program platform; SOA peer (catalog + Wagtail pages source).
+  - id: data-platform
+    name: OL Data Platform (Dagster / Hightouch)
+    kind: external
+    description: >-
+      Dagster pipelines POST content webhooks; Hightouch reverse-ETL writes
+      ProgramCertificate rows directly into MIT Learn's Postgres.
+
+  # ---- aggregate external content sources (enumerated on data-flows) -
+  - id: course-apis
+    name: External Course REST APIs
+    kind: external
+    description: edX, MIT Professional Ed, Sloan Executive Ed, MIT Climate, ODL Video.
+  - id: content-archives
+    name: S3 Content Archives
+    kind: external
+    description: edX/xPRO/xOnline/Canvas OLX & .imscc, OCW site data, OpenLearningLibrary CSV, PostHog Parquet.
+  - id: media-feeds
+    name: Media & News Feeds
+    kind: external
+    description: YouTube Data API, podcast RSS, Medium RSS, OL events (Drupal), Sloan Aura, marketing pages.
+
+flows:
+  # ----- synchronous request path -------------------------------------
+  - { id: learner-fastly, source: learner, target: fastly, label: Browse / search, sync: true, protocol: HTTPS, data: Page & API requests, trigger: on request }
+  - { id: fastly-nextjs, source: fastly, target: nextjs, label: Frontend traffic, sync: true, protocol: HTTPS, data: HTML/JS/RSC payloads, trigger: on request }
+  - { id: fastly-apisix, source: fastly, target: apisix, label: API traffic, sync: true, protocol: HTTPS, data: REST API calls, trigger: on request }
+  - { id: nextjs-apisix, source: nextjs, target: apisix, label: Server/client API calls, sync: true, protocol: HTTPS/JSON, data: "Resource, search, user data", trigger: on request }
+  - { id: apisix-keycloak, source: apisix, target: keycloak, label: Authenticate (OIDC), sync: true, protocol: OIDC, data: Token introspection / userinfo, trigger: on request }
+  - { id: apisix-nginx, source: apisix, target: nginx, label: Proxy authenticated request, sync: true, protocol: HTTP, data: Forwarded request + JWT headers, trigger: on request }
+  - { id: nginx-django, source: nginx, target: django-web, label: Forward request, sync: true, protocol: WSGI/HTTP, data: API request, trigger: on request }
+  - { id: django-postgres, source: django-web, target: postgres, label: Read/write, sync: true, protocol: SQL, data: "Resources, users, lists", trigger: on request }
+  - { id: django-redis, source: django-web, target: redis, label: Cache + enqueue tasks, sync: true, protocol: Redis, data: "Cached responses, task messages", trigger: on request }
+  - { id: django-opensearch, source: django-web, target: opensearch, label: Search query, sync: true, protocol: HTTPS, data: Search requests/results, trigger: on request }
+  - { id: django-qdrant, source: django-web, target: qdrant, label: Vector search, sync: true, protocol: HTTPS, data: Embedding similarity queries, trigger: on request }
+  - { id: django-s3, source: django-web, target: s3, label: Store/serve files, sync: true, protocol: HTTPS, data: Media and assets, trigger: on request }
+  - { id: django-posthog, source: django-web, target: posthog, label: Events + feature flags, sync: true, protocol: HTTPS, data: "ACCOUNT_CREATED, flag evals", trigger: on event/request }
+  - { id: vault-django, source: vault, target: django-web, label: Secrets + dynamic DB creds, sync: true, protocol: HTTPS, data: Credentials (24h TTL), trigger: on startup / renewal, tags: [config] }
+
+  # ----- AI discovery (learn-ai) — code-verified ----------------------
+  - { id: apisix-learnai, source: apisix, target: learn-ai, label: Proxy /ai/* (OIDC), sync: true, protocol: HTTPS, data: User prompts (streamed), trigger: on request }
+  - { id: learnai-django, source: learn-ai, target: django-web, label: Vector/syllabus search (tool calls), sync: true, protocol: HTTPS, data: Resource & content-file lookups, trigger: on request }
+  - { id: learnai-litellm, source: learn-ai, target: litellm, label: LLM completions, sync: true, protocol: HTTPS, data: Prompts / streamed responses, trigger: on request }
+  - { id: litellm-openai, source: litellm, target: openai, label: Model backend, sync: true, protocol: HTTPS, data: Prompts / responses, trigger: on request }
+
+  # ----- asynchronous: ETL --------------------------------------------
+  - { id: beat-redis, source: beat, target: redis, label: Schedule periodic tasks, sync: false, protocol: Redis, data: RedBeat schedule entries, trigger: "beat", tags: [async] }
+  - { id: celeryedx-mitxonline, source: celery-edx, target: mitxonline, label: Pull course/program catalog, sync: false, protocol: REST, data: "/api/v2/{courses,programs}?live=true", trigger: "beat: every 6h / daily 05:00", tags: [async, etl, cross-service] }
+  - { id: celeryedx-micromasters, source: celery-edx, target: micromasters, label: Pull catalog + Wagtail pages, sync: false, protocol: REST, data: "/api/v0/catalog/, /api/v0/wagtail/pages/", trigger: "beat: daily 05:00", tags: [async, etl, cross-service] }
+  - { id: celeryedx-courseapis, source: celery-edx, target: course-apis, label: Fetch REST catalogs, sync: false, protocol: REST/OAuth2, data: "edX, ProfEd, Sloan Exec, Climate, ODL Video", trigger: "beat: daily", tags: [async, etl] }
+  - { id: celeryedx-archives, source: celery-edx, target: content-archives, label: Fetch S3 archives, sync: false, protocol: S3, data: "OLX/.imscc, OCW data, OLL CSV, PostHog Parquet", trigger: "beat: daily / every 3h", tags: [async, etl] }
+  - { id: celerydefault-feeds, source: celery-default, target: media-feeds, label: Fetch feeds + scrape, sync: false, protocol: RSS/REST/scrape, data: "YouTube, podcasts, Medium, OL events, Sloan Aura", trigger: "beat: every 1-12h", tags: [async, etl, fragile] }
+  - { id: celeryedx-tika, source: celery-edx, target: tika, label: Extract text, sync: false, protocol: HTTP, data: Documents/captions → text, trigger: during ingestion, tags: [async, etl] }
+
+  # ----- asynchronous: indexing & embeddings --------------------------
+  - { id: celerydefault-opensearch, source: celery-default, target: opensearch, label: Index resources, sync: false, protocol: HTTPS, data: Resource & content-file docs, trigger: on upsert / recreate, tags: [async] }
+  - { id: celeryembeddings-postgres, source: celery-embeddings, target: postgres, label: Read resources to embed, sync: false, protocol: SQL, data: New/changed resource text, trigger: "beat: every ~30m", tags: [async, ai] }
+  - { id: celeryembeddings-qdrant, source: celery-embeddings, target: qdrant, label: Upsert vectors, sync: false, protocol: HTTPS, data: Embedding vectors (resources/content/topics), trigger: "beat: every ~30m", tags: [async, ai] }
+  - { id: celeryembeddings-litellm, source: celery-embeddings, target: litellm, label: Embeddings (if QDRANT_ENCODER=litellm), sync: false, protocol: HTTPS, data: Resource text → vectors, trigger: "beat: every ~30m", tags: [async, ai, conditional] }
+
+  # ----- asynchronous: email & inbound integration --------------------
+  - { id: celerydefault-mailgun, source: celery-default, target: mailgun, label: Subscription digest emails, sync: false, protocol: HTTPS, data: Channel/search digests, trigger: "beat: 18:30 / 19:00 daily; PercolateQuery match", tags: [async] }
+  - { id: dataplatform-django, source: data-platform, target: django-web, label: Content webhooks (HMAC), sync: false, protocol: HTTPS, data: edX/Canvas/OVS ingest triggers, trigger: webhook (Dagster), tags: [async, webhook] }
+  - { id: dataplatform-postgres, source: data-platform, target: postgres, label: Reverse-ETL write (Hightouch), sync: false, protocol: SQL, data: ProgramCertificate rows (public DB access), trigger: scheduled (external), tags: [async, fragile] }
+
+scenarios:
+  - id: browse-search
+    title: "Learner search & browse (synchronous)"
+    description: >-
+      The synchronous request path. The learner hits Fastly, which routes API
+      calls through the APISIX gateway (authenticated by Keycloak) to Django,
+      which queries OpenSearch and Postgres and returns results. Next.js also
+      performs this server-side during SSR/RSC prefetch.
+    steps:
+      - { source: learner, target: fastly, label: "HTTPS search request", sync: true }
+      - { source: fastly, target: apisix, label: "Route API call", sync: true }
+      - { source: apisix, target: keycloak, label: "Introspect OIDC token", sync: true }
+      - { source: apisix, target: nginx, label: "Proxy request + JWT", sync: true }
+      - { source: nginx, target: django-web, label: "Forward to API", sync: true }
+      - { source: django-web, target: opensearch, label: "Full-text query", sync: true }
+      - { source: django-web, target: postgres, label: "Hydrate records", sync: true }
+
+  - id: etl-ingestion
+    title: "Learning-resource ETL ingestion (asynchronous)"
+    description: >-
+      Celery Beat schedules ETL. The edx_content worker pulls catalogs from SOA
+      peers and external APIs, fetches content archives from S3, extracts text via
+      Tika, and upserts to Postgres; the default worker then indexes OpenSearch.
+    steps:
+      - { source: beat, target: celery-edx, label: "Trigger scheduled ETL", sync: false }
+      - { source: celery-edx, target: mitxonline, label: "Pull MITx Online catalog", sync: false }
+      - { source: celery-edx, target: content-archives, label: "Fetch S3 archives", sync: false }
+      - { source: celery-edx, target: tika, label: "Extract text", sync: false }
+      - { source: celery-edx, target: postgres, label: "Upsert resources", sync: false }
+      - { source: celery-default, target: opensearch, label: "Index resources", sync: false }
+
+  - id: embeddings
+    title: "Semantic embedding pipeline (asynchronous)"
+    description: >-
+      Roughly every 30 minutes the embeddings worker reads new/changed resources
+      and upserts vectors into Qdrant. The default encoder is **local**
+      (Gensim/sklearn); the dashed LiteLLM step only runs when
+      QDRANT_ENCODER=litellm.
+    steps:
+      - { source: beat, target: celery-embeddings, label: "Trigger embedding run", sync: false }
+      - { source: celery-embeddings, target: postgres, label: "Read resources to embed", sync: false }
+      - { source: celery-embeddings, target: litellm, label: "Embeddings (optional encoder)", sync: false }
+      - { source: celery-embeddings, target: qdrant, label: "Upsert vectors", sync: false }
+
+  - id: ai-discovery
+    title: "AI-assisted discovery via learn-ai (synchronous, streamed)"
+    description: >-
+      The frontend calls the learn-ai service through APISIX. learn-ai pulls
+      resource context from MIT Learn's vector-search API and calls an LLM via the
+      LiteLLM proxy, streaming the answer back.
+    steps:
+      - { source: learner, target: nextjs, label: "Ask a question", sync: true }
+      - { source: nextjs, target: apisix, label: "POST /ai/* (OIDC)", sync: true }
+      - { source: apisix, target: learn-ai, label: "Proxy to sidecar", sync: true }
+      - { source: learn-ai, target: django-web, label: "Vector/syllabus search", sync: true }
+      - { source: learn-ai, target: litellm, label: "LLM completion", sync: true }
+      - { source: litellm, target: openai, label: "Model backend", sync: true }
+
+  - id: inbound-integration
+    title: "Inbound data-platform integration (asynchronous)"
+    description: >-
+      The OL data platform integrates two ways: Dagster pipelines POST HMAC-signed
+      content webhooks that enqueue ingestion, and Hightouch reverse-ETL writes
+      ProgramCertificate rows directly into Postgres over the public DB endpoint.
+    steps:
+      - { source: data-platform, target: django-web, label: "POST content webhook (HMAC)", sync: false }
+      - { source: django-web, target: celery-edx, label: "Enqueue ingest task", sync: false }
+      - { source: data-platform, target: postgres, label: "Hightouch writes ProgramCertificate", sync: false }
+
+etl_sources:
+  - { name: edX (catalog), transport: REST OAuth2-JWT, cadence: daily 05:00, data: course + program catalog, source_ref: { path: "learning_resources/etl/tasks.py:96" } }
+  - { name: edX (content files), transport: S3 OLX archives, cadence: daily 06:00, data: OLX content, source_ref: { path: "learning_resources/etl/tasks.py:246" } }
+  - { name: MITx Online (catalog), transport: REST JSON paginated, cadence: every 6h, data: courses + programs, source_ref: { path: "learning_resources/etl/mitxonline.py:154" } }
+  - { name: MITx Online (content files), transport: S3, cadence: daily 07:00, data: content, source_ref: { path: "learning_resources/etl/tasks.py:276" } }
+  - { name: xPRO (catalog), transport: REST JSON, cadence: daily 05:00, data: catalog, source_ref: { path: "learning_resources/etl/tasks.py:162" } }
+  - { name: xPRO / xOnline (files), transport: S3, cadence: daily 08:00, data: content, source_ref: { path: "learning_resources/etl/tasks.py:292" } }
+  - { name: MicroMasters, transport: REST JSON, cadence: daily 05:00, data: programs + Wagtail pages, source_ref: { path: "learning_resources/etl/tasks.py:82" } }
+  - { name: MIT Professional Ed, transport: REST Drupal feeds JSON, cadence: daily 21:00, data: courses, source_ref: { path: "learning_resources/etl/tasks.py:147" } }
+  - { name: Sloan Executive Ed, transport: REST OAuth2-JWT, cadence: daily 04:30, data: courses, source_ref: { path: "learning_resources/etl/tasks.py:154" } }
+  - { name: Open Learning Library, transport: CSV via Google Sheets export, cadence: scheduled, data: metadata, source_ref: { path: "learning_resources/etl/oll.py:56" } }
+  - { name: MIT OpenCourseWare, transport: S3 JSON site data, cadence: webhook / on-demand, data: OCW courses, source_ref: { path: "learning_resources/etl/tasks.py:414" } }
+  - { name: MIT Climate, transport: REST JSON feed (hardcoded URL), cadence: daily 05:30, data: articles, fragile: true, source_ref: { path: "learning_resources/etl/tasks.py:171" } }
+  - { name: YouTube, transport: YouTube Data API + GitHub YAML config, cadence: daily 08:30, data: videos + transcripts, source_ref: { path: "learning_resources/etl/tasks.py:479" } }
+  - { name: Podcasts (RSS), transport: per-podcast RSS + GitHub config, cadence: daily 06:00/23:00, data: podcast episodes, fragile: true, source_ref: { path: "learning_resources/etl/podcast.py" } }
+  - { name: ODL Video Service, transport: public REST JSON, cadence: daily 09:00, data: videos + transcripts, source_ref: { path: "learning_resources/etl/tasks.py:342" } }
+  - { name: Canvas, transport: S3 .imscc archives, cadence: weekly Sun 05:00, data: courses, source_ref: { path: "learning_resources/etl/tasks.py:619" } }
+  - { name: PostHog views, transport: S3 Parquet event files, cadence: every 3h, data: resource view counts, fragile: true, source_ref: { path: "learning_resources/etl/tasks.py:541" } }
+  - { name: Marketing pages, transport: HTML scrape → markdown, cadence: every 12h, data: marketing text, fragile: true, source_ref: { path: "learning_resources/etl/tasks.py:671" } }
+  - { name: Medium (news), transport: RSS feedparser (hardcoded URL), cadence: every 3h, data: blog posts, fragile: true, source_ref: { path: "news_events/etl/medium_mit_news.py" } }
+  - { name: OL events, transport: REST Drupal JSON:API (hardcoded URL), cadence: every 3h, data: events, fragile: true, source_ref: { path: "news_events/tasks.py:16" } }
+  - { name: Sloan exec news/webinars, transport: Salesforce Aura POST (token-scraped), cadence: every 3h, data: news + webinars, fragile: true, source_ref: { path: "news_events/etl/sloan_exec_news.py:73" } }

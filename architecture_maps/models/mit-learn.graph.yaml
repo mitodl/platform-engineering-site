@@ -1,0 +1,68 @@
+systems:
+- id: micromasters
+  name: mitodl/micromasters
+  kind: internal
+  repo: https://github.com/mitodl/micromasters
+- id: mit-learn
+  name: mitodl/mit-learn
+  kind: internal
+  repo: https://github.com/mitodl/mit-learn
+- id: mitxonline
+  name: mitodl/mitxonline
+  kind: internal
+  repo: https://github.com/mitodl/mitxonline
+flows:
+- id: graph-micromasters-to-mit-learn-endpoint
+  source: micromasters
+  target: mit-learn
+  label: calls 1 endpoint
+  sync: true
+  protocol: HTTPS
+  data: e.g. /api/v0/profiles/${userUsername}/
+  trigger: on request
+  tags:
+  - cross-service
+  - graph-derived
+  provenance:
+    derived_from: graph
+    contract_kind: endpoint
+    contract_key: /api/v0/profiles/${userUsername}/
+    repo: https://github.com/mitodl/micromasters
+    path: static/js/lib/api.js
+    line: null
+- id: graph-mit-learn-to-mitxonline-endpoint
+  source: mit-learn
+  target: mitxonline
+  label: calls 9 endpoints
+  sync: true
+  protocol: HTTPS
+  data: e.g. /api/v0/baskets/, /api/v0/users/${username}/, /api/v0/users/me/
+  trigger: on request
+  tags:
+  - cross-service
+  - graph-derived
+  provenance:
+    derived_from: graph
+    contract_kind: endpoint
+    contract_key: /api/v0/baskets/, /api/v0/users/${username}/, /api/v0/users/me/
+    repo: https://github.com/mitodl/mit-learn
+    path: load_testing/backend/client/v0/api.ts
+    line: null
+- id: graph-mitxonline-to-mit-learn-endpoint
+  source: mitxonline
+  target: mit-learn
+  label: calls 1 endpoint
+  sync: true
+  protocol: HTTPS
+  data: e.g. /api/v0/users/me/
+  trigger: on request
+  tags:
+  - cross-service
+  - graph-derived
+  provenance:
+    derived_from: graph
+    contract_kind: endpoint
+    contract_key: /api/v0/users/me/
+    repo: https://github.com/mitodl/mitxonline
+    path: frontend/public/src/lib/queries/users.js
+    line: null
