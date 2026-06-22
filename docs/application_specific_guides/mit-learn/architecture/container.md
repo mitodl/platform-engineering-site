@@ -2,7 +2,7 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # Containers — MIT Learn
 
-_Generated 2026-06-22 21:27 UTC · c4gen dev_
+_Generated 2026-06-22 21:40 UTC · c4gen dev_
 
 The runtime/deployable units inside **MIT Learn** and how data moves
 between them and adjacent systems.

@@ -23,11 +23,11 @@ merges curated-over-generated.
 
 from __future__ import annotations
 
-import glob
 import subprocess
 import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
+from pathlib import Path
 
 
 def _ensure_witan_importable() -> None:
@@ -52,13 +52,13 @@ def _ensure_witan_importable() -> None:
             "witan_code is not importable and `uv tool dir` failed; install witan-code "
             "(`uv tool install witan-code`) before running the extractor."
         ) from exc
-    hits = glob.glob(f"{base}/witan-code/lib/python*/site-packages")
+    hits = list(Path(base).glob("witan-code/lib/python*/site-packages"))
     if not hits:
         raise RuntimeError(
             "Could not find the witan-code tool venv; install it with "
             "`uv tool install witan-code`."
         )
-    sys.path.insert(0, hits[0])
+    sys.path.insert(0, str(hits[0]))
     import witan_code  # noqa: F401
 
 
@@ -178,11 +178,14 @@ def find_cycles(edges: list[CrossEdge]) -> list[list[str]]:
                 dfs(nxt, stack, on_stack)
                 on_stack.discard(nxt)
                 stack.pop()
+        # mark fully-explored (black) on backtrack so the outer loop and other
+        # branches skip it — keeps detection at O(V + E) instead of O(V^2).
+        visited_global.add(node)
 
     visited_global: set[str] = set()
     for start in list(adj):
-        dfs(start, [start], {start})
-        visited_global.add(start)
+        if start not in visited_global:
+            dfs(start, [start], {start})
     return [list(c) for c in sorted(cycles)]
 
 

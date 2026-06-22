@@ -99,7 +99,7 @@ def render(name: str) -> None:
     out.mkdir(parents=True, exist_ok=True)
     written = {
         "index.md": pages_mod.page_index(model),
-        "system-context.md": pages_mod.page_context(model, candidates),
+        "system-context.md": pages_mod.page_context(model),
         "container.md": pages_mod.page_container(model),
         "data-flows.md": pages_mod.page_data_flows(model),
         "dependencies-and-cycles.md": pages_mod.page_dependencies(model, cycles, candidates),

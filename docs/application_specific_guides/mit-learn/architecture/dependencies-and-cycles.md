@@ -2,7 +2,7 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # Dependencies & Cycles — MIT Learn
 
-_Generated 2026-06-22 21:27 UTC · c4gen dev_
+_Generated 2026-06-22 21:40 UTC · c4gen dev_
 
 Coupling between MIT Learn and the rest of the SOA. The **matrix** and
 **cycles** below come from the deterministic witan-code graph extraction; the

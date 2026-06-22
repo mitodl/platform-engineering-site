@@ -72,7 +72,7 @@ to regenerate after the system changes.
 """
 
 
-def page_context(model: Model, candidates: list[Flow]) -> str:
+def page_context(model: Model) -> str:
     externals = [s for s in model.systems if s.kind == "external"]
     rows = ["| System | Role |", "| --- | --- |"]
     for s in externals:
@@ -93,7 +93,9 @@ graph-derived candidates are listed under
 
 
 def page_container(model: Model) -> str:
-    primary = next(s for s in model.systems if s.id == model.meta.primary_system)
+    primary = next((s for s in model.systems if s.id == model.meta.primary_system), None)
+    if primary is None:
+        raise ValueError(f"primary_system {model.meta.primary_system!r} not in model")
     rows = ["| Container | Technology | Responsibility |", "| --- | --- | --- |"]
     for c in primary.containers:
         rows.append(f"| **{c.name}** | {c.technology or ''} | {c.description} |")
