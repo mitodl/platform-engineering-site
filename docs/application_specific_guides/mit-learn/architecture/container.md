@@ -2,12 +2,12 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # Containers — MIT Learn
 
-_Generated 2026-06-23 15:24 UTC · c4gen dev_
+_Generated 2026-06-23 17:10 UTC · c4gen dev_
 
 The runtime/deployable units inside **MIT Learn** and how data moves
 between them and adjacent systems.
 
-<!--c4-svg:application_specific_guides/mit-learn/architecture/_diagrams/container.svg-->
+<div class="c4-box" data-c4-svg="../_diagrams/container.svg"></div>
 
 ## Containers
 

@@ -19,9 +19,6 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.blocks.admonition
   - pymdownx.details
-hooks:
-  # Inlines the C4 architecture SVGs (rendered by c4gen via Kroki) at build time.
-  - hooks/c4_inline.py
 extra_css:
   - stylesheets/c4.css
 extra_javascript:

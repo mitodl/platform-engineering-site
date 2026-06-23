@@ -2,7 +2,7 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # Data Flows — MIT Learn
 
-_Generated 2026-06-23 15:24 UTC · c4gen dev_
+_Generated 2026-06-23 17:10 UTC · c4gen dev_
 
 Each scenario below replays one interaction as a C4 **Dynamic** diagram.
 Amber steps are asynchronous (queued / scheduled / event-driven).
@@ -25,31 +25,31 @@ Amber steps are asynchronous (queued / scheduled / event-driven).
 
 The synchronous request path. The learner hits Fastly, which routes API calls through the APISIX gateway (authenticated by Keycloak) to Django, which queries OpenSearch and Postgres and returns results. Next.js also performs this server-side during SSR/RSC prefetch.
 
-<!--c4-svg:application_specific_guides/mit-learn/architecture/_diagrams/flow-browse-search.svg-->
+<div class="c4-box" data-c4-svg="../_diagrams/flow-browse-search.svg"></div>
 
 ## Learning-resource ETL ingestion (asynchronous)
 
 Celery Beat schedules ETL. The edx_content worker pulls catalogs from SOA peers and external APIs, fetches content archives from S3, extracts text via Tika, and upserts to Postgres; the default worker then indexes OpenSearch.
 
-<!--c4-svg:application_specific_guides/mit-learn/architecture/_diagrams/flow-etl-ingestion.svg-->
+<div class="c4-box" data-c4-svg="../_diagrams/flow-etl-ingestion.svg"></div>
 
 ## Semantic embedding pipeline (asynchronous)
 
 Roughly every 30 minutes the embeddings worker reads new/changed resources and upserts vectors into Qdrant. The default encoder is **local** (Gensim/sklearn); the dashed LiteLLM step only runs when QDRANT_ENCODER=litellm.
 
-<!--c4-svg:application_specific_guides/mit-learn/architecture/_diagrams/flow-embeddings.svg-->
+<div class="c4-box" data-c4-svg="../_diagrams/flow-embeddings.svg"></div>
 
 ## AI-assisted discovery via learn-ai (synchronous, streamed)
 
 The frontend calls the learn-ai service through APISIX. learn-ai pulls resource context from MIT Learn's vector-search API and calls an LLM via the LiteLLM proxy, streaming the answer back.
 
-<!--c4-svg:application_specific_guides/mit-learn/architecture/_diagrams/flow-ai-discovery.svg-->
+<div class="c4-box" data-c4-svg="../_diagrams/flow-ai-discovery.svg"></div>
 
 ## Inbound data-platform integration (asynchronous)
 
 The OL data platform integrates two ways: Dagster pipelines POST HMAC-signed content webhooks that enqueue ingestion, and Hightouch reverse-ETL writes ProgramCertificate rows directly into Postgres over the public DB endpoint.
 
-<!--c4-svg:application_specific_guides/mit-learn/architecture/_diagrams/flow-inbound-integration.svg-->
+<div class="c4-box" data-c4-svg="../_diagrams/flow-inbound-integration.svg"></div>
 
 ## Ingestion sources (ETL)
 

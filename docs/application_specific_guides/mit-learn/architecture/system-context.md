@@ -2,7 +2,7 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # System Context — MIT Learn
 
-_Generated 2026-06-23 15:24 UTC · c4gen dev_
+_Generated 2026-06-23 17:10 UTC · c4gen dev_
 
 The widest view: **MIT Learn** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
@@ -13,7 +13,7 @@ graph-derived candidates are listed under
     Drag to pan, scroll to zoom. **Click the MIT Learn box** to drill
     into its [container view](container.md).
 
-<!--c4-svg:application_specific_guides/mit-learn/architecture/_diagrams/system-context.svg-->
+<div class="c4-box" data-c4-svg="../_diagrams/system-context.svg"></div>
 
 ## External systems & peers
 

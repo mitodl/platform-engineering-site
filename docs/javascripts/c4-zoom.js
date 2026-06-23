@@ -1,9 +1,12 @@
-/* Pan/zoom for the C4 architecture diagrams.
+/* Interactive C4 architecture diagrams.
  *
- * The diagrams are C4-PlantUML rendered to SVG by Kroki at build time and
- * inlined into the page (see hooks/c4_inline.py) inside a `.c4-box`. This wraps
- * each in a fixed-height, resizable viewport with svg-pan-zoom. Drill-down is
- * native (PlantUML `$link` -> a real <a> in the SVG), so no click handling here.
+ * Diagrams are C4-PlantUML rendered to SVG by Kroki at generation time and
+ * written to sibling `_diagrams/*.svg` files. Each page carries a placeholder
+ *   <div class="c4-box" data-c4-svg="../_diagrams/<name>.svg"></div>
+ * which this script fills with the static SVG (client-side, so it is independent
+ * of the static-site generator — works under zensical and mkdocs), then:
+ *   - wraps it in a fixed-height, resizable pan/zoom viewport (svg-pan-zoom),
+ *   - navigates on a click of a native PlantUML `$link` (drag-guarded).
  *
  * Scoped to /architecture/ pages.
  */
@@ -15,10 +18,8 @@
   }
 
   function enhance(box) {
-    if (box.dataset.c4done) return;
     var svg = box.querySelector("svg");
     if (!svg) return;
-    box.dataset.c4done = "1";
     box.classList.add("c4-zoom");
 
     var hint = document.createElement("div");
@@ -26,9 +27,7 @@
     hint.textContent = "drag to pan · scroll to zoom · click a linked box to drill in";
     box.appendChild(hint);
 
-    // svg-pan-zoom preventDefaults mouse events, which blocks the native <a>
-    // links PlantUML emits ($link). Re-implement the click: navigate when a
-    // link is clicked without a drag (so panning doesn't trigger navigation).
+    // Drag guard so a pan doesn't trigger a drill-down on the native <a> links.
     var moved = false,
       sx = 0,
       sy = 0;
@@ -65,8 +64,7 @@
         minZoom: 0.2,
         maxZoom: 20,
         zoomScaleSensitivity: 0.4,
-        // Let click events reach the SVG's native <a> links (drill-down).
-        preventMouseEventsDefault: false,
+        preventMouseEventsDefault: false, // let clicks reach the native <a> links
       });
       if (window.ResizeObserver) {
         new ResizeObserver(function () {
@@ -84,16 +82,35 @@
     }
   }
 
+  function loadOne(box) {
+    if (box.dataset.c4done) return;
+    var src = box.getAttribute("data-c4-svg");
+    if (!src) return;
+    box.dataset.c4done = "1";
+    fetch(new URL(src, location.href).href)
+      .then(function (r) {
+        return r.text();
+      })
+      .then(function (svg) {
+        box.innerHTML = svg;
+        enhance(box);
+      })
+      .catch(function (e) {
+        box.dataset.c4done = "";
+        box.textContent = "(diagram failed to load)";
+        console.error("c4: failed to load diagram", e);
+      });
+  }
+
   function scan() {
     if (!onArchPage()) return;
-    document.querySelectorAll(".c4-box").forEach(enhance);
+    document.querySelectorAll(".c4-box[data-c4-svg]").forEach(loadOne);
   }
 
   function init() {
     if (!onArchPage()) return;
     scan();
-    var root = document.querySelector(".md-content") || document.body;
-    new MutationObserver(scan).observe(root, { childList: true, subtree: true });
+    new MutationObserver(scan).observe(document.body, { childList: true, subtree: true });
   }
 
   init();

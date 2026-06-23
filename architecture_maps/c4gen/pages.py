@@ -1,7 +1,7 @@
 """Markdown page assembly: wraps the C4 diagrams with prose, legends, and
 provenance tables. Diagrams are C4-PlantUML rendered to SVG by Kroki at
-generation time (see cli.render + puml.py); each page references one via a
-``<!--c4-svg:...-->`` marker that hooks/c4_inline.py inlines at build time.
+generation time (see cli.render + puml.py); each page emits a ``.c4-box``
+placeholder div that docs/javascripts/c4-zoom.js fills with the pre-rendered SVG.
 """
 
 from __future__ import annotations
@@ -26,10 +26,12 @@ _LEGEND = f"""
 """
 
 
-def _diagram(model: Model, name: str) -> str:
-    """Marker for an SVG inlined at build time by hooks/c4_inline.py."""
-    path = f"application_specific_guides/{model.meta.primary_system}/architecture/_diagrams/{name}.svg"
-    return f"<!--c4-svg:{path}-->\n"
+def _diagram(model: Model, name: str) -> str:  # noqa: ARG001 (kept for signature stability)
+    """A placeholder div that docs/javascripts/c4-zoom.js fills with the
+    pre-rendered SVG (fetched from a sibling ``_diagrams/`` file) and turns into a
+    pan/zoom viewport. Client-side injection of a static SVG keeps this
+    independent of the static-site generator (works under zensical and mkdocs)."""
+    return f'<div class="c4-box" data-c4-svg="../_diagrams/{name}.svg"></div>\n'
 
 
 def _stamp(model: Model) -> str:
