@@ -163,6 +163,10 @@ class Meta(Base):
     # In the Container view, a cross-service flow that targets the primary system
     # as a whole is attributed to this entry container (where external HTTP lands).
     api_container: str | None = None
+    # Whether a curated infrastructure-references.md exists for this system (it is
+    # hand-authored, not generated). Drives the index page's link to it; default
+    # off so a new system doesn't link to a page that does not exist yet.
+    has_infrastructure_references: bool = False
     # Stamped by a generation run; kept out of the curated YAML to avoid churn.
     generated_at: str | None = None
     generator_version: str | None = None

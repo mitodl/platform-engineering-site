@@ -1,0 +1,225 @@
+meta:
+  name: MicroMasters
+  primary_system: micromasters
+  api_container: django-web
+  description: >-
+    MicroMasters is MIT's program platform pairing online edX/MITx Online course
+    runs with a proctored exam to award a verified credential. A Django monolith
+    serves a webpack/React SPA, exposes a public catalog + Wagtail CMS pages API
+    that MIT Learn ingests, syncs enrollments/grades/certificates from Open edX
+    and MITx Online, runs learner-search indexing over OpenSearch, and drives
+    Celery batch jobs (enrollment refresh, grade freezing, exam authorization).
+
+actors:
+  - id: learner
+    name: Learner
+    description: Enrolls in a MicroMasters program, tracks progress, and pays for verified course runs.
+  - id: staff
+    name: Program Staff / Curator
+    description: Manages programs and Wagtail program pages, searches enrolled learners, and emails cohorts.
+
+systems:
+  # ---- primary system ------------------------------------------------
+  - id: micromasters
+    name: MicroMasters
+    kind: internal
+    repo: https://github.com/mitodl/micromasters
+    description: MicroMasters program/credential platform (Django + DRF + Wagtail, React SPA).
+    containers:
+      - id: react-spa
+        name: React SPA
+        technology: React 16 / Redux / webpack 4
+        description: >-
+          Single-page app bundled by webpack and served by Django templates
+          (static assets via S3/CloudFront in prod, webpack-dev-server locally).
+          Calls the Django REST API from the browser.
+        shape: container
+        source: { repo: https://github.com/mitodl/micromasters, path: static/js }
+      - id: nginx
+        name: Nginx
+        technology: Nginx
+        description: Reverse proxy in front of Django via uwsgi; serves static assets.
+        shape: container
+        source: { repo: https://github.com/mitodl/micromasters, path: config/nginx.conf }
+      - id: django-web
+        name: Django Web API
+        technology: Django + DRF + Wagtail (uWSGI, Python)
+        description: >-
+          REST API, OAuth (python-social-auth) against edX/MITx Online, catalog &
+          Wagtail pages API, learner-search proxy, admin, and dashboard hydration.
+        shape: container
+        source: { repo: https://github.com/mitodl/micromasters, path: micromasters }
+      - id: wagtail-cms
+        name: Wagtail CMS
+        technology: Wagtail (in-process Django app)
+        description: >-
+          Editorial program pages (ProgramPage/HomePage/ResourcePage). Exposes the
+          Wagtail v2 pages/images/documents API under /api/v0/wagtail/.
+        shape: container
+        source: { repo: https://github.com/mitodl/micromasters, path: cms }
+      - id: celery-worker
+        name: Celery Worker
+        technology: "Celery (queues: search, exams, dashboard, default)"
+        description: >-
+          Runs batch enrollment/grade/cert refresh from edX, hourly exam
+          authorization, daily grade freezing, course-run sync, and OpenSearch
+          indexing. Beat embedded (-B).
+        shape: container
+        source: { repo: https://github.com/mitodl/micromasters, path: micromasters/celery.py }
+      - id: postgres
+        name: PostgreSQL
+        technology: PostgreSQL 16
+        description: System of record for programs, courses, enrollments, grades, exam auth, and cached edX data.
+        shape: db
+      - id: redis
+        name: Redis
+        technology: Redis
+        description: Celery broker/result backend, Django cache, and batch-job coordination locks.
+        shape: queue
+      - id: opensearch
+        name: OpenSearch
+        technology: OpenSearch 1.3 (opensearch_dsl)
+        description: >-
+          Indexes program-enrolled user profiles for staff learner search, plus
+          percolate queries that trigger automatic emails. Alias-swapped reindex.
+        shape: db
+      - id: s3
+        name: S3 / CloudFront
+        technology: AWS S3 + CloudFront (django-storages)
+        description: Static and media file storage (optional; MICROMASTERS_USE_S3).
+        shape: container
+
+  # ---- identity / courseware peers -----------------------------------
+  - id: edxorg
+    name: edX.org (Open edX)
+    kind: external
+    context_group: Courseware & Identity
+    description: >-
+      Open edX at courses.edx.org — OAuth2 identity provider and source of
+      enrollments, certificates, and current grades (edx-api-client).
+  - id: mitxonline
+    name: MITx Online
+    kind: external
+    context_group: Courseware & Identity
+    repo: https://github.com/mitodl/mitxonline
+    description: >-
+      MITx Online (Open edX) — OAuth2 IdP, course/enrollment/grade source, and
+      the cart that handles verified-track checkout (MITXONLINE_CART_URL).
+
+  # ---- platform integrations -----------------------------------------
+  - id: mit-learn
+    name: MIT Learn
+    kind: external
+    repo: https://github.com/mitodl/mit-learn
+    description: >-
+      SOA discovery platform. Consumes MicroMasters' catalog + Wagtail pages
+      (peer pull), and serves the course-run catalog MicroMasters syncs from.
+  - id: mailgun
+    name: Mailgun
+    kind: external
+    context_group: Comms & Payments
+    description: Transactional and cohort/automatic email delivery (MailgunClient over REST).
+  - id: cybersource
+    name: CyberSource
+    kind: external
+    context_group: Comms & Payments
+    description: >-
+      Secure Acceptance payment gateway (legacy direct checkout; config retained,
+      checkout now largely delegated to the MITx Online cart).
+  - id: open-exchange-rates
+    name: Open Exchange Rates
+    kind: external
+    context_group: Comms & Payments
+    description: Currency exchange rates for income-based financial aid tiers (config present).
+
+flows:
+  # ----- synchronous request path -------------------------------------
+  - { id: learner-nginx, source: learner, target: nginx, label: Browse / dashboard, sync: true, protocol: HTTPS, data: Page & API requests, trigger: on request }
+  - { id: staff-nginx, source: staff, target: nginx, label: Manage programs & search learners, sync: true, protocol: HTTPS, data: Admin/CMS/search requests, trigger: on request }
+  - { id: nginx-react, source: nginx, target: react-spa, label: Serve SPA assets, sync: true, protocol: HTTPS, data: HTML/JS/CSS bundles, trigger: on request }
+  - { id: react-nginx, source: react-spa, target: nginx, label: REST API calls, sync: true, protocol: HTTPS/JSON, data: "Dashboard, catalog, search data", trigger: on request }
+  - { id: nginx-django, source: nginx, target: django-web, label: Proxy request (uwsgi), sync: true, protocol: uWSGI, data: API request, trigger: on request }
+  - { id: django-wagtail, source: django-web, target: wagtail-cms, label: Render/serve CMS pages, sync: true, protocol: in-process, data: Program page content, trigger: on request }
+  - { id: django-postgres, source: django-web, target: postgres, label: Read/write, sync: true, protocol: SQL, data: "Programs, enrollments, grades, exam auth", trigger: on request }
+  - { id: django-redis, source: django-web, target: redis, label: Cache + enqueue tasks, sync: true, protocol: Redis, data: "Cached responses, task messages, locks", trigger: on request }
+  - { id: django-opensearch, source: django-web, target: opensearch, label: Learner search (proxy), sync: true, protocol: HTTPS, data: Program-scoped learner queries, trigger: on request }
+  - { id: django-s3, source: django-web, target: s3, label: Store/serve files, sync: true, protocol: HTTPS, data: Static & media assets, trigger: on request }
+
+  # ----- synchronous: courseware identity & payment -------------------
+  - { id: django-edxorg-oauth, source: django-web, target: edxorg, label: OAuth2 login + user info, sync: true, protocol: OAuth2, data: "Authorize/token, edX user info", trigger: on login, tags: [auth, cross-service] }
+  - { id: django-mitxonline-oauth, source: django-web, target: mitxonline, label: OAuth2 login + user info, sync: true, protocol: OAuth2, data: "Authorize/token, MITx user info", trigger: on login, tags: [auth, cross-service] }
+  - { id: learner-mitxonline-cart, source: learner, target: mitxonline, label: Verified-track checkout, sync: true, protocol: HTTPS, data: Cart redirect (MITXONLINE_CART_URL), trigger: on enroll/pay, tags: [cross-service] }
+  - { id: learner-cybersource, source: learner, target: cybersource, label: Card payment (legacy), sync: true, protocol: HTTPS, data: Secure Acceptance checkout, trigger: on pay, tags: [conditional] }
+
+  # ----- asynchronous: edX enrollment/grade/cert sync -----------------
+  - { id: beat-redis, source: celery-worker, target: redis, label: Schedule periodic tasks, sync: false, protocol: Redis, data: Beat schedule entries, trigger: "beat", tags: [async] }
+  - { id: celery-edxorg, source: celery-worker, target: edxorg, label: Refresh enrollments/grades/certs, sync: false, protocol: REST OAuth2, data: "edx-api-client: enrollments, certificates, current grades", trigger: "beat: Fridays every 6h", tags: [async, etl, cross-service] }
+  - { id: celery-mitxonline, source: celery-worker, target: mitxonline, label: Refresh enrollments/grades, sync: false, protocol: REST OAuth2, data: "Enrollment + current-grade caches (staff token)", trigger: "beat: Fridays every 6h", tags: [async, etl, cross-service] }
+  - { id: celery-mitlearn, source: celery-worker, target: mit-learn, label: Sync course-run info, sync: false, protocol: REST, data: "GET /api/v1/courses/ by readable_id", trigger: "beat: daily 02:00 UTC", tags: [async, etl, cross-service] }
+  - { id: celery-postgres, source: celery-worker, target: postgres, label: Upsert cached edX data + grades, sync: false, protocol: SQL, data: "Enrollment/grade/cert caches, FinalGrade, ExamAuthorization", trigger: during batch jobs, tags: [async] }
+
+  # ----- asynchronous: indexing & email -------------------------------
+  - { id: celery-opensearch, source: celery-worker, target: opensearch, label: Index enrolled users + percolate, sync: false, protocol: HTTPS, data: Program-enrolled user docs & percolate queries, trigger: on change / reindex, tags: [async] }
+  - { id: celery-mailgun, source: celery-worker, target: mailgun, label: Automatic & cohort emails, sync: false, protocol: HTTPS, data: Percolate-matched & course-team emails, trigger: post-indexing / on send, tags: [async] }
+  - { id: django-mailgun, source: django-web, target: mailgun, label: Send email, sync: false, protocol: HTTPS, data: Transactional / batch messages, trigger: on action, tags: [async] }
+
+  # ----- inbound peer pull (MIT Learn ingests MicroMasters) -----------
+  - { id: mitlearn-catalog, source: mit-learn, target: django-web, label: Pull catalog, sync: false, protocol: REST, data: "GET /api/v0/catalog/ (live programs + course runs)", trigger: "beat: daily 05:00 (MIT Learn)", tags: [async, etl, cross-service] }
+  - { id: mitlearn-wagtail, source: mit-learn, target: django-web, label: Pull program pages, sync: false, protocol: REST, data: "GET /api/v0/wagtail/pages/ (program page content)", trigger: "beat: daily 05:00 (MIT Learn)", tags: [async, etl, cross-service] }
+
+scenarios:
+  - id: dashboard-load
+    title: "Learner dashboard load (synchronous)"
+    description: >-
+      The learner loads the SPA dashboard. Django authenticates via the edX/MITx
+      Online OAuth session, hydrates the program/course state from Postgres
+      (backed by cached edX data), and returns it to the React app.
+    steps:
+      - { source: learner, target: nginx, label: "HTTPS dashboard request", sync: true }
+      - { source: nginx, target: django-web, label: "Proxy via uwsgi", sync: true }
+      - { source: django-web, target: postgres, label: "Read programs + cached enrollments/grades", sync: true }
+      - { source: django-web, target: redis, label: "Read cache", sync: true }
+      - { source: nginx, target: react-spa, label: "Return dashboard JSON + assets", sync: true }
+
+  - id: edx-sync
+    title: "edX enrollment/grade refresh (asynchronous)"
+    description: >-
+      Celery Beat triggers batch_update_user_data on Fridays every 6h. The worker
+      takes a Redis lock, pulls enrollments/certificates/current-grades from
+      edX.org and MITx Online via edx-api-client, and upserts the caches in
+      Postgres; index updates flow to OpenSearch.
+    steps:
+      - { source: celery-worker, target: redis, label: "Acquire batch lock", sync: false }
+      - { source: celery-worker, target: edxorg, label: "Fetch enrollments/certs/grades", sync: false }
+      - { source: celery-worker, target: mitxonline, label: "Fetch enrollments/grades", sync: false }
+      - { source: celery-worker, target: postgres, label: "Upsert cached edX data", sync: false }
+      - { source: celery-worker, target: opensearch, label: "Reindex enrolled users", sync: false }
+
+  - id: grade-freeze-exam
+    title: "Grade freeze & exam authorization (asynchronous)"
+    description: >-
+      Daily during the 16:00 UTC hour the worker freezes final grades; hourly it
+      authorizes learners who passed for upcoming exam runs. Both coordinate via
+      Redis and persist to Postgres.
+    steps:
+      - { source: celery-worker, target: redis, label: "Track group results / locks", sync: false }
+      - { source: celery-worker, target: postgres, label: "Freeze FinalGrade rows", sync: false }
+      - { source: celery-worker, target: postgres, label: "Write ExamAuthorization rows", sync: false }
+
+  - id: learn-ingest
+    title: "MIT Learn catalog + page ingestion (asynchronous)"
+    description: >-
+      MIT Learn's daily ETL pulls MicroMasters' live program catalog and Wagtail
+      program pages over the public REST API — the SOA peer-pull this map exists
+      to capture.
+    steps:
+      - { source: mit-learn, target: django-web, label: "GET /api/v0/catalog/", sync: false }
+      - { source: django-web, target: postgres, label: "Serialize live programs", sync: false }
+      - { source: mit-learn, target: django-web, label: "GET /api/v0/wagtail/pages/", sync: false }
+      - { source: django-web, target: wagtail-cms, label: "Serialize program pages", sync: false }
+
+etl_sources:
+  - { name: edX.org (enrollments/grades/certs), transport: REST OAuth2 (edx-api-client), cadence: Fridays every 6h, data: "enrollments, certificates, current grades", source_ref: { path: "dashboard/tasks.py" } }
+  - { name: MITx Online (enrollments/grades), transport: REST OAuth2 (staff token), cadence: Fridays every 6h, data: enrollment + current-grade caches, source_ref: { path: "dashboard/api_edx_cache.py" } }
+  - { name: MIT Learn (course runs), transport: REST JSON, cadence: daily 02:00 UTC, data: course-run metadata by readable_id, source_ref: { path: "courses/mit_learn_api.py:21" } }
+  - { name: Open Exchange Rates (currency), transport: REST JSON, cadence: scheduled, data: financial-aid currency rates, fragile: true, source_ref: { path: "micromasters/settings.py:613" } }

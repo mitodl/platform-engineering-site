@@ -1,0 +1,267 @@
+meta:
+  name: MITx Online
+  primary_system: mitxonline
+  api_container: nginx
+  description: >-
+    MITx Online is MIT's platform for managing online courses, programs, and
+    paid enrollments. A Django/DRF backend exposes versioned REST APIs (v1/v2/v3)
+    for courses, programs, and enrollments, runs ecommerce (basket/order state
+    machine with CyberSource), B2B contract provisioning, flexible (income-based)
+    pricing, and certificate generation. Wagtail powers the marketing CMS. Course
+    delivery is handed off to Open edX (enrollments and users pushed out; grades
+    and certificates pulled/received via webhooks). React frontends (a public
+    SPA and a Refine staff dashboard) are served as webpack bundles by Django.
+    Celery workers handle edX sync, certificate generation, HubSpot CRM sync,
+    Keycloak org reconciliation, and Google Sheets refund/deferral processing.
+    As a SOA peer, MITx Online's catalog is pulled by MIT Learn every 6h and its
+    HTTP surface is proxied by the shared APISIX gateway under /mitxonline/*.
+
+actors:
+  - id: learner
+    name: Learner
+    description: Browses the catalog, enrolls in courses/programs, pays, and earns certificates.
+  - id: staff
+    name: Staff / Course Team
+    description: Manages courses, programs, discounts, and B2B contracts via Django admin and the Refine staff dashboard.
+  - id: b2b-admin
+    name: B2B Org Admin
+    description: Provisions learners for an organization's contracted course access (via Keycloak/SCIM).
+
+systems:
+  # ---- primary system ------------------------------------------------
+  - id: mitxonline
+    name: MITx Online
+    kind: internal
+    repo: https://github.com/mitodl/mitxonline
+    description: Course/program enrollment, ecommerce, and certificate platform (Django API + React UI + Wagtail CMS).
+    containers:
+      - id: public-spa
+        name: Public Frontend (React)
+        technology: React 16 / Webpack 5 (Yarn workspaces)
+        description: >-
+          Public learner SPA (catalog, dashboard, checkout). Served as webpack
+          bundles by Django; calls the REST API from the browser.
+        shape: container
+        source: { repo: https://github.com/mitodl/mitxonline, path: frontend/public }
+      - id: staff-dashboard
+        name: Staff Dashboard (Refine)
+        technology: Refine / React 17 (Ant Design)
+        description: Admin-facing CRUD dashboard over the DRF API using OIDC (refine-simple-rest).
+        shape: container
+        source: { repo: https://github.com/mitodl/mitxonline, path: frontend/staff-dashboard }
+      - id: nginx
+        name: Nginx
+        technology: Nginx
+        description: Reverse proxy in front of Django; serves static assets and webpack bundles.
+        shape: container
+      - id: django-web
+        name: Django Web API
+        technology: Django 5.1 + DRF (Python 3.11)
+        description: >-
+          REST API (v1/v2/v3 courses/programs/enrollments, ecommerce, b2b, flexible
+          pricing, SCIM), OAuth2 provider, Wagtail CMS, admin, and inbound edX webhooks.
+        shape: container
+        source: { repo: https://github.com/mitodl/mitxonline, path: . }
+      - id: celery
+        name: Celery Worker
+        technology: Celery (queues celery, hubspot_sync; RedBeat scheduler)
+        description: >-
+          Async edX enrollment/user repair, course/program certificate generation,
+          HubSpot sync, Keycloak org reconciliation, currency rates, Google Sheets requests.
+        shape: container
+        source: { repo: https://github.com/mitodl/mitxonline, path: main/celery.py }
+      - id: postgres
+        name: PostgreSQL
+        technology: PostgreSQL 15 (RDS in prod)
+        description: System of record for courses, programs, enrollments, orders, discounts, B2B contracts, and CMS pages.
+        shape: db
+      - id: redis
+        name: Redis
+        technology: Redis 8 (ElastiCache in prod)
+        description: Celery broker/result backend, RedBeat schedule store, and Django redis cache.
+        shape: queue
+
+  # ---- platform / shared infra --------------------------------------
+  - id: apisix
+    name: APISIX Gateway
+    kind: external
+    context_group: Platform & Identity
+    description: >-
+      Shared API gateway enforcing OIDC via Keycloak. Proxies MITx Online's HTTP
+      surface (/mitxonline/*) and injects userinfo headers consumed by the api_gateway auth.
+  - id: keycloak
+    name: Keycloak (SSO)
+    kind: external
+    context_group: Platform & Identity
+    description: >-
+      OAuth2/OIDC identity provider. MITx Online authenticates via the gateway and
+      reconciles B2B organizations/groups through the Keycloak Admin API.
+  - id: vault
+    name: HashiCorp Vault
+    kind: external
+    context_group: Platform & Identity
+    description: Secrets and dynamic credentials injected at runtime.
+
+  # ---- course delivery ----------------------------------------------
+  - id: openedx
+    name: Open edX
+    kind: external
+    context_group: Course Delivery
+    description: >-
+      LMS for course delivery. MITx Online pushes user creation, enrollments, and
+      email-opt settings via the edX REST API; Open edX returns grades and posts
+      enrollment/certificate webhooks back.
+
+  # ---- payments & commerce ------------------------------------------
+  - id: cybersource
+    name: CyberSource
+    kind: external
+    context_group: Payments & Commerce
+    description: Hosted payment processor (via mitol-payment-gateway); secure acceptance + back-office refund API.
+  - id: unified-ecommerce
+    name: Unified Ecommerce
+    kind: external
+    repo: https://github.com/mitodl/unified-ecommerce
+    context_group: Payments & Commerce
+    description: >-
+      SOA commerce service. MITx Online syncs flexible-pricing discounts to it and
+      reads product metadata from its API.
+
+  # ---- comms, CRM & analytics ---------------------------------------
+  - id: mailgun
+    name: Mailgun
+    kind: external
+    context_group: Comms & Analytics
+    description: Transactional email delivery (via anymail / mitol-mail).
+  - id: hubspot
+    name: HubSpot
+    kind: external
+    context_group: Comms & Analytics
+    description: CRM. Celery syncs contacts, products, deals/line-items (mitol-hubspot-api).
+  - id: google-sheets
+    name: Google Sheets / Drive
+    kind: external
+    context_group: Comms & Analytics
+    description: Refund and deferral request intake and B2B enrollment-code sheets (mitol-google-sheets).
+  - id: posthog
+    name: PostHog / GTM
+    kind: external
+    context_group: Comms & Analytics
+    description: Product analytics and feature flags (PostHog) plus Google Tag Manager in the frontend.
+  - id: recaptcha
+    name: Google reCAPTCHA
+    kind: external
+    context_group: Comms & Analytics
+    description: Bot protection on registration/auth forms.
+
+  # ---- SOA peers (consumers) ----------------------------------------
+  - id: mit-learn
+    name: MIT Learn
+    kind: external
+    repo: https://github.com/mitodl/mit-learn
+    description: >-
+      Discovery platform; SOA consumer that pulls the MITx Online course/program
+      catalog and S3 content files into its learning-resource index.
+
+flows:
+  # ----- synchronous request path -------------------------------------
+  - { id: learner-apisix, source: learner, target: apisix, label: Browse / enroll / pay, sync: true, protocol: HTTPS, data: Page & API requests, trigger: on request }
+  - { id: staff-apisix, source: staff, target: apisix, label: Manage catalog & discounts, sync: true, protocol: HTTPS, data: Admin / dashboard requests, trigger: on request }
+  - { id: apisix-keycloak, source: apisix, target: keycloak, label: Authenticate (OIDC), sync: true, protocol: OIDC, data: Token introspection / userinfo, trigger: on request, tags: [auth] }
+  - { id: apisix-nginx, source: apisix, target: nginx, label: Proxy /mitxonline/* + userinfo, sync: true, protocol: HTTP, data: Forwarded request + auth headers, trigger: on request, tags: [cross-service] }
+  - { id: nginx-django, source: nginx, target: django-web, label: Forward request / serve bundles, sync: true, protocol: WSGI/HTTP, data: "API request, static assets", trigger: on request }
+  - { id: django-publicspa, source: django-web, target: public-spa, label: Serve SPA bundle, sync: true, protocol: HTTPS, data: HTML/JS webpack bundles, trigger: on request }
+  - { id: django-staffdash, source: django-web, target: staff-dashboard, label: Serve dashboard bundle, sync: true, protocol: HTTPS, data: HTML/JS bundles, trigger: on request }
+  - { id: django-postgres, source: django-web, target: postgres, label: Read/write, sync: true, protocol: SQL, data: "Courses, enrollments, orders, contracts", trigger: on request }
+  - { id: django-redis, source: django-web, target: redis, label: Cache + enqueue tasks, sync: true, protocol: Redis, data: "Cached responses, task messages", trigger: on request }
+  - { id: vault-django, source: vault, target: django-web, label: Secrets, sync: true, protocol: HTTPS, data: Credentials, trigger: on startup / renewal, tags: [config] }
+  - { id: publicspa-recaptcha, source: public-spa, target: recaptcha, label: Verify reCAPTCHA, sync: true, protocol: HTTPS, data: Bot-challenge token, trigger: on register }
+  - { id: publicspa-posthog, source: public-spa, target: posthog, label: Analytics + flags, sync: true, protocol: HTTPS, data: "Events, feature-flag evals", trigger: on event }
+
+  # ----- synchronous: payments & commerce -----------------------------
+  - { id: django-cybersource, source: django-web, target: cybersource, label: Start payment / refund, sync: true, protocol: HTTPS, data: "Secure-acceptance payload, refund requests", trigger: on checkout, tags: [payment] }
+  - { id: cybersource-django, source: cybersource, target: django-web, label: Payment result callback, sync: true, protocol: HTTPS, data: Signed processor response (checkout/backoffice), trigger: on payment complete, tags: [payment] }
+  - { id: django-ue, source: django-web, target: unified-ecommerce, label: Read product metadata, sync: true, protocol: REST, data: "/api/v0/meta/product/ lookups", trigger: on request, tags: [cross-service] }
+
+  # ----- synchronous: Open edX delivery -------------------------------
+  - { id: django-openedx, source: django-web, target: openedx, label: Create user / enroll / grades, sync: true, protocol: REST OAuth2, data: "User+auth creation, enrollments, email settings, grade reads", trigger: on enroll / on request, tags: [cross-service] }
+  - { id: openedx-django, source: openedx, target: django-web, label: Enrollment + certificate webhooks, sync: true, protocol: HTTPS, data: edX enrollment & certificate events, trigger: webhook, tags: [cross-service, webhook] }
+
+  # ----- asynchronous: edX & certificate jobs -------------------------
+  - { id: beat-redis, source: celery, target: redis, label: RedBeat schedule, sync: false, protocol: Redis, data: Beat schedule entries, trigger: "beat", tags: [async] }
+  - { id: celery-openedx, source: celery, target: openedx, label: Retry enrollments / repair users, sync: false, protocol: REST OAuth2, data: "Failed enrollments, user/token repair, email opt-in", trigger: "beat: enrollment-retry / repair offset", tags: [async, cross-service] }
+  - { id: celery-postgres, source: celery, target: postgres, label: Generate certs / sync courseruns, sync: false, protocol: SQL, data: "Course+program certificates, courserun sync, program upgrades", trigger: "beat: daily / hourly", tags: [async] }
+
+  # ----- asynchronous: CRM, comms & identity sync ---------------------
+  - { id: celery-hubspot, source: celery, target: hubspot, label: Sync contacts/products/deals, sync: false, protocol: REST, data: "Contacts, products, deals, line items", trigger: on change (hubspot_sync queue), tags: [async] }
+  - { id: celery-keycloak, source: celery, target: keycloak, label: Reconcile B2B orgs, sync: false, protocol: REST (Admin API), data: Organization/group membership, trigger: "beat: KEYCLOAK_ORG_SYNC offset", tags: [async, cross-service] }
+  - { id: celery-sheets, source: celery, target: google-sheets, label: Process refund/deferral + B2B code sheets, sync: false, protocol: REST (Sheets/Drive), data: "Refund/deferral requests, enrollment-code sheets", trigger: "beat: every ~hour", tags: [async] }
+  - { id: celery-mailgun, source: celery, target: mailgun, label: Transactional + bulk email, sync: false, protocol: HTTPS, data: "Enrollment, certificate, partner-school emails", trigger: on event / task, tags: [async] }
+  - { id: celery-ue, source: celery, target: unified-ecommerce, label: Push flexible-pricing discounts, sync: false, protocol: REST, data: "/api/v0/payments/discounts/ writes", trigger: on flexible-price approval, tags: [async, cross-service] }
+
+  # ----- inbound: B2B SCIM provisioning -------------------------------
+  - { id: keycloak-scim, source: keycloak, target: django-web, label: SCIM 2.0 user/group provisioning, sync: true, protocol: SCIM/HTTPS, data: B2B user & group lifecycle, trigger: on provisioning event, tags: [cross-service, auth] }
+
+  # ----- cross-service: MIT Learn pulls catalog (consumer) ------------
+  - { id: mitlearn-catalog, source: mit-learn, target: django-web, label: Pull course/program catalog, sync: false, protocol: REST, data: "/api/v2/{courses,programs}?live=true", trigger: "beat: every 6h (MIT Learn)", tags: [async, etl, cross-service] }
+  - { id: mitlearn-content, source: mit-learn, target: django-web, label: Pull S3 content files, sync: false, protocol: S3/REST, data: edX OLX content archives, trigger: "beat: daily (MIT Learn)", tags: [async, etl, cross-service] }
+
+scenarios:
+  - id: enroll-and-pay
+    title: "Learner enrollment & paid checkout (synchronous)"
+    description: >-
+      A learner browses the catalog and enrolls. APISIX authenticates via Keycloak
+      and proxies to Django, which records the order, starts a CyberSource payment,
+      and on the signed callback fulfills the order and pushes the enrollment to Open edX.
+    steps:
+      - { source: learner, target: apisix, label: "Enroll / checkout request", sync: true }
+      - { source: apisix, target: keycloak, label: "Introspect OIDC token", sync: true }
+      - { source: apisix, target: nginx, label: "Proxy /mitxonline/* + userinfo", sync: true }
+      - { source: nginx, target: django-web, label: "Forward to API", sync: true }
+      - { source: django-web, target: cybersource, label: "Start payment", sync: true }
+      - { source: cybersource, target: django-web, label: "Signed payment callback", sync: true }
+      - { source: django-web, target: postgres, label: "Fulfill order", sync: true }
+      - { source: django-web, target: openedx, label: "Push enrollment", sync: true }
+
+  - id: edx-sync
+    title: "Open edX enrollment & grade sync (mixed)"
+    description: >-
+      Open edX posts enrollment/certificate webhooks back to Django; a periodic
+      Celery beat task retries failed enrollments and repairs faulty edX users, and
+      the certificate jobs read grades from edX to generate certificates in Postgres.
+    steps:
+      - { source: openedx, target: django-web, label: "Enrollment/certificate webhook", sync: true }
+      - { source: celery, target: redis, label: "Beat schedules retry/repair", sync: false }
+      - { source: celery, target: openedx, label: "Retry enrollments / repair users / read grades", sync: false }
+      - { source: celery, target: postgres, label: "Generate certificates", sync: false }
+
+  - id: crm-identity-sync
+    title: "CRM, identity & sheets sync (asynchronous)"
+    description: >-
+      Celery beat fans out to external services: HubSpot contact/product/deal sync,
+      Keycloak B2B organization reconciliation, and Google Sheets refund/deferral
+      and B2B enrollment-code processing. SCIM provisioning arrives inbound from Keycloak.
+    steps:
+      - { source: celery, target: hubspot, label: "Sync contacts/products/deals", sync: false }
+      - { source: celery, target: keycloak, label: "Reconcile B2B orgs", sync: false }
+      - { source: celery, target: google-sheets, label: "Process refund/deferral + code sheets", sync: false }
+      - { source: keycloak, target: django-web, label: "SCIM provisioning", sync: true }
+
+  - id: mitlearn-catalog-pull
+    title: "MIT Learn catalog ingestion (cross-service, asynchronous)"
+    description: >-
+      MIT Learn's edx_content ETL worker pulls the live MITx Online course and
+      program catalog from the v2 API every 6 hours and fetches S3 content archives,
+      indexing them as learning resources. MITx Online is the catalog source-of-truth.
+    steps:
+      - { source: mit-learn, target: django-web, label: "GET /api/v2/courses?live=true", sync: false }
+      - { source: mit-learn, target: django-web, label: "GET /api/v2/programs?live=true", sync: false }
+      - { source: mit-learn, target: django-web, label: "Fetch S3 content files", sync: false }
+
+etl_sources:
+  - { name: Open edX (grades), transport: REST OAuth2, cadence: on enroll / scheduled, data: course current grades, source_ref: { path: "openedx/api.py:1096" } }
+  - { name: Open edX (enrollment webhook), transport: HTTPS webhook, cadence: on event, data: enrollment events, source_ref: { path: "openedx/views.py:34" } }
+  - { name: Open edX (certificate webhook), transport: HTTPS webhook, cadence: on event, data: certificate events, source_ref: { path: "openedx/views.py:128" } }
+  - { name: Unified Ecommerce (product metadata), transport: REST, cadence: on request, data: product meta, source_ref: { path: "flexiblepricing/api.py:458" } }
+  - { name: Open Exchange Rates, transport: REST, cadence: daily 03:00, data: currency exchange rates, source_ref: { path: "flexiblepricing/tasks.py:57" } }
+  - { name: Google Sheets (refunds/deferrals), transport: Google Sheets API, cadence: every ~hour, data: refund/deferral requests, source_ref: { path: "sheets/tasks.py" } }

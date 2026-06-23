@@ -51,6 +51,14 @@ def _banner(model: Model) -> str:
 
 
 def page_index(model: Model) -> str:
+    # The infrastructure-references page is hand-authored, not generated; only
+    # link to it for systems that actually have one (see Meta).
+    infra_ref = (
+        "\n5. [Infrastructure references](infrastructure-references.md) — "
+        "Pulumi, Concourse, and compose source-of-truth links (curated)."
+        if model.meta.has_infrastructure_references
+        else ""
+    )
     return f"""{_banner(model)}# {model.meta.name} — Architecture & Data Flows
 
 {_stamp(model)}
@@ -67,8 +75,7 @@ cycles and fragile linkages.
 1. [System Context](system-context.md) — {model.meta.name} and the systems it exchanges data with.
 2. [Containers](container.md) — the runtime units inside {model.meta.name}.
 3. [Data Flows](data-flows.md) — key interactions, step by step (sync & async).
-4. [Dependencies & Cycles](dependencies-and-cycles.md) — graph-derived coupling, cycles, fragile links.
-5. [Infrastructure references](infrastructure-references.md) — Pulumi, Concourse, and compose source-of-truth links (curated).
+4. [Dependencies & Cycles](dependencies-and-cycles.md) — graph-derived coupling, cycles, fragile links.{infra_ref}
 
 ## Keeping this current
 

@@ -2,6 +2,7 @@ meta:
   name: MIT Learn
   primary_system: mit-learn
   api_container: django-web
+  has_infrastructure_references: true
   description: >-
     MIT Learn is the central discovery surface for MIT's open and paid learning
     offerings. A Next.js frontend serves learners; a Django/DRF backend exposes

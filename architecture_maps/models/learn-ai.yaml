@@ -1,0 +1,234 @@
+meta:
+  name: learn-ai
+  primary_system: learn-ai
+  api_container: apisix
+  description: >-
+    learn-ai is MIT Open Learning's conversational/agentic discovery sidecar: a
+    Django + DRF service whose request path runs entirely on Channels/ASGI
+    (Granian) so it can stream LLM responses over Server-Sent Events. Each chat
+    turn drives a LangGraph ReAct agent that calls tools against the MIT Learn
+    API (vector resource search, syllabus/content-file search, video transcript
+    search, tutor problem sets) and calls an LLM through a LiteLLM proxy. APISIX
+    fronts the service, enforcing Keycloak OIDC for learner-facing agents and
+    static key-auth for Canvas integrations. Chat history (LangGraph
+    checkpoints) and sessions persist in Postgres; Redis backs the Channels
+    layer, Django cache, and the Celery broker.
+
+actors:
+  - id: learner
+    name: Learner
+    description: >-
+      Asks the discovery/syllabus/tutor/video chatbots questions, typically via
+      the MIT Learn frontend or an embedded demo UI. May be anonymous or
+      Keycloak-authenticated.
+  - id: canvas
+    name: Canvas LMS
+    description: >-
+      External MIT Canvas instance that calls the Canvas syllabus/tutor agents
+      server-to-server using a static canvas_token (APISIX key-auth).
+  - id: staff
+    name: Staff / Curator
+    description: >-
+      Manages LLM model registry, prompts, and chat-session admin via the Django
+      admin; staff sessions include Canvas content in syllabus search.
+
+systems:
+  # ---- primary system ------------------------------------------------
+  - id: learn-ai
+    name: learn-ai
+    kind: internal
+    repo: https://github.com/mitodl/learn-ai
+    description: Conversational/agentic discovery sidecar (Django + DRF + Channels/ASGI).
+    containers:
+      - id: apisix
+        name: APISIX Gateway
+        technology: Apache APISIX 3.13 (apisix.yaml static config)
+        description: >-
+          Edge gateway for /http/* agent routes. Enforces Keycloak OIDC
+          (openid-connect, pass-or-require) for learner routes and static
+          key-auth (canvas_token) for the Canvas syllabus/tutor routes; sets
+          CORS and Referrer-Policy. Upstreams to Nginx.
+        shape: container
+        source: { repo: https://github.com/mitodl/learn-ai, path: config/apisix/apisix.yaml }
+      - id: nginx
+        name: Nginx
+        technology: Nginx (uwsgi_pass templates)
+        description: Reverse proxy in front of the ASGI app; forwards APISIX-authenticated requests.
+        shape: container
+        source: { repo: https://github.com/mitodl/learn-ai, path: nginx }
+      - id: asgi-web
+        name: ASGI / Channels Web
+        technology: Django + DRF + Channels, Granian ASGI (Python 3.12)
+        description: >-
+          Single ASGI app (main.asgi). AsyncHttpConsumer subclasses per bot
+          (recommendation, syllabus, canvas syllabus, tutor, canvas tutor,
+          video GPT) stream SSE; non-agent paths fall through to the Django ASGI
+          app (admin, user_meta, healthz). Runs the LangGraph agent loop.
+        shape: container
+        source: { repo: https://github.com/mitodl/learn-ai, path: ai_chatbots/consumers.py }
+      - id: celery
+        name: Celery Worker (default, edx_content; -B beat)
+        technology: Celery worker + embedded beat (RedBeat)
+        description: >-
+          Housekeeping only — prunes stale anonymous chat sessions. No ETL or
+          LLM calls run here today; the conversational path is fully synchronous
+          in the ASGI app.
+        shape: container
+        source: { repo: https://github.com/mitodl/learn-ai, path: ai_chatbots/tasks.py }
+      - id: postgres
+        name: PostgreSQL
+        technology: PostgreSQL 18 (RDS in prod)
+        description: >-
+          System of record for users, UserChatSession, and LangGraph
+          checkpoints (DjangoCheckpoint / DjangoCheckpointWrite) backing the
+          AsyncDjangoSaver checkpointer. Also hosts the LiteLLM proxy DB.
+        shape: db
+      - id: redis
+        name: Redis / Valkey
+        technology: Redis 7 (ElastiCache Valkey in prod)
+        description: >-
+          channels_redis Channel layer, Django cache (incl. cached prompts),
+          and Celery broker / RedBeat schedule store.
+        shape: queue
+      - id: litellm
+        name: LiteLLM Proxy
+        technology: LiteLLM proxy (ghcr.io berriai/litellm)
+        description: >-
+          OpenAI-compatible proxy shipped alongside the app (config/litellm_config.yml).
+          Routes to OpenAI-compatible models and AWS Bedrock; enforces per-end-user
+          budgets/rate limits. The app talks to it via langchain_litellm.ChatLiteLLM.
+        shape: container
+        source: { repo: https://github.com/mitodl/learn-ai, path: config/litellm_config.yml }
+
+  # ---- platform / shared infra --------------------------------------
+  - id: keycloak
+    name: Keycloak (SSO)
+    kind: external
+    context_group: Platform & Identity
+    description: >-
+      OAuth2/OIDC identity provider (realm olapps). APISIX runs the
+      openid-connect flow against it; APISIX_USERDATA maps claims to Django
+      users via middleware.
+  - id: vault
+    name: HashiCorp Vault
+    kind: external
+    context_group: Platform & Identity
+    description: Secrets (LEARN_ACCESS_TOKEN, proxy/provider keys) injected at runtime.
+
+  # ---- AI & vector services -----------------------------------------
+  - id: openai
+    name: LLM Provider (OpenAI-compatible / Bedrock)
+    kind: external
+    context_group: AI & Vector Services
+    description: >-
+      Backing completion models behind LiteLLM — OpenAI (default openai/gpt-4o-mini)
+      and AWS Bedrock (Claude 3.5 Sonnet). Streamed token responses.
+  - id: langsmith
+    name: LangSmith
+    kind: external
+    context_group: AI & Vector Services
+    description: >-
+      LangChain tracing/observability. Each chat turn is wrapped in a langsmith
+      trace when LANGSMITH_API_KEY is set.
+
+  # ---- SOA peers -----------------------------------------------------
+  - id: mit-learn
+    name: MIT Learn API
+    kind: external
+    context_group: SOA Peers
+    repo: https://github.com/mitodl/mit-learn
+    description: >-
+      Course & learning-resource discovery platform. learn-ai's agent tools call
+      its vector-search, content-file, video-transcript, and tutor problem-set
+      endpoints (bearer LEARN_ACCESS_TOKEN). In MIT Learn's own map, learn-ai is
+      modeled as the external /ai/* peer — the mirror of this edge.
+  - id: posthog
+    name: PostHog
+    kind: external
+    context_group: Comms & Analytics
+    description: >-
+      Product analytics + LLM token tracking. The LangChain CallbackHandler
+      emits generation/token events per turn.
+  - id: otel
+    name: OpenTelemetry Collector
+    kind: external
+    context_group: Comms & Analytics
+    description: >-
+      OTLP traces from mitol-django-observability when OPENTELEMETRY_ENDPOINT is
+      set (off by default).
+
+flows:
+  # ----- synchronous streamed request path ----------------------------
+  - { id: learner-apisix, source: learner, target: apisix, label: Chat (SSE), sync: true, protocol: HTTPS/SSE, data: "Prompt + thread/object id; streamed tokens back", trigger: on request }
+  - { id: canvas-apisix, source: canvas, target: apisix, label: Canvas agent (key-auth), sync: true, protocol: HTTPS/SSE, data: "Syllabus/tutor prompts (canvas_token)", trigger: on request }
+  - { id: apisix-keycloak, source: apisix, target: keycloak, label: Authenticate (OIDC), sync: true, protocol: OIDC, data: Token introspection / userinfo, trigger: on request, tags: [auth] }
+  - { id: apisix-nginx, source: apisix, target: nginx, label: Proxy authenticated request, sync: true, protocol: HTTP, data: Forwarded request + identity headers, trigger: on request }
+  - { id: nginx-asgi, source: nginx, target: asgi-web, label: Forward to ASGI, sync: true, protocol: HTTP/ASGI, data: Chat request, trigger: on request }
+  - { id: asgi-postgres, source: asgi-web, target: postgres, label: Sessions + checkpoints, sync: true, protocol: SQL, data: "UserChatSession, LangGraph checkpoints, users", trigger: on request }
+  - { id: asgi-redis, source: asgi-web, target: redis, label: Channel layer + cache, sync: true, protocol: Redis, data: "Channels groups, cached prompts, throttle counters", trigger: on request }
+  - { id: asgi-litellm, source: asgi-web, target: litellm, label: LLM completions (streamed), sync: true, protocol: HTTPS/OpenAI, data: Prompts + tool schemas / streamed tokens, trigger: on request }
+  - { id: litellm-openai, source: litellm, target: openai, label: Model backend, sync: true, protocol: HTTPS, data: Prompts / streamed responses, trigger: on request }
+  - { id: litellm-postgres, source: litellm, target: postgres, label: Proxy state + budgets, sync: true, protocol: SQL, data: End-user budget/usage rows, trigger: on request, tags: [config] }
+
+  # ----- cross-service: MIT Learn API tool calls ----------------------
+  - { id: asgi-mitlearn-search, source: asgi-web, target: mit-learn, label: "Vector resource search (search_courses)", sync: true, protocol: HTTPS/JSON, data: "GET /api/v0/vector_learning_resources_search/ (Bearer)", trigger: "tool call", tags: [cross-service], provenance: { derived_from: graph, contract_kind: endpoint, contract_key: "/api/v0/vector_learning_resources_search/", repo: "https://github.com/mitodl/mit-learn", path: openapi/specs/v0.yaml } }
+  - { id: asgi-mitlearn-content, source: asgi-web, target: mit-learn, label: "Content-file / syllabus search", sync: true, protocol: HTTPS/JSON, data: "GET /api/v0/vector_content_files_search/ (Bearer)", trigger: "tool call", tags: [cross-service], provenance: { derived_from: graph, contract_kind: endpoint, contract_key: "/api/v0/vector_content_files_search/", repo: "https://github.com/mitodl/mit-learn", path: openapi/specs/v0.yaml } }
+  - { id: asgi-mitlearn-transcript, source: asgi-web, target: mit-learn, label: "Video transcript search", sync: true, protocol: HTTPS/JSON, data: "GET vector_content_files_search (edx_module_id)", trigger: "tool call (VideoGPT)", tags: [cross-service], provenance: { derived_from: code, repo: "https://github.com/mitodl/learn-ai", path: ai_chatbots/tools.py, line: 360 } }
+  - { id: asgi-mitlearn-problems, source: asgi-web, target: mit-learn, label: "Tutor problem set + solution", sync: true, protocol: HTTPS/JSON, data: "GET /api/v0/tutor/problems/{run}/{set}/", trigger: "tool call (TutorBot)", tags: [cross-service], provenance: { derived_from: code, repo: "https://github.com/mitodl/learn-ai", path: ai_chatbots/chatbots.py, line: 759 } }
+
+  # ----- observability / analytics (synchronous side-channels) --------
+  - { id: asgi-langsmith, source: asgi-web, target: langsmith, label: Trace chat turn, sync: true, protocol: HTTPS, data: "Prompts, tool calls, outputs (when configured)", trigger: per turn, tags: [observability, conditional] }
+  - { id: asgi-posthog, source: asgi-web, target: posthog, label: LLM token + analytics events, sync: true, protocol: HTTPS, data: Generation/token usage events, trigger: per turn, tags: [observability] }
+  - { id: asgi-otel, source: asgi-web, target: otel, label: OTLP traces, sync: true, protocol: OTLP/gRPC, data: Request spans, trigger: per request, tags: [observability, conditional] }
+  - { id: vault-asgi, source: vault, target: asgi-web, label: Secrets, sync: true, protocol: HTTPS, data: "LEARN_ACCESS_TOKEN, proxy/provider keys", trigger: on startup, tags: [config] }
+
+  # ----- asynchronous: housekeeping -----------------------------------
+  - { id: celery-redis, source: celery, target: redis, label: Broker + beat schedule, sync: false, protocol: Redis, data: Task messages / RedBeat entries, trigger: "beat", tags: [async] }
+  - { id: celery-postgres, source: celery, target: postgres, label: Prune stale anon sessions, sync: false, protocol: SQL, data: Delete old anonymous UserChatSession rows, trigger: "beat: delete_stale_sessions", tags: [async] }
+
+scenarios:
+  - id: agentic-chat-turn
+    title: "Agentic chat turn with MIT Learn tool calls (synchronous, streamed)"
+    description: >-
+      A learner asks a question. APISIX authenticates via Keycloak OIDC and
+      proxies to the ASGI consumer, which loads/creates a LangGraph checkpoint in
+      Postgres. The ReAct agent calls the LLM via LiteLLM; the model emits a
+      tool call, the agent queries the MIT Learn vector/content API, feeds
+      results back to the LLM, and streams the final answer over SSE. The turn
+      is traced to LangSmith/PostHog.
+    steps:
+      - { source: learner, target: apisix, label: "POST /http/<agent>/ (SSE)", sync: true }
+      - { source: apisix, target: keycloak, label: "Introspect OIDC token", sync: true }
+      - { source: apisix, target: nginx, label: "Proxy + identity headers", sync: true }
+      - { source: nginx, target: asgi-web, label: "Forward to consumer", sync: true }
+      - { source: asgi-web, target: postgres, label: "Load/create checkpoint + session", sync: true }
+      - { source: asgi-web, target: litellm, label: "LLM call (tool-bound)", sync: true }
+      - { source: litellm, target: openai, label: "Model backend", sync: true }
+      - { source: asgi-web, target: mit-learn, label: "Tool call: vector/content search", sync: true }
+      - { source: asgi-web, target: litellm, label: "LLM call with tool results", sync: true }
+      - { source: asgi-web, target: postgres, label: "Persist checkpoint", sync: true }
+      - { source: asgi-web, target: posthog, label: "Emit token/usage events", sync: true }
+
+  - id: canvas-tutor
+    title: "Canvas tutor agent (server-to-server, key-auth)"
+    description: >-
+      Canvas calls the tutor/syllabus agent with a static canvas_token. APISIX
+      validates the key (no OIDC) and proxies through. The TutorBot fetches the
+      problem set + solution from the MIT Learn tutor API and runs the
+      open-learning-ai-tutor agent loop via LiteLLM, streaming guidance back.
+    steps:
+      - { source: canvas, target: apisix, label: "POST /http/canvas_tutor_agent/ (canvas_token)", sync: true }
+      - { source: apisix, target: nginx, label: "Proxy (key-auth passed)", sync: true }
+      - { source: nginx, target: asgi-web, label: "Forward to TutorBot consumer", sync: true }
+      - { source: asgi-web, target: mit-learn, label: "Fetch problem set + solution", sync: true }
+      - { source: asgi-web, target: litellm, label: "Tutor agent LLM loop", sync: true }
+      - { source: litellm, target: openai, label: "Model backend", sync: true }
+
+  - id: session-housekeeping
+    title: "Stale anonymous session cleanup (asynchronous)"
+    description: >-
+      Celery Beat periodically triggers delete_stale_sessions, which removes
+      anonymous chat sessions older than the configured expiry from Postgres.
+    steps:
+      - { source: celery, target: redis, label: "Beat trigger", sync: false }
+      - { source: celery, target: postgres, label: "Delete stale anon sessions", sync: false }

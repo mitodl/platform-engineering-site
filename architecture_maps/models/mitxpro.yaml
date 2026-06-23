@@ -1,0 +1,249 @@
+meta:
+  name: MITx Pro
+  primary_system: mitxpro
+  api_container: django-web
+  description: >-
+    MIT xPRO is the professional-education e-commerce and course-delivery
+    platform. A Django/DRF backend with a React (Webpack) SPA and a Wagtail CMS
+    serves the catalog and marketing pages, takes payment via CyberSource Secure
+    Acceptance, and provisions users, enrollments, grades, and certificates
+    against an Open edX instance. Celery (RedBeat) runs enrollment repair,
+    certificate generation, course-run sync, external-vendor course sync, and
+    Google Sheets coupon/refund/deferral workflows. xPRO is a SOA peer: MIT Learn
+    pulls its course/program catalog and content files for discovery.
+
+actors:
+  - id: learner
+    name: Learner
+    description: Browses the catalog, enrolls, pays, and earns certificates.
+  - id: staff
+    name: Staff / Course Team
+    description: Manages catalog, coupons, refunds, and CMS pages via admin / Google Sheets.
+  - id: b2b-purchaser
+    name: B2B Purchaser
+    description: Buys bulk enrollment codes for an organization via the B2B checkout.
+
+systems:
+  # ---- primary system ------------------------------------------------
+  - id: mitxpro
+    name: MITx Pro
+    kind: internal
+    repo: https://github.com/mitodl/mitxpro
+    description: Professional-education e-commerce + courseware platform (Django API + React SPA + Wagtail).
+    containers:
+      - id: spa
+        name: React SPA
+        technology: React + Redux / Webpack (Node)
+        description: >-
+          Browser app for catalog, checkout, account, and dashboard. Bundles are
+          built by Webpack and served as static assets via Django; calls the DRF API.
+        shape: container
+        source: { repo: https://github.com/mitodl/mitxpro, path: static/js }
+      - id: nginx
+        name: Nginx
+        technology: Nginx
+        description: Reverse proxy in front of the Django app; serves static assets.
+        shape: container
+      - id: django-web
+        name: Django Web API
+        technology: Django + DRF + Wagtail (uWSGI, Python 3.12)
+        description: >-
+          REST API, social-auth/SSO, checkout, Open edX provisioning, Wagtail CMS,
+          admin, and the CyberSource/Google Sheets webhook receivers.
+        shape: container
+        source: { repo: https://github.com/mitodl/mitxpro, path: mitxpro }
+      - id: celery
+        name: Celery Worker
+        technology: Celery worker + RedBeat beat (-B)
+        description: >-
+          edX enrollment repair, certificate generation, course-run + external
+          course sync, Sheets coupon/refund/deferral processing, HubSpot sync.
+        shape: container
+        source: { repo: https://github.com/mitodl/mitxpro, path: mitxpro/celery.py }
+      - id: postgres
+        name: PostgreSQL
+        technology: PostgreSQL 18 (RDS in prod)
+        description: System of record for users, orders, products, coupons, courses, CMS.
+        shape: db
+      - id: redis
+        name: Redis
+        technology: Redis 8 (ElastiCache in prod)
+        description: Django/Wagtail cache, Celery broker/result backend, RedBeat schedule store.
+        shape: queue
+      - id: s3
+        name: S3 App Storage
+        technology: AWS S3 (CloudFront)
+        description: Media, CMS uploads, and the catalog/content files MIT Learn ingests.
+        shape: container
+
+  # ---- platform / shared infra --------------------------------------
+  - id: openedx
+    name: Open edX
+    kind: external
+    context_group: Courseware
+    description: >-
+      LMS/courseware instance. OAuth2/social-auth identity source for xPRO and the
+      target for user, enrollment, grade, and certificate provisioning.
+  - id: cybersource
+    name: CyberSource
+    kind: external
+    context_group: Payments & CRM
+    description: Secure Acceptance hosted payment processor (signed redirect + callback).
+  - id: hubspot
+    name: HubSpot
+    kind: external
+    context_group: Payments & CRM
+    description: CRM; receives contact, product, and deal (order) syncs via mitol-hubspot-api.
+  - id: mailgun
+    name: Mailgun
+    kind: external
+    context_group: Comms
+    description: Transactional and bulk enrollment email delivery (via anymail).
+  - id: google-workspace
+    name: Google Sheets / Drive
+    kind: external
+    context_group: Coupon Ops
+    description: >-
+      Coupon-request, refund, and deferral spreadsheets; Drive push notifications
+      drive Sheets processing. Accessed via service-account pygsheets/Drive API.
+  - id: recaptcha
+    name: Google reCAPTCHA
+    kind: external
+    context_group: Comms
+    description: Bot protection on registration/forms.
+  - id: sentry
+    name: Sentry
+    kind: external
+    context_group: Comms
+    description: Error and performance monitoring.
+
+  # ---- external course vendors --------------------------------------
+  - id: external-vendors
+    name: External Course Vendors
+    kind: external
+    context_group: External Course Sources
+    description: Emeritus & Global Alumni course-catalog report APIs (EXTERNAL_COURSE_SYNC_API).
+
+  # ---- SOA peer ------------------------------------------------------
+  - id: mit-learn
+    name: MIT Learn
+    kind: external
+    repo: https://github.com/mitodl/mit-learn
+    description: Discovery platform; SOA peer that ingests xPRO's catalog + content files.
+
+flows:
+  # ----- synchronous request path -------------------------------------
+  - { id: learner-nginx, source: learner, target: nginx, label: Browse / checkout, sync: true, protocol: HTTPS, data: Page & API requests, trigger: on request }
+  - { id: b2b-nginx, source: b2b-purchaser, target: nginx, label: B2B bulk purchase, sync: true, protocol: HTTPS, data: B2B checkout requests, trigger: on request }
+  - { id: nginx-django, source: nginx, target: django-web, label: Forward request, sync: true, protocol: WSGI/HTTP, data: API + page requests, trigger: on request }
+  - { id: spa-nginx, source: spa, target: nginx, label: API calls, sync: true, protocol: HTTPS/JSON, data: "Catalog, basket, account data", trigger: on request }
+  - { id: django-postgres, source: django-web, target: postgres, label: Read/write, sync: true, protocol: SQL, data: "Users, orders, products, courses, CMS", trigger: on request }
+  - { id: django-redis, source: django-web, target: redis, label: Cache + enqueue tasks, sync: true, protocol: Redis, data: "Cached pages, task messages", trigger: on request }
+  - { id: django-s3, source: django-web, target: s3, label: Store/serve media, sync: true, protocol: HTTPS, data: "Media, CMS uploads, catalog files", trigger: on request }
+  - { id: django-sentry, source: django-web, target: sentry, label: Report errors, sync: true, protocol: HTTPS, data: Exceptions & traces, trigger: on error }
+  - { id: django-recaptcha, source: django-web, target: recaptcha, label: Verify token, sync: true, protocol: HTTPS, data: reCAPTCHA verification, trigger: on register }
+
+  # ----- auth / SSO with Open edX -------------------------------------
+  - { id: django-openedx-oauth, source: django-web, target: openedx, label: SSO + provision user, sync: true, protocol: OAuth2/HTTPS, data: "social-auth login, create edX user + token", trigger: on login / signup, tags: [auth, cross-service] }
+  - { id: django-openedx-enroll, source: django-web, target: openedx, label: Enroll learner, sync: true, protocol: REST, data: Course-run enrollment, trigger: on order fulfilled, tags: [cross-service] }
+
+  # ----- payment (CyberSource Secure Acceptance) ----------------------
+  - { id: learner-cybersource, source: learner, target: cybersource, label: Pay (hosted), sync: true, protocol: HTTPS, data: Signed Secure Acceptance payload, trigger: on checkout }
+  - { id: cybersource-django, source: cybersource, target: django-web, label: Payment callback (signed), sync: true, protocol: HTTPS, data: Order result + HMAC signature, trigger: webhook, tags: [webhook] }
+  - { id: django-maxmind, source: django-web, target: postgres, label: GeoIP country (MaxMind DB), sync: true, protocol: local, data: IP -> country for tax/export, trigger: on checkout }
+
+  # ----- async: Open edX courseware sync ------------------------------
+  - { id: beat-redis, source: celery, target: redis, label: Schedule periodic tasks, sync: false, protocol: Redis, data: RedBeat schedule entries, trigger: "beat", tags: [async] }
+  - { id: celery-openedx-repair, source: celery, target: openedx, label: Retry enroll / repair users, sync: false, protocol: REST, data: "Failed enrollments, faulty edX users", trigger: "beat: periodic", tags: [async, cross-service] }
+  - { id: celery-openedx-grades, source: celery, target: openedx, label: Pull grades + run data, sync: false, protocol: REST, data: "Grades, course-run titles/dates", trigger: "beat: daily cron", tags: [async, cross-service] }
+  - { id: celery-certs, source: celery, target: postgres, label: Generate certificates, sync: false, protocol: SQL, data: Course-run grades + certificates, trigger: "beat: daily cron", tags: [async] }
+
+  # ----- async: external course vendor sync ---------------------------
+  - { id: celery-vendors, source: celery, target: external-vendors, label: Sync external courses, sync: false, protocol: REST, data: "Emeritus / Global Alumni batch reports", trigger: "beat: daily cron", tags: [async, etl, cross-service] }
+
+  # ----- async: Google Sheets coupon/refund/deferral ops --------------
+  - { id: google-django-webhook, source: google-workspace, target: django-web, label: Drive change push, sync: false, protocol: HTTPS, data: File-change notifications, trigger: webhook (Drive), tags: [async, webhook] }
+  - { id: celery-sheets, source: celery, target: google-workspace, label: Process request sheets, sync: false, protocol: "REST (Sheets/Drive)", data: "Coupon/refund/deferral rows, file watches", trigger: "beat: every SHEETS_MONITORING_FREQUENCY", tags: [async, etl, fragile] }
+
+  # ----- async: HubSpot CRM sync --------------------------------------
+  - { id: celery-hubspot, source: celery, target: hubspot, label: Sync contacts/deals/products, sync: false, protocol: REST, data: "Users, orders (deals), products", trigger: on change / batch, tags: [async] }
+
+  # ----- async: email --------------------------------------------------
+  - { id: celery-mailgun, source: celery, target: mailgun, label: Send enrollment / bulk email, sync: false, protocol: HTTPS, data: "Receipts, bulk enroll codes, notices", trigger: on event / batch, tags: [async] }
+
+  # ----- cross-service: MIT Learn ingests xPRO ------------------------
+  - { id: mitlearn-catalog, source: mit-learn, target: django-web, label: Pull catalog (ETL), sync: false, protocol: REST, data: "XPRO_CATALOG_API_URL, XPRO_COURSES_API_URL", trigger: "beat: daily 05:00 (mit-learn)", tags: [async, etl, cross-service] }
+  - { id: mitlearn-files, source: mit-learn, target: s3, label: Pull content files (ETL), sync: false, protocol: S3, data: OLX/content archives, trigger: "beat: daily 08:00 (mit-learn)", tags: [async, etl, cross-service] }
+
+scenarios:
+  - id: enroll-checkout
+    title: "Paid enrollment & checkout (synchronous)"
+    description: >-
+      A learner pays through CyberSource Secure Acceptance. xPRO signs a payload
+      and redirects the browser to CyberSource; CyberSource posts a signed result
+      back to xPRO's OrderFulfillmentView, which fulfills the order, enrolls the
+      learner in Open edX, syncs the deal to HubSpot, and emails a receipt.
+    steps:
+      - { source: learner, target: nginx, label: "Submit basket / checkout", sync: true }
+      - { source: nginx, target: django-web, label: "CheckoutView signs payload", sync: true }
+      - { source: learner, target: cybersource, label: "Hosted payment (redirect)", sync: true }
+      - { source: cybersource, target: django-web, label: "Signed payment callback", sync: true }
+      - { source: django-web, target: postgres, label: "Fulfill order", sync: true }
+      - { source: django-web, target: openedx, label: "Enroll learner", sync: true }
+      - { source: celery, target: hubspot, label: "Sync deal", sync: false }
+      - { source: celery, target: mailgun, label: "Email receipt", sync: false }
+
+  - id: edx-sso
+    title: "Open edX SSO & user provisioning (synchronous)"
+    description: >-
+      xPRO authenticates learners through Open edX via social-auth. On first
+      login/signup xPRO creates the corresponding edX user and an OpenEdxApiAuth
+      access token, used later for enrollment and grade reads.
+    steps:
+      - { source: learner, target: nginx, label: "Login / signup", sync: true }
+      - { source: nginx, target: django-web, label: "social-auth pipeline", sync: true }
+      - { source: django-web, target: openedx, label: "OAuth2 + create edX user/token", sync: true }
+      - { source: django-web, target: postgres, label: "Persist CoursewareUser + auth", sync: true }
+
+  - id: courseware-sync
+    title: "Courseware sync & certificates (asynchronous)"
+    description: >-
+      RedBeat-scheduled Celery tasks repair failed enrollments and faulty edX
+      users, sync course-run data and grades from Open edX, and generate course
+      certificates. External vendor courses (Emeritus / Global Alumni) are synced
+      from report APIs on a daily cron.
+    steps:
+      - { source: celery, target: redis, label: "RedBeat triggers tasks", sync: false }
+      - { source: celery, target: openedx, label: "Repair enroll / pull grades", sync: false }
+      - { source: celery, target: external-vendors, label: "Sync external courses", sync: false }
+      - { source: celery, target: postgres, label: "Generate certificates", sync: false }
+
+  - id: coupon-sheets
+    title: "Google Sheets coupon/refund/deferral ops (asynchronous)"
+    description: >-
+      Staff manage coupon assignment, refund, and deferral requests in Google
+      Sheets. Drive push notifications and a polling beat task make Celery read
+      the sheets via a service account, apply coupons/enrollments, email bulk
+      enrollment codes, and write status back.
+    steps:
+      - { source: google-workspace, target: django-web, label: "Drive change push", sync: false }
+      - { source: celery, target: google-workspace, label: "Read request rows", sync: false }
+      - { source: celery, target: postgres, label: "Apply coupons / enrollments", sync: false }
+      - { source: celery, target: mailgun, label: "Email bulk enroll codes", sync: false }
+
+  - id: mitlearn-ingest
+    title: "MIT Learn catalog ingestion (cross-service, asynchronous)"
+    description: >-
+      MIT Learn's ETL pulls xPRO's course/program catalog from the public REST
+      API and content files from S3 to surface xPRO offerings in discovery. This
+      is a one-directional pull owned by MIT Learn's Celery scheduler.
+    steps:
+      - { source: mit-learn, target: django-web, label: "GET catalog + courses API", sync: false }
+      - { source: mit-learn, target: s3, label: "Fetch content files", sync: false }
+
+etl_sources:
+  - { name: Emeritus (external courses), transport: REST report API, cadence: daily cron, data: external course/run batch reports, source_ref: { path: "courses/sync_external_courses/external_course_sync_api.py" } }
+  - { name: Global Alumni (external courses), transport: REST report API, cadence: daily cron, data: external course/run batch reports, source_ref: { path: "courses/sync_external_courses/external_course_sync_api.py" } }
+  - { name: Open edX grades, transport: REST (edx-api-client), cadence: daily cron, data: course-run grades for certificates, source_ref: { path: "courses/tasks.py:31" } }
+  - { name: Open edX course-run data, transport: REST (edx-api-client), cadence: daily cron, data: course-run titles & dates, source_ref: { path: "courses/tasks.py:109" } }
+  - { name: "Google Sheets (coupon/refund/deferral)", transport: Sheets/Drive API + push webhook, cadence: every SHEETS_MONITORING_FREQUENCY, data: "coupon assignment, refund, deferral requests", fragile: true, source_ref: { path: "sheets/tasks.py" } }
