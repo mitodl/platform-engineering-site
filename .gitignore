@@ -175,3 +175,6 @@ cache/
 output/
 
 .python-version
+
+# ol-concourse generated pipeline artifact
+.concourse/definition.json
