@@ -17,15 +17,18 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="zensical-0.0.46">
     
     
       
-        <title>Integrating With MIT Learn SSO - Platform Engineering Documentation</title>
+        <title>Sso config - Platform Engineering Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.19d3147f.min.css">
       
       
 
@@ -39,12 +42,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,500,500i,700,700i%7CJetBrains+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
     
       
 
@@ -58,7 +61,7 @@
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
+    <label class="md-overlay" for="__drawer" aria-label="Navigation"></label>
     <div data-md-component="skip">
       
         
@@ -81,12 +84,12 @@
     <a href="../.." title="Platform Engineering Documentation" class="md-header__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
 
     </a>
-    <label class="md-header__button md-icon" for="__drawer">
+    <label class="md-header__button md-icon" for="__drawer" aria-label="Navigation">
       
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -98,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Integrating With MIT Learn SSO
+              Sso config
             
           </span>
         </div>
@@ -112,45 +115,20 @@
     
       
       
-        <label class="md-header__button md-icon" for="__search">
+        <label class="md-header__button md-icon" for="__search" aria-label="Search">
           
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
         </label>
-        <div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
-          
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </button>
-      </nav>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
-            Initializing search
-          </div>
-          <ol class="md-search-result__list" role="presentation"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
 </div>
       
     
-    
+    <div class="md-header__source">
+      
+    </div>
   </nav>
   
 </header>
@@ -179,7 +157,7 @@
     <a href="../.." title="Platform Engineering Documentation" class="md-nav__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
 
     </a>
     Platform Engineering Documentation
@@ -201,8 +179,7 @@
   <span class="md-ellipsis">
     
   
-    Home
-  
+  Home
 
     
   </span>
@@ -239,8 +216,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started & How-Tos
-  
+  Getting Started & How-Tos
 
     
   </span>
@@ -255,8 +231,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started & How-Tos
-  
+  Getting Started & How-Tos
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -275,8 +250,7 @@
   <span class="md-ellipsis">
     
   
-    Emergency Oncall Break Glass Procedure
-  
+  Emergency Oncall Break Glass Procedure
 
     
   </span>
@@ -303,36 +277,7 @@
   <span class="md-ellipsis">
     
   
-    Developer EKS Access
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../getting_started_and_how_tos/experimental_eks_access_setup/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Experimental EKS Access Setup
-  
+  Developer EKS Access
 
     
   </span>
@@ -359,8 +304,7 @@
   <span class="md-ellipsis">
     
   
-    Vault Access for Developers
-  
+  Vault Access for Developers
 
     
   </span>
@@ -387,8 +331,7 @@
   <span class="md-ellipsis">
     
   
-    Updating This Site
-  
+  Updating This Site
 
     
   </span>
@@ -415,8 +358,7 @@
   <span class="md-ellipsis">
     
   
-    Applications & Services
-  
+  Applications & Services
 
     
   </span>
@@ -443,8 +385,7 @@
   <span class="md-ellipsis">
     
   
-    Impersonating Users in Keycloak
-  
+  Impersonating Users in Keycloak
 
     
   </span>
@@ -489,8 +430,7 @@
   <span class="md-ellipsis">
     
   
-    Platform Services
-  
+  Platform Services
 
     
   </span>
@@ -505,8 +445,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Platform Services
-  
+  Platform Services
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -536,8 +475,7 @@
   <span class="md-ellipsis">
     
   
-    Secrets Management (Vault)
-  
+  Secrets Management (Vault)
 
     
   </span>
@@ -552,8 +490,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Secrets Management (Vault)
-  
+  Secrets Management (Vault)
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -572,8 +509,7 @@
   <span class="md-ellipsis">
     
   
-    Restoring Vault Backups
-  
+  Restoring Vault Backups
 
     
   </span>
@@ -600,8 +536,7 @@
   <span class="md-ellipsis">
     
   
-    Faking It with Consul and Vault
-  
+  Faking It with Consul and Vault
 
     
   </span>
@@ -647,8 +582,7 @@
   <span class="md-ellipsis">
     
   
-    Service Discovery (Consul)
-  
+  Service Discovery (Consul)
 
     
   </span>
@@ -663,8 +597,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Service Discovery (Consul)
-  
+  Service Discovery (Consul)
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -683,8 +616,7 @@
   <span class="md-ellipsis">
     
   
-    Consul Incantations
-  
+  Consul Incantations
 
     
   </span>
@@ -711,8 +643,7 @@
   <span class="md-ellipsis">
     
   
-    Fargate Service Discovery
-  
+  Fargate Service Discovery
 
     
   </span>
@@ -758,8 +689,7 @@
   <span class="md-ellipsis">
     
   
-    Container Orchestration (Kubernetes)
-  
+  Container Orchestration (Kubernetes)
 
     
   </span>
@@ -774,8 +704,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Container Orchestration (Kubernetes)
-  
+  Container Orchestration (Kubernetes)
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -794,8 +723,7 @@
   <span class="md-ellipsis">
     
   
-    Deploying Apps with Kubernetes
-  
+  Deploying Apps with Kubernetes
 
     
   </span>
@@ -822,8 +750,7 @@
   <span class="md-ellipsis">
     
   
-    Kubernetes Cookbook
-  
+  Kubernetes Cookbook
 
     
   </span>
@@ -869,8 +796,7 @@
   <span class="md-ellipsis">
     
   
-    CI/CD (Concourse)
-  
+  CI/CD (Concourse)
 
     
   </span>
@@ -885,8 +811,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    CI/CD (Concourse)
-  
+  CI/CD (Concourse)
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -905,8 +830,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started with Concourse
-  
+  Getting Started with Concourse
 
     
   </span>
@@ -933,8 +857,7 @@
   <span class="md-ellipsis">
     
   
-    Deploying Concourse
-  
+  Deploying Concourse
 
     
   </span>
@@ -961,8 +884,7 @@
   <span class="md-ellipsis">
     
   
-    Concourse GitHub Issues User Guide
-  
+  Concourse GitHub Issues User Guide
 
     
   </span>
@@ -1008,8 +930,7 @@
   <span class="md-ellipsis">
     
   
-    Cloud Infrastructure (AWS & Pulumi)
-  
+  Cloud Infrastructure (AWS & Pulumi)
 
     
   </span>
@@ -1024,8 +945,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Cloud Infrastructure (AWS & Pulumi)
-  
+  Cloud Infrastructure (AWS & Pulumi)
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -1044,8 +964,7 @@
   <span class="md-ellipsis">
     
   
-    Pulumi AWS Classic 5 to 6 Upgrade
-  
+  Pulumi AWS Classic 5 to 6 Upgrade
 
     
   </span>
@@ -1072,8 +991,7 @@
   <span class="md-ellipsis">
     
   
-    Importing Existing Resources with Pulumi
-  
+  Importing Existing Resources with Pulumi
 
     
   </span>
@@ -1100,8 +1018,7 @@
   <span class="md-ellipsis">
     
   
-    Testing and Deploying Pulumi Packer Projects
-  
+  Testing and Deploying Pulumi Packer Projects
 
     
   </span>
@@ -1128,8 +1045,7 @@
   <span class="md-ellipsis">
     
   
-    Tagging AMIs with Software Metadata
-  
+  Tagging AMIs with Software Metadata
 
     
   </span>
@@ -1156,8 +1072,7 @@
   <span class="md-ellipsis">
     
   
-    Moira Certificates
-  
+  Moira Certificates
 
     
   </span>
@@ -1184,8 +1099,7 @@
   <span class="md-ellipsis">
     
   
-    Recaptcha
-  
+  Recaptcha
 
     
   </span>
@@ -1212,8 +1126,7 @@
   <span class="md-ellipsis">
     
   
-    Publishing to NPM
-  
+  Publishing to NPM
 
     
   </span>
@@ -1266,8 +1179,7 @@
   <span class="md-ellipsis">
     
   
-    Application Specific Guides
-  
+  Application Specific Guides
 
     
   </span>
@@ -1282,8 +1194,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Application Specific Guides
-  
+  Application Specific Guides
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -1313,8 +1224,7 @@
   <span class="md-ellipsis">
     
   
-    Open edX
-  
+  Open edX
 
     
   </span>
@@ -1329,8 +1239,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Open edX
-  
+  Open edX
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -1349,8 +1258,7 @@
   <span class="md-ellipsis">
     
   
-    MITx Online Bulk Rescore
-  
+  MITx Online Bulk Rescore
 
     
   </span>
@@ -1377,8 +1285,7 @@
   <span class="md-ellipsis">
     
   
-    Proving Build Was Deployed
-  
+  Proving Build Was Deployed
 
     
   </span>
@@ -1405,8 +1312,7 @@
   <span class="md-ellipsis">
     
   
-    Accessing Django Manage
-  
+  Accessing Django Manage
 
     
   </span>
@@ -1433,8 +1339,7 @@
   <span class="md-ellipsis">
     
   
-    Enabling Rapid Response edXApp
-  
+  Enabling Rapid Response edXApp
 
     
   </span>
@@ -1461,8 +1366,7 @@
   <span class="md-ellipsis">
     
   
-    MySQL Access
-  
+  MySQL Access
 
     
   </span>
@@ -1489,8 +1393,7 @@
   <span class="md-ellipsis">
     
   
-    Retirement Pipeline
-  
+  Retirement Pipeline
 
     
   </span>
@@ -1517,8 +1420,7 @@
   <span class="md-ellipsis">
     
   
-    Release Upgrades
-  
+  Release Upgrades
 
     
   </span>
@@ -1545,8 +1447,7 @@
   <span class="md-ellipsis">
     
   
-    Retiring a User
-  
+  Retiring a User
 
     
   </span>
@@ -1584,8 +1485,7 @@
   <span class="md-ellipsis">
     
   
-    ProctorTrack
-  
+  ProctorTrack
 
     
   </span>
@@ -1600,8 +1500,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    ProctorTrack
-  
+  ProctorTrack
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -1620,8 +1519,7 @@
   <span class="md-ellipsis">
     
   
-    Integration Overview
-  
+  Integration Overview
 
     
   </span>
@@ -1648,8 +1546,7 @@
   <span class="md-ellipsis">
     
   
-    JS Architecture
-  
+  JS Architecture
 
     
   </span>
@@ -1676,8 +1573,7 @@
   <span class="md-ellipsis">
     
   
-    Build Fix
-  
+  Build Fix
 
     
   </span>
@@ -1704,8 +1600,7 @@
   <span class="md-ellipsis">
     
   
-    Workers JSON Build Requirements
-  
+  Workers JSON Build Requirements
 
     
   </span>
@@ -1759,8 +1654,7 @@
   <span class="md-ellipsis">
     
   
-    Heroku (Legacy)
-  
+  Heroku (Legacy)
 
     
   </span>
@@ -1775,8 +1669,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Heroku (Legacy)
-  
+  Heroku (Legacy)
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -1795,8 +1688,7 @@
   <span class="md-ellipsis">
     
   
-    Config Vars
-  
+  Config Vars
 
     
   </span>
@@ -1823,8 +1715,7 @@
   <span class="md-ellipsis">
     
   
-    Dynosaur Management
-  
+  Dynosaur Management
 
     
   </span>
@@ -1851,8 +1742,7 @@
   <span class="md-ellipsis">
     
   
-    Log Drains
-  
+  Log Drains
 
     
   </span>
@@ -1879,8 +1769,7 @@
   <span class="md-ellipsis">
     
   
-    Transitioning Postgres DB to RDS
-  
+  Transitioning Postgres DB to RDS
 
     
   </span>
@@ -1926,8 +1815,7 @@
   <span class="md-ellipsis">
     
   
-    OCW Studio
-  
+  OCW Studio
 
     
   </span>
@@ -1942,8 +1830,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    OCW Studio
-  
+  OCW Studio
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -1962,8 +1849,7 @@
   <span class="md-ellipsis">
     
   
-    Updating The OCW Studio Pipeline
-  
+  Updating The OCW Studio Pipeline
 
     
   </span>
@@ -2009,8 +1895,7 @@
   <span class="md-ellipsis">
     
   
-    OCW Site
-  
+  OCW Site
 
     
   </span>
@@ -2025,8 +1910,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    OCW Site
-  
+  OCW Site
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -2045,8 +1929,7 @@
   <span class="md-ellipsis">
     
   
-    Accessing S3 Bucket Audit Logs
-  
+  Accessing S3 Bucket Audit Logs
 
     
   </span>
@@ -2092,8 +1975,7 @@
   <span class="md-ellipsis">
     
   
-    Doof (Odlbot)
-  
+  Doof (Odlbot)
 
     
   </span>
@@ -2108,8 +1990,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Doof (Odlbot)
-  
+  Doof (Odlbot)
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -2128,8 +2009,7 @@
   <span class="md-ellipsis">
     
   
-    Resetting Doof Github Token
-  
+  Resetting Doof Github Token
 
     
   </span>
@@ -2156,8 +2036,7 @@
   <span class="md-ellipsis">
     
   
-    Resetting Doof NPMJS Token
-  
+  Resetting Doof NPMJS Token
 
     
   </span>
@@ -2203,8 +2082,7 @@
   <span class="md-ellipsis">
     
   
-    Renovate
-  
+  Renovate
 
     
   </span>
@@ -2219,8 +2097,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Renovate
-  
+  Renovate
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -2239,8 +2116,7 @@
   <span class="md-ellipsis">
     
   
-    Updating Renovate Configuration
-  
+  Updating Renovate Configuration
 
     
   </span>
@@ -2286,8 +2162,7 @@
   <span class="md-ellipsis">
     
   
-    JupyterHub
-  
+  JupyterHub
 
     
   </span>
@@ -2302,8 +2177,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    JupyterHub
-  
+  JupyterHub
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -2322,8 +2196,7 @@
   <span class="md-ellipsis">
     
   
-    JupyterHub Admin Guide
-  
+  JupyterHub Admin Guide
 
     
   </span>
@@ -2369,8 +2242,7 @@
   <span class="md-ellipsis">
     
   
-    MIT Learn
-  
+  MIT Learn
 
     
   </span>
@@ -2385,8 +2257,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    MIT Learn
-  
+  MIT Learn
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -2405,8 +2276,7 @@
   <span class="md-ellipsis">
     
   
-    MIT Learn Service Diagram
-  
+  MIT Learn Service Diagram
 
     
   </span>
@@ -2452,8 +2322,7 @@
   <span class="md-ellipsis">
     
   
-    Keycloak
-  
+  Keycloak
 
     
   </span>
@@ -2468,8 +2337,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Keycloak
-  
+  Keycloak
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -2488,8 +2356,7 @@
   <span class="md-ellipsis">
     
   
-    Inviting New Users to Keycloak Realms
-  
+  Inviting New Users to Keycloak Realms
 
     
   </span>
@@ -2542,8 +2409,7 @@
   <span class="md-ellipsis">
     
   
-    Monitoring And Observability
-  
+  Monitoring And Observability
 
     
   </span>
@@ -2558,8 +2424,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Monitoring And Observability
-  
+  Monitoring And Observability
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -2578,8 +2443,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
+  Overview
 
     
   </span>
@@ -2606,8 +2470,7 @@
   <span class="md-ellipsis">
     
   
-    Inventory
-  
+  Inventory
 
     
   </span>
@@ -2634,8 +2497,7 @@
   <span class="md-ellipsis">
     
   
-    Key Labels
-  
+  Key Labels
 
     
   </span>
@@ -2662,8 +2524,7 @@
   <span class="md-ellipsis">
     
   
-    Bumping Sentry Credit
-  
+  Bumping Sentry Credit
 
     
   </span>
@@ -2690,8 +2551,7 @@
   <span class="md-ellipsis">
     
   
-    Managing Rootly
-  
+  Managing Rootly
 
     
   </span>
@@ -2736,8 +2596,7 @@
   <span class="md-ellipsis">
     
   
-    Runbooks & Post-Mortems
-  
+  Runbooks & Post-Mortems
 
     
   </span>
@@ -2752,8 +2611,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Runbooks & Post-Mortems
-  
+  Runbooks & Post-Mortems
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -2772,8 +2630,7 @@
   <span class="md-ellipsis">
     
   
-    On-Call Runbook
-  
+  On-Call Runbook
 
     
   </span>
@@ -2800,8 +2657,7 @@
   <span class="md-ellipsis">
     
   
-    OL Production Outage Runbook
-  
+  OL Production Outage Runbook
 
     
   </span>
@@ -2828,8 +2684,7 @@
   <span class="md-ellipsis">
     
   
-    20231030 xPro Outage Post-Mortem
-  
+  20231030 xPro Outage Post-Mortem
 
     
   </span>
@@ -2856,8 +2711,7 @@
   <span class="md-ellipsis">
     
   
-    20260423 MIT Learn Outage Post-Mortem
-  
+  20260423 MIT Learn Outage Post-Mortem
 
     
   </span>
@@ -2884,8 +2738,7 @@
   <span class="md-ellipsis">
     
   
-    20260603 MIT XPro Certificate Outage Post Mortem
-  
+  20260603 MIT XPro Certificate Outage Post Mortem
 
     
   </span>
@@ -2912,8 +2765,7 @@
   <span class="md-ellipsis">
     
   
-    Clear User Grades In Open edX
-  
+  Clear User Grades In Open edX
 
     
   </span>
@@ -2958,8 +2810,7 @@
   <span class="md-ellipsis">
     
   
-    Cookbooks & Patterns
-  
+  Cookbooks & Patterns
 
     
   </span>
@@ -2974,8 +2825,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Cookbooks & Patterns
-  
+  Cookbooks & Patterns
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -2994,8 +2844,7 @@
   <span class="md-ellipsis">
     
   
-    DevOps Patterns Cookbook
-  
+  DevOps Patterns Cookbook
 
     
   </span>
@@ -3042,8 +2891,7 @@
   <span class="md-ellipsis">
     
   
-    Partner Documentation
-  
+  Partner Documentation
 
     
   </span>
@@ -3058,8 +2906,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Partner Documentation
-  
+  Partner Documentation
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
@@ -3074,7 +2921,7 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
       
       
       
@@ -3085,8 +2932,7 @@
   <span class="md-ellipsis">
     
   
-    Integrating With MIT Learn SSO
-  
+  Integrating With MIT Learn SSO
 
     
   </span>
@@ -3096,15 +2942,14 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="./" class="md-nav__link md-nav__link--active">
+      <a href="././" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
     
   
-    Integrating With MIT Learn SSO
-  
+  Integrating With MIT Learn SSO
 
     
   </span>
@@ -3115,23 +2960,24 @@
       
         
 
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
   
   
   
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      Table of contents
+      On this page
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Overview
-      
+      </span>
     </span>
   </a>
   
@@ -3141,9 +2987,9 @@
           <li class="md-nav__item">
   <a href="#quick-navigation" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Quick Navigation
-      
+      </span>
     </span>
   </a>
   
@@ -3157,9 +3003,9 @@
         <li class="md-nav__item">
   <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Prerequisites
-      
+      </span>
     </span>
   </a>
   
@@ -3168,9 +3014,9 @@
         <li class="md-nav__item">
   <a href="#protocol-selection" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Protocol Selection
-      
+      </span>
     </span>
   </a>
   
@@ -3180,9 +3026,9 @@
           <li class="md-nav__item">
   <a href="#recommended-openid-connect-oidc" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Recommended: OpenID Connect (OIDC)
-      
+      </span>
     </span>
   </a>
   
@@ -3191,9 +3037,9 @@
           <li class="md-nav__item">
   <a href="#alternative-saml-20" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Alternative: SAML 2.0
-      
+      </span>
     </span>
   </a>
   
@@ -3207,9 +3053,9 @@
         <li class="md-nav__item">
   <a href="#general-configuration-requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         General Configuration Requirements
-      
+      </span>
     </span>
   </a>
   
@@ -3219,9 +3065,9 @@
           <li class="md-nav__item">
   <a href="#oidc-configuration-requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         OIDC Configuration Requirements
-      
+      </span>
     </span>
   </a>
   
@@ -3230,9 +3076,9 @@
           <li class="md-nav__item">
   <a href="#saml-configuration-requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         SAML Configuration Requirements
-      
+      </span>
     </span>
   </a>
   
@@ -3246,9 +3092,9 @@
         <li class="md-nav__item">
   <a href="#required-information-collection" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Required Information Collection
-      
+      </span>
     </span>
   </a>
   
@@ -3258,9 +3104,9 @@
           <li class="md-nav__item">
   <a href="#for-oidc-integration" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         For OIDC Integration
-      
+      </span>
     </span>
   </a>
   
@@ -3269,9 +3115,9 @@
           <li class="md-nav__item">
   <a href="#for-saml-integration" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         For SAML Integration
-      
+      </span>
     </span>
   </a>
   
@@ -3285,9 +3131,9 @@
         <li class="md-nav__item">
   <a href="#information-to-provide-our-team" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Information to Provide Our Team
-      
+      </span>
     </span>
   </a>
   
@@ -3296,9 +3142,9 @@
         <li class="md-nav__item">
   <a href="#configuration-exchange-process" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Configuration Exchange Process
-      
+      </span>
     </span>
   </a>
   
@@ -3307,9 +3153,9 @@
         <li class="md-nav__item">
   <a href="#testing-the-integration" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Testing the Integration
-      
+      </span>
     </span>
   </a>
   
@@ -3319,9 +3165,9 @@
           <li class="md-nav__item">
   <a href="#test-user-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Test User Setup
-      
+      </span>
     </span>
   </a>
   
@@ -3330,9 +3176,9 @@
           <li class="md-nav__item">
   <a href="#testing-steps" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Testing Steps
-      
+      </span>
     </span>
   </a>
   
@@ -3341,9 +3187,9 @@
           <li class="md-nav__item">
   <a href="#common-troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Common Troubleshooting
-      
+      </span>
     </span>
   </a>
   
@@ -3353,9 +3199,9 @@
           <li class="md-nav__item">
   <a href="#oidc-specific-issues" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         OIDC-specific Issues
-      
+      </span>
     </span>
   </a>
   
@@ -3364,9 +3210,9 @@
           <li class="md-nav__item">
   <a href="#saml-specific-issues" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         SAML-specific Issues
-      
+      </span>
     </span>
   </a>
   
@@ -3385,9 +3231,9 @@
         <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Next Steps
-      
+      </span>
     </span>
   </a>
   
@@ -3396,9 +3242,9 @@
         <li class="md-nav__item">
   <a href="#support" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Support
-      
+      </span>
     </span>
   </a>
   
@@ -3407,9 +3253,9 @@
         <li class="md-nav__item">
   <a href="#provider-specific-examples" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Provider-Specific Examples
-      
+      </span>
     </span>
   </a>
   
@@ -3418,9 +3264,9 @@
         <li class="md-nav__item">
   <a href="#microsoft-entra-id-oidc" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Microsoft Entra ID OIDC
-      
+      </span>
     </span>
   </a>
   
@@ -3430,9 +3276,9 @@
           <li class="md-nav__item">
   <a href="#step-1-create-application-registration-in-entra-id" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 1: Create Application Registration in Entra ID
-      
+      </span>
     </span>
   </a>
   
@@ -3441,9 +3287,9 @@
           <li class="md-nav__item">
   <a href="#step-2-configure-application-registration-secrets" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 2: Configure Application Registration Secrets
-      
+      </span>
     </span>
   </a>
   
@@ -3452,9 +3298,9 @@
           <li class="md-nav__item">
   <a href="#step-3-configure-application-registration-api-permissions" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 3: Configure Application Registration API permissions
-      
+      </span>
     </span>
   </a>
   
@@ -3463,9 +3309,9 @@
           <li class="md-nav__item">
   <a href="#step-4-collect-configuration-details" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 4: Collect Configuration Details
-      
+      </span>
     </span>
   </a>
   
@@ -3479,9 +3325,9 @@
         <li class="md-nav__item">
   <a href="#microsoft-entra-id-saml" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Microsoft Entra ID SAML
-      
+      </span>
     </span>
   </a>
   
@@ -3491,9 +3337,9 @@
           <li class="md-nav__item">
   <a href="#step-1-create-enterprise-application-in-entra-id" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 1: Create Enterprise Application in Entra ID
-      
+      </span>
     </span>
   </a>
   
@@ -3502,9 +3348,9 @@
           <li class="md-nav__item">
   <a href="#step-2-configure-basic-saml-configuration" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 2: Configure Basic SAML Configuration
-      
+      </span>
     </span>
   </a>
   
@@ -3513,9 +3359,9 @@
           <li class="md-nav__item">
   <a href="#step-3-configure-attributes-claims" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 3: Configure Attributes &amp; Claims
-      
+      </span>
     </span>
   </a>
   
@@ -3524,9 +3370,9 @@
           <li class="md-nav__item">
   <a href="#step-4-configure-saml-signing-certificate" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 4: Configure SAML Signing Certificate
-      
+      </span>
     </span>
   </a>
   
@@ -3535,9 +3381,9 @@
           <li class="md-nav__item">
   <a href="#step-5-collect-configuration-details" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 5: Collect Configuration Details
-      
+      </span>
     </span>
   </a>
   
@@ -3546,9 +3392,9 @@
           <li class="md-nav__item">
   <a href="#security-considerations-for-entra-id" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Security Considerations for Entra ID
-      
+      </span>
     </span>
   </a>
   
@@ -3558,9 +3404,9 @@
           <li class="md-nav__item">
   <a href="#conditional-access-policies" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Conditional Access Policies
-      
+      </span>
     </span>
   </a>
   
@@ -3602,26 +3448,38 @@
               
               <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
+                  
+                    
+                    
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
+                  
                   <div class="md-sidebar__inner">
                     
 
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
   
   
   
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      Table of contents
+      On this page
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Overview
-      
+      </span>
     </span>
   </a>
   
@@ -3631,9 +3489,9 @@
           <li class="md-nav__item">
   <a href="#quick-navigation" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Quick Navigation
-      
+      </span>
     </span>
   </a>
   
@@ -3647,9 +3505,9 @@
         <li class="md-nav__item">
   <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Prerequisites
-      
+      </span>
     </span>
   </a>
   
@@ -3658,9 +3516,9 @@
         <li class="md-nav__item">
   <a href="#protocol-selection" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Protocol Selection
-      
+      </span>
     </span>
   </a>
   
@@ -3670,9 +3528,9 @@
           <li class="md-nav__item">
   <a href="#recommended-openid-connect-oidc" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Recommended: OpenID Connect (OIDC)
-      
+      </span>
     </span>
   </a>
   
@@ -3681,9 +3539,9 @@
           <li class="md-nav__item">
   <a href="#alternative-saml-20" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Alternative: SAML 2.0
-      
+      </span>
     </span>
   </a>
   
@@ -3697,9 +3555,9 @@
         <li class="md-nav__item">
   <a href="#general-configuration-requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         General Configuration Requirements
-      
+      </span>
     </span>
   </a>
   
@@ -3709,9 +3567,9 @@
           <li class="md-nav__item">
   <a href="#oidc-configuration-requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         OIDC Configuration Requirements
-      
+      </span>
     </span>
   </a>
   
@@ -3720,9 +3578,9 @@
           <li class="md-nav__item">
   <a href="#saml-configuration-requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         SAML Configuration Requirements
-      
+      </span>
     </span>
   </a>
   
@@ -3736,9 +3594,9 @@
         <li class="md-nav__item">
   <a href="#required-information-collection" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Required Information Collection
-      
+      </span>
     </span>
   </a>
   
@@ -3748,9 +3606,9 @@
           <li class="md-nav__item">
   <a href="#for-oidc-integration" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         For OIDC Integration
-      
+      </span>
     </span>
   </a>
   
@@ -3759,9 +3617,9 @@
           <li class="md-nav__item">
   <a href="#for-saml-integration" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         For SAML Integration
-      
+      </span>
     </span>
   </a>
   
@@ -3775,9 +3633,9 @@
         <li class="md-nav__item">
   <a href="#information-to-provide-our-team" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Information to Provide Our Team
-      
+      </span>
     </span>
   </a>
   
@@ -3786,9 +3644,9 @@
         <li class="md-nav__item">
   <a href="#configuration-exchange-process" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Configuration Exchange Process
-      
+      </span>
     </span>
   </a>
   
@@ -3797,9 +3655,9 @@
         <li class="md-nav__item">
   <a href="#testing-the-integration" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Testing the Integration
-      
+      </span>
     </span>
   </a>
   
@@ -3809,9 +3667,9 @@
           <li class="md-nav__item">
   <a href="#test-user-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Test User Setup
-      
+      </span>
     </span>
   </a>
   
@@ -3820,9 +3678,9 @@
           <li class="md-nav__item">
   <a href="#testing-steps" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Testing Steps
-      
+      </span>
     </span>
   </a>
   
@@ -3831,9 +3689,9 @@
           <li class="md-nav__item">
   <a href="#common-troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Common Troubleshooting
-      
+      </span>
     </span>
   </a>
   
@@ -3843,9 +3701,9 @@
           <li class="md-nav__item">
   <a href="#oidc-specific-issues" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         OIDC-specific Issues
-      
+      </span>
     </span>
   </a>
   
@@ -3854,9 +3712,9 @@
           <li class="md-nav__item">
   <a href="#saml-specific-issues" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         SAML-specific Issues
-      
+      </span>
     </span>
   </a>
   
@@ -3875,9 +3733,9 @@
         <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Next Steps
-      
+      </span>
     </span>
   </a>
   
@@ -3886,9 +3744,9 @@
         <li class="md-nav__item">
   <a href="#support" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Support
-      
+      </span>
     </span>
   </a>
   
@@ -3897,9 +3755,9 @@
         <li class="md-nav__item">
   <a href="#provider-specific-examples" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Provider-Specific Examples
-      
+      </span>
     </span>
   </a>
   
@@ -3908,9 +3766,9 @@
         <li class="md-nav__item">
   <a href="#microsoft-entra-id-oidc" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Microsoft Entra ID OIDC
-      
+      </span>
     </span>
   </a>
   
@@ -3920,9 +3778,9 @@
           <li class="md-nav__item">
   <a href="#step-1-create-application-registration-in-entra-id" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 1: Create Application Registration in Entra ID
-      
+      </span>
     </span>
   </a>
   
@@ -3931,9 +3789,9 @@
           <li class="md-nav__item">
   <a href="#step-2-configure-application-registration-secrets" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 2: Configure Application Registration Secrets
-      
+      </span>
     </span>
   </a>
   
@@ -3942,9 +3800,9 @@
           <li class="md-nav__item">
   <a href="#step-3-configure-application-registration-api-permissions" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 3: Configure Application Registration API permissions
-      
+      </span>
     </span>
   </a>
   
@@ -3953,9 +3811,9 @@
           <li class="md-nav__item">
   <a href="#step-4-collect-configuration-details" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 4: Collect Configuration Details
-      
+      </span>
     </span>
   </a>
   
@@ -3969,9 +3827,9 @@
         <li class="md-nav__item">
   <a href="#microsoft-entra-id-saml" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Microsoft Entra ID SAML
-      
+      </span>
     </span>
   </a>
   
@@ -3981,9 +3839,9 @@
           <li class="md-nav__item">
   <a href="#step-1-create-enterprise-application-in-entra-id" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 1: Create Enterprise Application in Entra ID
-      
+      </span>
     </span>
   </a>
   
@@ -3992,9 +3850,9 @@
           <li class="md-nav__item">
   <a href="#step-2-configure-basic-saml-configuration" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 2: Configure Basic SAML Configuration
-      
+      </span>
     </span>
   </a>
   
@@ -4003,9 +3861,9 @@
           <li class="md-nav__item">
   <a href="#step-3-configure-attributes-claims" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 3: Configure Attributes &amp; Claims
-      
+      </span>
     </span>
   </a>
   
@@ -4014,9 +3872,9 @@
           <li class="md-nav__item">
   <a href="#step-4-configure-saml-signing-certificate" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 4: Configure SAML Signing Certificate
-      
+      </span>
     </span>
   </a>
   
@@ -4025,9 +3883,9 @@
           <li class="md-nav__item">
   <a href="#step-5-collect-configuration-details" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Step 5: Collect Configuration Details
-      
+      </span>
     </span>
   </a>
   
@@ -4036,9 +3894,9 @@
           <li class="md-nav__item">
   <a href="#security-considerations-for-entra-id" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Security Considerations for Entra ID
-      
+      </span>
     </span>
   </a>
   
@@ -4048,9 +3906,9 @@
           <li class="md-nav__item">
   <a href="#conditional-access-policies" class="md-nav__link">
     <span class="md-ellipsis">
-      
+      <span class="md-typeset">
         Conditional Access Policies
-      
+      </span>
     </span>
   </a>
   
@@ -4081,9 +3939,7 @@
                 
                   
 
-
-
-  <h1>Integrating With MIT Learn SSO</h1>
+  <h1 id="__skip">Sso config</h1>
 
 <h2 id="overview">Overview</h2>
 <p>This document provides guidance for configuring single sign-on (SSO) with our platform using either OpenID Connect (OIDC) or SAML protocols. This integration allows your users to access our services using their existing organizational credentials from any compatible identity provider.</p>
@@ -4348,6 +4204,8 @@
 
 
 
+
+
                 
               </article>
             </div>
@@ -4366,8 +4224,8 @@
   
   
     Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
     </a>
   
 </div>
@@ -4385,10 +4243,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["content.code.copy"],"search":"../../assets/javascripts/workers/search.b6b7e04f.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ee611ef6.min.js"></script>
       
     
   </body>
