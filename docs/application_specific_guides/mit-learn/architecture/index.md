@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # MIT Learn — Architecture & Data Flows
 
-_Generated 2026-06-23 20:11 UTC · c4gen dev_
+_Generated 2026-06-23 21:37 UTC · c4gen dev_
 
 MIT Learn is the central discovery surface for MIT's open and paid learning offerings. A Next.js frontend serves learners; a Django/DRF backend exposes the API, runs full-text and vector search, and ingests course/resource metadata from across the MIT SOA and the open web via Celery ETL pipelines. A separate learn-ai service powers conversational/agentic discovery.
 
@@ -38,7 +38,8 @@ runtime units) → **Dynamic** (a single data flow, step by step).
 2. [Containers](container.md) — the runtime units inside MIT Learn.
 3. [Data Flows](data-flows.md) — key interactions, step by step (sync & async).
 4. [Dependencies & Cycles](dependencies-and-cycles.md) — graph-derived coupling, cycles, fragile links.
-5. [Infrastructure references](infrastructure-references.md) — Pulumi, Concourse, and compose source-of-truth links (curated).
+5. [Components](component.md) — the code-level building blocks inside expanded containers.
+6. [Infrastructure references](infrastructure-references.md) — Pulumi, Concourse, and compose source-of-truth links (curated).
 
 ## Keeping this current
 

@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # System Context — MIT Learn
 
-_Generated 2026-06-23 20:11 UTC · c4gen dev_
+_Generated 2026-06-23 21:37 UTC · c4gen dev_
 
 The widest view: **MIT Learn** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw

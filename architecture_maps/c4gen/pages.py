@@ -53,8 +53,18 @@ def _banner(model: Model) -> str:
 def page_index(model: Model) -> str:
     # The infrastructure-references page is hand-authored, not generated; only
     # link to it for systems that actually have one (see Meta).
+    # The component page is only generated when a container opts in by declaring
+    # `components`; link to it from the index only when it exists.
+    component_link = ""
+    n = 5
+    if model.containers_with_components():
+        component_link = (
+            f"\n{n}. [Components](component.md) — the code-level building blocks "
+            "inside expanded containers."
+        )
+        n += 1
     infra_ref = (
-        "\n5. [Infrastructure references](infrastructure-references.md) — "
+        f"\n{n}. [Infrastructure references](infrastructure-references.md) — "
         "Pulumi, Concourse, and compose source-of-truth links (curated)."
         if model.meta.has_infrastructure_references
         else ""
@@ -75,7 +85,7 @@ cycles and fragile linkages.
 1. [System Context](system-context.md) — {model.meta.name} and the systems it exchanges data with.
 2. [Containers](container.md) — the runtime units inside {model.meta.name}.
 3. [Data Flows](data-flows.md) — key interactions, step by step (sync & async).
-4. [Dependencies & Cycles](dependencies-and-cycles.md) — graph-derived coupling, cycles, fragile links.{infra_ref}
+4. [Dependencies & Cycles](dependencies-and-cycles.md) — graph-derived coupling, cycles, fragile links.{component_link}{infra_ref}
 
 ## Keeping this current
 
@@ -132,6 +142,30 @@ between them and adjacent systems.
 
 {chr(10).join(rows)}
 """
+
+
+def page_component(model: Model) -> str:
+    """One page covering every container that declares ``components`` — each as a
+    section with its own C4 Component diagram and a responsibility table. Only
+    emitted when at least one container is expanded to Component level."""
+    expanded = model.containers_with_components()
+    parts = [f"""{_banner(model)}# Components — {model.meta.name}
+
+{_stamp(model)}
+The innermost view: the **components** inside containers that have been expanded
+to C4 Component level — the major code groupings within a deployable unit and how
+they collaborate and reach out to adjacent containers and systems.
+{_LEGEND}"""]
+    for container in expanded:
+        parts.append(f"## {container.name}\n")
+        if container.description:
+            parts.append(container.description + "\n")
+        parts.append(_diagram(model, f"component-{container.id}"))
+        rows = ["| Component | Technology | Responsibility |", "| --- | --- | --- |"]
+        for comp in container.components:
+            rows.append(f"| **{comp.name}** | {comp.technology or ''} | {comp.description} |")
+        parts.append("\n".join(rows) + "\n")
+    return "\n".join(parts)
 
 
 def page_data_flows(model: Model) -> str:

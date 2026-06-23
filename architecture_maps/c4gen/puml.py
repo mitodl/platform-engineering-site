@@ -155,6 +155,76 @@ def render_container_puml(model: Model) -> str:
 
 
 # --------------------------------------------------------------------------
+# Component (one per container that declares components)
+# --------------------------------------------------------------------------
+def render_component_puml(model: Model, container_id: str) -> str:
+    """Zoom into one container's ``components`` (C4 Component level).
+
+    Components are drawn inside a ``Container_Boundary``; their ``relationships``
+    are drawn as edges to sibling components (intra-container) or out to adjacent
+    containers / external systems, which are declared as the surrounding context.
+    This is a projection over the same model — it never alters the other views.
+    """
+    container = model.container_of(container_id)
+    if container is None:
+        raise ValueError(f"no container {container_id!r}")
+    if not container.components:
+        raise ValueError(f"container {container_id!r} declares no components")
+
+    component_ids = {comp.id for comp in container.components}
+    # External targets a component points at that are not sibling components:
+    # either another container in the model or an external system.
+    neighbors: list[str] = []
+    for comp in container.components:
+        for rel in comp.relationships:
+            if rel.target not in component_ids and rel.target not in neighbors:
+                neighbors.append(rel.target)
+
+    out = [
+        "@startuml",
+        "!include <C4/C4_Component>",
+        _ASYNC_TAG,
+        f"title Component diagram - {_title(container.name)}",
+    ]
+
+    for nid in neighbors:
+        out.append(_declare_context_node(model, nid))
+
+    boundary = f"{alias(container.id)}_b"
+    out.append(f"Container_Boundary({boundary}, {q(container.name)}) {{")
+    for comp in container.components:
+        out.append(
+            f"  Component({alias(comp.id)}, {q(comp.name)}, {q(comp.technology or '')}, "
+            f"{q(_tagline(comp.description))})"
+        )
+    out.append("}")
+
+    for comp in container.components:
+        for rel in comp.relationships:
+            label = rel.label
+            if rel.technology:
+                label = f"{label} [{rel.technology}]" if label else rel.technology
+            out.append(_rel(alias(comp.id), alias(rel.target), label, rel.sync))
+    out.append("@enduml")
+    return "\n".join(out)
+
+
+def _declare_context_node(model: Model, node_id: str) -> str:
+    """Declare a neighbor of an expanded container: a sibling container keeps its
+    shape; a system/actor is drawn as its Context-level box; anything unknown
+    falls back to a generic external system so the edge still resolves."""
+    for system in model.systems:
+        for c in system.containers:
+            if c.id == node_id:
+                macro = _SHAPE_MACRO[c.shape]
+                return (
+                    f"{macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or '')}, "
+                    f"{q(_tagline(c.description))})"
+                )
+    return _declare_node(model, node_id)
+
+
+# --------------------------------------------------------------------------
 # Dynamic (one per scenario)
 # --------------------------------------------------------------------------
 def render_dynamic_puml(model: Model, scenario_id: str) -> str:

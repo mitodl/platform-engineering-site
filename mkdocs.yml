@@ -97,6 +97,7 @@ nav:
           - Architecture & Data Flows: application_specific_guides/mit-learn/architecture/index.md
           - System Context: application_specific_guides/mit-learn/architecture/system-context.md
           - Containers: application_specific_guides/mit-learn/architecture/container.md
+          - Components: application_specific_guides/mit-learn/architecture/component.md
           - Data Flows: application_specific_guides/mit-learn/architecture/data-flows.md
           - Dependencies & Cycles: application_specific_guides/mit-learn/architecture/dependencies-and-cycles.md
           - Infrastructure References: application_specific_guides/mit-learn/architecture/infrastructure-references.md

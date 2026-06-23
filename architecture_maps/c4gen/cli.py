@@ -142,6 +142,15 @@ def render(name: str) -> None:
     for sc in model.scenarios:
         diagrams[f"flow-{sc.id}"] = puml_mod.render_dynamic_puml(model, sc.id)
 
+    # Component view: only for containers that opt in by declaring `components`.
+    # When none do (true for every model today) nothing is emitted and the page
+    # is skipped, so the no-components path stays graceful.
+    expanded = model.containers_with_components()
+    for container in expanded:
+        diagrams[f"component-{container.id}"] = puml_mod.render_component_puml(
+            model, container.id
+        )
+
     svg_dir = out / "_diagrams"
     svg_dir.mkdir(parents=True, exist_ok=True)
     for dname, src in diagrams.items():
@@ -154,6 +163,8 @@ def render(name: str) -> None:
         "data-flows.md": pages_mod.page_data_flows(model),
         "dependencies-and-cycles.md": pages_mod.page_dependencies(model, cycles, candidates),
     }
+    if expanded:
+        written["component.md"] = pages_mod.page_component(model)
     for fname, content in written.items():
         (out / fname).write_text(content)
     print(
