@@ -87,13 +87,13 @@ def render_context(model: Model) -> str:
     for actor in model.actors:
         if actor.id in used_actor_ids:
             lines.append(
-                f"  Person({alias(actor.id)}, {q(actor.name)}, {q(_short(actor.description))})"
+                f"  Person({alias(actor.id)}, {q(actor.name)}, \"\")"
             )
 
     for system in model.systems:
         macro = "System" if system.kind == "internal" else "System_Ext"
         lines.append(
-            f"  {macro}({alias(system.id)}, {q(system.name)}, {q(_short(system.description))})"
+            f"  {macro}({alias(system.id)}, {q(system.name)}, \"\")"
         )
 
     # aggregate flows to system level
@@ -141,15 +141,14 @@ def render_container(model: Model) -> str:
     for actor in model.actors:
         if actor.id in touch:
             lines.append(
-                f"  Person({alias(actor.id)}, {q(actor.name)}, {q(_short(actor.description))})"
+                f"  Person({alias(actor.id)}, {q(actor.name)}, \"\")"
             )
 
     lines.append(f"  System_Boundary({alias(primary.id)}_b, {q(primary.name)}) {{")
     for c in primary.containers:
         macro = _SHAPE_MACRO[c.shape]
         lines.append(
-            f"    {macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or '')}, "
-            f"{q(_short(c.description))})"
+            f'    {macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or "")}, "")'
         )
     lines.append("  }")
 
@@ -157,7 +156,7 @@ def render_container(model: Model) -> str:
         if system.id == primary.id or system.id not in touch:
             continue
         lines.append(
-            f"  System_Ext({alias(system.id)}, {q(system.name)}, {q(_short(system.description))})"
+            f"  System_Ext({alias(system.id)}, {q(system.name)}, \"\")"
         )
 
     async_pairs = []
@@ -262,16 +261,15 @@ def _drawn(model: Model, node_id: str, container_ids: set[str], touch: set[str])
 def _declare_node(model: Model, node_id: str) -> str:
     for actor in model.actors:
         if actor.id == node_id:
-            return f"Person({alias(actor.id)}, {q(actor.name)}, {q(_short(actor.description))})"
+            return f"Person({alias(actor.id)}, {q(actor.name)}, \"\")"
     for system in model.systems:
         if system.id == node_id:
             macro = "System" if system.kind == "internal" else "System_Ext"
-            return f"{macro}({alias(system.id)}, {q(system.name)}, {q(_short(system.description))})"
+            return f"{macro}({alias(system.id)}, {q(system.name)}, \"\")"
         for c in system.containers:
             if c.id == node_id:
                 macro = _SHAPE_MACRO[c.shape]
                 return (
-                    f"{macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or '')}, "
-                    f"{q(_short(c.description))})"
+                    f'{macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or "")}, "")'
                 )
     return f"System({alias(node_id)}, {q(node_id)}, \"\")"

@@ -2,35 +2,39 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # System Context — MIT Learn
 
-_Generated 2026-06-23 13:51 UTC · c4gen dev_
+_Generated 2026-06-23 14:14 UTC · c4gen dev_
 
 The widest view: **MIT Learn** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
 graph-derived candidates are listed under
 [Dependencies & Cycles](dependencies-and-cycles.md).
 
+!!! tip "Interactive"
+    Drag to pan, scroll to zoom. **Click the MIT Learn box** to drill
+    into its [container view](container.md).
+
 ```mermaid
 %%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Context
   title System Context — MIT Learn
-  Person(learner, "Learner", "Browses, searches, saves, and asks AI about courses and learning resources.")
-  System(mit_learn, "MIT Learn", "Course & learning-resource discovery platform (Django API + Next.js UI).")
-  System_Ext(fastly, "Fastly CDN", "TLS termination, caching, and compression; routes to UI and the API gateway.")
-  System_Ext(apisix, "APISIX Gateway", "Shared API gateway enforcing OIDC (via Keycloak). Proxies the MIT Learn API, the learn-ai…")
-  System_Ext(keycloak, "Keycloak (SSO)", "OAuth2/OIDC identity provider (realm olapps) issuing/introspecting JWTs.")
-  System_Ext(vault, "HashiCorp Vault", "Secrets and dynamic database credentials injected at runtime.")
-  System_Ext(learn_ai, "learn-ai", "AI sidecar (Django + DRF + Channels/ASGI) powering conversational/agentic discovery.")
-  System_Ext(qdrant, "Qdrant", "Externally hosted vector database for semantic search.")
-  System_Ext(litellm, "LiteLLM Proxy", "OpenAI-compatible proxy fronting LLMs (and optional embeddings) for learn-ai.")
-  System_Ext(openai, "LLM Provider (OpenAI-compatible)", "Backing model for completions behind LiteLLM (e.g. gpt-4o-mini).")
-  System_Ext(mailgun, "Mailgun", "Transactional/digest email delivery (via anymail).")
-  System_Ext(posthog, "PostHog", "Product analytics and feature flags; exports raw events to S3 (Parquet).")
-  System_Ext(mitxonline, "MITx Online", "MITx Online course/enrollment platform; SOA peer (catalog source + consumer).")
-  System_Ext(micromasters, "MicroMasters", "MicroMasters program platform; SOA peer (catalog + Wagtail pages source).")
-  System_Ext(data_platform, "OL Data Platform (Dagster / Hightouch)", "Dagster pipelines POST content webhooks; Hightouch reverse-ETL writes ProgramCertificate…")
-  System_Ext(course_apis, "External Course REST APIs", "edX, MIT Professional Ed, Sloan Executive Ed, MIT Climate, ODL Video.")
-  System_Ext(content_archives, "S3 Content Archives", "edX/xPRO/xOnline/Canvas OLX & .imscc, OCW site data, OpenLearningLibrary CSV, PostHog…")
-  System_Ext(media_feeds, "Media & News Feeds", "YouTube Data API, podcast RSS, Medium RSS, OL events (Drupal), Sloan Aura, marketing…")
+  Person(learner, "Learner", "")
+  System(mit_learn, "MIT Learn", "")
+  System_Ext(fastly, "Fastly CDN", "")
+  System_Ext(apisix, "APISIX Gateway", "")
+  System_Ext(keycloak, "Keycloak (SSO)", "")
+  System_Ext(vault, "HashiCorp Vault", "")
+  System_Ext(learn_ai, "learn-ai", "")
+  System_Ext(qdrant, "Qdrant", "")
+  System_Ext(litellm, "LiteLLM Proxy", "")
+  System_Ext(openai, "LLM Provider (OpenAI-compatible)", "")
+  System_Ext(mailgun, "Mailgun", "")
+  System_Ext(posthog, "PostHog", "")
+  System_Ext(mitxonline, "MITx Online", "")
+  System_Ext(micromasters, "MicroMasters", "")
+  System_Ext(data_platform, "OL Data Platform (Dagster / Hightouch)", "")
+  System_Ext(course_apis, "External Course REST APIs", "")
+  System_Ext(content_archives, "S3 Content Archives", "")
+  System_Ext(media_feeds, "Media & News Feeds", "")
   Rel(learner, fastly, "Browse / search", "HTTPS")
   Rel(fastly, mit_learn, "Frontend traffic", "HTTPS")
   Rel(fastly, apisix, "API traffic", "HTTPS")
@@ -62,6 +66,8 @@ C4Context
   UpdateRelStyle(data_platform, mit_learn, $textColor="#e8a33d", $lineColor="#e8a33d")
   UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="2")
 ```
+
+<script type="application/json" class="c4-links">{"MIT Learn": "../container/"}</script>
 
 ## External systems & peers
 

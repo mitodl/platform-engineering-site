@@ -2,7 +2,7 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # Containers — MIT Learn
 
-_Generated 2026-06-23 13:51 UTC · c4gen dev_
+_Generated 2026-06-23 14:14 UTC · c4gen dev_
 
 The runtime/deployable units inside **MIT Learn** and how data moves
 between them and adjacent systems.
@@ -12,33 +12,33 @@ between them and adjacent systems.
 C4Container
   title Container diagram — MIT Learn
   System_Boundary(mit_learn_b, "MIT Learn") {
-    Container(nextjs, "Next.js Frontend", "Next.js App Router / React (Node 22)", "Server-rendered UI. Calls the API both server-side (SSR/RSC prefetch) and from the…")
-    Container(nginx, "Nginx", "Nginx", "Reverse proxy in front of Django; serves static assets.")
-    Container(django_web, "Django Web API", "Django + DRF (Granian/uWSGI, Python 3.12)", "REST API, auth, search orchestration, admin, webhooks, vector-search endpoints.")
-    Container(celery_edx, "Celery — edx_content queue", "Celery worker", "ETL ingestion of course/resource metadata and content files from providers.")
-    Container(celery_default, "Celery — default queue", "Celery worker", "Search indexing, subscription-digest email, feeds/scrapes, housekeeping.")
-    Container(celery_embeddings, "Celery — embeddings queue", "Celery worker", "Generates vector embeddings for semantic/vector search.")
-    Container(beat, "Celery Beat (RedBeat)", "RedBeat (Redis-backed)", "Schedules periodic ETL, indexing, and embedding tasks. Runs embedded in the worker (-B)…")
-    ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16 (RDS in prod)", "System of record for resources, users, lists, and editorial data.")
-    ContainerQueue(redis, "Redis / Valkey", "Redis 8 (ElastiCache Valkey in prod)", "Django cache, Celery broker/result backend, and RedBeat schedule store.")
-    ContainerDb(opensearch, "OpenSearch", "OpenSearch", "Full-text search index over learning resources (alias-swapped reindex).")
-    Container(tika, "Apache Tika", "Tika 2.5 (sidecar)", "Extracts text from documents/content for indexing and embeddings.")
-    Container(s3, "S3 App Storage", "AWS S3", "File/media storage for app assets and ETL artifacts.")
+    Container(nextjs, "Next.js Frontend", "Next.js App Router / React (Node 22)", "")
+    Container(nginx, "Nginx", "Nginx", "")
+    Container(django_web, "Django Web API", "Django + DRF (Granian/uWSGI, Python 3.12)", "")
+    Container(celery_edx, "Celery — edx_content queue", "Celery worker", "")
+    Container(celery_default, "Celery — default queue", "Celery worker", "")
+    Container(celery_embeddings, "Celery — embeddings queue", "Celery worker", "")
+    Container(beat, "Celery Beat (RedBeat)", "RedBeat (Redis-backed)", "")
+    ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16 (RDS in prod)", "")
+    ContainerQueue(redis, "Redis / Valkey", "Redis 8 (ElastiCache Valkey in prod)", "")
+    ContainerDb(opensearch, "OpenSearch", "OpenSearch", "")
+    Container(tika, "Apache Tika", "Tika 2.5 (sidecar)", "")
+    Container(s3, "S3 App Storage", "AWS S3", "")
   }
-  System_Ext(fastly, "Fastly CDN", "TLS termination, caching, and compression; routes to UI and the API gateway.")
-  System_Ext(apisix, "APISIX Gateway", "Shared API gateway enforcing OIDC (via Keycloak). Proxies the MIT Learn API, the learn-ai…")
-  System_Ext(vault, "HashiCorp Vault", "Secrets and dynamic database credentials injected at runtime.")
-  System_Ext(learn_ai, "learn-ai", "AI sidecar (Django + DRF + Channels/ASGI) powering conversational/agentic discovery.")
-  System_Ext(qdrant, "Qdrant", "Externally hosted vector database for semantic search.")
-  System_Ext(litellm, "LiteLLM Proxy", "OpenAI-compatible proxy fronting LLMs (and optional embeddings) for learn-ai.")
-  System_Ext(mailgun, "Mailgun", "Transactional/digest email delivery (via anymail).")
-  System_Ext(posthog, "PostHog", "Product analytics and feature flags; exports raw events to S3 (Parquet).")
-  System_Ext(mitxonline, "MITx Online", "MITx Online course/enrollment platform; SOA peer (catalog source + consumer).")
-  System_Ext(micromasters, "MicroMasters", "MicroMasters program platform; SOA peer (catalog + Wagtail pages source).")
-  System_Ext(data_platform, "OL Data Platform (Dagster / Hightouch)", "Dagster pipelines POST content webhooks; Hightouch reverse-ETL writes ProgramCertificate…")
-  System_Ext(course_apis, "External Course REST APIs", "edX, MIT Professional Ed, Sloan Executive Ed, MIT Climate, ODL Video.")
-  System_Ext(content_archives, "S3 Content Archives", "edX/xPRO/xOnline/Canvas OLX & .imscc, OCW site data, OpenLearningLibrary CSV, PostHog…")
-  System_Ext(media_feeds, "Media & News Feeds", "YouTube Data API, podcast RSS, Medium RSS, OL events (Drupal), Sloan Aura, marketing…")
+  System_Ext(fastly, "Fastly CDN", "")
+  System_Ext(apisix, "APISIX Gateway", "")
+  System_Ext(vault, "HashiCorp Vault", "")
+  System_Ext(learn_ai, "learn-ai", "")
+  System_Ext(qdrant, "Qdrant", "")
+  System_Ext(litellm, "LiteLLM Proxy", "")
+  System_Ext(mailgun, "Mailgun", "")
+  System_Ext(posthog, "PostHog", "")
+  System_Ext(mitxonline, "MITx Online", "")
+  System_Ext(micromasters, "MicroMasters", "")
+  System_Ext(data_platform, "OL Data Platform (Dagster / Hightouch)", "")
+  System_Ext(course_apis, "External Course REST APIs", "")
+  System_Ext(content_archives, "S3 Content Archives", "")
+  System_Ext(media_feeds, "Media & News Feeds", "")
   Rel(fastly, nextjs, "Frontend traffic", "HTTPS")
   Rel(fastly, apisix, "API traffic", "HTTPS")
   Rel(nextjs, apisix, "Server/client API calls", "HTTPS/JSON")

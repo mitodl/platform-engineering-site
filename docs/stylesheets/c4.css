@@ -30,6 +30,16 @@
   transform-origin: top right;
 }
 
+/* Drill-down: shapes wired to a target page (see c4-zoom.js). */
+.c4-zoom .c4-clickable {
+  cursor: pointer;
+}
+.c4-zoom .c4-clickable:hover rect,
+.c4-zoom .c4-clickable:hover path,
+.c4-zoom .c4-clickable:hover polygon {
+  filter: brightness(1.12);
+}
+
 .c4-zoom-hint {
   position: absolute;
   top: 0.35rem;

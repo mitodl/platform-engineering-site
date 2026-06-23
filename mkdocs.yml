@@ -22,10 +22,10 @@ markdown_extensions:
 extra_css:
   - stylesheets/c4.css
 extra_javascript:
-  # Pan/zoom for the C4 architecture diagrams. Loaded before c4-zoom.js so the
-  # svgPanZoom global is available. Vendor this file under docs/javascripts/ if
-  # you need the site to work without CDN access.
-  - https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js
+  # Pan/zoom + C4 drill-down for the architecture diagrams. svg-pan-zoom is
+  # vendored (no CDN dependency) and loaded before c4-zoom.js so the svgPanZoom
+  # global is available.
+  - javascripts/vendor/svg-pan-zoom.min.js
   - javascripts/c4-zoom.js
 nav:
   - Home: index.md

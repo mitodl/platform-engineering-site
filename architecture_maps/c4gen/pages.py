@@ -4,6 +4,8 @@ and provenance tables. Keeps ``render.py`` focused on pure Mermaid output.
 
 from __future__ import annotations
 
+import json
+
 from .render import (
     ASYNC_COLOR,
     BANNER,
@@ -33,8 +35,17 @@ _LEGEND = f"""
 """
 
 
-def _mermaid(block: str) -> str:
-    return f"```mermaid\n{MERMAID_INIT}\n{block}\n```\n"
+def _mermaid(block: str, links: dict[str, str] | None = None) -> str:
+    """Wrap a C4 block in a mermaid fence.
+
+    ``links`` maps a shape's display label to a URL; it is emitted as a JSON
+    sidecar that docs/javascripts/c4-zoom.js uses to make those shapes
+    clickable (C4 drill-down, which Mermaid has no native syntax for).
+    """
+    out = f"```mermaid\n{MERMAID_INIT}\n{block}\n```\n"
+    if links:
+        out += f'\n<script type="application/json" class="c4-links">{json.dumps(links)}</script>\n'
+    return out
 
 
 def _stamp(model: Model) -> str:
@@ -85,6 +96,9 @@ def page_context(model: Model) -> str:
     rows = ["| System | Role |", "| --- | --- |"]
     for s in externals:
         rows.append(f"| **{s.name}** | {s.description} |")
+    # C4 drill-down: clicking the primary system zooms into its Container view.
+    primary = model.system_of(model.meta.primary_system)
+    links = {primary.name: "../container/"} if primary else None
     return f"""{_banner(model)}# System Context — {model.meta.name}
 
 {_stamp(model)}
@@ -93,7 +107,11 @@ exchanges data with. Edges shown are **curated and code-verified**; raw
 graph-derived candidates are listed under
 [Dependencies & Cycles](dependencies-and-cycles.md).
 
-{_mermaid(render_context(model))}
+!!! tip "Interactive"
+    Drag to pan, scroll to zoom. **Click the {model.meta.name} box** to drill
+    into its [container view](container.md).
+
+{_mermaid(render_context(model), links)}
 ## External systems & peers
 
 {chr(10).join(rows)}
