@@ -50,22 +50,23 @@ architecture_maps/
 
 ## Usage
 
-Run from `architecture_maps/`. **Rendering needs a local Kroki server** (it turns
-the C4-PlantUML into SVG):
+Run these **from the repo root** (the `--directory architecture_maps` flag makes
+`python -m c4gen` resolve regardless of where you are). **Rendering needs a local
+Kroki server** (it turns the C4-PlantUML into SVG):
 
 ```bash
-docker compose -f docker-compose.yml up -d kroki          # local renderer on :8000
+docker compose -f architecture_maps/docker-compose.yml up -d kroki   # renderer on :8000
 
 # the common case — re-render docs + SVGs from the committed model (no witan-code):
-uv run --group c4gen python -m c4gen render mit-learn
+uv run --directory architecture_maps --group c4gen python -m c4gen render mit-learn
 ```
 
 The other two commands are for **authoring** and additionally need the
 **witan-code** graph (below):
 
 ```bash
-uv run --group c4gen python -m c4gen extract mit-learn    # refresh graph slice + cycles
-uv run --group c4gen python -m c4gen build mit-learn      # extract + render
+uv run --directory architecture_maps --group c4gen python -m c4gen extract mit-learn  # graph slice + cycles
+uv run --directory architecture_maps --group c4gen python -m c4gen build mit-learn    # extract + render
 ```
 
 `extract` (and therefore `build`) requires the **witan-code** tool installed

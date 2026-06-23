@@ -42,9 +42,9 @@ editing the generated Markdown directly will be overwritten. Regeneration needs
 a local Kroki server:
 
 ```bash
+# from the repo root:
 docker compose -f architecture_maps/docker-compose.yml up -d kroki
-cd architecture_maps
-uv run --group c4gen python -m c4gen render mit-learn   # re-renders pages + _diagrams/*.svg
+uv run --directory architecture_maps --group c4gen python -m c4gen render mit-learn
 ```
 
 See [`architecture_maps/README.md`](https://github.com/mitodl/platform-engineering-site/tree/main/architecture_maps)
