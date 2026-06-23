@@ -3,8 +3,15 @@
 A **repeatable, hybrid** process for generating and maintaining
 [C4 model](https://c4model.com/) data-flow documentation from a structured model.
 The output lands in the docs site under
-`docs/application_specific_guides/<system>/architecture/` and renders as
-[Mermaid C4](https://mermaid.js.org/syntax/c4.html).
+`docs/application_specific_guides/<system>/architecture/`.
+
+Diagrams are **C4-PlantUML rendered to SVG by [Kroki](https://kroki.io/)** at
+generation time (we moved off Mermaid C4 — its Graphviz layout handles our
+hub-and-spoke graphs far better: no overlapping edge labels, wrapped shape
+descriptions, dashed async edges, and native clickable drill-down via `$link`).
+The SVGs are inlined into the pages by a mkdocs hook; the only client-side JS is
+svg-pan-zoom (pan/zoom). Render happens locally against a Kroki container, so the
+published site has no external render dependency.
 
 The first system mapped is **MIT Learn**; the process is designed to fan out to
 the rest of the SOA (one model file per system).

@@ -15,21 +15,48 @@ from __future__ import annotations
 
 import datetime
 import json
+import os
 from importlib import metadata
 from pathlib import Path
+from urllib import error, request
 
 import cyclopts
 import yaml
 
 from . import extract as extract_mod
 from . import pages as pages_mod
+from . import puml as puml_mod
 from .schema import Flow, Model
 
-app = cyclopts.App(name="c4gen", help="Generate Mermaid C4 data-flow docs from a model.")
+app = cyclopts.App(name="c4gen", help="Generate C4 data-flow docs (C4-PlantUML via Kroki).")
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MODELS_DIR = REPO_ROOT / "architecture_maps" / "models"
 DOCS_BASE = REPO_ROOT / "docs" / "application_specific_guides"
+
+# Kroki renders the C4-PlantUML source to SVG at generation time. Default to the
+# local container (see architecture_maps/docker-compose.yml); override in CI.
+KROKI_URL = os.environ.get("C4GEN_KROKI_URL", "http://localhost:8000").rstrip("/")
+
+
+def _kroki_svg(puml: str) -> str:
+    """Render C4-PlantUML to an inline-ready SVG string via Kroki."""
+    url = f"{KROKI_URL}/c4plantuml/svg"
+    req = request.Request(
+        url, data=puml.encode("utf-8"), headers={"Content-Type": "text/plain"}, method="POST"
+    )
+    try:
+        with request.urlopen(req, timeout=30) as resp:  # noqa: S310 (trusted local URL)
+            svg = resp.read().decode("utf-8")
+    except error.URLError as exc:
+        raise RuntimeError(
+            f"Kroki render failed at {url}: {exc}. Start it with "
+            "`docker compose -f architecture_maps/docker-compose.yml up -d kroki` "
+            "or set C4GEN_KROKI_URL."
+        ) from exc
+    # Strip the XML prolog/doctype so the <svg> inlines cleanly into HTML.
+    i = svg.find("<svg")
+    return svg[i:] if i != -1 else svg
 
 
 def _version() -> str:
@@ -97,6 +124,24 @@ def render(name: str) -> None:
 
     out = DOCS_BASE / model.meta.primary_system / "architecture"
     out.mkdir(parents=True, exist_ok=True)
+
+    # Render each C4-PlantUML diagram to an SVG file via Kroki. A mkdocs hook
+    # (hooks/c4_inline.py) inlines these into the pages at build time.
+    primary = model.system_of(model.meta.primary_system)
+    diagrams = {
+        "system-context": puml_mod.render_context_puml(
+            model, {primary.name: "../container/"} if primary else None
+        ),
+        "container": puml_mod.render_container_puml(model),
+    }
+    for sc in model.scenarios:
+        diagrams[f"flow-{sc.id}"] = puml_mod.render_dynamic_puml(model, sc.id)
+
+    svg_dir = out / "_diagrams"
+    svg_dir.mkdir(parents=True, exist_ok=True)
+    for dname, src in diagrams.items():
+        (svg_dir / f"{dname}.svg").write_text(_kroki_svg(src))
+
     written = {
         "index.md": pages_mod.page_index(model),
         "system-context.md": pages_mod.page_context(model),
@@ -106,7 +151,10 @@ def render(name: str) -> None:
     }
     for fname, content in written.items():
         (out / fname).write_text(content)
-    print(f"wrote {len(written)} pages to {out.relative_to(REPO_ROOT)}")
+    print(
+        f"wrote {len(written)} pages + {len(diagrams)} SVGs to "
+        f"{out.relative_to(REPO_ROOT)} (kroki: {KROKI_URL})"
+    )
 
 
 @app.command

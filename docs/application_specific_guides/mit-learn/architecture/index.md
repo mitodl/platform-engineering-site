@@ -2,7 +2,7 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # MIT Learn — Architecture & Data Flows
 
-_Generated 2026-06-23 14:44 UTC · c4gen dev_
+_Generated 2026-06-23 15:24 UTC · c4gen dev_
 
 MIT Learn is the central discovery surface for MIT's open and paid learning offerings. A Next.js frontend serves learners; a Django/DRF backend exposes the API, runs full-text and vector search, and ingests course/resource metadata from across the MIT SOA and the open web via Celery ETL pipelines. A separate learn-ai service powers conversational/agentic discovery.
 
@@ -13,19 +13,18 @@ onboarding and as a holistic reference when realigning flows or hunting harmful
 cycles and fragile linkages.
 
 !!! info "How to read these diagrams"
-    These are [C4 model](https://c4model.com/) diagrams rendered with
-    [Mermaid C4](https://mermaid.js.org/syntax/c4.html). Read them top-down:
-    **System Context** (the whole SOA) → **Container** (one system's runtime
-    units) → **Dynamic** (a single data flow, step by step).
+    These are [C4 model](https://c4model.com/) diagrams (C4-PlantUML). Read them
+    top-down: **System Context** (the whole SOA) → **Container** (one system's
+    runtime units) → **Dynamic** (a single data flow, step by step).
 
     * **People** are rounded boxes; **systems** and **containers** are
       rectangles; **databases** and **queues** have distinct shapes.
-    * Each arrow is a data flow labelled with *what* moves and *how*.
-    * <span style="color:#4c9be8">**Blue / solid-tone arrows**</span> are
+    * Each arrow is a data flow labelled with *what* moves.
+    * <span style="color:#4c9be8">**Solid arrows**</span> are
       **synchronous** (request/response, caller blocks).
-    * <span style="color:#e8a33d">**Amber arrows**</span> (technology
-      prefixed `async ·`) are **asynchronous** (queued, scheduled, or
-      event-driven — caller does not block).
+    * <span style="color:#e8a33d">**Amber dashed arrows**</span> are
+      **asynchronous** (queued, scheduled, or event-driven — caller does not block).
+    * **Drag to pan, scroll to zoom.** Boxes with a link drill into the next level.
 
 ## Contents
 

@@ -1,56 +1,35 @@
-"""Markdown page assembly: wraps rendered Mermaid C4 blocks with prose, legends,
-and provenance tables. Keeps ``render.py`` focused on pure Mermaid output.
+"""Markdown page assembly: wraps the C4 diagrams with prose, legends, and
+provenance tables. Diagrams are C4-PlantUML rendered to SVG by Kroki at
+generation time (see cli.render + puml.py); each page references one via a
+``<!--c4-svg:...-->`` marker that hooks/c4_inline.py inlines at build time.
 """
 
 from __future__ import annotations
 
-import json
-
-from .render import (
-    ASYNC_COLOR,
-    BANNER,
-    MERMAID_INIT,
-    SYNC_COLOR,
-    render_container,
-    render_context,
-    render_dynamic,
-)
+from .render import ASYNC_COLOR, BANNER, SYNC_COLOR
 from .schema import Flow, Model
 
 _LEGEND = f"""
 !!! info "How to read these diagrams"
-    These are [C4 model](https://c4model.com/) diagrams rendered with
-    [Mermaid C4](https://mermaid.js.org/syntax/c4.html). Read them top-down:
-    **System Context** (the whole SOA) → **Container** (one system's runtime
-    units) → **Dynamic** (a single data flow, step by step).
+    These are [C4 model](https://c4model.com/) diagrams (C4-PlantUML). Read them
+    top-down: **System Context** (the whole SOA) → **Container** (one system's
+    runtime units) → **Dynamic** (a single data flow, step by step).
 
     * **People** are rounded boxes; **systems** and **containers** are
       rectangles; **databases** and **queues** have distinct shapes.
-    * Each arrow is a data flow labelled with *what* moves and *how*.
-    * <span style="color:{SYNC_COLOR}">**Blue / solid-tone arrows**</span> are
+    * Each arrow is a data flow labelled with *what* moves.
+    * <span style="color:{SYNC_COLOR}">**Solid arrows**</span> are
       **synchronous** (request/response, caller blocks).
-    * <span style="color:{ASYNC_COLOR}">**Amber arrows**</span> (technology
-      prefixed `async ·`) are **asynchronous** (queued, scheduled, or
-      event-driven — caller does not block).
+    * <span style="color:{ASYNC_COLOR}">**Amber dashed arrows**</span> are
+      **asynchronous** (queued, scheduled, or event-driven — caller does not block).
+    * **Drag to pan, scroll to zoom.** Boxes with a link drill into the next level.
 """
 
 
-def _mermaid(block: str, links: dict[str, str] | None = None) -> str:
-    """Emit a C4 diagram as a self-rendered ``.c4-diagram`` block.
-
-    We deliberately do NOT use Material's ```mermaid fence: Material's async
-    render is unreliable (it can leave an empty container, and its post-render
-    DOM/timing is hard to hook). Instead the Mermaid source is stashed verbatim
-    in a non-executing ``<script type="text/x-mermaid">`` and rendered by
-    docs/javascripts/c4-zoom.js, which then attaches pan/zoom and drill-down.
-
-    ``links`` maps a shape's display label to a URL (C4 drill-down — Mermaid has
-    no native click syntax); emitted as a JSON sidecar the script reads.
-    """
-    out = f"```c4\n{MERMAID_INIT}\n{block}\n```\n"
-    if links:
-        out += f'\n<script type="application/json" class="c4-links">{json.dumps(links)}</script>\n'
-    return out
+def _diagram(model: Model, name: str) -> str:
+    """Marker for an SVG inlined at build time by hooks/c4_inline.py."""
+    path = f"application_specific_guides/{model.meta.primary_system}/architecture/_diagrams/{name}.svg"
+    return f"<!--c4-svg:{path}-->\n"
 
 
 def _stamp(model: Model) -> str:
@@ -101,9 +80,6 @@ def page_context(model: Model) -> str:
     rows = ["| System | Role |", "| --- | --- |"]
     for s in externals:
         rows.append(f"| **{s.name}** | {s.description} |")
-    # C4 drill-down: clicking the primary system zooms into its Container view.
-    primary = model.system_of(model.meta.primary_system)
-    links = {primary.name: "../container/"} if primary else None
     return f"""{_banner(model)}# System Context — {model.meta.name}
 
 {_stamp(model)}
@@ -116,7 +92,7 @@ graph-derived candidates are listed under
     Drag to pan, scroll to zoom. **Click the {model.meta.name} box** to drill
     into its [container view](container.md).
 
-{_mermaid(render_context(model), links)}
+{_diagram(model, "system-context")}
 ## External systems & peers
 
 {chr(10).join(rows)}
@@ -136,7 +112,7 @@ def page_container(model: Model) -> str:
 The runtime/deployable units inside **{primary.name}** and how data moves
 between them and adjacent systems.
 
-{_mermaid(render_container(model))}
+{_diagram(model, "container")}
 ## Containers
 
 {chr(10).join(rows)}
@@ -154,7 +130,7 @@ Amber steps are asynchronous (queued / scheduled / event-driven).
         parts.append(f"## {sc.title}\n")
         if sc.description:
             parts.append(sc.description + "\n")
-        parts.append(_mermaid(render_dynamic(model, sc.id)))
+        parts.append(_diagram(model, f"flow-{sc.id}"))
 
     if model.etl_sources:
         parts.append("## Ingestion sources (ETL)\n")

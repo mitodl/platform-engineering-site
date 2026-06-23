@@ -17,20 +17,16 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-        # C4 architecture diagrams (architecture_maps/c4gen): carries the Mermaid
-        # source verbatim in a <pre class="c4-diagram"> that Material ignores;
-        # docs/javascripts/c4-zoom.js renders it and adds pan/zoom + drill-down.
-        - name: c4
-          class: c4-diagram
-          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.blocks.admonition
   - pymdownx.details
+hooks:
+  # Inlines the C4 architecture SVGs (rendered by c4gen via Kroki) at build time.
+  - hooks/c4_inline.py
 extra_css:
   - stylesheets/c4.css
 extra_javascript:
-  # Pan/zoom + C4 drill-down for the architecture diagrams. svg-pan-zoom is
-  # vendored (no CDN dependency) and loaded before c4-zoom.js so the svgPanZoom
-  # global is available.
+  # Pan/zoom for the C4 architecture diagrams (drill-down is native PlantUML
+  # links). svg-pan-zoom is vendored and loaded before c4-zoom.js.
   - javascripts/vendor/svg-pan-zoom.min.js
   - javascripts/c4-zoom.js
 nav:

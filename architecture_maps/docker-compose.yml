@@ -1,0 +1,13 @@
+# Local Kroki for rendering the C4-PlantUML architecture diagrams.
+# `c4gen build` (and the Concourse pipeline) POST C4-PlantUML to this service
+# and embed the returned SVG. The base image bundles PlantUML + C4-PlantUML +
+# Graphviz, which is all we need (no Mermaid/companion services).
+#
+#   docker compose -f architecture_maps/docker-compose.yml up -d kroki
+#   C4GEN_KROKI_URL=http://localhost:8000 python -m c4gen build mit-learn
+services:
+  kroki:
+    image: yuzutech/kroki:latest
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

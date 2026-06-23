@@ -1,12 +1,6 @@
-/* The raw Mermaid source is carried in a <pre class="c4-diagram"> that
-   c4-zoom.js renders into an SVG; hide it so the source never flashes. */
-pre.c4-diagram {
-  display: none;
-}
-
-/* Roomy, zoomable viewport for the generated C4 architecture diagrams.
-   Applied by docs/javascripts/c4-zoom.js, which adds the `c4-zoom` class to
-   each Mermaid container on /architecture/ pages. */
+/* Roomy, zoomable viewport for the C4 architecture diagrams. The SVG is inlined
+   by hooks/c4_inline.py into a `.c4-box`; docs/javascripts/c4-zoom.js adds the
+   `c4-zoom` class and svg-pan-zoom on /architecture/ pages. */
 .c4-zoom {
   position: relative;
   height: 78vh;
@@ -30,20 +24,9 @@ pre.c4-diagram {
   cursor: grabbing;
 }
 
-/* Make svg-pan-zoom's on-canvas zoom controls a bit larger / easier to hit. */
-.c4-zoom .svg-pan-zoom-control {
-  transform: scale(1.4);
-  transform-origin: top right;
-}
-
-/* Drill-down: shapes wired to a target page (see c4-zoom.js). */
-.c4-zoom .c4-clickable {
+/* Native drill-down: PlantUML $link renders a real <a> in the SVG. */
+.c4-zoom a {
   cursor: pointer;
-}
-.c4-zoom .c4-clickable:hover rect,
-.c4-zoom .c4-clickable:hover path,
-.c4-zoom .c4-clickable:hover polygon {
-  filter: brightness(1.12);
 }
 
 .c4-zoom-hint {
