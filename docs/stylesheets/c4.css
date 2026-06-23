@@ -1,6 +1,6 @@
-/* Roomy, zoomable viewport for the C4 architecture diagrams. The SVG is inlined
-   by hooks/c4_inline.py into a `.c4-box`; docs/javascripts/c4-zoom.js adds the
-   `c4-zoom` class and svg-pan-zoom on /architecture/ pages. */
+/* Roomy, zoomable viewport for the C4 architecture diagrams. docs/javascripts/
+   c4-zoom.js fetches the pre-rendered SVG into a `.c4-box`, adds the `c4-zoom`
+   class, and attaches svg-pan-zoom on /architecture/ pages. */
 .c4-zoom {
   position: relative;
   height: 78vh;

@@ -9,8 +9,10 @@ Diagrams are **C4-PlantUML rendered to SVG by [Kroki](https://kroki.io/)** at
 generation time (we moved off Mermaid C4 — its Graphviz layout handles our
 hub-and-spoke graphs far better: no overlapping edge labels, wrapped shape
 descriptions, dashed async edges, and native clickable drill-down via `$link`).
-The SVGs are inlined into the pages by a mkdocs hook; the only client-side JS is
-svg-pan-zoom (pan/zoom). Render happens locally against a Kroki container, so the
+The SVGs are written to a sibling `_diagrams/` directory and committed;
+`docs/javascripts/c4-zoom.js` fetches and injects them client-side (independent
+of the static-site generator — works under zensical and mkdocs) and layers on
+svg-pan-zoom. Rendering happens locally against a Kroki container, so the
 published site has no external render dependency.
 
 The first system mapped is **MIT Learn**; the process is designed to fan out to
@@ -35,9 +37,11 @@ architecture_maps/
   c4gen/
     schema.py    # the structured model (pydantic): systems, containers, flows, scenarios, etl_sources
     extract.py   # deterministic: witan-code bridge -> cross-service candidates + cycles
-    render.py    # model -> Mermaid C4 (Context / Container / Dynamic)
-    pages.py     # markdown page assembly (legend, tables, provenance)
-    cli.py       # cyclopts CLI: extract / render / build
+    puml.py      # model -> C4-PlantUML (Context / Container / Dynamic)
+    render.py    # shared rendering helpers (alias/quote/tagline/owner resolution)
+    pages.py     # markdown page assembly (legend, tables, provenance, diagram placeholders)
+    cli.py       # cyclopts CLI: extract / render (-> Kroki SVGs) / build
+  docker-compose.yml  # local Kroki for rendering
   models/
     <system>.yaml          # CURATED model (source of truth for prose + verified flows)
     <system>.graph.yaml    # GENERATED graph slice (do not hand-edit)

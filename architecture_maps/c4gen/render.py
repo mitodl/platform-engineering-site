@@ -1,31 +1,21 @@
-"""Renderer: model -> Mermaid C4 markdown pages.
+"""Shared rendering helpers for the C4 generator.
 
-Projects one ``Model`` into the three C4 levels we publish:
+The active renderer is ``puml.py`` (C4-PlantUML, rendered to SVG by Kroki — see
+``cli.py``). This module holds the small, renderer-agnostic helpers it relies on:
+id/label sanitization, concise taglines, node-owner resolution, the context-group
+alias, the shared async/sync colours, and the generated-file banner.
 
-* **System Context** (``C4Context``) — every system + actors, container-level
-  flows aggregated up to their owning system.
-* **Container** (``C4Container``) — the primary system expanded into containers,
-  peer systems collapsed, only flows touching the primary system.
-* **Dynamic** (``C4Dynamic``) — one diagram per ``Scenario``, replaying an
-  ordered interaction; sync vs async is encoded per relationship.
-
-Conventions
------------
-* Mermaid aliases must be identifier-safe, so node ids are sanitized
-  (``django-web`` -> ``django_web``); the human label keeps the real name.
-* C4 has no async marker. We encode it in the relationship *technology* slot
-  (prefixed ``async ·``) and tint async lines amber via ``UpdateRelStyle``.
-  The page legend documents this so the convention is discoverable.
-* Every generated page carries a "do not hand-edit" banner pointing at the
-  model + generator, and a generation stamp.
+(There is no Mermaid renderer any more; it was replaced by C4-PlantUML.)
 """
 
 from __future__ import annotations
 
 import textwrap
 
-from .schema import Flow, Model
+from .schema import Model
 
+# Async edges are amber; sync are blue. Used by the page legend (pages.py) and
+# mirrored by the PlantUML async relationship tag (puml.py).
 ASYNC_COLOR = "#e8a33d"
 SYNC_COLOR = "#4c9be8"
 
@@ -35,34 +25,18 @@ BANNER = (
     "`python -m c4gen build`. -->\n"
 )
 
-# Per-diagram Mermaid config prepended to every C4 block. `useMaxWidth: false`
-# makes Mermaid render at natural size (instead of shrinking to fit the column,
-# which makes the relationship labels tiny); the font/margin bumps make the
-# diagrams larger and less cramped. Pan/zoom is layered on top by
-# docs/javascripts/c4-zoom.js so the larger diagrams stay navigable.
-MERMAID_INIT = (
-    '%%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, '
-    '"c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, '
-    '"width": 275, "height": 72, "personFontSize": 16, '
-    '"external_personFontSize": 16, "systemFontSize": 16, '
-    '"system_extFontSize": 16, "containerFontSize": 15, '
-    '"container_extFontSize": 15, "containerDbFontSize": 15, '
-    '"containerQueueFontSize": 15, "boundaryFontSize": 16, '
-    '"messageFontSize": 14}}}%%'
-)
-
 
 def alias(node_id: str) -> str:
+    """Sanitize a node id into an identifier-safe diagram alias."""
     return node_id.replace("-", "_").replace(".", "_")
 
 
 def q(text: str) -> str:
-    """Quote a string for a Mermaid C4 argument.
+    """Quote a string for a C4 macro argument.
 
-    Mermaid C4 labels are plain text wrapped in double quotes; the only thing that
-    breaks the parser is an embedded double quote, so swap those for single quotes
-    and collapse newlines. Do NOT HTML-escape — Mermaid would render the entities
-    literally (``&amp;``).
+    Labels are plain text wrapped in double quotes; the only thing that breaks
+    the parser is an embedded double quote, so swap those for single quotes and
+    collapse whitespace/newlines.
     """
     return '"' + " ".join((text or "").replace('"', "'").split()) + '"'
 
@@ -90,236 +64,15 @@ def _tagline(text: str, limit: int = 46) -> str:
     return text[:limit].rsplit(" ", 1)[0] + "…"
 
 
-def _rel_tech(flow: Flow) -> str:
-    proto = flow.protocol or ("HTTPS" if flow.sync else "async")
-    return proto if flow.sync else f"async · {proto}"
-
-
-# --------------------------------------------------------------------------
-# System Context
-# --------------------------------------------------------------------------
 def _group_alias(label: str) -> str:
+    """Alias for a System Context group black box (collapsed external systems)."""
     slug = "".join(c if c.isalnum() else "_" for c in label.lower())
     return "grp_" + slug.strip("_")
 
 
-def render_context(model: Model) -> str:
-    """System Context: the system + external dependencies as black boxes.
-
-    External systems sharing a ``context_group`` are collapsed into one node so
-    the Context stays under the C4 ~15-element guideline; they remain individual
-    in the Container view.
-    """
-    lines = ["C4Context", f"  title System Context — {model.meta.name}"]
-
-    # group external systems by context_group
-    groups: dict[str, list] = {}
-    for s in model.systems:
-        if s.kind == "external" and s.context_group:
-            groups.setdefault(s.context_group, []).append(s)
-
-    def ctx_node(system_id: str) -> str:
-        """Map a system id to the alias of the node that represents it in Context."""
-        s = next((x for x in model.systems if x.id == system_id), None)
-        if s and s.context_group:
-            return _group_alias(s.context_group)
-        return alias(system_id)
-
-    # --- nodes ---------------------------------------------------------
-    used = {f.source for f in model.flows} | {f.target for f in model.flows}
-    for actor in model.actors:
-        if actor.id in used:
-            lines.append(
-                f"  Person({alias(actor.id)}, {q(actor.name)}, {q(_tagline(actor.description))})"
-            )
-    for system in model.systems:
-        if system.context_group:
-            continue  # rendered as part of its group below
-        macro = "System" if system.kind == "internal" else "System_Ext"
-        lines.append(
-            f"  {macro}({alias(system.id)}, {q(system.name)}, {q(_tagline(system.description))})"
-        )
-    for label, members in groups.items():
-        names = ", ".join(m.name for m in members)
-        lines.append(
-            f"  System_Ext({_group_alias(label)}, {q(label)}, {q(_short(names, 48))})"
-        )
-
-    # --- edges (aggregated to context nodes) ---------------------------
-    seen: dict[tuple[str, str], Flow] = {}
-    for flow in model.flows:
-        src = ctx_node(_owner_id(model, flow.source))
-        tgt = ctx_node(_owner_id(model, flow.target))
-        if src == tgt:
-            continue
-        seen.setdefault((src, tgt), flow)
-
-    # In the Context view, omit the per-edge technology sub-label: many edges
-    # converge on the hub, and a two-line label per edge overcrowds the centre.
-    # Sync/async is still conveyed by colour (amber = async); full technology
-    # labels remain in the Container and Dynamic views.
-    async_pairs = []
-    for (src, tgt), flow in seen.items():
-        lines.append(f"  Rel({src}, {tgt}, {q(_short(flow.label, 50))})")
-        if not flow.sync:
-            async_pairs.append((src, tgt))
-    for src, tgt in async_pairs:
-        lines.append(
-            f"  UpdateRelStyle({src}, {tgt}, "
-            f'$textColor="{ASYNC_COLOR}", $lineColor="{ASYNC_COLOR}")'
-        )
-    lines.append('  UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="2")')
-    return "\n".join(lines)
-
-
-# --------------------------------------------------------------------------
-# Container
-# --------------------------------------------------------------------------
-_SHAPE_MACRO = {"container": "Container", "db": "ContainerDb", "queue": "ContainerQueue"}
-
-
-def render_container(model: Model) -> str:
-    primary = next((s for s in model.systems if s.id == model.meta.primary_system), None)
-    if primary is None:
-        raise ValueError(f"primary_system {model.meta.primary_system!r} not in model")
-
-    container_ids = {c.id for c in primary.containers}
-    lines = ["C4Container", f"  title Container diagram — {primary.name}"]
-
-    # actors and peer systems that actually touch the primary system
-    touch = _nodes_touching(model, container_ids | {primary.id})
-    for actor in model.actors:
-        if actor.id in touch:
-            lines.append(
-                f"  Person({alias(actor.id)}, {q(actor.name)}, {q(_tagline(actor.description))})"
-            )
-
-    lines.append(f"  System_Boundary({alias(primary.id)}_b, {q(primary.name)}) {{")
-    for c in primary.containers:
-        macro = _SHAPE_MACRO[c.shape]
-        lines.append(
-            f'    {macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or "")}, {q(_tagline(c.description))})'
-        )
-    lines.append("  }")
-
-    for system in model.systems:
-        if system.id == primary.id or system.id not in touch:
-            continue
-        lines.append(
-            f"  System_Ext({alias(system.id)}, {q(system.name)}, {q(_tagline(system.description))})"
-        )
-
-    async_pairs = []
-    seen_rels: set[tuple[str, str, str, str]] = set()
-    for flow in model.flows:
-        src, tgt = flow.source, flow.target
-        # keep flows where both ends resolve to a drawn node (container, peer system, or actor)
-        if not (_drawn(model, src, container_ids, touch) and _drawn(model, tgt, container_ids, touch)):
-            continue
-        s = src if src in container_ids else _owner_id(model, src)
-        t = tgt if tgt in container_ids else _owner_id(model, tgt)
-        # a flow targeting the primary system as a whole is attributed to its
-        # API entry container (external HTTP lands there), so we never emit a
-        # dangling reference to the undrawn primary-system alias.
-        entry = model.meta.api_container
-        if entry:
-            s = entry if s == primary.id else s
-            t = entry if t == primary.id else t
-        if s == t:
-            continue
-        tech = _rel_tech(flow)
-        rel_key = (s, t, _short(flow.label, 50), tech)
-        if rel_key in seen_rels:
-            continue
-        seen_rels.add(rel_key)
-        lines.append(f"  Rel({alias(s)}, {alias(t)}, {q(_short(flow.label, 50))}, {q(tech)})")
-        if not flow.sync:
-            async_pairs.append((s, t))
-    for s, t in async_pairs:
-        lines.append(
-            f"  UpdateRelStyle({alias(s)}, {alias(t)}, "
-            f'$textColor="{ASYNC_COLOR}", $lineColor="{ASYNC_COLOR}")'
-        )
-    lines.append('  UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")')
-    return "\n".join(lines)
-
-
-# --------------------------------------------------------------------------
-# Dynamic (one per scenario)
-# --------------------------------------------------------------------------
-def render_dynamic(model: Model, scenario_id: str) -> str:
-    scenario = next((s for s in model.scenarios if s.id == scenario_id), None)
-    if scenario is None:
-        raise ValueError(f"no scenario {scenario_id!r}")
-
-    referenced: list[str] = []
-    for step in scenario.steps:
-        for nid in (step.source, step.target):
-            if nid not in referenced:
-                referenced.append(nid)
-
-    lines = ["C4Dynamic", f"  title {scenario.title}"]
-    for nid in referenced:
-        lines.append("  " + _declare_node(model, nid))
-
-    async_pairs = []
-    for step in scenario.steps:
-        lines.append(
-            f"  Rel({alias(step.source)}, {alias(step.target)}, {q(_short(step.label, 60))})"
-        )
-        if not step.sync:
-            async_pairs.append((step.source, step.target))
-    for s, t in async_pairs:
-        lines.append(
-            f"  UpdateRelStyle({alias(s)}, {alias(t)}, "
-            f'$textColor="{ASYNC_COLOR}", $lineColor="{ASYNC_COLOR}")'
-        )
-    return "\n".join(lines)
-
-
-# --------------------------------------------------------------------------
-# helpers
-# --------------------------------------------------------------------------
 def _owner_id(model: Model, node_id: str) -> str:
     """Resolve a node id to the id used at system level (its system, or itself if actor)."""
     if any(a.id == node_id for a in model.actors):
         return node_id
     system = model.system_of(node_id)
     return system.id if system else node_id
-
-
-def _nodes_touching(model: Model, ids: set[str]) -> set[str]:
-    """All node ids on a flow whose other end is in ``ids`` (resolved to owners/self)."""
-    out: set[str] = set()
-    for flow in model.flows:
-        ends = {flow.source, flow.target}
-        resolved = {flow.source: _owner_id(model, flow.source), flow.target: _owner_id(model, flow.target)}
-        if ends & ids or set(resolved.values()) & ids:
-            for raw, owner in resolved.items():
-                out.add(raw)
-                out.add(owner)
-    return out
-
-
-def _drawn(model: Model, node_id: str, container_ids: set[str], touch: set[str]) -> bool:
-    if node_id in container_ids:
-        return True
-    owner = _owner_id(model, node_id)
-    return owner in touch or node_id in touch
-
-
-def _declare_node(model: Model, node_id: str) -> str:
-    for actor in model.actors:
-        if actor.id == node_id:
-            return f"Person({alias(actor.id)}, {q(actor.name)}, {q(_tagline(actor.description))})"
-    for system in model.systems:
-        if system.id == node_id:
-            macro = "System" if system.kind == "internal" else "System_Ext"
-            return f"{macro}({alias(system.id)}, {q(system.name)}, {q(_tagline(system.description))})"
-        for c in system.containers:
-            if c.id == node_id:
-                macro = _SHAPE_MACRO[c.shape]
-                return (
-                    f'{macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or "")}, {q(_tagline(c.description))})'
-                )
-    return f"System({alias(node_id)}, {q(node_id)}, \"\")"

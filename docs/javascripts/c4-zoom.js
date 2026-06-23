@@ -87,12 +87,35 @@
     var src = box.getAttribute("data-c4-svg");
     if (!src) return;
     box.dataset.c4done = "1";
-    fetch(new URL(src, location.href).href)
+
+    var url;
+    try {
+      url = new URL(src, location.href);
+    } catch (e) {
+      box.dataset.c4done = "";
+      return;
+    }
+    // Same-origin only: these are pre-rendered local SVGs; never fetch remote.
+    if (url.origin !== location.origin) {
+      box.dataset.c4done = "";
+      console.error("c4: refusing cross-origin diagram", url.href);
+      return;
+    }
+
+    fetch(url.href)
       .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
         return r.text();
       })
-      .then(function (svg) {
-        box.innerHTML = svg;
+      .then(function (text) {
+        // Parse as SVG and adopt only the <svg> root, so a bad URL / HTML error
+        // page can't be injected into the DOM. Fail closed otherwise.
+        var doc = new DOMParser().parseFromString(text, "image/svg+xml");
+        var root = doc.documentElement;
+        if (doc.querySelector("parsererror") || !root || root.nodeName.toLowerCase() !== "svg") {
+          throw new Error("response is not valid SVG");
+        }
+        box.replaceChildren(document.importNode(root, true));
         enhance(box);
       })
       .catch(function (e) {

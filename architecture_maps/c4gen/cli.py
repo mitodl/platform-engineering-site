@@ -1,14 +1,15 @@
-"""``c4gen`` — generate Mermaid C4 data-flow docs from a structured model.
+"""``c4gen`` — generate C4 data-flow docs (C4-PlantUML, rendered to SVG by Kroki).
 
 Hybrid pipeline:
 
     extract   witan-code graph  -> models/<name>.graph.yaml (+ .cycles.json)
-    render    curated + graph    -> docs/.../architecture/*.md
+    render    curated + graph    -> docs/.../architecture/*.md + _diagrams/*.svg
     build     = extract then render
 
 The curated model (``models/<name>.yaml``) holds nodes, async/code-derived
 flows, and scenario narratives. The extractor refreshes the deterministic
-cross-service slice. The renderer merges them (curated wins) and writes pages.
+cross-service slice. The renderer merges them (curated wins), renders each
+diagram to SVG via Kroki (see ``puml.py``), and writes the pages.
 """
 
 from __future__ import annotations
@@ -125,8 +126,8 @@ def render(name: str) -> None:
     out = DOCS_BASE / model.meta.primary_system / "architecture"
     out.mkdir(parents=True, exist_ok=True)
 
-    # Render each C4-PlantUML diagram to an SVG file via Kroki. A mkdocs hook
-    # (hooks/c4_inline.py) inlines these into the pages at build time.
+    # Render each C4-PlantUML diagram to an SVG file via Kroki. Each page emits a
+    # `.c4-box` placeholder that docs/javascripts/c4-zoom.js fills with the SVG.
     primary = model.system_of(model.meta.primary_system)
     diagrams = {
         "system-context": puml_mod.render_context_puml(
