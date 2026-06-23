@@ -1,0 +1,252 @@
+meta:
+  name: ODL Video Service
+  primary_system: odl-video-service
+  api_container: nginx
+  description: >-
+    ODL Video Service (OVS) is MIT Open Learning's video hosting and lecture-capture
+    platform. A Django/DRF backend with a React 15 frontend ingests source video
+    (Dropbox Chooser uploads or an S3 watch-bucket drop), transcodes it to HLS + MP4
+    via AWS MediaConvert, and delivers private content through CloudFront signed URLs.
+    Keycloak (federating MIT Touchstone SAML) provides OIDC auth; access control is
+    enforced through KeycloakGroup membership (formerly MoiraLists). Celery + RedBeat
+    run async upload/transcode/YouTube/janitor tasks. Public videos and their
+    transcripts are exposed via a REST API that MIT Learn's ETL ingests daily, and
+    video metadata is pushed to Open edX (edxval) for course playback.
+
+actors:
+  - id: video-admin
+    name: Collection Admin / Curator
+    description: >-
+      Staff who create collections, upload/replace videos from Dropbox, manage
+      subtitles and thumbnails, set access (KeycloakGroups), and sync videos to edX.
+  - id: viewer
+    name: Viewer / Learner
+    description: Watches videos in the browser via the HLS player; access gated by KeycloakGroup membership.
+
+systems:
+  # ---- primary system ------------------------------------------------
+  - id: odl-video-service
+    name: ODL Video Service
+    kind: internal
+    repo: https://github.com/mitodl/odl-video-service
+    description: Video hosting, transcoding, and delivery platform (Django API + React UI).
+    containers:
+      - id: react-frontend
+        name: React Frontend
+        technology: React 15 / Redux / Video.js 8 (Webpack 5, Node 24)
+        description: >-
+          Browser SPA for collection/video management and playback. Initiates Dropbox
+          Chooser uploads and plays HLS streams served from CloudFront.
+        shape: container
+        source: { repo: https://github.com/mitodl/odl-video-service, path: static/js }
+      - id: nginx
+        name: Nginx
+        technology: Nginx
+        description: Reverse proxy in front of the Django app; serves static assets and bounds upload body size.
+        shape: container
+      - id: django-web
+        name: Django Web / API
+        technology: Django 4.2 + DRF (uWSGI, Python 3.13)
+        description: >-
+          REST API, admin, OIDC login, upload/replace/subtitle endpoints, the public
+          videos API, the MediaConvert SNS webhook, and the edX sync trigger.
+        shape: container
+        source: { repo: https://github.com/mitodl/odl-video-service, path: ui }
+      - id: celery
+        name: Celery Worker + Beat
+        technology: Celery + celery-redbeat (Python 3.13)
+        description: >-
+          Runs upload streaming, transcode/retranscode orchestration, YouTube sync,
+          edX posting, Keycloak migration, and janitor sweeps. Beat (-B) schedules
+          periodic tasks via RedBeat.
+        shape: container
+        source: { repo: https://github.com/mitodl/odl-video-service, path: cloudsync/tasks.py }
+      - id: postgres
+        name: PostgreSQL
+        technology: PostgreSQL 18 (RDS in prod)
+        description: System of record for Collections, Videos, VideoFiles, KeycloakGroups, EdxEndpoints, EncodeJobs.
+        shape: db
+      - id: redis
+        name: Redis
+        technology: Redis 8 (ElastiCache in prod)
+        description: Celery broker + result backend, RedBeat schedule store, Django cache, and per-video upload locks.
+        shape: queue
+      - id: s3-buckets
+        name: S3 Buckets
+        technology: AWS S3 (upload / transcode / thumbnail / subtitle / watch)
+        description: >-
+          Five buckets — source uploads, transcoded HLS+MP4, thumbnails, subtitles,
+          and a watch bucket polled for lecture-capture drops.
+        shape: db
+
+  # ---- platform / shared infra --------------------------------------
+  - id: keycloak
+    name: Keycloak (SSO)
+    kind: external
+    context_group: Platform & Identity
+    description: OAuth2/OIDC IdP (via social-auth-app-django) federating MIT Touchstone SAML; supplies user_groups claim.
+  - id: touchstone
+    name: MIT Touchstone
+    kind: external
+    context_group: Platform & Identity
+    description: MIT institutional SAML IdP that Keycloak federates to for authentication.
+
+  # ---- AWS media pipeline -------------------------------------------
+  - id: mediaconvert
+    name: AWS MediaConvert
+    kind: external
+    context_group: AWS Media Pipeline
+    description: >-
+      Managed transcoder (via mitol-django-transcoding). Reads source from S3, writes
+      HLS + MP4 + thumbnails to the transcode/thumbnail buckets, and notifies on completion.
+  - id: cloudwatch-sns
+    name: CloudWatch / SNS
+    kind: external
+    context_group: AWS Media Pipeline
+    description: >-
+      MediaConvert job-state-change events route through CloudWatch/EventBridge to SNS,
+      which POSTs the job result to the OVS transcode-jobs webhook.
+  - id: cloudfront
+    name: CloudFront CDN
+    kind: external
+    context_group: AWS Media Pipeline
+    description: >-
+      Delivers private video (HLS/MP4), thumbnails, and subtitles via RSA-signed URLs;
+      invalidated on retranscode and thumbnail replacement.
+
+  # ---- external integrations ----------------------------------------
+  - id: dropbox
+    name: Dropbox
+    kind: external
+    context_group: Integrations
+    description: Source of uploaded videos; browser Chooser selects shared links that Celery streams server-side to S3.
+  - id: youtube
+    name: YouTube Data API
+    kind: external
+    context_group: Integrations
+    description: Public videos in YOUTUBE-stream collections are uploaded to YouTube with captions; status polled back.
+  - id: mailgun
+    name: Mailgun
+    kind: external
+    context_group: Integrations
+    description: Transactional email — video status notifications to collection admins.
+  - id: open-edx
+    name: Open edX (edxval)
+    kind: external
+    repo: https://github.com/mitodl/edx-platform
+    description: >-
+      MITx Online / xPRO Open edX instances. OVS POSTs/PATCHes video metadata to the
+      edxval API (/api/val/v0/videos/) so transcoded videos play inside courses.
+  - id: sentry
+    name: Sentry
+    kind: external
+    context_group: Integrations
+    description: Error and performance monitoring.
+
+  # ---- SOA peer / downstream consumer -------------------------------
+  - id: mit-learn
+    name: MIT Learn
+    kind: external
+    repo: https://github.com/mitodl/mit-learn
+    description: >-
+      SOA discovery platform. Its Celery ETL pulls OVS public videos + transcripts
+      daily to index them as learning resources (downstream consumer of the OVS public API).
+
+flows:
+  # ----- synchronous: auth & management UI ----------------------------
+  - { id: admin-nginx, source: video-admin, target: nginx, label: Manage collections/videos, sync: true, protocol: HTTPS, data: UI + API requests, trigger: on request }
+  - { id: viewer-nginx, source: viewer, target: nginx, label: Watch video, sync: true, protocol: HTTPS, data: Page + player requests, trigger: on request }
+  - { id: nginx-react, source: nginx, target: react-frontend, label: Serve SPA + static, sync: true, protocol: HTTP, data: HTML/JS/CSS bundles, trigger: on request }
+  - { id: nginx-django, source: nginx, target: django-web, label: Proxy API/app requests, sync: true, protocol: WSGI/HTTP, data: API + form requests, trigger: on request }
+  - { id: react-django, source: react-frontend, target: django-web, label: REST + upload calls, sync: true, protocol: HTTPS/JSON, data: "Collections, videos, subtitles, Dropbox descriptors", trigger: on request }
+  - { id: django-keycloak, source: django-web, target: keycloak, label: OIDC login + group sync, sync: true, protocol: OIDC, data: "Tokens, user_groups claim", trigger: on login }
+  - { id: keycloak-touchstone, source: keycloak, target: touchstone, label: Federated SAML auth, sync: true, protocol: SAML, data: Authentication assertions, trigger: on login }
+  - { id: django-postgres, source: django-web, target: postgres, label: Read/write, sync: true, protocol: SQL, data: "Collections, videos, files, groups, endpoints", trigger: on request }
+  - { id: django-redis, source: django-web, target: redis, label: Cache + enqueue tasks, sync: true, protocol: Redis, data: "Cached responses, task messages", trigger: on request }
+  - { id: django-keycloak-groups, source: django-web, target: keycloak, label: Resolve group members (email), sync: true, protocol: HTTPS, data: KeycloakGroup membership lookups, trigger: on request/notify }
+  - { id: viewer-cloudfront, source: viewer, target: cloudfront, label: Stream HLS/MP4, sync: true, protocol: HTTPS, data: Signed-URL video segments + subtitles, trigger: on playback }
+  - { id: django-cloudfront, source: django-web, target: cloudfront, label: Sign URLs + invalidate, sync: true, protocol: HTTPS, data: "RSA-signed URLs, invalidation batches", trigger: on request/retranscode }
+  - { id: django-sentry, source: django-web, target: sentry, label: Report errors, sync: true, protocol: HTTPS, data: Exceptions + traces, trigger: on error }
+
+  # ----- asynchronous: upload + transcode pipeline --------------------
+  - { id: beat-redis, source: celery, target: redis, label: Schedule periodic tasks, sync: false, protocol: Redis, data: RedBeat schedule entries, trigger: "beat", tags: [async] }
+  - { id: celery-dropbox, source: celery, target: dropbox, label: Stream shared link, sync: false, protocol: HTTPS, data: Source video bytes (stream_to_s3), trigger: on upload, tags: [async] }
+  - { id: celery-s3-upload, source: celery, target: s3-buckets, label: Upload source to S3, sync: false, protocol: S3, data: Original video object, trigger: on upload, tags: [async] }
+  - { id: celery-mediaconvert, source: celery, target: mediaconvert, label: Submit transcode job, sync: false, protocol: HTTPS, data: "MediaConvert job (HLS+MP4+thumb)", trigger: after upload / retranscode, tags: [async] }
+  - { id: mediaconvert-s3, source: mediaconvert, target: s3-buckets, label: Read source / write outputs, sync: false, protocol: S3, data: "Source in; HLS, MP4, thumbnails out", trigger: during transcode, tags: [async] }
+  - { id: mediaconvert-cloudwatch, source: mediaconvert, target: cloudwatch-sns, label: Job state change, sync: false, protocol: EventBridge, data: COMPLETE/ERROR job events, trigger: on job state change, tags: [async, event] }
+  - { id: sns-django, source: cloudwatch-sns, target: django-web, label: POST transcode-jobs webhook, sync: false, protocol: HTTPS, data: Job result detail (validated by AWS account id), trigger: "webhook (SNS)", tags: [async, webhook] }
+  - { id: celery-watch-s3, source: celery, target: s3-buckets, label: Poll watch bucket, sync: false, protocol: S3, data: Lecture-capture files → upload bucket, trigger: "beat: every 15m", tags: [async] }
+
+  # ----- asynchronous: YouTube sync -----------------------------------
+  - { id: celery-youtube-upload, source: celery, target: youtube, label: Upload public videos + captions, sync: false, protocol: HTTPS, data: Video + subtitle files, trigger: "beat: hourly (quota-limited)", tags: [async, fragile] }
+  - { id: celery-youtube-status, source: celery, target: youtube, label: Poll upload status, sync: false, protocol: HTTPS, data: YouTube processing status, trigger: "beat: every ~60s", tags: [async] }
+
+  # ----- asynchronous: edX sync + email -------------------------------
+  - { id: celery-edx, source: celery, target: open-edx, label: Post/patch video metadata, sync: false, protocol: REST (JWT), data: "edxval video records (HLS+MP4 URLs)", trigger: on sync action / update, tags: [async, cross-service] }
+  - { id: celery-mailgun, source: celery, target: mailgun, label: Status notification emails, sync: false, protocol: HTTPS, data: Video status emails to admins, trigger: on status change, tags: [async] }
+
+  # ----- cross-service: MIT Learn ETL (downstream consumer) -----------
+  - { id: mitlearn-django, source: mit-learn, target: django-web, label: Pull public videos + transcripts, sync: false, protocol: REST (paginated JSON), data: "/api/v0/public/videos/ (videos, collections, subtitle URLs)", trigger: "beat: daily ~09:00 (MIT Learn)", tags: [async, etl, cross-service] }
+  - { id: mitlearn-cloudfront, source: mit-learn, target: cloudfront, label: Fetch transcript VTT, sync: false, protocol: HTTPS, data: Caption/subtitle file contents, trigger: during MIT Learn ETL, tags: [async, etl, cross-service] }
+
+scenarios:
+  - id: upload-transcode
+    title: "Video upload & transcode (asynchronous)"
+    description: >-
+      An admin selects a file via the Dropbox Chooser; Django enqueues a Celery
+      chain. The worker streams the shared link into the S3 upload bucket (under a
+      per-video Redis lock), submits an AWS MediaConvert job, and goes idle. When the
+      job finishes, MediaConvert emits a CloudWatch/EventBridge event to SNS, which
+      POSTs the result to the transcode-jobs webhook; Django creates VideoFile rows,
+      marks the video COMPLETE, and enqueues a status email.
+    steps:
+      - { source: video-admin, target: django-web, label: "Submit Dropbox upload", sync: true }
+      - { source: django-web, target: redis, label: "Enqueue stream_to_s3 chain", sync: false }
+      - { source: celery, target: dropbox, label: "Stream shared link", sync: false }
+      - { source: celery, target: s3-buckets, label: "Upload source object", sync: false }
+      - { source: celery, target: mediaconvert, label: "Submit transcode job", sync: false }
+      - { source: mediaconvert, target: s3-buckets, label: "Write HLS/MP4/thumbnails", sync: false }
+      - { source: mediaconvert, target: cloudwatch-sns, label: "Job COMPLETE event", sync: false }
+      - { source: cloudwatch-sns, target: django-web, label: "POST transcode-jobs webhook", sync: false }
+      - { source: celery, target: mailgun, label: "Send status email", sync: false }
+
+  - id: playback
+    title: "Authenticated playback (synchronous)"
+    description: >-
+      A viewer authenticates through Keycloak (federating Touchstone). Django checks
+      KeycloakGroup access, signs CloudFront URLs, and the player streams HLS segments
+      and subtitles directly from CloudFront.
+    steps:
+      - { source: viewer, target: nginx, label: "Request video page", sync: true }
+      - { source: nginx, target: django-web, label: "Forward request", sync: true }
+      - { source: django-web, target: keycloak, label: "OIDC auth + groups", sync: true }
+      - { source: django-web, target: postgres, label: "Check KeycloakGroup access", sync: true }
+      - { source: django-web, target: cloudfront, label: "Return signed URLs", sync: true }
+      - { source: viewer, target: cloudfront, label: "Stream HLS + subtitles", sync: true }
+
+  - id: edx-sync
+    title: "Sync videos to Open edX (asynchronous, cross-service)"
+    description: >-
+      The Sync Videos with edX action enqueues post_collection_videos_to_edx. The
+      worker fetches a short-lived JWT (client_credentials) from each collection's
+      EdxEndpoint and POSTs the transcoded HLS/MP4 CloudFront URLs to the edxval API.
+    steps:
+      - { source: video-admin, target: django-web, label: "Click Sync with edX", sync: true }
+      - { source: django-web, target: redis, label: "Enqueue post_collection_videos_to_edx", sync: false }
+      - { source: celery, target: open-edx, label: "OAuth2 token + POST videos", sync: false }
+
+  - id: mitlearn-ingest
+    title: "MIT Learn ingests OVS videos (asynchronous, cross-service)"
+    description: >-
+      MIT Learn's Celery ETL hits the OVS public videos API daily, pages through
+      public non-YouTube videos and their collections, and fetches subtitle VTT files
+      (via CloudFront) as transcripts to index as learning resources.
+    steps:
+      - { source: mit-learn, target: django-web, label: "GET /api/v0/public/videos/ (paged)", sync: false }
+      - { source: django-web, target: postgres, label: "Read public videos + collections", sync: false }
+      - { source: mit-learn, target: cloudfront, label: "Fetch transcript VTT", sync: false }
+
+etl_sources:
+  - { name: Dropbox uploads, transport: HTTPS shared-link stream, cadence: on upload, data: source video files, source_ref: { path: "cloudsync/tasks.py:233" } }
+  - { name: S3 watch bucket (lecture capture), transport: S3 poll, cadence: every 15m, data: lecture-capture videos, source_ref: { path: "cloudsync/tasks.py:559" } }

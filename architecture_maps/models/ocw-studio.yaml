@@ -1,0 +1,317 @@
+meta:
+  name: OCW Studio
+  primary_system: ocw-studio
+  api_container: django-web
+  description: >-
+    OCW Studio is the static-site CMS for MIT OpenCourseWare. Course authors edit
+    content in a React/TypeScript SPA backed by a Django/DRF API; content is
+    versioned into per-site GitHub repos and uploaded media lands in S3. Publishing
+    is delegated to Concourse CI pipelines that run Hugo (via ocw-hugo-themes /
+    ocw-hugo-projects) to build online and offline (downloadable) static sites,
+    sync them to preview/publish S3 buckets, and purge Fastly. Celery (Redis broker)
+    drives content sync, Google Drive imports, video transcoding (AWS MediaConvert),
+    YouTube upload, and 3Play transcription. On a live publish the pipeline fires an
+    Open Catalog webhook so MIT Learn's ETL ingests the OCW site JSON from S3.
+
+actors:
+  - id: author
+    name: Course Author / Editor
+    description: Authors OCW course content, uploads media, and triggers draft/live publishes via the SPA.
+  - id: admin
+    name: OCW Admin
+    description: Manages starters, YouTube OAuth tokens, collaborators, and mass builds via the admin/API.
+  - id: learner
+    name: OCW Learner
+    description: Browses the published OpenCourseWare static sites (served from S3 behind a CDN).
+
+systems:
+  # ---- primary system ------------------------------------------------
+  - id: ocw-studio
+    name: OCW Studio
+    kind: internal
+    repo: https://github.com/mitodl/ocw-studio
+    description: Static-site CMS for OpenCourseWare (Django/DRF API + React SPA + Celery + Concourse orchestration).
+    containers:
+      - id: spa
+        name: React SPA
+        technology: React + TypeScript (Webpack 5, CKEditor 5)
+        description: >-
+          Single-page authoring UI. Bundles are built by Webpack and served by
+          Django (templates/index.html); in dev a webpack dev server hot-reloads.
+          Talks to the DRF API under /api/ via redux-query.
+        shape: container
+        source: { repo: https://github.com/mitodl/ocw-studio, path: static/js }
+      - id: nginx
+        name: Nginx
+        technology: Nginx 1.29
+        description: Reverse proxy in front of the Django app and the S3/MinIO origin.
+        shape: container
+      - id: django-web
+        name: Django Web API
+        technology: Django + DRF (uWSGI, Python)
+        description: >-
+          REST API for websites/content/starters/collaborators, SAML auth, admin,
+          publish triggers, the Concourse control client, and inbound webhook
+          receivers (pipeline_status, hide_download, GitHub starter sync, 3Play).
+        shape: container
+        source: { repo: https://github.com/mitodl/ocw-studio, path: websites }
+      - id: celery-publish
+        name: Celery — publish queue
+        technology: Celery worker
+        description: Content sync to GitHub, draft/live publish orchestration, pipeline upserts, build-status polling.
+        shape: container
+      - id: celery-batch
+        name: Celery — batch queue
+        technology: Celery worker
+        description: Mass builds, bulk pipeline upserts, broken-link checks, and Wayback Machine submission.
+        shape: container
+      - id: celery-default
+        name: Celery — default queue
+        technology: Celery worker
+        description: Google Drive imports, video transcode dispatch, YouTube upload, 3Play transcript handling.
+        shape: container
+      - id: beat
+        name: Celery Beat
+        technology: Celery Beat
+        description: >-
+          Schedules YouTube status/upload, 3Play transcript refresh, publish
+          build-status polling, and (flagged) Wayback + broken-link checks.
+        shape: container
+      - id: postgres
+        name: PostgreSQL
+        technology: PostgreSQL 18 (RDS in prod)
+        description: System of record for Website, WebsiteContent, WebsiteStarter, ContentSyncState, Video, and publish state.
+        shape: db
+      - id: redis
+        name: Redis
+        technology: Redis 8 (ElastiCache in prod)
+        description: Celery broker/result backend, Django cache, and @single_task distributed locks.
+        shape: queue
+      - id: storage-bucket
+        name: S3 App Storage Bucket
+        technology: AWS S3 (MinIO locally)
+        description: >-
+          Uploaded resources (images/PDFs/videos) and Django default file storage.
+          AWS_STORAGE_BUCKET_NAME — pulled into Hugo builds by the pipelines.
+        shape: container
+
+  # ---- build / publish infrastructure (Concourse-driven) -------------
+  - id: concourse
+    name: Concourse CI
+    kind: external
+    context_group: Build & Publish
+    description: >-
+      CI server (team "ocw") running per-site, theme-assets, mass-build,
+      unpublish, and S3-sync pipelines. Upserted and triggered by Django via the
+      Concourse REST API; pipeline build IDs are stored back on the Website.
+  - id: hugo-build
+    name: Hugo Build (ocw-course-publisher)
+    kind: external
+    context_group: Build & Publish
+    description: >-
+      The ocw-course-publisher container task inside Concourse: runs Hugo over the
+      site content + ocw-hugo-themes/ocw-hugo-projects to produce online and offline
+      (zipped) static sites.
+  - id: web-buckets
+    name: S3 Web Buckets (preview / publish / offline)
+    kind: external
+    context_group: Build & Publish
+    description: >-
+      Destination buckets for built sites: AWS_PREVIEW/PUBLISH_BUCKET_NAME (online
+      draft/live) and AWS_OFFLINE_PREVIEW/PUBLISH_BUCKET_NAME (downloadable zips).
+      Served to learners behind the CDN.
+  - id: artifacts-bucket
+    name: S3 Artifacts Bucket
+    kind: external
+    context_group: Build & Publish
+    description: Versioned bucket holding the ocw-hugo-themes webpack manifest (webpack.json) read by every site build.
+  - id: import-bucket
+    name: S3 Import Bucket
+    kind: external
+    context_group: Build & Publish
+    description: AWS_IMPORT_STORAGE_BUCKET_NAME — source synced into the storage bucket by the periodic s3-bucket-sync pipeline.
+  - id: fastly
+    name: Fastly CDN
+    kind: external
+    context_group: Build & Publish
+    description: CDN in front of the published OCW sites; pipelines purge draft/live caches after each build.
+
+  # ---- source / config repos ----------------------------------------
+  - id: github
+    name: GitHub (content + theme repos)
+    kind: external
+    context_group: Source Control
+    description: >-
+      Per-site content repos (one per Website, with main/preview/release branches)
+      under GIT_ORGANIZATION, plus mitodl/ocw-hugo-themes and ocw-hugo-projects.
+      Pushes GitHub webhooks to re-sync starter configs.
+
+  # ---- media & transcription -----------------------------------------
+  - id: gdrive
+    name: Google Drive
+    kind: external
+    context_group: Media & Transcription
+    description: >-
+      Shared Drive (per-site folders files_final/videos_final) authored by editors;
+      OCW Studio streams files into the S3 storage bucket via a service account.
+  - id: mediaconvert
+    name: AWS Elemental MediaConvert
+    kind: external
+    context_group: Media & Transcription
+    description: Transcodes uploaded videos (via mitol.transcoding); reports completion to OCW Studio by webhook.
+  - id: youtube
+    name: YouTube Data API
+    kind: external
+    context_group: Media & Transcription
+    description: Hosts course videos; OCW Studio streams videos from S3, uploads captions, and polls processing status.
+  - id: threeplay
+    name: 3Play Media
+    kind: external
+    context_group: Media & Transcription
+    description: Captioning/transcription vendor; OCW Studio orders transcripts and receives completion callbacks.
+
+  # ---- platform & comms ----------------------------------------------
+  - id: touchstone
+    name: Touchstone (MIT SAML IdP)
+    kind: external
+    context_group: Platform & Comms
+    description: MIT's SAML identity provider (via python-social-auth) authenticating authors and admins.
+  - id: mailgun
+    name: Mailgun
+    kind: external
+    context_group: Platform & Comms
+    description: Transactional email (via anymail / mitol.mail) for publish, YouTube upload, and transcript notifications.
+  - id: wayback
+    name: Internet Archive (Wayback)
+    kind: external
+    context_group: Platform & Comms
+    description: Archives valid external-resource URLs and reports save-job status (flagged by ENABLE_WAYBACK_TASKS).
+  - id: sentry
+    name: Sentry / PostHog
+    kind: external
+    context_group: Platform & Comms
+    description: Error monitoring (Sentry) and product analytics (PostHog) telemetry.
+
+  # ---- SOA peer ------------------------------------------------------
+  - id: mit-learn
+    name: MIT Learn
+    kind: external
+    repo: https://github.com/mitodl/mit-learn
+    description: >-
+      Discovery platform / Open Catalog. Receives the OCW publish webhook and its
+      learning_resources ETL ingests OCW site JSON from the published S3 bucket.
+
+flows:
+  # ----- synchronous authoring path -----------------------------------
+  - { id: author-spa, source: author, target: spa, label: Author content, sync: true, protocol: HTTPS, data: Page/resource edits, trigger: on request }
+  - { id: spa-nginx, source: spa, target: nginx, label: API calls (/api/), sync: true, protocol: HTTPS/JSON, data: "Website, content, starter CRUD", trigger: on request }
+  - { id: nginx-django, source: nginx, target: django-web, label: Forward request, sync: true, protocol: WSGI/HTTP, data: API request, trigger: on request }
+  - { id: django-touchstone, source: django-web, target: touchstone, label: SAML login, sync: true, protocol: SAML, data: Authentication assertion, trigger: on login, tags: [auth] }
+  - { id: django-postgres, source: django-web, target: postgres, label: Read/write, sync: true, protocol: SQL, data: "Websites, content, sync state, videos", trigger: on request }
+  - { id: django-redis, source: django-web, target: redis, label: Cache + enqueue tasks, sync: true, protocol: Redis, data: "Cached responses, task messages, locks", trigger: on request }
+  - { id: django-storage, source: django-web, target: storage-bucket, label: Store/serve media, sync: true, protocol: S3, data: Uploaded files/resources, trigger: on request }
+  - { id: learner-fastly, source: learner, target: fastly, label: Browse published site, sync: true, protocol: HTTPS, data: Static site pages/assets, trigger: on request }
+  - { id: fastly-webbuckets, source: fastly, target: web-buckets, label: Origin fetch, sync: true, protocol: S3, data: Built static site, trigger: on cache miss }
+
+  # ----- synchronous control path: Django -> Concourse ----------------
+  - { id: django-concourse, source: django-web, target: concourse, label: Upsert / trigger / poll pipelines, sync: true, protocol: HTTPS REST, data: "Pipeline config, build triggers, build status", trigger: on publish / polling }
+
+  # ----- async: content sync to GitHub --------------------------------
+  - { id: beat-redis, source: beat, target: redis, label: Schedule periodic tasks, sync: false, protocol: Redis, data: Beat schedule entries, trigger: "beat", tags: [async] }
+  - { id: celerypublish-github, source: celery-publish, target: github, label: Commit content to site repo, sync: false, protocol: HTTPS/Git, data: "Hugo content -> main, merge to preview/release", trigger: on save / publish, tags: [async] }
+  - { id: celerypublish-concourse, source: celery-publish, target: concourse, label: Trigger publish build, sync: false, protocol: HTTPS REST, data: "upsert + unpause + trigger pipeline", trigger: on publish, tags: [async] }
+  - { id: github-django, source: github, target: django-web, label: Starter-config push webhook, sync: false, protocol: HTTPS, data: Changed ocw-studio.yaml site configs, trigger: "webhook (GIT push)", tags: [async, webhook, cross-service] }
+
+  # ----- async: Concourse build/publish pipeline ----------------------
+  - { id: concourse-hugo, source: concourse, target: hugo-build, label: Run build task, sync: false, protocol: container, data: Hugo online + offline build, trigger: build job, tags: [async, build] }
+  - { id: hugo-github, source: hugo-build, target: github, label: Fetch site + themes, sync: false, protocol: Git, data: "site-content, ocw-hugo-themes, ocw-hugo-projects", trigger: build job, tags: [async, build] }
+  - { id: hugo-artifacts, source: hugo-build, target: artifacts-bucket, label: Pull webpack manifest, sync: false, protocol: S3, data: "ocw-hugo-themes/{branch}/webpack.json", trigger: build job, tags: [async, build] }
+  - { id: hugo-storage, source: hugo-build, target: storage-bucket, label: Pull static resources, sync: false, protocol: S3, data: Images/PDFs/videos for the site, trigger: build job, tags: [async, build] }
+  - { id: hugo-webbuckets, source: hugo-build, target: web-buckets, label: Upload built site, sync: false, protocol: S3, data: "Online site (preview/publish) + offline zips", trigger: build job, tags: [async, build] }
+  - { id: hugo-fastly, source: hugo-build, target: fastly, label: Purge CDN cache, sync: false, protocol: HTTPS, data: Draft/live cache purge, trigger: after upload, tags: [async, build] }
+  - { id: concourse-django, source: concourse, target: django-web, label: Pipeline status webhook, sync: false, protocol: HTTPS, data: "version, status, build_id, build_type", trigger: "webhook (pipeline)", tags: [async, webhook] }
+  - { id: concourse-mitlearn, source: concourse, target: mit-learn, label: Open Catalog publish webhook, sync: false, protocol: HTTPS, data: "site prefix + version (live publish)", trigger: "webhook (after live build)", tags: [async, webhook, cross-service] }
+  - { id: importbucket-storage, source: import-bucket, target: storage-bucket, label: S3 bucket sync, sync: false, protocol: S3, data: Imported content, trigger: "pipeline: every ~24h", tags: [async] }
+
+  # ----- async: Google Drive import & media ---------------------------
+  - { id: celerydefault-gdrive, source: celery-default, target: gdrive, label: Walk + download Drive files, sync: false, protocol: HTTPS (Drive API), data: Media files (files_final/videos_final), trigger: on-demand import, tags: [async] }
+  - { id: celerydefault-storage, source: celery-default, target: storage-bucket, label: Stream uploads to S3, sync: false, protocol: S3, data: Drive media -> storage bucket, trigger: during import, tags: [async] }
+  - { id: celerydefault-mediaconvert, source: celery-default, target: mediaconvert, label: Submit transcode job, sync: false, protocol: HTTPS (AWS SDK), data: Video transcode job, trigger: on video import, tags: [async] }
+  - { id: mediaconvert-django, source: mediaconvert, target: django-web, label: Transcode-complete webhook, sync: false, protocol: HTTPS, data: outputGroupDetails -> VideoFile rows, trigger: "webhook (job done)", tags: [async, webhook] }
+  - { id: celerydefault-youtube, source: celery-default, target: youtube, label: Upload video + captions, sync: false, protocol: HTTPS (YouTube API), data: Video stream from S3 + WebVTT captions, trigger: "beat: YT_UPLOAD_FREQUENCY", tags: [async] }
+  - { id: celerydefault-threeplay, source: celery-default, target: threeplay, label: Order transcripts, sync: false, protocol: HTTPS REST, data: YouTube URL -> transcript order, trigger: after YT processing, tags: [async] }
+  - { id: threeplay-django, source: threeplay, target: django-web, label: Transcript-ready callback, sync: false, protocol: HTTPS, data: Transcript completion notice, trigger: "webhook (callback_key)", tags: [async, webhook] }
+  - { id: celerydefault-threeplay-fetch, source: celery-default, target: threeplay, label: Fetch transcript files, sync: false, protocol: HTTPS, data: PDF + WebVTT transcripts -> S3, trigger: on callback / beat, tags: [async] }
+
+  # ----- async: external-resource checks & comms ----------------------
+  - { id: celerybatch-wayback, source: celery-batch, target: wayback, label: Archive + poll URLs, sync: false, protocol: HTTPS, data: External URL save + status, trigger: "beat (flagged)", tags: [async, fragile, conditional] }
+  - { id: celerydefault-mailgun, source: celery-default, target: mailgun, label: Notification emails, sync: false, protocol: HTTPS, data: "Publish, YouTube, transcript notices", trigger: on event, tags: [async] }
+  - { id: django-sentry, source: django-web, target: sentry, label: Telemetry, sync: true, protocol: HTTPS, data: Errors + analytics events, trigger: runtime, tags: [config] }
+
+scenarios:
+  - id: authoring
+    title: "Author edits and saves content (synchronous + async sync)"
+    description: >-
+      The author edits in the SPA, which calls the DRF API through Nginx. Django
+      persists to Postgres and (for media) S3, then enqueues a content-sync task;
+      the publish-queue worker commits the content to the site's GitHub repo.
+    steps:
+      - { source: author, target: spa, label: "Edit content", sync: true }
+      - { source: spa, target: nginx, label: "PATCH /api/websites/.../content", sync: true }
+      - { source: nginx, target: django-web, label: "Forward to API", sync: true }
+      - { source: django-web, target: postgres, label: "Persist content + sync state", sync: true }
+      - { source: django-web, target: redis, label: "Enqueue sync task", sync: false }
+      - { source: celery-publish, target: github, label: "Commit to site repo", sync: false }
+
+  - id: publish
+    title: "Publish a site via Concourse + Hugo (asynchronous build)"
+    description: >-
+      A publish request enqueues publish_website_backend_{draft,live}. The worker
+      syncs content to GitHub, then upserts/triggers the Concourse site pipeline.
+      Concourse runs Hugo (pulling themes, manifest, and S3 resources), uploads the
+      built site to the preview/publish buckets, purges Fastly, and POSTs status
+      back to the pipeline_status webhook.
+    steps:
+      - { source: author, target: django-web, label: "POST publish (draft/live)", sync: true }
+      - { source: django-web, target: redis, label: "Enqueue publish task", sync: false }
+      - { source: celery-publish, target: github, label: "Sync content + merge branch", sync: false }
+      - { source: celery-publish, target: concourse, label: "Upsert + trigger pipeline", sync: false }
+      - { source: concourse, target: hugo-build, label: "Run Hugo build", sync: false }
+      - { source: hugo-build, target: web-buckets, label: "Upload built site", sync: false }
+      - { source: hugo-build, target: fastly, label: "Purge CDN cache", sync: false }
+      - { source: concourse, target: django-web, label: "Pipeline status webhook", sync: false }
+
+  - id: cross-service-publish
+    title: "Live publish notifies MIT Learn (cross-service, asynchronous)"
+    description: >-
+      On a successful live build the Concourse pipeline POSTs an Open Catalog
+      webhook (site prefix + version + key) to MIT Learn, which then runs its
+      learning_resources ETL to ingest the OCW site JSON from the published S3
+      bucket into its catalog/search index.
+    steps:
+      - { source: concourse, target: hugo-build, label: "Build live site", sync: false }
+      - { source: hugo-build, target: web-buckets, label: "Upload to publish bucket", sync: false }
+      - { source: concourse, target: mit-learn, label: "Open Catalog webhook", sync: false }
+      - { source: mit-learn, target: web-buckets, label: "ETL reads OCW site JSON", sync: false }
+
+  - id: gdrive-video
+    title: "Google Drive import & video pipeline (asynchronous)"
+    description: >-
+      An on-demand import walks the site's Drive folders, streams files into the S3
+      storage bucket, creates WebsiteContent resources, and for videos submits an
+      AWS MediaConvert job. On completion MediaConvert webhooks back; the video is
+      uploaded to YouTube and transcripts are ordered from 3Play.
+    steps:
+      - { source: celery-default, target: gdrive, label: "Walk + download files", sync: false }
+      - { source: celery-default, target: storage-bucket, label: "Stream to S3", sync: false }
+      - { source: celery-default, target: mediaconvert, label: "Submit transcode job", sync: false }
+      - { source: mediaconvert, target: django-web, label: "Transcode-complete webhook", sync: false }
+      - { source: celery-default, target: youtube, label: "Upload video + captions", sync: false }
+      - { source: celery-default, target: threeplay, label: "Order transcripts", sync: false }
+      - { source: threeplay, target: django-web, label: "Transcript-ready callback", sync: false }
+
+etl_sources:
+  - { name: Google Drive (media import), transport: "REST (Drive API v3, service account)", cadence: on-demand per site, data: course media (files_final / videos_final), source_ref: { repo: https://github.com/mitodl/ocw-studio, path: "gdrive_sync/api.py" } }
+  - { name: S3 import bucket sync, transport: S3 (aws s3 sync), cadence: every ~24h (AWS_S3_SYNC_INTERVAL), data: imported content into storage bucket, source_ref: { repo: https://github.com/mitodl/ocw-studio, path: "content_sync/pipelines/definitions/concourse/s3_bucket_sync_pipeline.py" } }
+  - { name: 3Play Media transcripts, transport: REST + callback webhook, cadence: on order + beat refresh (hourly), data: PDF + WebVTT transcripts, source_ref: { repo: https://github.com/mitodl/ocw-studio, path: "videos/threeplay_api.py" } }
+  - { name: ocw-hugo-themes / ocw-hugo-projects, transport: Git (build-time), cadence: per build, data: Hugo themes + per-starter config, source_ref: { repo: https://github.com/mitodl/ocw-studio, path: "websites/constants.py" } }
