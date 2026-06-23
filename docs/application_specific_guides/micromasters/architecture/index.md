@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # MicroMasters — Architecture & Data Flows
 
-_Generated 2026-06-23 21:23 UTC · c4gen dev_
+_Generated 2026-06-23 22:42 UTC · c4gen dev_
 
 MicroMasters is MIT's program platform pairing online edX/MITx Online course runs with a proctored exam to award a verified credential. A Django monolith serves a webpack/React SPA, exposes a public catalog + Wagtail CMS pages API that MIT Learn ingests, syncs enrollments/grades/certificates from Open edX and MITx Online, runs learner-search indexing over OpenSearch, and drives Celery batch jobs (enrollment refresh, grade freezing, exam authorization).
 

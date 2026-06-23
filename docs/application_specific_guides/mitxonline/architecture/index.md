@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # MITx Online — Architecture & Data Flows
 
-_Generated 2026-06-23 21:23 UTC · c4gen dev_
+_Generated 2026-06-23 22:42 UTC · c4gen dev_
 
 MITx Online is MIT's platform for managing online courses, programs, and paid enrollments. A Django/DRF backend exposes versioned REST APIs (v1/v2/v3) for courses, programs, and enrollments, runs ecommerce (basket/order state machine with CyberSource), B2B contract provisioning, flexible (income-based) pricing, and certificate generation. Wagtail powers the marketing CMS. Course delivery is handed off to Open edX (enrollments and users pushed out; grades and certificates pulled/received via webhooks). React frontends (a public SPA and a Refine staff dashboard) are served as webpack bundles by Django. Celery workers handle edX sync, certificate generation, HubSpot CRM sync, Keycloak org reconciliation, and Google Sheets refund/deferral processing. As a SOA peer, MITx Online's catalog is pulled by MIT Learn every 6h and its HTTP surface is proxied by the shared APISIX gateway under /mitxonline/*.
 

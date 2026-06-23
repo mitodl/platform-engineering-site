@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # learn-ai — Architecture & Data Flows
 
-_Generated 2026-06-23 21:23 UTC · c4gen dev_
+_Generated 2026-06-23 22:42 UTC · c4gen dev_
 
 learn-ai is MIT Open Learning's conversational/agentic discovery sidecar: a Django + DRF service whose request path runs entirely on Channels/ASGI (Granian) so it can stream LLM responses over Server-Sent Events. Each chat turn drives a LangGraph ReAct agent that calls tools against the MIT Learn API (vector resource search, syllabus/content-file search, video transcript search, tutor problem sets) and calls an LLM through a LiteLLM proxy. APISIX fronts the service, enforcing Keycloak OIDC for learner-facing agents and static key-auth for Canvas integrations. Chat history (LangGraph checkpoints) and sessions persist in Postgres; Redis backs the Channels layer, Django cache, and the Celery broker.
 

@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # ODL Video Service — Architecture & Data Flows
 
-_Generated 2026-06-23 21:23 UTC · c4gen dev_
+_Generated 2026-06-23 22:42 UTC · c4gen dev_
 
 ODL Video Service (OVS) is MIT Open Learning's video hosting and lecture-capture platform. A Django/DRF backend with a React 15 frontend ingests source video (Dropbox Chooser uploads or an S3 watch-bucket drop), transcodes it to HLS + MP4 via AWS MediaConvert, and delivers private content through CloudFront signed URLs. Keycloak (federating MIT Touchstone SAML) provides OIDC auth; access control is enforced through KeycloakGroup membership (formerly MoiraLists). Celery + RedBeat run async upload/transcode/YouTube/janitor tasks. Public videos and their transcripts are exposed via a REST API that MIT Learn's ETL ingests daily, and video metadata is pushed to Open edX (edxval) for course playback.
 

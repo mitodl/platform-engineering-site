@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Containers — OL Data Platform
 
-_Generated 2026-06-23 22:15 UTC · c4gen dev_
+_Generated 2026-06-23 22:42 UTC · c4gen dev_
 
 The runtime/deployable units inside **OL Data Platform** and how data moves
 between them and adjacent systems.

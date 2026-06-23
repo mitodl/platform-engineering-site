@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # System Context — ODL Video Service
 
-_Generated 2026-06-23 21:23 UTC · c4gen dev_
+_Generated 2026-06-23 22:42 UTC · c4gen dev_
 
 The widest view: **ODL Video Service** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw

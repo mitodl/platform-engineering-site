@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # OCW Studio — Architecture & Data Flows
 
-_Generated 2026-06-23 21:23 UTC · c4gen dev_
+_Generated 2026-06-23 22:42 UTC · c4gen dev_
 
 OCW Studio is the static-site CMS for MIT OpenCourseWare. Course authors edit content in a React/TypeScript SPA backed by a Django/DRF API; content is versioned into per-site GitHub repos and uploaded media lands in S3. Publishing is delegated to Concourse CI pipelines that run Hugo (via ocw-hugo-themes / ocw-hugo-projects) to build online and offline (downloadable) static sites, sync them to preview/publish S3 buckets, and purge Fastly. Celery (Redis broker) drives content sync, Google Drive imports, video transcoding (AWS MediaConvert), YouTube upload, and 3Play transcription. On a live publish the pipeline fires an Open Catalog webhook so MIT Learn's ETL ingests the OCW site JSON from S3.
 

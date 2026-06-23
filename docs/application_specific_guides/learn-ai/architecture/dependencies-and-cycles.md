@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Dependencies & Cycles — learn-ai
 
-_Generated 2026-06-23 21:23 UTC · c4gen dev_
+_Generated 2026-06-23 22:42 UTC · c4gen dev_
 
 Coupling between learn-ai and the rest of the SOA. The **matrix** and
 **cycles** below come from the deterministic witan-code graph extraction; the

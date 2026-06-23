@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Containers — MicroMasters
 
-_Generated 2026-06-23 21:23 UTC · c4gen dev_
+_Generated 2026-06-23 22:42 UTC · c4gen dev_
 
 The runtime/deployable units inside **MicroMasters** and how data moves
 between them and adjacent systems.
