@@ -55,9 +55,13 @@ def _kroki_svg(puml: str) -> str:
             "`docker compose -f architecture_maps/docker-compose.yml up -d kroki` "
             "or set C4GEN_KROKI_URL."
         ) from exc
-    # Strip the XML prolog/doctype so the <svg> inlines cleanly into HTML.
+    # Strip the XML prolog/doctype so the <svg> inlines cleanly into HTML. A 200
+    # with no <svg> means Kroki returned something unexpected — fail loudly rather
+    # than write a bogus .svg file.
     i = svg.find("<svg")
-    return svg[i:] if i != -1 else svg
+    if i == -1:
+        raise RuntimeError(f"Kroki returned a non-SVG response from {url}: {svg[:200]!r}")
+    return svg[i:]
 
 
 def _version() -> str:

@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Data Flows — MIT Learn
 
-_Generated 2026-06-23 19:58 UTC · c4gen dev_
+_Generated 2026-06-23 20:11 UTC · c4gen dev_
 
 Each scenario below replays one interaction as a C4 **Dynamic** diagram.
 Amber steps are asynchronous (queued / scheduled / event-driven).

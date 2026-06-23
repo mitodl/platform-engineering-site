@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Containers — MIT Learn
 
-_Generated 2026-06-23 19:58 UTC · c4gen dev_
+_Generated 2026-06-23 20:11 UTC · c4gen dev_
 
 The runtime/deployable units inside **MIT Learn** and how data moves
 between them and adjacent systems.

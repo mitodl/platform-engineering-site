@@ -6,7 +6,7 @@ placeholder div that docs/javascripts/c4-zoom.js fills with the pre-rendered SVG
 
 from __future__ import annotations
 
-from .render import ASYNC_COLOR, BANNER, SYNC_COLOR
+from .render import ASYNC_COLOR, BANNER, SYNC_COLOR, _owner_id
 from .schema import Flow, Model
 
 _LEGEND = f"""
@@ -165,9 +165,14 @@ def page_dependencies(model: Model, cycles: list[list[str]], candidates: list[Fl
     # curated cross-service edges actually drawn in the diagrams
     cross = [f for f in model.flows if "cross-service" in f.tags]
     # dependency matrix at system level (curated, verified)
+    # Resolve container ids (e.g. celery-edx) up to their owning system (mit-learn)
+    # so the matrix is system-to-system.
     deps: dict[str, set[str]] = {}
     for f in cross:
-        deps.setdefault(f.source, set()).add(f.target)
+        src = _owner_id(model, f.source)
+        tgt = _owner_id(model, f.target)
+        if src != tgt:
+            deps.setdefault(src, set()).add(tgt)
     matrix = ["| Depends on → | …on these systems |", "| --- | --- |"]
     for src in sorted(deps):
         matrix.append(f"| **{src}** | {', '.join(sorted(deps[src]))} |")

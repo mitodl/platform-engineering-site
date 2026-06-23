@@ -119,7 +119,8 @@
         enhance(box);
       })
       .catch(function (e) {
-        box.dataset.c4done = "";
+        // Leave dataset.c4done set so the MutationObserver (which fires on this
+        // DOM change) does not re-trigger loadOne -> infinite request loop.
         box.textContent = "(diagram failed to load)";
         console.error("c4: failed to load diagram", e);
       });

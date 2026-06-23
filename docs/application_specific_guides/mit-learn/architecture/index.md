@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # MIT Learn — Architecture & Data Flows
 
-_Generated 2026-06-23 19:58 UTC · c4gen dev_
+_Generated 2026-06-23 20:11 UTC · c4gen dev_
 
 MIT Learn is the central discovery surface for MIT's open and paid learning offerings. A Next.js frontend serves learners; a Django/DRF backend exposes the API, runs full-text and vector search, and ingests course/resource metadata from across the MIT SOA and the open web via Celery ETL pipelines. A separate learn-ai service powers conversational/agentic discovery.
 

@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Dependencies & Cycles — MIT Learn
 
-_Generated 2026-06-23 19:58 UTC · c4gen dev_
+_Generated 2026-06-23 20:11 UTC · c4gen dev_
 
 Coupling between MIT Learn and the rest of the SOA. The **matrix** and
 **cycles** below come from the deterministic witan-code graph extraction; the
@@ -15,7 +15,7 @@ Coupling between MIT Learn and the rest of the SOA. The **matrix** and
 
 | Depends on → | …on these systems |
 | --- | --- |
-| **celery-edx** | micromasters, mitxonline |
+| **mit-learn** | micromasters, mitxonline |
 
 ## Cycles
 
