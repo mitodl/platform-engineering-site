@@ -88,16 +88,17 @@
     if (!src) return;
     box.dataset.c4done = "1";
 
+    // c4done stays "1" (set above) in every branch below, so a box is never
+    // reprocessed — these inputs are static and won't become valid on a retry.
     var url;
     try {
       url = new URL(src, location.href);
     } catch (e) {
-      box.dataset.c4done = "";
+      console.error("c4: bad diagram URL", src);
       return;
     }
     // Same-origin only: these are pre-rendered local SVGs; never fetch remote.
     if (url.origin !== location.origin) {
-      box.dataset.c4done = "";
       console.error("c4: refusing cross-origin diagram", url.href);
       return;
     }
@@ -131,10 +132,17 @@
     document.querySelectorAll(".c4-box[data-c4-svg]").forEach(loadOne);
   }
 
+  var observer = null;
+
   function init() {
     if (!onArchPage()) return;
     scan();
-    new MutationObserver(scan).observe(document.body, { childList: true, subtree: true });
+    // Create the observer once and reuse it across navigations (it watches
+    // document.body, which persists). scan() re-gates on onArchPage() per call.
+    if (!observer) {
+      observer = new MutationObserver(scan);
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
   }
 
   init();
