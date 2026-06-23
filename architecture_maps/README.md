@@ -24,8 +24,17 @@ Two halves, each playing to its strength:
 
 | Half | What it does | Why |
 | --- | --- | --- |
-| **Deterministic** (`extract.py`) | Reads the **witan-code** cross-repo graph and emits the cross-service edge *candidates* + cycle report. | Edges come from real code contracts, refresh on demand, and can run in CI. No drift. |
-| **Curated** (`models/<system>.yaml`) | Humans/LLM author node prose, the verified flows actually drawn, async/ETL flows, and scenario narratives. | The graph can't see async flows (Celery/ETL/events) and produces *phantom* edges from shared endpoint paths or load-testing clients. Curation confirms and enriches. |
+| **Deterministic** (`extract.py` + `openmetadata.py`) | Two lineage sources emit cross-service edge *candidates* + a cycle report: the **witan-code** cross-repo code graph (runtime HTTP contracts) and the **OpenMetadata** catalog (warehouse/dbt data lineage). | Edges come from real code contracts and real data lineage, refresh on demand, and can run in CI. No drift. |
+| **Curated** (`models/<system>.yaml`) | Humans/LLM author node prose, the verified flows actually drawn, async/ETL flows, and scenario narratives. | Neither source sees everything (the code graph misses ETL/events; lineage misses sync request paths) and both produce *phantom* edges (shared endpoint paths, load-testing clients, name-prefix mis-attribution). Curation confirms and enriches. |
+
+The two deterministic sources are complementary: the **code graph** captures
+synchronous service-to-service HTTP calls; **OpenMetadata lineage** captures the
+asynchronous data-platform flows (each service's tables landing in the lake and
+being joined across systems in dbt). Pick one or merge both with
+`--source {graph,openmetadata,both}` on `extract`/`build`. Candidates carry
+`provenance.derived_from` (`graph` | `openmetadata`) so a reader can tell — and
+trace — where each came from; graph edges link the consumer source file, lineage
+edges link the catalog asset.
 
 The renderer merges them — **curated edges are drawn; raw graph edges appear only
 as labelled candidates** on the Dependencies page, with a caveat to confirm each.
@@ -37,6 +46,7 @@ architecture_maps/
   c4gen/
     schema.py    # the structured model (pydantic): systems, containers, flows, scenarios, etl_sources
     extract.py   # deterministic: witan-code bridge -> cross-service candidates + cycles
+    openmetadata.py # deterministic: OpenMetadata catalog lineage -> cross-service candidates
     puml.py      # model -> C4-PlantUML (Context / Container / Dynamic)
     render.py    # shared rendering helpers (alias/quote/tagline/owner resolution)
     pages.py     # markdown page assembly (legend, tables, provenance, diagram placeholders)
@@ -69,11 +79,33 @@ uv run --directory architecture_maps --group c4gen python -m c4gen extract mit-l
 uv run --directory architecture_maps --group c4gen python -m c4gen build mit-learn    # extract + render
 ```
 
-`extract` (and therefore `build`) requires the **witan-code** tool installed
-(`uv tool install witan-code`) with an indexed graph — it reads the shared bridge
-store the [`witan-code deps`](https://github.com/mitodl/agent-kit) command uses.
-If the repos aren't indexed, run `witan-code index <repo>` first. A non-authoring
+`extract` (and therefore `build`) defaults to the **witan-code** graph source,
+which requires the witan-code tool installed (`uv tool install witan-code`) with
+an indexed graph — it reads the shared bridge store the
+[`witan-code deps`](https://github.com/mitodl/agent-kit) command uses. If the
+repos aren't indexed, run `witan-code index <repo>` first. A non-authoring
 contributor who only changed a model usually just needs `render` + Kroki.
+
+To pull the **OpenMetadata** data-lineage source instead of (or alongside) the
+graph, set `C4GEN_OPENMETADATA_URL` to the catalog base URL (e.g.
+`https://data.ol.mit.edu`) and `C4GEN_OPENMETADATA_TOKEN` to a JWT bot token,
+then pass `--source openmetadata` or `--source both`:
+
+```bash
+export C4GEN_OPENMETADATA_URL=https://data.ol.mit.edu C4GEN_OPENMETADATA_TOKEN=...
+uv run --directory architecture_maps --group c4gen python -m c4gen extract mit-learn --source both
+```
+
+OpenMetadata attributes each warehouse table to a source system via its
+`<layer>__<source>__…` name prefix and emits a candidate edge wherever a single
+downstream table is fed by more than one source system (a cross-service join), or
+a cross-cutting `combined` model feeds the synthetic `ol-data-platform` node.
+When the catalog is unset or unreachable the source degrades to an empty slice,
+so `--source both` never breaks a graph-only run.
+
+> Note: `extract` writes the *combined* slice to `models/<system>.graph.yaml`.
+> Running `--source openmetadata` alone overwrites the graph slice (and vice
+> versa); use `--source both` to refresh both at once.
 
 The generated pages carry a "do not hand-edit" banner; the only files you edit by
 hand are `models/<system>.yaml` and the curated

@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Dependencies & Cycles — MIT Learn
 
-_Generated 2026-06-23 20:11 UTC · c4gen dev_
+_Generated 2026-06-23 21:01 UTC · c4gen dev_
 
 Coupling between MIT Learn and the rest of the SOA. The **matrix** and
 **cycles** below come from the deterministic witan-code graph extraction; the
@@ -36,11 +36,11 @@ actual client/route code before treating it as a real runtime dependency.
 
 ## Candidate edges (graph-derived, unverified)
 
-| Consumer → Provider | Contract sample | Source of truth |
-| --- | --- | --- |
-| micromasters → mit-learn (calls 1 endpoint) | `/api/v0/profiles/${userUsername}/` | [static/js/lib/api.js](https://github.com/mitodl/micromasters/blob/main/static/js/lib/api.js) |
-| mit-learn → mitxonline (calls 9 endpoints) | `/api/v0/baskets/, /api/v0/users/${username}/, /api/v0/users/me/` | [load_testing/backend/client/v0/api.ts](https://github.com/mitodl/mit-learn/blob/main/load_testing/backend/client/v0/api.ts) |
-| mitxonline → mit-learn (calls 1 endpoint) | `/api/v0/users/me/` | [frontend/public/src/lib/queries/users.js](https://github.com/mitodl/mitxonline/blob/main/frontend/public/src/lib/queries/users.js) |
+| Consumer → Provider | Source | Contract / lineage | Source of truth |
+| --- | --- | --- | --- |
+| micromasters → mit-learn (calls 1 endpoint) | graph | `/api/v0/profiles/${userUsername}/` | [static/js/lib/api.js](https://github.com/mitodl/micromasters/blob/main/static/js/lib/api.js) |
+| mit-learn → mitxonline (calls 9 endpoints) | graph | `/api/v0/baskets/, /api/v0/users/${username}/, /api/v0/users/me/` | [load_testing/backend/client/v0/api.ts](https://github.com/mitodl/mit-learn/blob/main/load_testing/backend/client/v0/api.ts) |
+| mitxonline → mit-learn (calls 1 endpoint) | graph | `/api/v0/users/me/` | [frontend/public/src/lib/queries/users.js](https://github.com/mitodl/mitxonline/blob/main/frontend/public/src/lib/queries/users.js) |
 
 ## Fragile / noteworthy linkages
 

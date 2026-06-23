@@ -239,14 +239,21 @@ actual client/route code before treating it as a real runtime dependency.
 def _candidate_rows(candidates: list[Flow]) -> str:
     if not candidates:
         return "_None extracted._"
-    rows = ["| Consumer → Provider | Contract sample | Source of truth |",
-            "| --- | --- | --- |"]
+    rows = ["| Consumer → Provider | Source | Contract / lineage | Source of truth |",
+            "| --- | --- | --- | --- |"]
     for f in sorted(candidates, key=lambda x: (x.source, x.target)):
         url = f.provenance.url()
-        loc = f"[{f.provenance.path}]({url})" if url and f.provenance.path else (
-            f"`{f.provenance.path}`" if f.provenance.path else "—"
-        )
+        if f.provenance.asset_fqn:
+            label = f.provenance.asset_fqn.split(".")[-1]
+            loc = f"[{label}]({url})" if url else f"`{label}`"
+        elif url and f.provenance.path:
+            loc = f"[{f.provenance.path}]({url})"
+        elif f.provenance.path:
+            loc = f"`{f.provenance.path}`"
+        else:
+            loc = "—"
         rows.append(
-            f"| {f.source} → {f.target} ({f.label}) | `{f.provenance.contract_key or ''}` | {loc} |"
+            f"| {f.source} → {f.target} ({f.label}) | {f.provenance.derived_from} "
+            f"| `{f.provenance.contract_key or ''}` | {loc} |"
         )
     return "\n".join(rows)

@@ -2,14 +2,16 @@
 
 Hybrid pipeline:
 
-    extract   witan-code graph  -> models/<name>.graph.yaml (+ .cycles.json)
-    render    curated + graph    -> docs/.../architecture/*.md + _diagrams/*.svg
+    extract   witan-code graph + OpenMetadata lineage -> models/<name>.graph.yaml (+ .cycles.json)
+    render    curated + extracted slice               -> docs/.../architecture/*.md + _diagrams/*.svg
     build     = extract then render
 
 The curated model (``models/<name>.yaml``) holds nodes, async/code-derived
 flows, and scenario narratives. The extractor refreshes the deterministic
-cross-service slice. The renderer merges them (curated wins), renders each
-diagram to SVG via Kroki (see ``puml.py``), and writes the pages.
+cross-service slice from two lineage sources — the witan-code code graph
+(``extract.py``) and the OpenMetadata catalog (``openmetadata.py``) — pick which
+with ``--source {graph,openmetadata,both}``. The renderer merges them (curated
+wins), renders each diagram to SVG via Kroki (see ``puml.py``), and writes the pages.
 """
 
 from __future__ import annotations
@@ -17,6 +19,7 @@ from __future__ import annotations
 import datetime
 import json
 import os
+from enum import StrEnum
 from importlib import metadata
 from pathlib import Path
 from urllib import error, request
@@ -25,9 +28,18 @@ import cyclopts
 import yaml
 
 from . import extract as extract_mod
+from . import openmetadata as omd_mod
 from . import pages as pages_mod
 from . import puml as puml_mod
 from .schema import Flow, Model
+
+
+class Source(StrEnum):
+    """Which deterministic lineage source(s) ``extract`` queries."""
+
+    GRAPH = "graph"  # witan-code cross-repo code graph (HTTP contracts)
+    OPENMETADATA = "openmetadata"  # OpenMetadata catalog asset lineage (warehouse)
+    BOTH = "both"
 
 app = cyclopts.App(name="c4gen", help="Generate C4 data-flow docs (C4-PlantUML via Kroki).")
 
@@ -91,21 +103,66 @@ def _merge_systems(curated: dict, slice_: dict) -> dict:
     return merged
 
 
+def _merge_slices(*slices: dict) -> dict:
+    """Union systems (by id) and flows (by id) across lineage-source slices.
+
+    Each source emits the same intermediate shape; this concatenates them so the
+    graph slice (witan-code) and the OpenMetadata lineage slice land in one
+    ``.graph.yaml`` and feed cycle detection / the candidate table together.
+    """
+    systems: dict[str, dict] = {}
+    flows: dict[str, dict] = {}
+    for s in slices:
+        for sysd in s.get("systems", []):
+            systems.setdefault(sysd["id"], sysd)
+        for flow in s.get("flows", []):
+            flows.setdefault(flow["id"], flow)
+    return {"systems": list(systems.values()), "flows": list(flows.values())}
+
+
 @app.command
-def extract(name: str) -> None:
-    """Refresh the deterministic cross-service slice for model ``name`` from the graph."""
-    rows = extract_mod.load_bindings()
-    contracts = extract_mod.group_contracts(rows)
-    edges = extract_mod.cross_repo_edges(contracts, kinds=("endpoint",))
-    cycles = extract_mod.find_cycles(edges)
-    slice_ = extract_mod.build_flow_slice(edges)
+def extract(name: str, source: Source = Source.GRAPH) -> None:
+    """Refresh the deterministic cross-service slice for model ``name``.
+
+    ``--source`` selects the lineage source: ``graph`` (witan-code code graph,
+    the default), ``openmetadata`` (catalog asset lineage), or ``both`` (union).
+    The OpenMetadata source degrades to an empty slice when its server is unset
+    or unreachable, so ``both`` never breaks a graph-only run.
+    """
+    graph_slice: dict = {"systems": [], "flows": []}
+    omd_slice: dict = {"systems": [], "flows": []}
+
+    if source in (Source.GRAPH, Source.BOTH):
+        rows = extract_mod.load_bindings()
+        contracts = extract_mod.group_contracts(rows)
+        edges = extract_mod.cross_repo_edges(contracts, kinds=("endpoint",))
+        graph_slice = extract_mod.build_flow_slice(edges)
+    if source in (Source.OPENMETADATA, Source.BOTH):
+        omd_slice = omd_mod.extract_slice()
+
+    slice_ = _merge_slices(graph_slice, omd_slice)
+    # Cycles are detected over the combined edge set so cross-source cycles surface.
+    cycles = _cycles_from_slice(slice_)
 
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     (MODELS_DIR / f"{name}.graph.yaml").write_text(
         yaml.safe_dump(slice_, sort_keys=False, width=100)
     )
     (MODELS_DIR / f"{name}.cycles.json").write_text(json.dumps(cycles, indent=2))
-    print(f"extracted {len(slice_['flows'])} cross-service flows, {len(cycles)} cycles")
+    print(
+        f"extracted {len(slice_['flows'])} cross-service flows "
+        f"({len(graph_slice['flows'])} graph, {len(omd_slice['flows'])} openmetadata), "
+        f"{len(cycles)} cycles"
+    )
+
+
+def _cycles_from_slice(slice_: dict) -> list[list[str]]:
+    """Run cycle detection over a merged slice's flows (system-id level)."""
+    edges = [
+        extract_mod.CrossEdge(src=f["source"], dst=f["target"], kind=f.get("protocol", ""))
+        for f in slice_.get("flows", [])
+    ]
+    return extract_mod.find_cycles(edges)
 
 
 @app.command
@@ -163,9 +220,9 @@ def render(name: str) -> None:
 
 
 @app.command
-def build(name: str) -> None:
-    """Extract then render in one step."""
-    extract(name)
+def build(name: str, source: Source = Source.GRAPH) -> None:
+    """Extract (``--source {graph,openmetadata,both}``) then render in one step."""
+    extract(name, source=source)
     render(name)
 
 

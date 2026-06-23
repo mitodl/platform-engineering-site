@@ -16,9 +16,9 @@ Design notes
 * ``Flow.sync`` is the synchronous/asynchronous distinction the brief asks for.
   C4/Mermaid has no native async marker, so the renderer encodes it in the
   relationship's technology slot and the legend documents the convention.
-* ``provenance`` records *how* an edge was learned (graph | code | infra) and,
-  when from the graph, the contract that backs it — so a reader can trust and
-  trace every line.
+* ``provenance`` records *how* an edge was learned (graph | code | infra |
+  openmetadata) and, when from a deterministic source, the contract/asset that
+  backs it — so a reader can trust and trace every line.
 """
 
 from __future__ import annotations
@@ -42,19 +42,39 @@ class NodeKind(StrEnum):
 
 
 class Provenance(Base):
-    """How a flow/node was discovered — drives trust and the "source of truth" link."""
+    """How a flow/node was discovered — drives trust and the "source of truth" link.
 
-    derived_from: Literal["graph", "code", "infra", "manual"] = "manual"
+    ``derived_from`` reserves the vocabulary of deterministic sources:
+
+    * ``graph`` — the witan-code cross-repo code graph (see ``extract.py``);
+      ``contract_*`` and the ``repo``/``path``/``line`` ref back the edge.
+    * ``openmetadata`` — table/asset lineage from the OpenMetadata catalog (see
+      ``openmetadata.py``). The asset that backs the edge is carried as the
+      ``asset_fqn`` (and ``asset_url`` deep-links into the catalog UI);
+      ``contract_kind`` is ``lineage`` and ``contract_key`` names the lineage
+      mechanism reported by OpenMetadata (e.g. ``DbtLineage``).
+    * ``infra`` / ``code`` / ``manual`` — curated or infra-derived.
+    """
+
+    derived_from: Literal["graph", "openmetadata", "code", "infra", "manual"] = "manual"
     # When derived_from == "graph": the cross-repo contract backing this edge.
-    contract_kind: Literal["endpoint", "env_var", "service", "package"] | None = None
+    # When derived_from == "openmetadata": contract_kind == "lineage" and
+    # contract_key names the lineage source (DbtLineage / ViewLineage / ...).
+    contract_kind: Literal["endpoint", "env_var", "service", "package", "lineage"] | None = None
     contract_key: str | None = None
     # A clickable source-of-truth location (repo-relative path + optional line).
     repo: str | None = None
     path: str | None = None
     line: int | None = None
+    # OpenMetadata provenance: the catalog asset the edge was learned from and a
+    # deep link into the catalog UI, so a reader can trace the lineage edge.
+    asset_fqn: str | None = None
+    asset_url: str | None = None
 
     def url(self) -> str | None:
-        """GitHub blob URL for the source ref, when enough is known."""
+        """A clickable source-of-truth URL: GitHub blob, or the catalog asset."""
+        if self.asset_url:
+            return self.asset_url
         if not (self.repo and self.path):
             return None
         base = self.repo.rstrip("/")
