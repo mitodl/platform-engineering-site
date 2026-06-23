@@ -4,7 +4,15 @@ and provenance tables. Keeps ``render.py`` focused on pure Mermaid output.
 
 from __future__ import annotations
 
-from .render import ASYNC_COLOR, SYNC_COLOR, BANNER, render_container, render_context, render_dynamic
+from .render import (
+    ASYNC_COLOR,
+    BANNER,
+    MERMAID_INIT,
+    SYNC_COLOR,
+    render_container,
+    render_context,
+    render_dynamic,
+)
 from .schema import Flow, Model
 
 _LEGEND = f"""
@@ -26,7 +34,7 @@ _LEGEND = f"""
 
 
 def _mermaid(block: str) -> str:
-    return f"```mermaid\n{block}\n```\n"
+    return f"```mermaid\n{MERMAID_INIT}\n{block}\n```\n"
 
 
 def _stamp(model: Model) -> str:

@@ -2,7 +2,7 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # Data Flows — MIT Learn
 
-_Generated 2026-06-22 21:40 UTC · c4gen dev_
+_Generated 2026-06-23 13:51 UTC · c4gen dev_
 
 Each scenario below replays one interaction as a C4 **Dynamic** diagram.
 Amber steps are asynchronous (queued / scheduled / event-driven).
@@ -27,6 +27,7 @@ Amber steps are asynchronous (queued / scheduled / event-driven).
 The synchronous request path. The learner hits Fastly, which routes API calls through the APISIX gateway (authenticated by Keycloak) to Django, which queries OpenSearch and Postgres and returns results. Next.js also performs this server-side during SSR/RSC prefetch.
 
 ```mermaid
+%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Learner search & browse (synchronous)
   Person(learner, "Learner", "Browses, searches, saves, and asks AI about courses and learning resources.")
@@ -51,6 +52,7 @@ C4Dynamic
 Celery Beat schedules ETL. The edx_content worker pulls catalogs from SOA peers and external APIs, fetches content archives from S3, extracts text via Tika, and upserts to Postgres; the default worker then indexes OpenSearch.
 
 ```mermaid
+%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Learning-resource ETL ingestion (asynchronous)
   Container(beat, "Celery Beat (RedBeat)", "RedBeat (Redis-backed)", "Schedules periodic ETL, indexing, and embedding tasks. Runs embedded in the worker (-B)…")
@@ -80,6 +82,7 @@ C4Dynamic
 Roughly every 30 minutes the embeddings worker reads new/changed resources and upserts vectors into Qdrant. The default encoder is **local** (Gensim/sklearn); the dashed LiteLLM step only runs when QDRANT_ENCODER=litellm.
 
 ```mermaid
+%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Semantic embedding pipeline (asynchronous)
   Container(beat, "Celery Beat (RedBeat)", "RedBeat (Redis-backed)", "Schedules periodic ETL, indexing, and embedding tasks. Runs embedded in the worker (-B)…")
@@ -102,6 +105,7 @@ C4Dynamic
 The frontend calls the learn-ai service through APISIX. learn-ai pulls resource context from MIT Learn's vector-search API and calls an LLM via the LiteLLM proxy, streaming the answer back.
 
 ```mermaid
+%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title AI-assisted discovery via learn-ai (synchronous, streamed)
   Person(learner, "Learner", "Browses, searches, saves, and asks AI about courses and learning resources.")
@@ -124,6 +128,7 @@ C4Dynamic
 The OL data platform integrates two ways: Dagster pipelines POST HMAC-signed content webhooks that enqueue ingestion, and Hightouch reverse-ETL writes ProgramCertificate rows directly into Postgres over the public DB endpoint.
 
 ```mermaid
+%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Inbound data-platform integration (asynchronous)
   System_Ext(data_platform, "OL Data Platform (Dagster / Hightouch)", "Dagster pipelines POST content webhooks; Hightouch reverse-ETL writes ProgramCertificate…")

@@ -35,6 +35,22 @@ BANNER = (
     "`python -m c4gen build`. -->\n"
 )
 
+# Per-diagram Mermaid config prepended to every C4 block. `useMaxWidth: false`
+# makes Mermaid render at natural size (instead of shrinking to fit the column,
+# which makes the relationship labels tiny); the font/margin bumps make the
+# diagrams larger and less cramped. Pan/zoom is layered on top by
+# docs/javascripts/c4-zoom.js so the larger diagrams stay navigable.
+MERMAID_INIT = (
+    '%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, '
+    '"c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, '
+    '"width": 240, "height": 70, "personFontSize": 16, '
+    '"external_personFontSize": 16, "systemFontSize": 16, '
+    '"system_extFontSize": 16, "containerFontSize": 15, '
+    '"container_extFontSize": 15, "containerDbFontSize": 15, '
+    '"containerQueueFontSize": 15, "boundaryFontSize": 16, '
+    '"messageFontSize": 14}}}%%'
+)
+
 
 def alias(node_id: str) -> str:
     return node_id.replace("-", "_").replace(".", "_")

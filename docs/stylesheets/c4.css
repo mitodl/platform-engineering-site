@@ -1,0 +1,42 @@
+/* Roomy, zoomable viewport for the generated C4 architecture diagrams.
+   Applied by docs/javascripts/c4-zoom.js, which adds the `c4-zoom` class to
+   each Mermaid container on /architecture/ pages. */
+.c4-zoom {
+  position: relative;
+  height: 78vh;
+  min-height: 24rem;
+  margin: 1rem 0;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.2rem;
+  background: var(--md-default-bg-color);
+  overflow: hidden;
+  resize: vertical; /* drag the bottom edge to make it taller */
+}
+
+.c4-zoom svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important; /* override Material's fit-to-column clamp */
+  cursor: grab;
+}
+
+.c4-zoom svg:active {
+  cursor: grabbing;
+}
+
+/* Make svg-pan-zoom's on-canvas zoom controls a bit larger / easier to hit. */
+.c4-zoom .svg-pan-zoom-control {
+  transform: scale(1.4);
+  transform-origin: top right;
+}
+
+.c4-zoom-hint {
+  position: absolute;
+  top: 0.35rem;
+  left: 0.5rem;
+  z-index: 2;
+  pointer-events: none;
+  font-size: 0.62rem;
+  opacity: 0.6;
+  color: var(--md-default-fg-color--light);
+}
