@@ -98,6 +98,10 @@ class System(Base):
     description: str = ""
     repo: str | None = None
     containers: list[Container] = Field(default_factory=list)
+    # In the System Context view only, external systems sharing a context_group
+    # are collapsed into one black box (keeps the Context under ~15 elements per
+    # the C4 "stay under 20" rule). They stay individual in the Container view.
+    context_group: str | None = None
 
 
 class Actor(Base):

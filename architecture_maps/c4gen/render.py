@@ -41,9 +41,9 @@ BANNER = (
 # diagrams larger and less cramped. Pan/zoom is layered on top by
 # docs/javascripts/c4-zoom.js so the larger diagrams stay navigable.
 MERMAID_INIT = (
-    '%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, '
-    '"c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, '
-    '"width": 240, "height": 70, "personFontSize": 16, '
+    '%%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, '
+    '"c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, '
+    '"width": 275, "height": 72, "personFontSize": 16, '
     '"external_personFontSize": 16, "systemFontSize": 16, '
     '"system_extFontSize": 16, "containerFontSize": 15, '
     '"container_extFontSize": 15, "containerDbFontSize": 15, '
@@ -72,6 +72,24 @@ def _short(text: str, width: int = 90) -> str:
     return textwrap.shorten(text, width=width, placeholder="…") if text else ""
 
 
+def _tagline(text: str, limit: int = 46) -> str:
+    """A concise in-shape description (C4 rule: keep under ~50 chars).
+
+    Prefer cutting at a natural clause boundary; fall back to a word-boundary
+    truncation. Full prose stays in the page tables.
+    """
+    text = " ".join((text or "").split())
+    if not text:
+        return ""
+    for sep in (";", " — ", " (", ". "):
+        i = text.find(sep)
+        if 0 < i <= limit:
+            return text[:i]
+    if len(text) <= limit:
+        return text
+    return text[:limit].rsplit(" ", 1)[0] + "…"
+
+
 def _rel_tech(flow: Flow) -> str:
     proto = flow.protocol or ("HTTPS" if flow.sync else "async")
     return proto if flow.sync else f"async · {proto}"
@@ -80,45 +98,77 @@ def _rel_tech(flow: Flow) -> str:
 # --------------------------------------------------------------------------
 # System Context
 # --------------------------------------------------------------------------
+def _group_alias(label: str) -> str:
+    slug = "".join(c if c.isalnum() else "_" for c in label.lower())
+    return "grp_" + slug.strip("_")
+
+
 def render_context(model: Model) -> str:
+    """System Context: the system + external dependencies as black boxes.
+
+    External systems sharing a ``context_group`` are collapsed into one node so
+    the Context stays under the C4 ~15-element guideline; they remain individual
+    in the Container view.
+    """
     lines = ["C4Context", f"  title System Context — {model.meta.name}"]
 
-    used_actor_ids = {f.source for f in model.flows} | {f.target for f in model.flows}
-    for actor in model.actors:
-        if actor.id in used_actor_ids:
-            lines.append(
-                f"  Person({alias(actor.id)}, {q(actor.name)}, \"\")"
-            )
+    # group external systems by context_group
+    groups: dict[str, list] = {}
+    for s in model.systems:
+        if s.kind == "external" and s.context_group:
+            groups.setdefault(s.context_group, []).append(s)
 
+    def ctx_node(system_id: str) -> str:
+        """Map a system id to the alias of the node that represents it in Context."""
+        s = next((x for x in model.systems if x.id == system_id), None)
+        if s and s.context_group:
+            return _group_alias(s.context_group)
+        return alias(system_id)
+
+    # --- nodes ---------------------------------------------------------
+    used = {f.source for f in model.flows} | {f.target for f in model.flows}
+    for actor in model.actors:
+        if actor.id in used:
+            lines.append(
+                f"  Person({alias(actor.id)}, {q(actor.name)}, {q(_tagline(actor.description))})"
+            )
     for system in model.systems:
+        if system.context_group:
+            continue  # rendered as part of its group below
         macro = "System" if system.kind == "internal" else "System_Ext"
         lines.append(
-            f"  {macro}({alias(system.id)}, {q(system.name)}, \"\")"
+            f"  {macro}({alias(system.id)}, {q(system.name)}, {q(_tagline(system.description))})"
+        )
+    for label, members in groups.items():
+        names = ", ".join(m.name for m in members)
+        lines.append(
+            f"  System_Ext({_group_alias(label)}, {q(label)}, {q(_short(names, 48))})"
         )
 
-    # aggregate flows to system level
+    # --- edges (aggregated to context nodes) ---------------------------
     seen: dict[tuple[str, str], Flow] = {}
     for flow in model.flows:
-        src = _owner_id(model, flow.source)
-        tgt = _owner_id(model, flow.target)
+        src = ctx_node(_owner_id(model, flow.source))
+        tgt = ctx_node(_owner_id(model, flow.target))
         if src == tgt:
             continue
-        key = (src, tgt)
-        seen.setdefault(key, flow)
+        seen.setdefault((src, tgt), flow)
 
+    # In the Context view, omit the per-edge technology sub-label: many edges
+    # converge on the hub, and a two-line label per edge overcrowds the centre.
+    # Sync/async is still conveyed by colour (amber = async); full technology
+    # labels remain in the Container and Dynamic views.
     async_pairs = []
     for (src, tgt), flow in seen.items():
-        lines.append(
-            f"  Rel({alias(src)}, {alias(tgt)}, {q(_short(flow.label, 50))}, {q(_rel_tech(flow))})"
-        )
+        lines.append(f"  Rel({src}, {tgt}, {q(_short(flow.label, 50))})")
         if not flow.sync:
             async_pairs.append((src, tgt))
     for src, tgt in async_pairs:
         lines.append(
-            f"  UpdateRelStyle({alias(src)}, {alias(tgt)}, "
+            f"  UpdateRelStyle({src}, {tgt}, "
             f'$textColor="{ASYNC_COLOR}", $lineColor="{ASYNC_COLOR}")'
         )
-    lines.append('  UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="2")')
+    lines.append('  UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="2")')
     return "\n".join(lines)
 
 
@@ -141,14 +191,14 @@ def render_container(model: Model) -> str:
     for actor in model.actors:
         if actor.id in touch:
             lines.append(
-                f"  Person({alias(actor.id)}, {q(actor.name)}, \"\")"
+                f"  Person({alias(actor.id)}, {q(actor.name)}, {q(_tagline(actor.description))})"
             )
 
     lines.append(f"  System_Boundary({alias(primary.id)}_b, {q(primary.name)}) {{")
     for c in primary.containers:
         macro = _SHAPE_MACRO[c.shape]
         lines.append(
-            f'    {macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or "")}, "")'
+            f'    {macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or "")}, {q(_tagline(c.description))})'
         )
     lines.append("  }")
 
@@ -156,7 +206,7 @@ def render_container(model: Model) -> str:
         if system.id == primary.id or system.id not in touch:
             continue
         lines.append(
-            f"  System_Ext({alias(system.id)}, {q(system.name)}, \"\")"
+            f"  System_Ext({alias(system.id)}, {q(system.name)}, {q(_tagline(system.description))})"
         )
 
     async_pairs = []
@@ -261,15 +311,15 @@ def _drawn(model: Model, node_id: str, container_ids: set[str], touch: set[str])
 def _declare_node(model: Model, node_id: str) -> str:
     for actor in model.actors:
         if actor.id == node_id:
-            return f"Person({alias(actor.id)}, {q(actor.name)}, \"\")"
+            return f"Person({alias(actor.id)}, {q(actor.name)}, {q(_tagline(actor.description))})"
     for system in model.systems:
         if system.id == node_id:
             macro = "System" if system.kind == "internal" else "System_Ext"
-            return f"{macro}({alias(system.id)}, {q(system.name)}, \"\")"
+            return f"{macro}({alias(system.id)}, {q(system.name)}, {q(_tagline(system.description))})"
         for c in system.containers:
             if c.id == node_id:
                 macro = _SHAPE_MACRO[c.shape]
                 return (
-                    f'{macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or "")}, "")'
+                    f'{macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or "")}, {q(_tagline(c.description))})'
                 )
     return f"System({alias(node_id)}, {q(node_id)}, \"\")"

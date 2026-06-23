@@ -100,41 +100,50 @@ systems:
   - id: apisix
     name: APISIX Gateway
     kind: external
+    context_group: Platform & Identity
     description: >-
       Shared API gateway enforcing OIDC (via Keycloak). Proxies the MIT Learn API,
       the learn-ai service (/ai/*), and MITx Online (/mitxonline/*).
   - id: keycloak
     name: Keycloak (SSO)
     kind: external
+    context_group: Platform & Identity
     description: OAuth2/OIDC identity provider (realm olapps) issuing/introspecting JWTs.
   - id: vault
     name: HashiCorp Vault
     kind: external
+    context_group: Platform & Identity
     description: Secrets and dynamic database credentials injected at runtime.
   - id: learn-ai
     name: learn-ai
     kind: external
+    context_group: AI & Vector Services
     repo: https://github.com/mitodl/learn-ai
     description: AI sidecar (Django + DRF + Channels/ASGI) powering conversational/agentic discovery.
   - id: qdrant
     name: Qdrant
     kind: external
+    context_group: AI & Vector Services
     description: Externally hosted vector database for semantic search.
   - id: litellm
     name: LiteLLM Proxy
     kind: external
+    context_group: AI & Vector Services
     description: OpenAI-compatible proxy fronting LLMs (and optional embeddings) for learn-ai.
   - id: openai
     name: LLM Provider (OpenAI-compatible)
     kind: external
+    context_group: AI & Vector Services
     description: Backing model for completions behind LiteLLM (e.g. gpt-4o-mini).
   - id: mailgun
     name: Mailgun
     kind: external
+    context_group: Comms & Analytics
     description: Transactional/digest email delivery (via anymail).
   - id: posthog
     name: PostHog
     kind: external
+    context_group: Comms & Analytics
     description: Product analytics and feature flags; exports raw events to S3 (Parquet).
 
   # ---- SOA peers -----------------------------------------------------
@@ -159,14 +168,17 @@ systems:
   - id: course-apis
     name: External Course REST APIs
     kind: external
+    context_group: External Content Sources
     description: edX, MIT Professional Ed, Sloan Executive Ed, MIT Climate, ODL Video.
   - id: content-archives
     name: S3 Content Archives
     kind: external
+    context_group: External Content Sources
     description: edX/xPRO/xOnline/Canvas OLX & .imscc, OCW site data, OpenLearningLibrary CSV, PostHog Parquet.
   - id: media-feeds
     name: Media & News Feeds
     kind: external
+    context_group: External Content Sources
     description: YouTube Data API, podcast RSS, Medium RSS, OL events (Drupal), Sloan Aura, marketing pages.
 
 flows:

@@ -2,7 +2,7 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # Data Flows — MIT Learn
 
-_Generated 2026-06-23 14:14 UTC · c4gen dev_
+_Generated 2026-06-23 14:32 UTC · c4gen dev_
 
 Each scenario below replays one interaction as a C4 **Dynamic** diagram.
 Amber steps are asynchronous (queued / scheduled / event-driven).
@@ -27,17 +27,17 @@ Amber steps are asynchronous (queued / scheduled / event-driven).
 The synchronous request path. The learner hits Fastly, which routes API calls through the APISIX gateway (authenticated by Keycloak) to Django, which queries OpenSearch and Postgres and returns results. Next.js also performs this server-side during SSR/RSC prefetch.
 
 ```mermaid
-%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
+%%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Learner search & browse (synchronous)
-  Person(learner, "Learner", "")
-  System_Ext(fastly, "Fastly CDN", "")
-  System_Ext(apisix, "APISIX Gateway", "")
-  System_Ext(keycloak, "Keycloak (SSO)", "")
-  Container(nginx, "Nginx", "Nginx", "")
-  Container(django_web, "Django Web API", "Django + DRF (Granian/uWSGI, Python 3.12)", "")
-  ContainerDb(opensearch, "OpenSearch", "OpenSearch", "")
-  ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16 (RDS in prod)", "")
+  Person(learner, "Learner", "Browses, searches, saves, and asks AI about…")
+  System_Ext(fastly, "Fastly CDN", "TLS termination, caching, and compression")
+  System_Ext(apisix, "APISIX Gateway", "Shared API gateway enforcing OIDC")
+  System_Ext(keycloak, "Keycloak (SSO)", "OAuth2/OIDC identity provider")
+  Container(nginx, "Nginx", "Nginx", "Reverse proxy in front of Django")
+  Container(django_web, "Django Web API", "Django + DRF (Granian/uWSGI, Python 3.12)", "REST API, auth, search orchestration, admin,…")
+  ContainerDb(opensearch, "OpenSearch", "OpenSearch", "Full-text search index over learning resources")
+  ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16 (RDS in prod)", "System of record for resources, users, lists,…")
   Rel(learner, fastly, "HTTPS search request")
   Rel(fastly, apisix, "Route API call")
   Rel(apisix, keycloak, "Introspect OIDC token")
@@ -52,17 +52,17 @@ C4Dynamic
 Celery Beat schedules ETL. The edx_content worker pulls catalogs from SOA peers and external APIs, fetches content archives from S3, extracts text via Tika, and upserts to Postgres; the default worker then indexes OpenSearch.
 
 ```mermaid
-%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
+%%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Learning-resource ETL ingestion (asynchronous)
-  Container(beat, "Celery Beat (RedBeat)", "RedBeat (Redis-backed)", "")
-  Container(celery_edx, "Celery — edx_content queue", "Celery worker", "")
-  System_Ext(mitxonline, "MITx Online", "")
-  System_Ext(content_archives, "S3 Content Archives", "")
-  Container(tika, "Apache Tika", "Tika 2.5 (sidecar)", "")
-  ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16 (RDS in prod)", "")
-  Container(celery_default, "Celery — default queue", "Celery worker", "")
-  ContainerDb(opensearch, "OpenSearch", "OpenSearch", "")
+  Container(beat, "Celery Beat (RedBeat)", "RedBeat (Redis-backed)", "Schedules periodic ETL, indexing, and…")
+  Container(celery_edx, "Celery — edx_content queue", "Celery worker", "ETL ingestion of course/resource metadata and…")
+  System_Ext(mitxonline, "MITx Online", "MITx Online course/enrollment platform")
+  System_Ext(content_archives, "S3 Content Archives", "edX/xPRO/xOnline/Canvas OLX & .imscc, OCW…")
+  Container(tika, "Apache Tika", "Tika 2.5 (sidecar)", "Extracts text from documents/content for…")
+  ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16 (RDS in prod)", "System of record for resources, users, lists,…")
+  Container(celery_default, "Celery — default queue", "Celery worker", "Search indexing, subscription-digest email,…")
+  ContainerDb(opensearch, "OpenSearch", "OpenSearch", "Full-text search index over learning resources")
   Rel(beat, celery_edx, "Trigger scheduled ETL")
   Rel(celery_edx, mitxonline, "Pull MITx Online catalog")
   Rel(celery_edx, content_archives, "Fetch S3 archives")
@@ -82,14 +82,14 @@ C4Dynamic
 Roughly every 30 minutes the embeddings worker reads new/changed resources and upserts vectors into Qdrant. The default encoder is **local** (Gensim/sklearn); the dashed LiteLLM step only runs when QDRANT_ENCODER=litellm.
 
 ```mermaid
-%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
+%%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Semantic embedding pipeline (asynchronous)
-  Container(beat, "Celery Beat (RedBeat)", "RedBeat (Redis-backed)", "")
-  Container(celery_embeddings, "Celery — embeddings queue", "Celery worker", "")
-  ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16 (RDS in prod)", "")
-  System_Ext(litellm, "LiteLLM Proxy", "")
-  System_Ext(qdrant, "Qdrant", "")
+  Container(beat, "Celery Beat (RedBeat)", "RedBeat (Redis-backed)", "Schedules periodic ETL, indexing, and…")
+  Container(celery_embeddings, "Celery — embeddings queue", "Celery worker", "Generates vector embeddings for…")
+  ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16 (RDS in prod)", "System of record for resources, users, lists,…")
+  System_Ext(litellm, "LiteLLM Proxy", "OpenAI-compatible proxy fronting LLMs")
+  System_Ext(qdrant, "Qdrant", "Externally hosted vector database for…")
   Rel(beat, celery_embeddings, "Trigger embedding run")
   Rel(celery_embeddings, postgres, "Read resources to embed")
   Rel(celery_embeddings, litellm, "Embeddings (optional encoder)")
@@ -105,16 +105,16 @@ C4Dynamic
 The frontend calls the learn-ai service through APISIX. learn-ai pulls resource context from MIT Learn's vector-search API and calls an LLM via the LiteLLM proxy, streaming the answer back.
 
 ```mermaid
-%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
+%%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title AI-assisted discovery via learn-ai (synchronous, streamed)
-  Person(learner, "Learner", "")
-  Container(nextjs, "Next.js Frontend", "Next.js App Router / React (Node 22)", "")
-  System_Ext(apisix, "APISIX Gateway", "")
-  System_Ext(learn_ai, "learn-ai", "")
-  Container(django_web, "Django Web API", "Django + DRF (Granian/uWSGI, Python 3.12)", "")
-  System_Ext(litellm, "LiteLLM Proxy", "")
-  System_Ext(openai, "LLM Provider (OpenAI-compatible)", "")
+  Person(learner, "Learner", "Browses, searches, saves, and asks AI about…")
+  Container(nextjs, "Next.js Frontend", "Next.js App Router / React (Node 22)", "Server-rendered UI")
+  System_Ext(apisix, "APISIX Gateway", "Shared API gateway enforcing OIDC")
+  System_Ext(learn_ai, "learn-ai", "AI sidecar")
+  Container(django_web, "Django Web API", "Django + DRF (Granian/uWSGI, Python 3.12)", "REST API, auth, search orchestration, admin,…")
+  System_Ext(litellm, "LiteLLM Proxy", "OpenAI-compatible proxy fronting LLMs")
+  System_Ext(openai, "LLM Provider (OpenAI-compatible)", "Backing model for completions behind LiteLLM")
   Rel(learner, nextjs, "Ask a question")
   Rel(nextjs, apisix, "POST /ai/* (OIDC)")
   Rel(apisix, learn_ai, "Proxy to sidecar")
@@ -128,13 +128,13 @@ C4Dynamic
 The OL data platform integrates two ways: Dagster pipelines POST HMAC-signed content webhooks that enqueue ingestion, and Hightouch reverse-ETL writes ProgramCertificate rows directly into Postgres over the public DB endpoint.
 
 ```mermaid
-%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
+%%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Inbound data-platform integration (asynchronous)
-  System_Ext(data_platform, "OL Data Platform (Dagster / Hightouch)", "")
-  Container(django_web, "Django Web API", "Django + DRF (Granian/uWSGI, Python 3.12)", "")
-  Container(celery_edx, "Celery — edx_content queue", "Celery worker", "")
-  ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16 (RDS in prod)", "")
+  System_Ext(data_platform, "OL Data Platform (Dagster / Hightouch)", "Dagster pipelines POST content webhooks")
+  Container(django_web, "Django Web API", "Django + DRF (Granian/uWSGI, Python 3.12)", "REST API, auth, search orchestration, admin,…")
+  Container(celery_edx, "Celery — edx_content queue", "Celery worker", "ETL ingestion of course/resource metadata and…")
+  ContainerDb(postgres, "PostgreSQL", "PostgreSQL 16 (RDS in prod)", "System of record for resources, users, lists,…")
   Rel(data_platform, django_web, "POST content webhook (HMAC)")
   Rel(django_web, celery_edx, "Enqueue ingest task")
   Rel(data_platform, postgres, "Hightouch writes ProgramCertificate")

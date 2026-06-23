@@ -2,7 +2,7 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # System Context — MIT Learn
 
-_Generated 2026-06-23 14:14 UTC · c4gen dev_
+_Generated 2026-06-23 14:32 UTC · c4gen dev_
 
 The widest view: **MIT Learn** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
@@ -14,57 +14,37 @@ graph-derived candidates are listed under
     into its [container view](container.md).
 
 ```mermaid
-%%{init: {"c4": {"useMaxWidth": false, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 30, "c4ShapePadding": 18, "width": 240, "height": 70, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
+%%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Context
   title System Context — MIT Learn
-  Person(learner, "Learner", "")
-  System(mit_learn, "MIT Learn", "")
-  System_Ext(fastly, "Fastly CDN", "")
-  System_Ext(apisix, "APISIX Gateway", "")
-  System_Ext(keycloak, "Keycloak (SSO)", "")
-  System_Ext(vault, "HashiCorp Vault", "")
-  System_Ext(learn_ai, "learn-ai", "")
-  System_Ext(qdrant, "Qdrant", "")
-  System_Ext(litellm, "LiteLLM Proxy", "")
-  System_Ext(openai, "LLM Provider (OpenAI-compatible)", "")
-  System_Ext(mailgun, "Mailgun", "")
-  System_Ext(posthog, "PostHog", "")
-  System_Ext(mitxonline, "MITx Online", "")
-  System_Ext(micromasters, "MicroMasters", "")
-  System_Ext(data_platform, "OL Data Platform (Dagster / Hightouch)", "")
-  System_Ext(course_apis, "External Course REST APIs", "")
-  System_Ext(content_archives, "S3 Content Archives", "")
-  System_Ext(media_feeds, "Media & News Feeds", "")
-  Rel(learner, fastly, "Browse / search", "HTTPS")
-  Rel(fastly, mit_learn, "Frontend traffic", "HTTPS")
-  Rel(fastly, apisix, "API traffic", "HTTPS")
-  Rel(mit_learn, apisix, "Server/client API calls", "HTTPS/JSON")
-  Rel(apisix, keycloak, "Authenticate (OIDC)", "OIDC")
-  Rel(apisix, mit_learn, "Proxy authenticated request", "HTTP")
-  Rel(mit_learn, qdrant, "Vector search", "HTTPS")
-  Rel(mit_learn, posthog, "Events + feature flags", "HTTPS")
-  Rel(vault, mit_learn, "Secrets + dynamic DB creds", "HTTPS")
-  Rel(apisix, learn_ai, "Proxy /ai/* (OIDC)", "HTTPS")
-  Rel(learn_ai, mit_learn, "Vector/syllabus search (tool calls)", "HTTPS")
-  Rel(learn_ai, litellm, "LLM completions", "HTTPS")
-  Rel(litellm, openai, "Model backend", "HTTPS")
-  Rel(mit_learn, mitxonline, "Pull course/program catalog", "async · REST")
-  Rel(mit_learn, micromasters, "Pull catalog + Wagtail pages", "async · REST")
-  Rel(mit_learn, course_apis, "Fetch REST catalogs", "async · REST/OAuth2")
-  Rel(mit_learn, content_archives, "Fetch S3 archives", "async · S3")
-  Rel(mit_learn, media_feeds, "Fetch feeds + scrape", "async · RSS/REST/scrape")
-  Rel(mit_learn, litellm, "Embeddings (if QDRANT_ENCODER=litellm)", "async · HTTPS")
-  Rel(mit_learn, mailgun, "Subscription digest emails", "async · HTTPS")
-  Rel(data_platform, mit_learn, "Content webhooks (HMAC)", "async · HTTPS")
+  Person(learner, "Learner", "Browses, searches, saves, and asks AI about…")
+  System(mit_learn, "MIT Learn", "Course & learning-resource discovery platform")
+  System_Ext(fastly, "Fastly CDN", "TLS termination, caching, and compression")
+  System_Ext(mitxonline, "MITx Online", "MITx Online course/enrollment platform")
+  System_Ext(micromasters, "MicroMasters", "MicroMasters program platform")
+  System_Ext(data_platform, "OL Data Platform (Dagster / Hightouch)", "Dagster pipelines POST content webhooks")
+  System_Ext(grp_platform___identity, "Platform & Identity", "APISIX Gateway, Keycloak (SSO), HashiCorp Vault")
+  System_Ext(grp_ai___vector_services, "AI & Vector Services", "learn-ai, Qdrant, LiteLLM Proxy, LLM Provider…")
+  System_Ext(grp_comms___analytics, "Comms & Analytics", "Mailgun, PostHog")
+  System_Ext(grp_external_content_sources, "External Content Sources", "External Course REST APIs, S3 Content Archives,…")
+  Rel(learner, fastly, "Browse / search")
+  Rel(fastly, mit_learn, "Frontend traffic")
+  Rel(fastly, grp_platform___identity, "API traffic")
+  Rel(mit_learn, grp_platform___identity, "Server/client API calls")
+  Rel(grp_platform___identity, mit_learn, "Proxy authenticated request")
+  Rel(mit_learn, grp_ai___vector_services, "Vector search")
+  Rel(mit_learn, grp_comms___analytics, "Events + feature flags")
+  Rel(grp_platform___identity, grp_ai___vector_services, "Proxy /ai/* (OIDC)")
+  Rel(grp_ai___vector_services, mit_learn, "Vector/syllabus search (tool calls)")
+  Rel(mit_learn, mitxonline, "Pull course/program catalog")
+  Rel(mit_learn, micromasters, "Pull catalog + Wagtail pages")
+  Rel(mit_learn, grp_external_content_sources, "Fetch REST catalogs")
+  Rel(data_platform, mit_learn, "Content webhooks (HMAC)")
   UpdateRelStyle(mit_learn, mitxonline, $textColor="#e8a33d", $lineColor="#e8a33d")
   UpdateRelStyle(mit_learn, micromasters, $textColor="#e8a33d", $lineColor="#e8a33d")
-  UpdateRelStyle(mit_learn, course_apis, $textColor="#e8a33d", $lineColor="#e8a33d")
-  UpdateRelStyle(mit_learn, content_archives, $textColor="#e8a33d", $lineColor="#e8a33d")
-  UpdateRelStyle(mit_learn, media_feeds, $textColor="#e8a33d", $lineColor="#e8a33d")
-  UpdateRelStyle(mit_learn, litellm, $textColor="#e8a33d", $lineColor="#e8a33d")
-  UpdateRelStyle(mit_learn, mailgun, $textColor="#e8a33d", $lineColor="#e8a33d")
+  UpdateRelStyle(mit_learn, grp_external_content_sources, $textColor="#e8a33d", $lineColor="#e8a33d")
   UpdateRelStyle(data_platform, mit_learn, $textColor="#e8a33d", $lineColor="#e8a33d")
-  UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="2")
+  UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="2")
 ```
 
 <script type="application/json" class="c4-links">{"MIT Learn": "../container/"}</script>
