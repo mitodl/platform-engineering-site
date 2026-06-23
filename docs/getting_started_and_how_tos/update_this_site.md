@@ -5,14 +5,15 @@
 5. Run `uv run zensical serve` to preview the site locally (add `-o` to open it in your browser).
 6. When you're happy, deploy to GitHub Pages with:
 
-   ```
+   ```bash
    uv run zensical build
    uv run ghp-import --no-jekyll --push --force site
    ```
 
    Zensical has no `gh-deploy` command of its own, so we build the site and push
    the `site/` directory to the `gh-pages` branch with `ghp-import` (the same tool
-   `mkdocs gh-deploy` used under the hood; it is pinned in `pyproject.toml`).
+   `mkdocs gh-deploy` used under the hood; it is declared in `pyproject.toml` and
+   locked via `uv.lock`).
 
 > **Note:** the site is configured through `mkdocs.yml`, which Zensical reads
 > directly — there is no separate `zensical.toml`. Per the Zensical team's
