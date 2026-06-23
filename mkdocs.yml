@@ -130,6 +130,12 @@ nav:
           - Containers: application_specific_guides/learn-ai/architecture/container.md
           - Data Flows: application_specific_guides/learn-ai/architecture/data-flows.md
           - Dependencies & Cycles: application_specific_guides/learn-ai/architecture/dependencies-and-cycles.md
+      - OL Data Platform:
+          - Architecture & Data Flows: application_specific_guides/ol-data-platform/architecture/index.md
+          - System Context: application_specific_guides/ol-data-platform/architecture/system-context.md
+          - Containers: application_specific_guides/ol-data-platform/architecture/container.md
+          - Data Flows: application_specific_guides/ol-data-platform/architecture/data-flows.md
+          - Dependencies & Cycles: application_specific_guides/ol-data-platform/architecture/dependencies-and-cycles.md
       - Keycloak:
           - Inviting New Users to Keycloak Realms: application_specific_guides/keycloak/inviting_users_to_realms.md
   - Monitoring And Observability:
