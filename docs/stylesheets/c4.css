@@ -1,3 +1,9 @@
+/* The raw Mermaid source is carried in a <pre class="c4-diagram"> that
+   c4-zoom.js renders into an SVG; hide it so the source never flashes. */
+pre.c4-diagram {
+  display: none;
+}
+
 /* Roomy, zoomable viewport for the generated C4 architecture diagrams.
    Applied by docs/javascripts/c4-zoom.js, which adds the `c4-zoom` class to
    each Mermaid container on /architecture/ pages. */

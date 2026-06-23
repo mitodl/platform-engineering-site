@@ -1,42 +1,58 @@
-/* Interaction layer for the generated C4 architecture diagrams
- * (architecture_maps/c4gen). Material renders Mermaid to inline SVG fit to the
- * content column; this:
- *   1. puts each diagram in a fixed-height, resizable, scrollable viewport,
- *   2. attaches svg-pan-zoom (drag to pan, scroll/buttons to zoom),
- *   3. wires C4 "drill-down": clicking a shape navigates to a linked page,
- *      using a JSON map emitted next to the diagram (Mermaid C4 has no native
- *      click syntax).
+/* Self-rendered, interactive C4 diagrams for architecture_maps/c4gen.
  *
- * Scoped to /architecture/ pages so other Mermaid diagrams are untouched.
- * Robust to Mermaid's async render via a MutationObserver, and runs immediately
- * (not only on load) so it works regardless of script ordering.
+ * Each diagram is emitted as:
+ *   <div class="c4-diagram">
+ *     <script type="text/x-mermaid" class="c4-src">…mermaid source…</script>
+ *     <script type="application/json" class="c4-links">{ "Label": "url" }</script>
+ *   </div>
+ *
+ * We render the source with Mermaid ourselves (loaded on demand) instead of
+ * relying on Material's built-in Mermaid handling, whose async render is
+ * unreliable and hard to hook. After rendering we:
+ *   1. drop the SVG into a fixed-height, resizable, pannable viewport,
+ *   2. attach svg-pan-zoom (drag to pan, scroll/buttons to zoom),
+ *   3. wire C4 drill-down (click a shape -> navigate to its linked page).
+ *
+ * Scoped to /architecture/ pages. Mermaid is loaded only when a diagram is
+ * present, so other pages are unaffected.
  */
 (function () {
   "use strict";
+
+  var MERMAID_URL = "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js";
+  var mermaidReady = false;
 
   function onArchPage() {
     return location.pathname.indexOf("/architecture/") !== -1;
   }
 
-  // Pair each .mermaid with the JSON link map emitted right after it.
-  function linksFor(index) {
-    var scripts = document.querySelectorAll("script.c4-links");
-    if (!scripts[index]) return {};
-    try {
-      return JSON.parse(scripts[index].textContent || "{}");
-    } catch (e) {
-      return {};
-    }
+  function loadMermaid(cb) {
+    if (window.mermaid) return cb();
+    var existing = document.getElementById("c4-mermaid-lib");
+    if (existing) return existing.addEventListener("load", cb);
+    var s = document.createElement("script");
+    s.id = "c4-mermaid-lib";
+    s.src = MERMAID_URL;
+    s.onload = cb;
+    s.onerror = function () {
+      console.error("c4: failed to load Mermaid from " + MERMAID_URL);
+    };
+    document.head.appendChild(s);
   }
 
-  function wireDrillDown(svg, container, links) {
-    var labels = Object.keys(links);
-    if (!labels.length) return;
+  function initMermaid() {
+    if (mermaidReady || !window.mermaid) return;
+    window.mermaid.initialize({ startOnLoad: false, securityLevel: "loose" });
+    mermaidReady = true;
+  }
 
-    // Track drag so a pan doesn't count as a click.
-    var moved = false;
-    var sx = 0;
-    var sy = 0;
+  // --- pan/zoom + drill-down on a rendered SVG -------------------------
+  function wireDrillDown(svg, container, links) {
+    var labels = Object.keys(links || {});
+    if (!labels.length) return;
+    var moved = false,
+      sx = 0,
+      sy = 0;
     container.addEventListener("mousedown", function (e) {
       moved = false;
       sx = e.clientX;
@@ -45,13 +61,11 @@
     container.addEventListener("mousemove", function (e) {
       if (Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) > 5) moved = true;
     });
-
-    var texts = svg.querySelectorAll("text, .nodeLabel, tspan");
+    var texts = svg.querySelectorAll("text, tspan");
     labels.forEach(function (label) {
       var href = links[label];
       for (var i = 0; i < texts.length; i++) {
         if ((texts[i].textContent || "").trim() !== label) continue;
-        // Climb to the shape group (the <g> that holds the rect + texts).
         var shape = texts[i].closest("g");
         if (!shape) continue;
         shape.classList.add("c4-clickable");
@@ -59,7 +73,7 @@
         title.textContent = "Open: " + label;
         shape.appendChild(title);
         shape.addEventListener("click", function (e) {
-          if (moved) return; // was a pan, not a click
+          if (moved) return;
           e.preventDefault();
           e.stopPropagation();
           window.location.href = href;
@@ -69,19 +83,13 @@
     });
   }
 
-  function enhance(container, index) {
-    if (container.dataset.c4zoom) return;
-    var svg = container.querySelector("svg");
-    if (!svg) return; // Mermaid hasn't rendered this one yet
-    container.dataset.c4zoom = "1";
+  function enhance(container, svg, links) {
     container.classList.add("c4-zoom");
-
     var hint = document.createElement("div");
     hint.className = "c4-zoom-hint";
     hint.textContent = "drag to pan · scroll to zoom · click a box to drill in";
     container.appendChild(hint);
 
-    var links = linksFor(index);
     if (typeof window.svgPanZoom === "function") {
       try {
         var pz = window.svgPanZoom(svg, {
@@ -100,35 +108,79 @@
               pz.fit();
               pz.center();
             } catch (e) {
-              /* container transiently unsized — ignore */
+              /* transiently unsized */
             }
           }).observe(container);
         }
       } catch (e) {
-        /* pan/zoom failed to init — drill-down below still works */
+        /* pan/zoom init failed — drill-down still works */
       }
     }
-    // Drill-down works with or without the pan/zoom library present.
     wireDrillDown(svg, container, links);
   }
 
-  function scan() {
-    if (!onArchPage()) return;
-    document.querySelectorAll(".mermaid").forEach(enhance);
+  function hashCode(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+    return h;
+  }
+
+  // The drill-down link map is emitted right after each diagram; find the
+  // nearest following script.c4-links before the next diagram.
+  function linksForPre(pre) {
+    var n = pre.nextElementSibling;
+    for (var hops = 0; n && hops < 4; hops++, n = n.nextElementSibling) {
+      if (n.matches && n.matches("pre.c4-diagram, .c4-box")) break;
+      var s =
+        n.matches && n.matches("script.c4-links")
+          ? n
+          : n.querySelector && n.querySelector("script.c4-links");
+      if (s) {
+        try {
+          return JSON.parse(s.textContent || "{}");
+        } catch (e) {
+          return {};
+        }
+      }
+    }
+    return {};
+  }
+
+  function renderOne(pre) {
+    if (pre.dataset.c4done || !window.mermaid) return;
+    initMermaid();
+    pre.dataset.c4done = "1";
+    var code = pre.querySelector("code") || pre;
+    var src = code.textContent;
+    var links = linksForPre(pre);
+    var box = document.createElement("div");
+    box.className = "c4-box";
+    pre.replaceWith(box);
+    var id = "c4_" + Math.abs(hashCode(src)).toString(36);
+    Promise.resolve(window.mermaid.render(id, src))
+      .then(function (out) {
+        box.innerHTML = out.svg;
+        enhance(box, box.querySelector("svg"), links);
+      })
+      .catch(function (e) {
+        box.textContent = "(C4 diagram failed to render)";
+        console.error("c4: Mermaid render failed", e);
+      });
+  }
+
+  function renderAll() {
+    document.querySelectorAll("pre.c4-diagram").forEach(renderOne);
   }
 
   function init() {
     if (!onArchPage()) return;
-    scan();
-    // Mermaid injects the <svg> asynchronously; catch it whenever it appears.
-    var root = document.querySelector(".md-content") || document.body;
-    var obs = new MutationObserver(function () {
-      scan();
+    if (!document.querySelector("pre.c4-diagram")) return;
+    loadMermaid(function () {
+      initMermaid();
+      renderAll();
     });
-    obs.observe(root, { childList: true, subtree: true });
   }
 
-  // Run now (script is at end of body) and again on Material instant-nav.
   init();
   var doc$ = window["document$"];
   if (doc$ && typeof doc$.subscribe === "function") {

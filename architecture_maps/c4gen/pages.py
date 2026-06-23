@@ -36,13 +36,18 @@ _LEGEND = f"""
 
 
 def _mermaid(block: str, links: dict[str, str] | None = None) -> str:
-    """Wrap a C4 block in a mermaid fence.
+    """Emit a C4 diagram as a self-rendered ``.c4-diagram`` block.
 
-    ``links`` maps a shape's display label to a URL; it is emitted as a JSON
-    sidecar that docs/javascripts/c4-zoom.js uses to make those shapes
-    clickable (C4 drill-down, which Mermaid has no native syntax for).
+    We deliberately do NOT use Material's ```mermaid fence: Material's async
+    render is unreliable (it can leave an empty container, and its post-render
+    DOM/timing is hard to hook). Instead the Mermaid source is stashed verbatim
+    in a non-executing ``<script type="text/x-mermaid">`` and rendered by
+    docs/javascripts/c4-zoom.js, which then attaches pan/zoom and drill-down.
+
+    ``links`` maps a shape's display label to a URL (C4 drill-down — Mermaid has
+    no native click syntax); emitted as a JSON sidecar the script reads.
     """
-    out = f"```mermaid\n{MERMAID_INIT}\n{block}\n```\n"
+    out = f"```c4\n{MERMAID_INIT}\n{block}\n```\n"
     if links:
         out += f'\n<script type="application/json" class="c4-links">{json.dumps(links)}</script>\n'
     return out

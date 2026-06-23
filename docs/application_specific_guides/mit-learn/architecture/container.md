@@ -2,12 +2,12 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # Containers — MIT Learn
 
-_Generated 2026-06-23 14:32 UTC · c4gen dev_
+_Generated 2026-06-23 14:44 UTC · c4gen dev_
 
 The runtime/deployable units inside **MIT Learn** and how data moves
 between them and adjacent systems.
 
-```mermaid
+```c4
 %%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Container
   title Container diagram — MIT Learn

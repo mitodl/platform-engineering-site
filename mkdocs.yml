@@ -17,6 +17,12 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+        # C4 architecture diagrams (architecture_maps/c4gen): carries the Mermaid
+        # source verbatim in a <pre class="c4-diagram"> that Material ignores;
+        # docs/javascripts/c4-zoom.js renders it and adds pan/zoom + drill-down.
+        - name: c4
+          class: c4-diagram
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.blocks.admonition
   - pymdownx.details
 extra_css:

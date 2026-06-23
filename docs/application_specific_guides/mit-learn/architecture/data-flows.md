@@ -2,7 +2,7 @@
      Edit architecture_maps/models/mit-learn.yaml and re-run `python -m c4gen build`. -->
 # Data Flows — MIT Learn
 
-_Generated 2026-06-23 14:32 UTC · c4gen dev_
+_Generated 2026-06-23 14:44 UTC · c4gen dev_
 
 Each scenario below replays one interaction as a C4 **Dynamic** diagram.
 Amber steps are asynchronous (queued / scheduled / event-driven).
@@ -26,7 +26,7 @@ Amber steps are asynchronous (queued / scheduled / event-driven).
 
 The synchronous request path. The learner hits Fastly, which routes API calls through the APISIX gateway (authenticated by Keycloak) to Django, which queries OpenSearch and Postgres and returns results. Next.js also performs this server-side during SSR/RSC prefetch.
 
-```mermaid
+```c4
 %%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Learner search & browse (synchronous)
@@ -51,7 +51,7 @@ C4Dynamic
 
 Celery Beat schedules ETL. The edx_content worker pulls catalogs from SOA peers and external APIs, fetches content archives from S3, extracts text via Tika, and upserts to Postgres; the default worker then indexes OpenSearch.
 
-```mermaid
+```c4
 %%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Learning-resource ETL ingestion (asynchronous)
@@ -81,7 +81,7 @@ C4Dynamic
 
 Roughly every 30 minutes the embeddings worker reads new/changed resources and upserts vectors into Qdrant. The default encoder is **local** (Gensim/sklearn); the dashed LiteLLM step only runs when QDRANT_ENCODER=litellm.
 
-```mermaid
+```c4
 %%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Semantic embedding pipeline (asynchronous)
@@ -104,7 +104,7 @@ C4Dynamic
 
 The frontend calls the learn-ai service through APISIX. learn-ai pulls resource context from MIT Learn's vector-search API and calls an LLM via the LiteLLM proxy, streaming the answer back.
 
-```mermaid
+```c4
 %%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title AI-assisted discovery via learn-ai (synchronous, streamed)
@@ -127,7 +127,7 @@ C4Dynamic
 
 The OL data platform integrates two ways: Dagster pipelines POST HMAC-signed content webhooks that enqueue ingestion, and Hightouch reverse-ETL writes ProgramCertificate rows directly into Postgres over the public DB endpoint.
 
-```mermaid
+```c4
 %%{init: {"c4": {"useMaxWidth": false, "wrap": true, "c4ShapeInRow": 3, "c4BoundaryInRow": 2, "c4ShapeMargin": 34, "c4ShapePadding": 18, "width": 275, "height": 72, "personFontSize": 16, "external_personFontSize": 16, "systemFontSize": 16, "system_extFontSize": 16, "containerFontSize": 15, "container_extFontSize": 15, "containerDbFontSize": 15, "containerQueueFontSize": 15, "boundaryFontSize": 16, "messageFontSize": 14}}}%%
 C4Dynamic
   title Inbound data-platform integration (asynchronous)
