@@ -4,8 +4,14 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
+# Zensical is the static-site generator (the successor to Material for MkDocs).
+# It reads the existing mkdocs.yml directly and ships its own Material theme, so
+# mkdocs / mkdocs-material are no longer required. pymdown-extensions powers the
+# markdown_extensions in mkdocs.yml (highlight, superfences, admonition, details).
 dependencies = [
-    "mkdocs>=1.6.1",
-    "mkdocs-material>=9.6.22",
-    "pymdown-extensions>=10.16.1",
+    "zensical>=0.0.46",
+    "pymdown-extensions>=10.21.3",
+    # Zensical has no gh-deploy command; ghp-import pushes the built site/ to the
+    # gh-pages branch (the same tool mkdocs gh-deploy used).
+    "ghp-import>=2.1",
 ]
