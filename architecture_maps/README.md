@@ -50,17 +50,29 @@ architecture_maps/
 
 ## Usage
 
+Run from `architecture_maps/`. **Rendering needs a local Kroki server** (it turns
+the C4-PlantUML into SVG):
+
 ```bash
-# from architecture_maps/ (deps: see the `c4gen` dependency group)
-uv run --group c4gen python -m c4gen build mit-learn      # extract + render
-uv run --group c4gen python -m c4gen extract mit-learn    # refresh graph slice + cycles only
-uv run --group c4gen python -m c4gen render mit-learn     # re-render docs from the model
+docker compose -f docker-compose.yml up -d kroki          # local renderer on :8000
+
+# the common case — re-render docs + SVGs from the committed model (no witan-code):
+uv run --group c4gen python -m c4gen render mit-learn
 ```
 
-`extract` requires the **witan-code** tool installed (`uv tool install witan-code`)
-with an indexed graph — it reads the shared bridge store the
-[`witan-code deps`](https://github.com/mitodl/agent-kit) command uses. If the
-repos aren't indexed, run `witan-code index <repo>` first.
+The other two commands are for **authoring** and additionally need the
+**witan-code** graph (below):
+
+```bash
+uv run --group c4gen python -m c4gen extract mit-learn    # refresh graph slice + cycles
+uv run --group c4gen python -m c4gen build mit-learn      # extract + render
+```
+
+`extract` (and therefore `build`) requires the **witan-code** tool installed
+(`uv tool install witan-code`) with an indexed graph — it reads the shared bridge
+store the [`witan-code deps`](https://github.com/mitodl/agent-kit) command uses.
+If the repos aren't indexed, run `witan-code index <repo>` first. A non-authoring
+contributor who only changed a model usually just needs `render` + Kroki.
 
 The generated pages carry a "do not hand-edit" banner; the only files you edit by
 hand are `models/<system>.yaml` and the curated

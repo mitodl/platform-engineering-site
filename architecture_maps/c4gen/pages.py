@@ -10,19 +10,22 @@ from .render import ASYNC_COLOR, BANNER, SYNC_COLOR
 from .schema import Flow, Model
 
 _LEGEND = f"""
-!!! info "How to read these diagrams"
-    These are [C4 model](https://c4model.com/) diagrams (C4-PlantUML). Read them
-    top-down: **System Context** (the whole SOA) → **Container** (one system's
-    runtime units) → **Dynamic** (a single data flow, step by step).
+/// admonition | How to read these diagrams
+    type: info
 
-    * **People** are rounded boxes; **systems** and **containers** are
-      rectangles; **databases** and **queues** have distinct shapes.
-    * Each arrow is a data flow labelled with *what* moves.
-    * <span style="color:{SYNC_COLOR}">**Solid arrows**</span> are
-      **synchronous** (request/response, caller blocks).
-    * <span style="color:{ASYNC_COLOR}">**Amber dashed arrows**</span> are
-      **asynchronous** (queued, scheduled, or event-driven — caller does not block).
-    * **Drag to pan, scroll to zoom.** Boxes with a link drill into the next level.
+These are [C4 model](https://c4model.com/) diagrams (C4-PlantUML). Read them
+top-down: **System Context** (the whole SOA) → **Container** (one system's
+runtime units) → **Dynamic** (a single data flow, step by step).
+
+* **People** are rounded boxes; **systems** and **containers** are
+  rectangles; **databases** and **queues** have distinct shapes.
+* Each arrow is a data flow labelled with *what* moves.
+* <span style="color:{SYNC_COLOR}">**Solid arrows**</span> are
+  **synchronous** (request/response, caller blocks).
+* <span style="color:{ASYNC_COLOR}">**Amber dashed arrows**</span> are
+  **asynchronous** (queued, scheduled, or event-driven — caller does not block).
+* **Drag to pan, scroll to zoom.** Boxes with a link drill into the next level.
+///
 """
 
 
@@ -90,9 +93,12 @@ exchanges data with. Edges shown are **curated and code-verified**; raw
 graph-derived candidates are listed under
 [Dependencies & Cycles](dependencies-and-cycles.md).
 
-!!! tip "Interactive"
-    Drag to pan, scroll to zoom. **Click the {model.meta.name} box** to drill
-    into its [container view](container.md).
+/// admonition | Interactive
+    type: tip
+
+Drag to pan, scroll to zoom. **Click the {model.meta.name} box** to drill
+into its [container view](container.md).
+///
 
 {_diagram(model, "system-context")}
 ## External systems & peers
@@ -168,12 +174,16 @@ def page_dependencies(model: Model, cycles: list[list[str]], candidates: list[Fl
     matrix_md = "\n".join(matrix) if deps else "_No curated cross-service edges._"
 
     if cycles:
-        cyc_lines = ["!!! danger \"Dependency cycles detected\""]
+        cyc_lines = ["/// admonition | Dependency cycles detected", "    type: danger", ""]
         for c in cycles:
-            cyc_lines.append(f"    * `{ ' → '.join(c + [c[0]]) }`")
+            cyc_lines.append(f"* `{ ' → '.join(c + [c[0]]) }`")
+        cyc_lines.append("///")
         cyc_md = "\n".join(cyc_lines)
     else:
-        cyc_md = '!!! success "No cross-service dependency cycles detected."'
+        cyc_md = (
+            "/// admonition | No cycles\n    type: success\n\n"
+            "No cross-service dependency cycles detected.\n///"
+        )
 
     fragile = [f for f in model.flows if "fragile" in f.tags]
     frag_md = "\n".join(
@@ -195,11 +205,14 @@ Coupling between {model.meta.name} and the rest of the SOA. The **matrix** and
 
 {cyc_md}
 
-!!! warning "Interpreting graph candidates"
-    Cross-repo edges are matched by normalized endpoint path. Two services that
-    both define e.g. `/api/v0/users/me/`, or a client checked into a repo for
-    **load testing**, produce *phantom* edges. Confirm each candidate against the
-    actual client/route code before treating it as a real runtime dependency.
+/// admonition | Interpreting graph candidates
+    type: warning
+
+Cross-repo edges are matched by normalized endpoint path. Two services that
+both define e.g. `/api/v0/users/me/`, or a client checked into a repo for
+**load testing**, produce *phantom* edges. Confirm each candidate against the
+actual client/route code before treating it as a real runtime dependency.
+///
 
 ## Candidate edges (graph-derived, unverified)
 
