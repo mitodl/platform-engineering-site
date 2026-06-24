@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Containers — ODL Video Service
 
-_Generated 2026-06-24 16:06 UTC · c4gen dev_
+_Generated 2026-06-24 16:52 UTC · c4gen dev_
 
 The runtime/deployable units inside **ODL Video Service** and how data moves
 between them and adjacent systems.

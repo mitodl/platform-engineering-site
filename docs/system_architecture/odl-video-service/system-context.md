@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # System Context — ODL Video Service
 
-_Generated 2026-06-24 16:06 UTC · c4gen dev_
+_Generated 2026-06-24 16:52 UTC · c4gen dev_
 
 The widest view: **ODL Video Service** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
@@ -33,6 +33,6 @@ into its [container view](container.md).
 | **Dropbox** | Source of uploaded videos; browser Chooser selects shared links that Celery streams server-side to S3. |
 | **YouTube Data API** | Public videos in YOUTUBE-stream collections are uploaded to YouTube with captions; status polled back. |
 | **Mailgun** | Transactional email — video status notifications to collection admins. |
-| **Open edX (edxval)** | MITx Online / xPRO Open edX instances. OVS POSTs/PATCHes video metadata to the edxval API (/api/val/v0/videos/) so transcoded videos play inside courses. |
+| **MITx Online Open edX** | MITx Online / xPRO Open edX instances. OVS POSTs/PATCHes video metadata to the edxval API (/api/val/v0/videos/) so transcoded videos play inside courses. |
 | **Sentry** | Error and performance monitoring. |
 | **MIT Learn** | SOA discovery platform. Its Celery ETL pulls OVS public videos + transcripts daily to index them as learning resources (downstream consumer of the OVS public API). |

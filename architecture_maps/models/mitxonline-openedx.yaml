@@ -147,6 +147,14 @@ systems:
       Program/credential platform. Batch-reads enrollments, certificates, and
       current grades from this deployment (MITXONLINE_BASE_URL=https://courses.learn.mit.edu)
       via edx-api-client to drive program dashboards.
+  - id: odl-video-service
+    name: ODL Video Service
+    kind: external
+    repo: https://github.com/mitodl/odl-video-service
+    description: >-
+      Video platform. Registers transcoded video metadata (HLS/MP4 CloudFront
+      URLs) into this deployment's edxval API so videos play inside MIT Learn
+      courses (per-collection EdxEndpoint).
 
 flows:
   # ----- synchronous: learner & author request path ------------------
@@ -184,6 +192,9 @@ flows:
 
   # ----- cross-service: MicroMasters (batch enroll/grade/cert reads) --
   - { id: micromasters-celery-lms, source: micromasters, target: lms, label: Refresh enrollments/grades/certs, sync: false, protocol: REST OAuth2, data: "edx-api-client: enrollments, certificates, current grades (courses.learn.mit.edu)", trigger: "beat: Fridays every 6h (MicroMasters)", tags: [async, etl, cross-service] }
+
+  # ----- cross-service: ODL Video Service -> edxval -------------------
+  - { id: ovs-lms-edxval, source: odl-video-service, target: lms, label: Register video metadata (edxval), sync: false, protocol: REST (JWT), data: "edxval video records (HLS+MP4 URLs) -> /api/val/v0/videos/", trigger: on OVS sync action, tags: [async, cross-service] }
 
 scenarios:
   - id: take-course

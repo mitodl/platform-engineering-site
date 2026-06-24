@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Dependencies & Cycles — MITx Online Open edX
 
-_Generated 2026-06-24 16:32 UTC · c4gen dev_
+_Generated 2026-06-24 16:53 UTC · c4gen dev_
 
 Coupling between MITx Online Open edX and the rest of the SOA. The **matrix** and
 **cycles** below come from the deterministic witan-code graph extraction; the
@@ -18,6 +18,7 @@ Coupling between MITx Online Open edX and the rest of the SOA. The **matrix** an
 | **micromasters** | mitxonline-openedx |
 | **mitxonline** | mitxonline-openedx |
 | **mitxonline-openedx** | mitxonline |
+| **odl-video-service** | mitxonline-openedx |
 
 ## Cycles
 

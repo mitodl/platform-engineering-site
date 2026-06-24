@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # System Context — MITx Online Open edX
 
-_Generated 2026-06-24 16:32 UTC · c4gen dev_
+_Generated 2026-06-24 16:53 UTC · c4gen dev_
 
 The widest view: **MITx Online Open edX** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
@@ -29,3 +29,4 @@ into its [container view](container.md).
 | **Mailgun** | Transactional and bulk course email delivery (ACE / django-anymail). |
 | **MITx Online** | Enrollment/ecommerce platform paired with this Open edX deployment (OPENEDX_API_BASE_URL=https://courses.learn.mit.edu). Authenticates via the mitxonline-oauth2 provider, pushes user/enrollment/email-settings and reads grades; receives enrollment + certificate webhooks back. |
 | **MicroMasters** | Program/credential platform. Batch-reads enrollments, certificates, and current grades from this deployment (MITXONLINE_BASE_URL=https://courses.learn.mit.edu) via edx-api-client to drive program dashboards. |
+| **ODL Video Service** | Video platform. Registers transcoded video metadata (HLS/MP4 CloudFront URLs) into this deployment's edxval API so videos play inside MIT Learn courses (per-collection EdxEndpoint). |
