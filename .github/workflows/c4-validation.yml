@@ -46,6 +46,9 @@ jobs:
       - name: Set up Python
         run: uv python install 3.12
 
+      - name: Verify JS cache-bust fingerprints
+        run: python3 architecture_maps/scripts/update_asset_versions.py --check
+
       - name: Wait for Kroki
         run: |
           for i in $(seq 1 30); do
