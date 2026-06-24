@@ -310,7 +310,7 @@ def page_landscape(landscape: Landscape, generated_at: str, version: str) -> str
             deps.setdefault(edge.source, set()).add(edge.target)
     matrix = ["| System | Depends on → |", "| --- | --- |"]
     for src in landscape.internal_ids():
-        targets = sorted(deps.get(src, set()))
+        targets = sorted(landscape.node(t).name for t in deps.get(src, set()))
         matrix.append(f"| **{landscape.node(src).name}** | {', '.join(targets) or '—'} |")
     matrix_md = "\n".join(matrix)
 

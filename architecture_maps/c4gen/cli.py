@@ -223,17 +223,25 @@ def render(name: str) -> None:
     )
 
 
+# Hand-authored (not generated) files that live alongside the generated docs and
+# must NOT be flagged as orphans by the drift-check.
+_CURATED_FILES = {"infrastructure-references.md"}
+
+
 @app.command
 def check(name: str) -> None:
-    """Verify the committed pages/SVGs for ``name`` match a fresh render (drift-check).
+    """Verify the committed docs for ``name`` match a fresh render (drift-check).
 
     Renders the model in memory and compares against the committed
-    ``docs/.../architecture/`` tree. Markdown is compared with the (time-varying)
-    ``generated_at`` stamp normalized away; SVGs are compared byte-for-byte (they
-    are deterministic for a fixed model + Kroki image). Exits non-zero — listing
-    the stale/missing files — if anything differs, so CI fails until an author
-    regenerates and commits. Also doubles as render validation: a model that errors
-    or a diagram that fails to produce a valid ``<svg>`` aborts the render.
+    ``docs/system_architecture/<system>/`` tree: every expected page/SVG must
+    exist and match (markdown with the time-varying ``generated_at`` stamp
+    normalized; SVGs byte-for-byte), AND no *orphaned* generated artifact may
+    linger — e.g. a ``component.md`` or ``flow-*.svg`` left behind after a
+    component or scenario is removed. Hand-authored curated files
+    (``_CURATED_FILES``) are exempt. Exits non-zero listing the offending files,
+    so CI fails until an author regenerates and commits. Also doubles as render
+    validation: a model that errors or a diagram that fails to produce a valid
+    ``<svg>`` aborts the render.
     """
     model, pages, svgs = _build_outputs(name)
     out = DOCS_BASE / model.meta.primary_system
@@ -253,6 +261,17 @@ def check(name: str) -> None:
             stale.append(f"{rel} (missing — never generated)")
         elif path.read_text(encoding="utf-8") != svg:
             stale.append(f"{rel} (content differs)")
+
+    # Orphans: committed generated artifacts a fresh render no longer produces
+    # (curated, hand-authored files are exempt).
+    expected_md = set(pages) | _CURATED_FILES
+    for path in sorted(out.glob("*.md")):
+        if path.name not in expected_md:
+            stale.append(f"{path.relative_to(REPO_ROOT)} (orphaned — no longer generated)")
+    expected_svg = {f"{d}.svg" for d in svgs}
+    for path in sorted((out / "_diagrams").glob("*.svg")):
+        if path.name not in expected_svg:
+            stale.append(f"{path.relative_to(REPO_ROOT)} (orphaned — no longer generated)")
 
     if stale:
         print(f"DRIFT: committed docs for {name!r} are stale vs a fresh render:")
