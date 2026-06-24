@@ -8,13 +8,15 @@
  *   - wraps it in a fixed-height, resizable pan/zoom viewport (svg-pan-zoom),
  *   - navigates on a click of a native PlantUML `$link` (drag-guarded).
  *
- * Scoped to /architecture/ pages.
+ * Scoped to the System Architecture section.
  */
 (function () {
   "use strict";
 
   function onArchPage() {
-    return location.pathname.indexOf("/architecture/") !== -1;
+    // Architecture pages live under /system_architecture/; also match a nested
+    // /architecture/ segment for backward compatibility with the prior layout.
+    return /\/(system_)?architecture\//.test(location.pathname);
   }
 
   function enhance(box) {
