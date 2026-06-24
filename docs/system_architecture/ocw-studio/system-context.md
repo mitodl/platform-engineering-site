@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # System Context — OCW Studio
 
-_Generated 2026-06-24 13:33 UTC · c4gen dev_
+_Generated 2026-06-24 15:49 UTC · c4gen dev_
 
 The widest view: **OCW Studio** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
