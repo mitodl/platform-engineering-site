@@ -102,14 +102,29 @@ class Contract:
     consumer_ref: dict[str, dict] = field(default_factory=dict)
 
 
-def group_contracts(rows: list[dict]) -> dict[tuple[str, str], Contract]:
+def group_contracts(rows: list[dict], min_confidence: float = 0.5) -> dict[tuple[str, str], Contract]:
+    """Group bindings into per-``(kind, key_norm)`` contracts.
+
+    Low-confidence endpoint *consumer* bindings (``confidence < min_confidence``)
+    are dropped: these are the phantom-prone signals witan-code scores down —
+    k6/load-test clients, same-origin CSRF/relative fetches, and self-provided
+    routes. Providers and non-endpoint consumers are always kept. A missing
+    ``confidence`` (legacy store rows, pre the witan-code schema add) is treated
+    as 1.0 (kept) — note ``confidence`` may be 0.0, so test ``is None`` explicitly
+    rather than truthiness.
+    """
     groups: dict[tuple[str, str], Contract] = {}
     for b in rows:
+        role = b["role"]
+        if role != "provider" and b["kind"] == "endpoint":
+            conf = b.get("confidence")
+            if conf is not None and conf < min_confidence:
+                continue
         key = (b["kind"], b["key_norm"])
         c = groups.get(key)
         if c is None:
             c = groups[key] = Contract(b["kind"], b.get("key", b["key_norm"]), b["key_norm"])
-        if b["role"] == "provider":
+        if role == "provider":
             c.providers.add(b["repo"])
         else:
             c.consumers.add(b["repo"])
