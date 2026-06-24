@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # System Context — xPRO Open edX
 
-_Generated 2026-06-24 16:33 UTC · c4gen dev_
+_Generated 2026-06-24 17:02 UTC · c4gen dev_
 
 The widest view: **xPRO Open edX** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
@@ -27,3 +27,4 @@ into its [container view](container.md).
 | --- | --- |
 | **Mailgun** | Transactional and bulk course email delivery (ACE / django-anymail). |
 | **MITx Pro** | Professional-ed ecommerce platform paired with this Open edX deployment (OPENEDX_API_BASE_URL=https://courses.xpro.mit.edu). Authenticates learners via the ol-oauth2 provider, provisions edX users + tokens, enrolls, and pulls grades / course-run data on a batch. |
+| **ODL Video Service** | Video platform. Registers transcoded video metadata (HLS/MP4 CloudFront URLs) into this deployment's edxval API so videos play inside xPRO courses (per-collection EdxEndpoint). |

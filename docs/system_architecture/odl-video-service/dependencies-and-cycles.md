@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Dependencies & Cycles — ODL Video Service
 
-_Generated 2026-06-24 16:52 UTC · c4gen dev_
+_Generated 2026-06-24 17:02 UTC · c4gen dev_
 
 Coupling between ODL Video Service and the rest of the SOA. The **matrix** and
 **cycles** below come from the deterministic witan-code graph extraction; the
@@ -16,7 +16,7 @@ Coupling between ODL Video Service and the rest of the SOA. The **matrix** and
 | Depends on → | …on these systems |
 | --- | --- |
 | **mit-learn** | cloudfront, odl-video-service |
-| **odl-video-service** | mitxonline-openedx |
+| **odl-video-service** | mitxonline-openedx, xpro-openedx |
 
 ## Cycles
 

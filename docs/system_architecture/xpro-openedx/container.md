@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Containers — xPRO Open edX
 
-_Generated 2026-06-24 16:33 UTC · c4gen dev_
+_Generated 2026-06-24 17:02 UTC · c4gen dev_
 
 The runtime/deployable units inside **xPRO Open edX** and how data moves
 between them and adjacent systems.

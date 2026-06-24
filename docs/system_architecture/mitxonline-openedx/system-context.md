@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # System Context — MITx Online Open edX
 
-_Generated 2026-06-24 16:53 UTC · c4gen dev_
+_Generated 2026-06-24 17:02 UTC · c4gen dev_
 
 The widest view: **MITx Online Open edX** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw

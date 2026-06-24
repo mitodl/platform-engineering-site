@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # xPRO Open edX — Architecture & Data Flows
 
-_Generated 2026-06-24 16:33 UTC · c4gen dev_
+_Generated 2026-06-24 17:02 UTC · c4gen dev_
 
 The xPRO Open edX deployment — the self-hosted courseware/LMS that delivers MIT xPRO's professional-education courses at courses.xpro.mit.edu (k8s namespace xpro-openedx). Built from the mitodl edx-platform fork with MIT custom themes, social-auth-mitxpro, edx-sysadmin, and rapid-response XBlocks. Two Django services share the data tier: the LMS (edxapp) serves learners and exposes the REST APIs the xPRO app drives (enrollment, grades, certificates, OAuth2/third-party-auth SSO), while Studio/CMS authors courses. A forum service (cs_comments_service) and Notes API back discussion and annotations; edx-search indexes courseware into Elasticsearch. MySQL is the relational system of record; MongoDB holds the modulestore (course structure) and forum content. Celery workers run grading, certificate generation, bulk email, and course import/export to S3 (OLX). This deployment is the OAuth2 IdP for the xPRO app (provider ol-oauth2): xPRO authenticates via social-auth, provisions edX users + tokens, enrolls, and pulls grades / course-run data on a batch.
 

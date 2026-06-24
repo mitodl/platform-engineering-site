@@ -128,6 +128,14 @@ systems:
       (OPENEDX_API_BASE_URL=https://courses.xpro.mit.edu). Authenticates learners
       via the ol-oauth2 provider, provisions edX users + tokens, enrolls, and
       pulls grades / course-run data on a batch.
+  - id: odl-video-service
+    name: ODL Video Service
+    kind: external
+    repo: https://github.com/mitodl/odl-video-service
+    description: >-
+      Video platform. Registers transcoded video metadata (HLS/MP4 CloudFront
+      URLs) into this deployment's edxval API so videos play inside xPRO courses
+      (per-collection EdxEndpoint).
 
 flows:
   # ----- synchronous: learner & author request path ------------------
@@ -160,6 +168,9 @@ flows:
   - { id: mitxpro-oauth, source: mitxpro, target: oauth-provider, label: SSO + provision user (ol-oauth2), sync: true, protocol: OAuth2/HTTPS, data: "social-auth login, create edX user + token", trigger: on login / signup, tags: [auth, cross-service] }
   - { id: mitxpro-lms-enroll, source: mitxpro, target: lms, label: Enroll learner, sync: true, protocol: REST, data: Course-run enrollment, trigger: on order fulfilled, tags: [cross-service] }
   - { id: mitxpro-celery-lms, source: mitxpro, target: lms, label: Pull grades + run data / repair, sync: false, protocol: REST, data: "Grades, course-run titles/dates, failed-enroll repair", trigger: "beat: daily cron (MITx Pro)", tags: [async, cross-service] }
+
+  # ----- cross-service: ODL Video Service -> edxval -------------------
+  - { id: ovs-lms-edxval, source: odl-video-service, target: lms, label: Register video metadata (edxval), sync: false, protocol: REST (JWT), data: "edxval video records (HLS+MP4 URLs) -> /api/val/v0/videos/", trigger: on OVS sync action, tags: [async, cross-service] }
 
 scenarios:
   - id: take-course

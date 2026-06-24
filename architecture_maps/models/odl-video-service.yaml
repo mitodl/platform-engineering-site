@@ -136,13 +136,17 @@ systems:
     repo: https://github.com/mitodl/edx-platform
     description: >-
       MITx Online / MIT Learn self-hosted Open edX (courses.learn.mit.edu). OVS
-      registers transcoded video metadata into its edxval API. OVS publishes
-      per-collection to every linked EdxEndpoint (DB-configured base_urls — also
-      the xPRO and residential MITx edX deployments); only the mapped MIT Learn
-      target is drawn here.
+      registers transcoded video metadata into its edxval API
+      (/api/val/v0/videos/) so videos play inside MIT Learn courses.
+  - id: xpro-openedx
+    name: xPRO Open edX
+    kind: external
+    repo: https://github.com/mitodl/edx-platform
     description: >-
-      MITx Online / xPRO Open edX instances. OVS POSTs/PATCHes video metadata to the
-      edxval API (/api/val/v0/videos/) so transcoded videos play inside courses.
+      xPRO self-hosted Open edX (courses.xpro.mit.edu). OVS publishes video
+      metadata to its edxval API for xPRO course videos. OVS posts per-collection
+      to every linked EdxEndpoint (DB-configured base_urls; also the residential
+      MITx deployment, which is not mapped here).
   - id: sentry
     name: Sentry
     kind: external
@@ -190,6 +194,7 @@ flows:
 
   # ----- asynchronous: edX sync + email -------------------------------
   - { id: celery-edx, source: celery, target: mitxonline-openedx, label: Register video metadata (edxval), sync: false, protocol: REST (JWT), data: "edxval video records (HLS+MP4 URLs) -> /api/val/v0/videos/", trigger: on sync action / update, tags: [async, cross-service] }
+  - { id: celery-edx-xpro, source: celery, target: xpro-openedx, label: Register video metadata (edxval), sync: false, protocol: REST (JWT), data: "edxval video records (HLS+MP4 URLs) -> /api/val/v0/videos/", trigger: on sync action / update, tags: [async, cross-service] }
   - { id: celery-mailgun, source: celery, target: mailgun, label: Status notification emails, sync: false, protocol: HTTPS, data: Video status emails to admins, trigger: on status change, tags: [async] }
 
   # ----- cross-service: MIT Learn ETL (downstream consumer) -----------
@@ -241,6 +246,7 @@ scenarios:
       - { source: video-admin, target: django-web, label: "Click Sync with edX", sync: true }
       - { source: django-web, target: redis, label: "Enqueue post_collection_videos_to_edx", sync: false }
       - { source: celery, target: mitxonline-openedx, label: "OAuth2 token + POST videos", sync: false }
+      - { source: celery, target: xpro-openedx, label: "OAuth2 token + POST videos", sync: false }
 
   - id: mitlearn-ingest
     title: "MIT Learn ingests OVS videos (asynchronous, cross-service)"

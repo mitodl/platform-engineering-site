@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Dependencies & Cycles — xPRO Open edX
 
-_Generated 2026-06-24 16:33 UTC · c4gen dev_
+_Generated 2026-06-24 17:02 UTC · c4gen dev_
 
 Coupling between xPRO Open edX and the rest of the SOA. The **matrix** and
 **cycles** below come from the deterministic witan-code graph extraction; the
@@ -16,6 +16,7 @@ Coupling between xPRO Open edX and the rest of the SOA. The **matrix** and
 | Depends on → | …on these systems |
 | --- | --- |
 | **mitxpro** | xpro-openedx |
+| **odl-video-service** | xpro-openedx |
 
 ## Cycles
 
