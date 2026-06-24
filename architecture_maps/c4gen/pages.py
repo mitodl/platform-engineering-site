@@ -364,18 +364,19 @@ all models (container-level flows lifted to their owning system; deduped).
 
 ## Cross-service cycles
 
-Computed over the owned internal systems only — shared gateway/identity/LMS infra
-(APISIX, Keycloak, Open edX) sits in nearly every path and would manufacture
-cycles that aren't harmful coupling.
+Computed over the owned internal systems only (Open edX included) — the shared
+gateway/identity infra (APISIX, Keycloak) sits in nearly every path and would
+manufacture cycles that aren't harmful coupling.
 
 {cyc_md}
 
 ## Shared platform & libraries
 
 The apps share a common platform: **APISIX** (gateway, OIDC), **Keycloak** (SSO),
-and **HashiCorp Vault** (secrets/credentials), with **Open edX** behind the
-course-delivery apps. Shared Django/identity libraries — **ol-django** and
-**ol-keycloak** — are used across systems (not drawn as nodes).
+and **HashiCorp Vault** (secrets/credentials). **Open edX** sits behind the
+course-delivery apps as a first-class internal system (drill in for its map).
+Shared Django/identity libraries — **ol-django** and **ol-keycloak** — are used
+across systems (not drawn as nodes).
 
 {unresolved_md}
 

@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # MITx Pro — Architecture & Data Flows
 
-_Generated 2026-06-24 13:33 UTC · c4gen dev_
+_Generated 2026-06-24 16:06 UTC · c4gen dev_
 
 MIT xPRO is the professional-education e-commerce and course-delivery platform. A Django/DRF backend with a React (Webpack) SPA and a Wagtail CMS serves the catalog and marketing pages, takes payment via CyberSource Secure Acceptance, and provisions users, enrollments, grades, and certificates against an Open edX instance. Celery (RedBeat) runs enrollment repair, certificate generation, course-run sync, external-vendor course sync, and Google Sheets coupon/refund/deferral workflows. xPRO is a SOA peer: MIT Learn pulls its course/program catalog and content files for discovery.
 

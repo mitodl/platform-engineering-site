@@ -20,9 +20,11 @@ How the composition works
    one node per real system, preferring a ``repo`` URL match and falling back to a
    known id-alias table. Unresolved ids are reported, never silently double-drawn.
 4. **Shared platform & externals** — a curated allow-list of the platform/identity
-   and AI nodes that recur across models (APISIX, Keycloak, Vault, Open edX,
-   LiteLLM, an LLM provider, Fastly) is included and grouped by domain, so the
-   gateway/identity coupling is visible. All other per-model externals (payments,
+   and AI nodes that recur across models (APISIX, Keycloak, Vault, LiteLLM, an LLM
+   provider, Fastly) is included and grouped by domain, so the gateway/identity
+   coupling is visible. (Open edX used to live here too, but it is now a
+   first-class internal system sourced from ``models/openedx.yaml``.) All other
+   per-model externals (payments,
    CRM, media vendors, ETL aggregates) are dropped to keep the view under the C4
    "~20 elements" guideline.
 5. **Cycle detection** — runs over the aggregated system-level edge graph to
@@ -41,6 +43,7 @@ from .schema import Model, NodeKind, System
 # the data platform). Used only for stable ordering; membership comes from the
 # models' ``kind: internal`` union.
 INTERNAL_ORDER = [
+    "openedx",
     "mitxonline",
     "mitxpro",
     "micromasters",
@@ -59,7 +62,6 @@ SHARED_NODES: dict[str, str] = {
     "apisix": "Platform & Identity",
     "keycloak": "Platform & Identity",
     "vault": "Platform & Identity",
-    "openedx": "Course Delivery",
     "litellm": "AI",
     "openai": "AI",
     "fastly": "Edge",
@@ -67,6 +69,7 @@ SHARED_NODES: dict[str, str] = {
 
 # Domain grouping for the internal systems (Enterprise_Boundary in the diagram).
 INTERNAL_GROUP: dict[str, str] = {
+    "openedx": "Course Delivery",
     "mitxonline": "Learning Apps",
     "mitxpro": "Learning Apps",
     "micromasters": "Learning Apps",
@@ -93,7 +96,6 @@ SHARED_DISPLAY: dict[str, tuple[str, str]] = {
     "apisix": ("APISIX Gateway", "Shared API gateway (OIDC via Keycloak)."),
     "keycloak": ("Keycloak (SSO)", "OAuth2/OIDC identity provider (realm olapps)."),
     "vault": ("HashiCorp Vault", "Secrets and dynamic DB credentials."),
-    "openedx": ("Open edX", "Courseware/LMS (edx-platform) behind the apps."),
     "litellm": ("LiteLLM Proxy", "OpenAI-compatible LLM/embeddings proxy."),
     "openai": ("LLM Provider", "Backing model (OpenAI-compatible) behind LiteLLM."),
     "fastly": ("Fastly CDN", "Edge TLS/caching in front of the apps."),
@@ -235,8 +237,8 @@ def compose(models: dict[str, Model]) -> Landscape:
 
     edge_list = sorted(edges.values(), key=lambda e: (e.source, e.target))
     # Cycle detection runs over OWNED internal systems only. Shared infra (the
-    # gateway, identity, the LMS) sits in nearly every system's path, so including
-    # it manufactures cycles that aren't harmful SOA coupling (e.g.
+    # gateway, identity) sits in nearly every system's path, so including it
+    # manufactures cycles that aren't harmful SOA coupling (e.g.
     # apisix→learn-ai→mit-learn→apisix). Restricting to internal↔internal edges
     # surfaces the real app-level cycles (e.g. micromasters↔mit-learn).
     internal_pairs = [
