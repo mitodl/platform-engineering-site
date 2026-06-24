@@ -101,11 +101,23 @@ def _merge_systems(curated: dict, slice_: dict) -> dict:
 
 @app.command
 def extract(name: str) -> None:
-    """Refresh the deterministic cross-service slice for model ``name`` from the graph."""
+    """Refresh the deterministic cross-service slice for model ``name`` from the graph.
+
+    Scoped to ``name``: the slice carries only cross-service candidate edges that
+    its ``meta.primary_system`` consumes or provides, and only cycles that system
+    participates in — not the whole-SOA edge set (which was previously written
+    identically to every ``<name>.graph.yaml``).
+    """
+    curated = _load_yaml(MODELS_DIR / f"{name}.yaml")
+    primary = (curated.get("meta") or {}).get("primary_system") or name
+
     rows = extract_mod.load_bindings()
     contracts = extract_mod.group_contracts(rows)
-    edges = extract_mod.cross_repo_edges(contracts, kinds=("endpoint",))
-    cycles = extract_mod.find_cycles(edges)
+    all_edges = extract_mod.cross_repo_edges(contracts, kinds=("endpoint",))
+    # Cycles are detected over the FULL edge set (so multi-hop cycles routed
+    # through the primary aren't lost), then filtered to ones it is part of.
+    cycles = [c for c in extract_mod.find_cycles(all_edges) if primary in c]
+    edges = extract_mod.edges_incident_to(all_edges, primary)
     slice_ = extract_mod.build_flow_slice(edges)
 
     MODELS_DIR.mkdir(parents=True, exist_ok=True)

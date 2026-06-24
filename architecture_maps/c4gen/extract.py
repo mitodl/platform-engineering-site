@@ -204,6 +204,17 @@ def find_cycles(edges: list[CrossEdge]) -> list[list[str]]:
     return [list(c) for c in sorted(cycles)]
 
 
+def edges_incident_to(edges: list[CrossEdge], system: str) -> list[CrossEdge]:
+    """Keep only edges where ``system`` (a system id, e.g. ``mit-learn``) is the
+    consumer or provider.
+
+    Scopes a model's graph slice to its OWN cross-service candidates instead of
+    the whole-SOA edge set, so each ``<name>.graph.yaml`` and its rendered
+    Dependencies page carry only edges that system participates in.
+    """
+    return [e for e in edges if system in (system_id(e.src), system_id(e.dst))]
+
+
 def build_flow_slice(edges: list[CrossEdge]) -> dict:
     """Turn cross-repo edges into a serializable ``Model``-shaped dict (systems + flows)."""
     systems: dict[str, dict] = {}
