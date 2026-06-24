@@ -75,7 +75,7 @@ def _version() -> str:
 
 
 def _load_yaml(path: Path) -> dict:
-    return yaml.safe_load(path.read_text()) or {}
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
 def _known_system_ids() -> set[str]:
@@ -110,9 +110,11 @@ def extract(name: str) -> None:
 
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     (MODELS_DIR / f"{name}.graph.yaml").write_text(
-        yaml.safe_dump(slice_, sort_keys=False, width=100)
+        yaml.safe_dump(slice_, sort_keys=False, width=100), encoding="utf-8"
     )
-    (MODELS_DIR / f"{name}.cycles.json").write_text(json.dumps(cycles, indent=2))
+    (MODELS_DIR / f"{name}.cycles.json").write_text(
+        json.dumps(cycles, indent=2), encoding="utf-8"
+    )
     print(f"extracted {len(slice_['flows'])} cross-service flows, {len(cycles)} cycles")
 
 
@@ -141,7 +143,7 @@ def _build_outputs(name: str) -> tuple[Model, dict[str, str], dict[str, str]]:
     slice_path = MODELS_DIR / f"{name}.graph.yaml"
     slice_ = _load_yaml(slice_path) if slice_path.exists() else {}
     cycles_path = MODELS_DIR / f"{name}.cycles.json"
-    cycles = json.loads(cycles_path.read_text()) if cycles_path.exists() else []
+    cycles = json.loads(cycles_path.read_text(encoding="utf-8")) if cycles_path.exists() else []
 
     merged = _merge_systems(curated, slice_)
     merged.setdefault("meta", {})["generated_at"] = (
@@ -212,9 +214,9 @@ def render(name: str) -> None:
     svg_dir.mkdir(parents=True, exist_ok=True)
 
     for dname, svg in svgs.items():
-        (svg_dir / f"{dname}.svg").write_text(svg)
+        (svg_dir / f"{dname}.svg").write_text(svg, encoding="utf-8")
     for fname, content in pages.items():
-        (out / fname).write_text(content)
+        (out / fname).write_text(content, encoding="utf-8")
     print(
         f"wrote {len(pages)} pages + {len(svgs)} SVGs to "
         f"{out.relative_to(REPO_ROOT)} (kroki: {KROKI_URL})"
@@ -242,14 +244,14 @@ def check(name: str) -> None:
         rel = path.relative_to(REPO_ROOT)
         if not path.exists():
             stale.append(f"{rel} (missing — never generated)")
-        elif _normalize_md(path.read_text()) != _normalize_md(content):
+        elif _normalize_md(path.read_text(encoding="utf-8")) != _normalize_md(content):
             stale.append(f"{rel} (content differs)")
     for dname, svg in svgs.items():
         path = out / "_diagrams" / f"{dname}.svg"
         rel = path.relative_to(REPO_ROOT)
         if not path.exists():
             stale.append(f"{rel} (missing — never generated)")
-        elif path.read_text() != svg:
+        elif path.read_text(encoding="utf-8") != svg:
             stale.append(f"{rel} (content differs)")
 
     if stale:
@@ -315,7 +317,7 @@ def landscape(check: bool = False) -> None:
             rel = path.relative_to(REPO_ROOT)
             if not path.exists():
                 stale.append(f"{rel} (missing — never generated)")
-            elif (path.read_text() if byte else _normalize_md(path.read_text())) != (
+            elif (path.read_text(encoding="utf-8") if byte else _normalize_md(path.read_text(encoding="utf-8"))) != (
                 fresh if byte else _normalize_md(fresh)
             ):
                 stale.append(f"{rel} (content differs)")
@@ -336,8 +338,8 @@ def landscape(check: bool = False) -> None:
         return
 
     (LANDSCAPE_DIR / "_diagrams").mkdir(parents=True, exist_ok=True)
-    page_path.write_text(page)
-    svg_path.write_text(svg)
+    page_path.write_text(page, encoding="utf-8")
+    svg_path.write_text(svg, encoding="utf-8")
     msg = (
         f"wrote SOA System Landscape ({len(ls.internal_ids())} systems, "
         f"{len(ls.edges)} cross-service edges, {len(ls.cycles)} cycles) to "

@@ -164,7 +164,9 @@ they collaborate and reach out to adjacent containers and systems.
         parts.append(_diagram(model, f"component-{container.id}"))
         rows = ["| Component | Technology | Responsibility |", "| --- | --- | --- |"]
         for comp in container.components:
-            rows.append(f"| **{comp.name}** | {comp.technology or ''} | {comp.description} |")
+            tech = (comp.technology or "").replace("\n", " ").replace("|", "\\|")
+            desc = comp.description.replace("\n", " ").replace("|", "\\|")
+            rows.append(f"| **{comp.name}** | {tech} | {desc} |")
         parts.append("\n".join(rows) + "\n")
     return "\n".join(parts)
 
