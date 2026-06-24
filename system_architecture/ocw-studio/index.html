@@ -4660,7 +4660,7 @@
        uv run --directory architecture_maps --group c4gen python -m c4gen render ocw-studio
      See architecture_maps/README.md. -->
 <h1 id="ocw-studio-architecture-data-flows">OCW Studio — Architecture &amp; Data Flows</h1>
-<p><em>Generated 2026-06-24 13:33 UTC · c4gen dev</em></p>
+<p><em>Generated 2026-06-24 15:49 UTC · c4gen dev</em></p>
 <p>OCW Studio is the static-site CMS for MIT OpenCourseWare. Course authors edit content in a React/TypeScript SPA backed by a Django/DRF API; content is versioned into per-site GitHub repos and uploaded media lands in S3. Publishing is delegated to Concourse CI pipelines that run Hugo (via ocw-hugo-themes / ocw-hugo-projects) to build online and offline (downloadable) static sites, sync them to preview/publish S3 buckets, and purge Fastly. Celery (Redis broker) drives content sync, Google Drive imports, video transcoding (AWS MediaConvert), YouTube upload, and 3Play transcription. On a live publish the pipeline fires an Open Catalog webhook so MIT Learn's ETL ingests the OCW site JSON from S3.</p>
 <p>This is a C4 view of <strong>OCW Studio</strong> within the MIT Open Learning SOA,
 focused on <strong>how data is created and propagated</strong> — synchronous request paths
