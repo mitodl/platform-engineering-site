@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Dependencies & Cycles — OCW Studio
 
-_Generated 2026-06-24 13:33 UTC · c4gen dev_
+_Generated 2026-06-24 15:49 UTC · c4gen dev_
 
 Coupling between OCW Studio and the rest of the SOA. The **matrix** and
 **cycles** below come from the deterministic witan-code graph extraction; the
@@ -15,8 +15,8 @@ Coupling between OCW Studio and the rest of the SOA. The **matrix** and
 
 | Depends on → | …on these systems |
 | --- | --- |
-| **concourse** | mit-learn |
 | **github** | ocw-studio |
+| **ocw-studio** | mit-learn |
 
 ## Cycles
 

@@ -230,7 +230,7 @@ flows:
   - { id: hugo-webbuckets, source: hugo-build, target: web-buckets, label: Upload built site, sync: false, protocol: S3, data: "Online site (preview/publish) + offline zips", trigger: build job, tags: [async, build] }
   - { id: hugo-fastly, source: hugo-build, target: fastly, label: Purge CDN cache, sync: false, protocol: HTTPS, data: Draft/live cache purge, trigger: after upload, tags: [async, build] }
   - { id: concourse-django, source: concourse, target: django-web, label: Pipeline status webhook, sync: false, protocol: HTTPS, data: "version, status, build_id, build_type", trigger: "webhook (pipeline)", tags: [async, webhook] }
-  - { id: concourse-mitlearn, source: concourse, target: mit-learn, label: Open Catalog publish webhook, sync: false, protocol: HTTPS, data: "site prefix + version (live publish)", trigger: "webhook (after live build)", tags: [async, webhook, cross-service] }
+  - { id: ocwpublish-mitlearn, source: celery-publish, target: mit-learn, label: Open Catalog publish (via build pipeline), sync: false, protocol: HTTPS, data: "Site prefix + version → MIT Learn ETL ingests OCW S3 JSON", trigger: "on live publish (Concourse OpenCatalogWebhookStep)", tags: [async, webhook, cross-service] }
   - { id: importbucket-storage, source: import-bucket, target: storage-bucket, label: S3 bucket sync, sync: false, protocol: S3, data: Imported content, trigger: "pipeline: every ~24h", tags: [async] }
 
   # ----- async: Google Drive import & media ---------------------------
