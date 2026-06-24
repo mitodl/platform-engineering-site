@@ -20,9 +20,12 @@ How the composition works
    one node per real system, preferring a ``repo`` URL match and falling back to a
    known id-alias table. Unresolved ids are reported, never silently double-drawn.
 4. **Shared platform & externals** — a curated allow-list of the platform/identity
-   and AI nodes that recur across models (APISIX, Keycloak, Vault, Open edX,
-   LiteLLM, an LLM provider, Fastly) is included and grouped by domain, so the
-   gateway/identity coupling is visible. All other per-model externals (payments,
+   and AI nodes that recur across models (APISIX, Keycloak, Vault, LiteLLM, an LLM
+   provider, Fastly) is included and grouped by domain, so the gateway/identity
+   coupling is visible. (Open edX used to live here too, but the two self-hosted
+   deployments are now first-class internal systems sourced from
+   ``models/mitxonline-openedx.yaml`` and ``models/xpro-openedx.yaml``.) All other
+   per-model externals (payments,
    CRM, media vendors, ETL aggregates) are dropped to keep the view under the C4
    "~20 elements" guideline.
 5. **Cycle detection** — runs over the aggregated system-level edge graph to
@@ -42,7 +45,9 @@ from .schema import Model, NodeKind, System
 # models' ``kind: internal`` union.
 INTERNAL_ORDER = [
     "mitxonline",
+    "mitxonline-openedx",
     "mitxpro",
+    "xpro-openedx",
     "micromasters",
     "ocw-studio",
     "odl-video-service",
@@ -59,7 +64,6 @@ SHARED_NODES: dict[str, str] = {
     "apisix": "Platform & Identity",
     "keycloak": "Platform & Identity",
     "vault": "Platform & Identity",
-    "openedx": "Course Delivery",
     "litellm": "AI",
     "openai": "AI",
     "fastly": "Edge",
@@ -67,6 +71,8 @@ SHARED_NODES: dict[str, str] = {
 
 # Domain grouping for the internal systems (Enterprise_Boundary in the diagram).
 INTERNAL_GROUP: dict[str, str] = {
+    "mitxonline-openedx": "Course Delivery",
+    "xpro-openedx": "Course Delivery",
     "mitxonline": "Learning Apps",
     "mitxpro": "Learning Apps",
     "micromasters": "Learning Apps",
@@ -83,8 +89,6 @@ ID_ALIASES: dict[str, str] = {
     "data-platform": "ol-data-platform",  # mit-learn's name for the platform
     "odl-video": "odl-video-service",  # data-platform's name for OVS
     "xpro": "mitxpro",  # defensive: xPRO short id
-    "open-edx": "openedx",  # odl-video-service spelling vs mitxonline/mitxpro
-    "edx-platform": "openedx",  # repo-derived id for Open edX
 }
 
 # Friendly display names + taglines for the shared nodes (the per-model
@@ -93,7 +97,6 @@ SHARED_DISPLAY: dict[str, tuple[str, str]] = {
     "apisix": ("APISIX Gateway", "Shared API gateway (OIDC via Keycloak)."),
     "keycloak": ("Keycloak (SSO)", "OAuth2/OIDC identity provider (realm olapps)."),
     "vault": ("HashiCorp Vault", "Secrets and dynamic DB credentials."),
-    "openedx": ("Open edX", "Courseware/LMS (edx-platform) behind the apps."),
     "litellm": ("LiteLLM Proxy", "OpenAI-compatible LLM/embeddings proxy."),
     "openai": ("LLM Provider", "Backing model (OpenAI-compatible) behind LiteLLM."),
     "fastly": ("Fastly CDN", "Edge TLS/caching in front of the apps."),
@@ -170,6 +173,7 @@ def compose(models: dict[str, Model]) -> Landscape:
     # repo slug, so cross-model aliases (different ids, same repo) collapse to one.
     repo_to_canonical: dict[str, str] = {}
     internal_systems: dict[str, System] = {}
+    repo_owners: dict[str, set[str]] = defaultdict(set)
     for model in models.values():
         for system in model.systems:
             if system.kind != NodeKind.INTERNAL:
@@ -177,11 +181,27 @@ def compose(models: dict[str, Model]) -> Landscape:
             internal_systems.setdefault(system.id, system)
             key = _repo_key(system.repo)
             if key:
+                repo_owners[key].add(system.id)
                 repo_to_canonical.setdefault(key, system.id)
+    # A repo shared by more than one internal system (the two self-hosted Open edX
+    # deployments both fork mitodl/edx-platform) is an ambiguous canonicalization
+    # key: never repo-match onto it, so external references to that fork (e.g. ODL
+    # Video's edxval target) stay external and drop, rather than collapsing onto an
+    # arbitrary deployment. Such systems are still resolved by id via canonical_id.
+    for key, owners in repo_owners.items():
+        if len(owners) > 1:
+            repo_to_canonical.pop(key, None)
 
     def canonical_id(system: System | None, raw_id: str) -> str:
         if raw_id in internal_systems:
             return raw_id
+        # An id that resolves (via ``system_of``) to a known internal system —
+        # e.g. a container of the primary system, or a peer referenced by a
+        # different model — canonicalizes to that system's id. Checked before
+        # repo-matching so two internal systems that share a repo fork (the two
+        # self-hosted Open edX deployments) never collapse onto each other.
+        if system is not None and system.id in internal_systems:
+            return system.id
         key = _repo_key(system.repo if system else None)
         if key and key in repo_to_canonical:
             return repo_to_canonical[key]
@@ -235,8 +255,8 @@ def compose(models: dict[str, Model]) -> Landscape:
 
     edge_list = sorted(edges.values(), key=lambda e: (e.source, e.target))
     # Cycle detection runs over OWNED internal systems only. Shared infra (the
-    # gateway, identity, the LMS) sits in nearly every system's path, so including
-    # it manufactures cycles that aren't harmful SOA coupling (e.g.
+    # gateway, identity) sits in nearly every system's path, so including it
+    # manufactures cycles that aren't harmful SOA coupling (e.g.
     # apisix→learn-ai→mit-learn→apisix). Restricting to internal↔internal edges
     # surfaces the real app-level cycles (e.g. micromasters↔mit-learn).
     internal_pairs = [

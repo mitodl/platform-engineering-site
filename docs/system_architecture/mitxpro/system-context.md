@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # System Context — MITx Pro
 
-_Generated 2026-06-24 13:33 UTC · c4gen dev_
+_Generated 2026-06-24 16:33 UTC · c4gen dev_
 
 The widest view: **MITx Pro** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
@@ -25,7 +25,7 @@ into its [container view](container.md).
 
 | System | Role |
 | --- | --- |
-| **Open edX** | LMS/courseware instance. OAuth2/social-auth identity source for xPRO and the target for user, enrollment, grade, and certificate provisioning. |
+| **xPRO Open edX** | Self-hosted xPRO Open edX deployment (courses.xpro.mit.edu). OAuth2/social-auth (ol-oauth2) identity source for xPRO and the target for user, enrollment, grade, and certificate provisioning. |
 | **CyberSource** | Secure Acceptance hosted payment processor (signed redirect + callback). |
 | **HubSpot** | CRM; receives contact, product, and deal (order) syncs via mitol-hubspot-api. |
 | **Mailgun** | Transactional and bulk enrollment email delivery (via anymail). |

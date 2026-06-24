@@ -77,13 +77,14 @@ systems:
         shape: container
 
   # ---- platform / shared infra --------------------------------------
-  - id: openedx
-    name: Open edX
+  - id: xpro-openedx
+    name: xPRO Open edX
     kind: external
     context_group: Courseware
     description: >-
-      LMS/courseware instance. OAuth2/social-auth identity source for xPRO and the
-      target for user, enrollment, grade, and certificate provisioning.
+      Self-hosted xPRO Open edX deployment (courses.xpro.mit.edu). OAuth2/social-auth
+      (ol-oauth2) identity source for xPRO and the target for user, enrollment,
+      grade, and certificate provisioning.
   - id: cybersource
     name: CyberSource
     kind: external
@@ -144,8 +145,8 @@ flows:
   - { id: django-recaptcha, source: django-web, target: recaptcha, label: Verify token, sync: true, protocol: HTTPS, data: reCAPTCHA verification, trigger: on register }
 
   # ----- auth / SSO with Open edX -------------------------------------
-  - { id: django-openedx-oauth, source: django-web, target: openedx, label: SSO + provision user, sync: true, protocol: OAuth2/HTTPS, data: "social-auth login, create edX user + token", trigger: on login / signup, tags: [auth, cross-service] }
-  - { id: django-openedx-enroll, source: django-web, target: openedx, label: Enroll learner, sync: true, protocol: REST, data: Course-run enrollment, trigger: on order fulfilled, tags: [cross-service] }
+  - { id: django-openedx-oauth, source: django-web, target: xpro-openedx, label: SSO + provision user, sync: true, protocol: OAuth2/HTTPS, data: "social-auth login, create edX user + token", trigger: on login / signup, tags: [auth, cross-service] }
+  - { id: django-openedx-enroll, source: django-web, target: xpro-openedx, label: Enroll learner, sync: true, protocol: REST, data: Course-run enrollment, trigger: on order fulfilled, tags: [cross-service] }
 
   # ----- payment (CyberSource Secure Acceptance) ----------------------
   - { id: learner-cybersource, source: learner, target: cybersource, label: Pay (hosted), sync: true, protocol: HTTPS, data: Signed Secure Acceptance payload, trigger: on checkout }
@@ -154,8 +155,8 @@ flows:
 
   # ----- async: Open edX courseware sync ------------------------------
   - { id: beat-redis, source: celery, target: redis, label: Schedule periodic tasks, sync: false, protocol: Redis, data: RedBeat schedule entries, trigger: "beat", tags: [async] }
-  - { id: celery-openedx-repair, source: celery, target: openedx, label: Retry enroll / repair users, sync: false, protocol: REST, data: "Failed enrollments, faulty edX users", trigger: "beat: periodic", tags: [async, cross-service] }
-  - { id: celery-openedx-grades, source: celery, target: openedx, label: Pull grades + run data, sync: false, protocol: REST, data: "Grades, course-run titles/dates", trigger: "beat: daily cron", tags: [async, cross-service] }
+  - { id: celery-openedx-repair, source: celery, target: xpro-openedx, label: Retry enroll / repair users, sync: false, protocol: REST, data: "Failed enrollments, faulty edX users", trigger: "beat: periodic", tags: [async, cross-service] }
+  - { id: celery-openedx-grades, source: celery, target: xpro-openedx, label: Pull grades + run data, sync: false, protocol: REST, data: "Grades, course-run titles/dates", trigger: "beat: daily cron", tags: [async, cross-service] }
   - { id: celery-certs, source: celery, target: postgres, label: Generate certificates, sync: false, protocol: SQL, data: Course-run grades + certificates, trigger: "beat: daily cron", tags: [async] }
 
   # ----- async: external course vendor sync ---------------------------
@@ -189,7 +190,7 @@ scenarios:
       - { source: learner, target: cybersource, label: "Hosted payment (redirect)", sync: true }
       - { source: cybersource, target: django-web, label: "Signed payment callback", sync: true }
       - { source: django-web, target: postgres, label: "Fulfill order", sync: true }
-      - { source: django-web, target: openedx, label: "Enroll learner", sync: true }
+      - { source: django-web, target: xpro-openedx, label: "Enroll learner", sync: true }
       - { source: celery, target: hubspot, label: "Sync deal", sync: false }
       - { source: celery, target: mailgun, label: "Email receipt", sync: false }
 
@@ -202,7 +203,7 @@ scenarios:
     steps:
       - { source: learner, target: nginx, label: "Login / signup", sync: true }
       - { source: nginx, target: django-web, label: "social-auth pipeline", sync: true }
-      - { source: django-web, target: openedx, label: "OAuth2 + create edX user/token", sync: true }
+      - { source: django-web, target: xpro-openedx, label: "OAuth2 + create edX user/token", sync: true }
       - { source: django-web, target: postgres, label: "Persist CoursewareUser + auth", sync: true }
 
   - id: courseware-sync
@@ -214,7 +215,7 @@ scenarios:
       from report APIs on a daily cron.
     steps:
       - { source: celery, target: redis, label: "RedBeat triggers tasks", sync: false }
-      - { source: celery, target: openedx, label: "Repair enroll / pull grades", sync: false }
+      - { source: celery, target: xpro-openedx, label: "Repair enroll / pull grades", sync: false }
       - { source: celery, target: external-vendors, label: "Sync external courses", sync: false }
       - { source: celery, target: postgres, label: "Generate certificates", sync: false }
 
