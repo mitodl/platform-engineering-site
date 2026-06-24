@@ -2,8 +2,9 @@
 
 A **repeatable, hybrid** process for generating and maintaining
 [C4 model](https://c4model.com/) data-flow documentation from a structured model.
-The output lands in the docs site under
-`docs/application_specific_guides/<system>/architecture/`.
+The output lands in the docs site under the **System Architecture** nav section
+(`docs/system_architecture/<system>/`), with a composed top-level System Landscape
+at `docs/system_architecture/landscape.md` that drills into each system.
 
 Diagrams are **C4-PlantUML rendered to SVG by [Kroki](https://kroki.io/)** at
 generation time (we moved off Mermaid C4 — its Graphviz layout handles our

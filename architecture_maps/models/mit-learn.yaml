@@ -45,6 +45,57 @@ systems:
         description: REST API, auth, search orchestration, admin, webhooks, vector-search endpoints.
         shape: container
         source: { repo: https://github.com/mitodl/mit-learn, path: main }
+        # Expanded to C4 Component level (the only container so expanded so far).
+        # These are the major DRF app groupings inside the Django service, derived
+        # from the mit-learn repo's apps (learning_resources, channels, profiles,
+        # vector_search, authentication) and the container's own description.
+        components:
+          - id: drf-api
+            name: Learning Resources API
+            technology: Django REST Framework viewsets
+            description: >-
+              Serves resources, learning paths, user lists, and channels over REST;
+              the surface Next.js and peer services call.
+            relationships:
+              - { target: auth, label: Authenticate request }
+              - { target: search-orchestration, label: Run search query }
+              - { target: postgres, label: Read/write records, technology: SQL }
+          - id: auth
+            name: Auth & Sessions
+            technology: django-allauth / DRF auth
+            description: >-
+              Validates APISIX/Keycloak-issued sessions and API tokens, resolves the
+              request user, and enforces object permissions.
+            relationships:
+              - { target: apisix, label: Trust gateway-issued identity }
+              - { target: postgres, label: Load user & permissions, technology: SQL }
+          - id: search-orchestration
+            name: Search Orchestration
+            technology: opensearch-dsl + vector-search service
+            description: >-
+              Builds full-text queries, blends keyword and vector (semantic) results,
+              and hydrates hits from Postgres.
+            relationships:
+              - { target: opensearch, label: Full-text query, technology: HTTPS }
+              - { target: qdrant, label: Vector similarity, technology: HTTPS }
+              - { target: postgres, label: Hydrate records, technology: SQL }
+          - id: webhooks
+            name: Content Webhook Handlers
+            technology: DRF views (HMAC-verified)
+            description: >-
+              Receives HMAC-signed content-ingest webhooks from the data platform and
+              hands work to the ETL trigger layer.
+            relationships:
+              - { target: etl-trigger, label: Request ingest }
+          - id: etl-trigger
+            name: Task / ETL Trigger
+            technology: Celery .delay() producers
+            description: >-
+              Enqueues ETL, indexing, and embedding tasks onto the broker for the
+              Celery workers to consume asynchronously.
+            relationships:
+              - { target: redis, label: Enqueue task, sync: false, technology: Celery }
+              - { target: celery-edx, label: Trigger ingest, sync: false }
       - id: celery-edx
         name: Celery — edx_content queue
         technology: Celery worker

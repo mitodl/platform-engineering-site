@@ -67,13 +67,36 @@ class SourceRef(Base):
     path: str | None = None
 
 
+class ComponentRel(Base):
+    """A directed edge in the Component view.
+
+    ``target`` is either a sibling component id (intra-container) or the id of an
+    adjacent container / external system the component talks to. Resolution is
+    local to the Component view (puml.render_component_puml); these edges are never
+    drawn at Context/Container/Dynamic level, so they cannot create phantom nodes
+    there.
+    """
+
+    target: str
+    label: str = ""
+    sync: bool = True
+    technology: str | None = None
+
+
 class Component(Base):
-    """Reserved for a future Component-level (C4) projection. Unused by current views."""
+    """A C4 Component: a grouping of related functionality inside one container.
+
+    Populated only for containers a maintainer chose to expand to Component level;
+    the Component view (puml.render_component_puml + pages.page_component) is a
+    projection over these, mirroring how Context/Container/Dynamic project the same
+    model. Containers with no ``components`` simply get no Component diagram/page.
+    """
 
     id: str
     name: str
     technology: str | None = None
     description: str = ""
+    relationships: list[ComponentRel] = Field(default_factory=list)
 
 
 class Container(Base):
@@ -189,6 +212,18 @@ class Model(Base):
             if any(c.id == node_id for c in system.containers):
                 return system
         return None
+
+    def container_of(self, container_id: str) -> Container | None:
+        for system in self.systems:
+            for container in system.containers:
+                if container.id == container_id:
+                    return container
+        return None
+
+    def containers_with_components(self) -> list[Container]:
+        return [
+            c for s in self.systems for c in s.containers if c.components
+        ]
 
     def node_label(self, node_id: str) -> str:
         for actor in self.actors:

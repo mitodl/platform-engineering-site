@@ -1,0 +1,374 @@
+meta:
+  name: OL Data Platform
+  primary_system: ol-data-platform
+  api_container: dagster-webserver
+  has_infrastructure_references: false
+  description: >-
+    The OL Data Platform is the ingest & ETL backbone of the MIT Open Learning
+    SOA. Dagster (webserver + daemon + per-domain code locations) orchestrates
+    Airbyte and dlt ingestion of every SOA app's Postgres/MySQL/forum database
+    and tracking logs into a raw Iceberg lake on S3; dbt transforms raw → staging
+    → intermediate → marts/dimensional in Trino/Starburst (catalog
+    `ol_data_lake_production`); Superset reads the marts and OpenMetadata
+    catalogs the warehouse and its lineage. The platform also pushes data back to
+    the apps — today via HMAC-signed content webhooks to MIT Learn. The strategic
+    TARGET (tagged `target` below) is to relocate heavy ETL that currently runs
+    inside each app's Celery workers (edX sync, catalog ingest, certificate
+    generation, CRM sync) onto this platform.
+
+actors:
+  - id: analyst
+    name: Analyst / Data Consumer
+    description: Explores marts and dashboards in Superset; queries the lake via Trino.
+  - id: data-engineer
+    name: Data Engineer
+    description: Authors Dagster assets and dbt models; operates the platform via the Dagster UI.
+
+systems:
+  # ---- primary system ------------------------------------------------
+  - id: ol-data-platform
+    name: OL Data Platform
+    kind: internal
+    repo: https://github.com/mitodl/ol-data-platform
+    description: Dagster/dbt/Trino ingest & ETL platform feeding the Open Learning SOA.
+    containers:
+      - id: dagster-webserver
+        name: Dagster Webserver
+        technology: Dagster 1.13.9 (dagster-webserver, K8s)
+        description: >-
+          Serves the Dagster UI/GraphQL and loads each code location's gRPC
+          server. Entry point for operators and the launch surface for jobs.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: dg_deployments/Dockerfile.dagster-k8s }
+      - id: dagster-daemon
+        name: Dagster Daemon
+        technology: Dagster daemon (DagsterDaemonScheduler + QueuedRunCoordinator)
+        description: >-
+          Runs schedules, sensors, and the run queue. Backed by pooled Postgres
+          run/event/schedule storage to avoid connection exhaustion.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: dg_deployments/local/dagster.yaml }
+      - id: code-lakehouse
+        name: Code Location — lakehouse
+        technology: Dagster code location (dg project)
+        description: >-
+          The hub. Builds one sync_and_stage job+schedule per Airbyte connection,
+          runs the full dbt project, pushes Superset datasets, and runs nightly
+          Iceberg maintenance.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: dg_projects/lakehouse/lakehouse/definitions.py }
+      - id: code-openedx
+        name: Code Locations — openedx / edxorg / legacy_openedx
+        technology: Dagster code locations (dg projects)
+        description: >-
+          Ingest Open edX course archives, tracking logs, and forum mongodumps
+          from S3/GCS/MySQL; normalize tracking logs (DuckDB); POST content
+          webhooks to MIT Learn after course exports.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: dg_projects/openedx/openedx/assets/openedx.py }
+      - id: code-domain
+        name: Code Locations — canvas / learning_resources / b2b_organization / student_risk_probability
+        technology: Dagster code locations (dg projects)
+        description: >-
+          Domain pipelines: Canvas course exports, Sloan Exec-Ed + ODL Video API
+          assets, per-org B2B CSV exports to S3, and a logistic-regression student
+          cheating-risk scoring asset.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: dg_projects/student_risk_probability/student_risk_probability/assets/risk_probability.py }
+      - id: code-data-platform
+        name: Code Location — data_platform
+        technology: Dagster code location (dg project)
+        description: >-
+          Platform-level: Slack run-failure alerting and the OpenMetadata
+          ingestion asset (Trino metadata harvest workflow).
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: dg_projects/data_platform/data_platform/assets/metadata/databases.py }
+      - id: airbyte
+        name: Airbyte
+        technology: Airbyte OSS (api-airbyte.odl.mit.edu)
+        description: >-
+          Connector platform extracting SOA app Postgres/MySQL, forum, and SaaS
+          sources into the raw Iceberg layer. Connections are orchestrated as
+          Dagster assets from the lakehouse location.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: dg_projects/lakehouse/lakehouse/resources/airbyte.py }
+      - id: dlt
+        name: dlt extractors (data_loading)
+        technology: dlt → DuckDB → Iceberg/Glue
+        description: >-
+          Custom data-load-tool sources for edX.org S3 TSVs, MIT Climate, MIT
+          Professional Ed, Open Learning Library, and podcast RSS into raw.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: dg_projects/data_loading/data_loading/defs }
+      - id: dbt
+        name: dbt (ol_dbt)
+        technology: dbt-trino (profile open_learning)
+        description: >-
+          Transforms raw → staging → intermediate → marts/dimensional/reporting,
+          executed by Trino. Run from Dagster via DbtCliResource; emits docs
+          artifacts for OpenMetadata.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: src/ol_dbt }
+      - id: trino
+        name: Trino / Starburst Galaxy
+        technology: Starburst Galaxy (Trino) — catalog ol_data_lake_production
+        description: >-
+          Query/compute engine over the Iceberg lake. dbt and Superset run their
+          SQL here; host mitol-ol-data-lake-production.trino.galaxy.starburst.io.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: src/ol_dbt/profiles.yml }
+      - id: datalake
+        name: S3 / Iceberg Data Lake
+        technology: AWS S3 + Apache Iceberg (Glue catalogs)
+        description: >-
+          The lake: landing zone (ol-data-lake-landing-zone), raw Iceberg
+          (ol_warehouse_*_raw), then staging/intermediate/dimensional/mart layers.
+        shape: db
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: dg_projects/data_loading/data_loading/.dlt/config.toml }
+      - id: dagster-postgres
+        name: Dagster Postgres
+        technology: PostgreSQL (pooled storage classes)
+        description: >-
+          Dagster run, event-log, and schedule storage. Uses PooledPostgresRunStorage
+          to cap connections.
+        shape: db
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: packages/ol-orchestrate-lib/src/ol_orchestrate/lib/postgres }
+      - id: superset
+        name: Apache Superset
+        technology: Superset (Trino + StarRocks datasources)
+        description: >-
+          BI layer. Dagster syncs dbt mart/reporting/dimensional models as Superset
+          datasets; analysts build dashboards with row-level-security policies.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: src/ol_superset }
+      - id: openmetadata
+        name: OpenMetadata
+        technology: OpenMetadata (catalog + lineage)
+        description: >-
+          Data catalog. Harvests Trino metadata directly and ingests dbt artifacts
+          from S3 to build column- and table-level lineage and PII tags.
+        shape: container
+        source: { repo: https://github.com/mitodl/ol-data-platform, path: dg_projects/data_platform/data_platform/assets/metadata/databases.py }
+
+  # ---- shared platform / infra --------------------------------------
+  - id: vault
+    name: HashiCorp Vault
+    kind: external
+    context_group: Platform & Identity
+    description: Source-DB and SaaS credentials; every Dagster code location authenticates at startup.
+
+  # ---- SOA app peers (ingest sources & reverse-ETL targets) ----------
+  - id: mit-learn
+    name: MIT Learn
+    kind: external
+    repo: https://github.com/mitodl/mit-learn
+    context_group: SOA Apps
+    description: >-
+      Discovery platform. Its Postgres is ingested into raw; the platform POSTs
+      HMAC-signed content/OVS webhooks back into its Django API to trigger ingest.
+  - id: mitxonline
+    name: MITx Online
+    kind: external
+    repo: https://github.com/mitodl/mitxonline
+    context_group: SOA Apps
+    description: >-
+      Course/enrollment platform. App Postgres + its Open edX MySQL/forum are
+      ingested. Heavy edX-sync/certificate ETL still runs in its own Celery workers.
+  - id: mitxpro
+    name: MITx Pro (xPRO)
+    kind: external
+    repo: https://github.com/mitodl/mitxpro
+    context_group: SOA Apps
+    description: App Postgres + Open edX MySQL/forum ingested into raw.
+  - id: micromasters
+    name: MicroMasters
+    kind: external
+    repo: https://github.com/mitodl/micromasters
+    context_group: SOA Apps
+    description: App Postgres ingested into raw (courses, programs, certificates).
+  - id: ocw-studio
+    name: OCW Studio
+    kind: external
+    repo: https://github.com/mitodl/ocw-studio
+    context_group: SOA Apps
+    description: App Postgres ingested into raw; OCW site JSON also flows via S3.
+  - id: odl-video
+    name: ODL Video Service
+    kind: external
+    repo: https://github.com/mitodl/odl-video-service
+    context_group: SOA Apps
+    description: Video/transcript metadata ingested via API; OVS webhooks pushed back.
+  - id: bootcamps
+    name: Bootcamps
+    kind: external
+    context_group: SOA Apps
+    description: Bootcamps app Postgres ingested into raw.
+
+  # ---- aggregate external sources (enumerated on data-flows) ---------
+  - id: edxorg-archives
+    name: edX.org Archives & BigQuery
+    kind: external
+    context_group: External Sources
+    description: >-
+      edX.org course tarballs/tracking logs from GCS/S3 and Emeritus/IRX BigQuery
+      exports — landed via dlt and Airbyte.
+  - id: saas-sources
+    name: SaaS Sources (Salesforce / Mailgun / feeds)
+    kind: external
+    context_group: External Sources
+    description: >-
+      Salesforce and Mailgun via Airbyte; MIT Climate, MIT Professional Ed, Open
+      Learning Library, and podcast RSS via dlt.
+  - id: hightouch
+    name: Hightouch
+    kind: external
+    context_group: Reverse-ETL
+    description: >-
+      Third-party reverse-ETL SaaS. Reads curated models from the warehouse
+      (Starburst) and syncs rows into operational systems — notably writing
+      ProgramCertificate records into MIT Learn's Postgres. Operated outside this
+      repo (no Hightouch code lives here); it connects to the warehouse as an
+      external consumer.
+
+flows:
+  # ----- operator / consumer (synchronous) ----------------------------
+  - { id: de-webserver, source: data-engineer, target: dagster-webserver, label: Operate pipelines, sync: true, protocol: HTTPS, data: Launch/inspect runs (UI/GraphQL), trigger: on request }
+  - { id: analyst-superset, source: analyst, target: superset, label: Build dashboards, sync: true, protocol: HTTPS, data: Charts over marts, trigger: on request }
+  - { id: analyst-trino, source: analyst, target: trino, label: Ad-hoc SQL, sync: true, protocol: SQL/LDAP, data: Lake queries, trigger: on request }
+  - { id: superset-trino, source: superset, target: trino, label: Dataset queries, sync: true, protocol: SQL, data: Mart/dimensional rows, trigger: on request }
+  - { id: vault-platform, source: vault, target: dagster-daemon, label: Source-DB + SaaS creds, sync: true, protocol: HTTPS, data: Dynamic credentials, trigger: on startup / renewal, tags: [config] }
+
+  # ----- control plane ------------------------------------------------
+  - { id: webserver-daemon, source: dagster-webserver, target: dagster-daemon, label: Schedules + run queue, sync: true, protocol: gRPC, data: Run/schedule state, trigger: continuous }
+  - { id: daemon-pg, source: dagster-daemon, target: dagster-postgres, label: Run/event/schedule storage, sync: true, protocol: SQL, data: Run + event-log records, trigger: continuous }
+  - { id: webserver-lakehouse, source: dagster-webserver, target: code-lakehouse, label: Load definitions, sync: true, protocol: gRPC, data: Asset/job graph, trigger: continuous }
+  - { id: daemon-lakehouse, source: dagster-daemon, target: code-lakehouse, label: Trigger schedules/sensors, sync: false, protocol: gRPC, data: Materialize requests, trigger: "schedule: 6/12/24h per connection", tags: [async] }
+  - { id: daemon-openedx, source: dagster-daemon, target: code-openedx, label: Trigger Open edX jobs, sync: false, protocol: gRPC, data: Materialize requests, trigger: "schedule + S3/GCS sensors", tags: [async] }
+  - { id: daemon-domain, source: dagster-daemon, target: code-domain, label: Trigger domain jobs, sync: false, protocol: gRPC, data: Materialize requests, trigger: "schedule + sensors", tags: [async] }
+  - { id: daemon-dataplatform, source: dagster-daemon, target: code-data-platform, label: Trigger metadata ingest, sync: false, protocol: gRPC, data: OpenMetadata workflow runs, trigger: scheduled, tags: [async] }
+
+  # ----- ingest: SOA app DBs -> raw (Airbyte) -------------------------
+  - { id: airbyte-mitlearn, source: airbyte, target: mit-learn, label: Extract app Postgres, sync: false, protocol: Postgres CDC/JDBC, data: "raw__mitlearn__app__postgres__*", trigger: "schedule: every 24h", tags: [async, etl, cross-service] }
+  - { id: airbyte-mitxonline, source: airbyte, target: mitxonline, label: Extract app + Open edX DBs, sync: false, protocol: Postgres/MySQL JDBC, data: "raw__mitxonline__{app__postgres,openedx__mysql}__*", trigger: "schedule: every 6/12h", tags: [async, etl, cross-service] }
+  - { id: airbyte-mitxpro, source: airbyte, target: mitxpro, label: Extract app + Open edX DBs, sync: false, protocol: Postgres/MySQL JDBC, data: "raw__xpro__{app__postgres,openedx__mysql}__*", trigger: "schedule: every 12h", tags: [async, etl, cross-service] }
+  - { id: airbyte-micromasters, source: airbyte, target: micromasters, label: Extract app Postgres, sync: false, protocol: Postgres JDBC, data: "raw__micromasters__app__postgres__*", trigger: "schedule: daily", tags: [async, etl, cross-service] }
+  - { id: airbyte-ocwstudio, source: airbyte, target: ocw-studio, label: Extract app Postgres, sync: false, protocol: Postgres JDBC, data: "raw__ocw__studio__*", trigger: "schedule: daily", tags: [async, etl, cross-service] }
+  - { id: airbyte-bootcamps, source: airbyte, target: bootcamps, label: Extract app Postgres, sync: false, protocol: Postgres JDBC, data: "raw__bootcamps__app__postgres__*", trigger: "schedule: daily", tags: [async, etl, cross-service] }
+  - { id: airbyte-saas, source: airbyte, target: saas-sources, label: Extract SaaS sources, sync: false, protocol: REST/JDBC, data: "Salesforce, Mailgun, BigQuery", trigger: "schedule: 6/24h", tags: [async, etl] }
+  - { id: airbyte-datalake, source: airbyte, target: datalake, label: Land raw Iceberg, sync: false, protocol: S3/Iceberg, data: "raw__<source>__* (with _airbyte_* cols)", trigger: per sync, tags: [async, etl] }
+
+  # ----- ingest: archives & feeds (Open edX, dlt) ---------------------
+  - { id: openedx-archives, source: code-openedx, target: edxorg-archives, label: Pull archives + tracking logs, sync: false, protocol: S3/GCS, data: "OLX tarballs, tracking logs, forum mongodumps", trigger: "schedule + sensors", tags: [async, etl] }
+  - { id: openedx-datalake, source: code-openedx, target: datalake, label: Land + normalize to raw, sync: false, protocol: S3/Iceberg, data: "raw__<deployment>__openedx__*, tracking logs", trigger: during ingestion, tags: [async, etl] }
+  - { id: dlt-saas, source: dlt, target: saas-sources, label: Extract feeds/sheets, sync: false, protocol: REST/CSV/RSS, data: "MIT Climate, MITPE, OLL, podcasts", trigger: "schedule", tags: [async, etl] }
+  - { id: dlt-edxorg, source: dlt, target: edxorg-archives, label: Read edX.org S3 TSVs, sync: false, protocol: S3, data: edX.org course/program tables, trigger: "schedule", tags: [async, etl] }
+  - { id: dlt-datalake, source: dlt, target: datalake, label: Land raw Iceberg, sync: false, protocol: S3/Iceberg, data: "raw__edxorg__s3__*, raw__mitpe/oll/podcast", trigger: per load, tags: [async, etl] }
+  - { id: domain-datalake, source: code-domain, target: datalake, label: Land Canvas/Sloan/OVS + exports, sync: false, protocol: S3/Iceberg, data: "course exports, API assets, B2B CSVs", trigger: "schedule + sensors", tags: [async, etl] }
+
+  # ----- transform: dbt over Trino ------------------------------------
+  - { id: lakehouse-dbt, source: code-lakehouse, target: dbt, label: Run dbt build, sync: false, protocol: dbt CLI, data: Model selection + run results, trigger: "schedule (after sync_and_stage)", tags: [async] }
+  - { id: dbt-trino, source: dbt, target: trino, label: Execute model SQL, sync: false, protocol: SQL, data: "raw -> staging -> intermediate -> marts/dimensional", trigger: during dbt run, tags: [async, etl] }
+  - { id: trino-datalake, source: trino, target: datalake, label: Read/write Iceberg, sync: false, protocol: Iceberg, data: All warehouse layers, trigger: during query, tags: [async] }
+  - { id: lakehouse-superset, source: code-lakehouse, target: superset, label: Sync mart datasets, sync: false, protocol: HTTPS, data: "mart/reporting/dimensional datasets + RLS", trigger: "after dbt build", tags: [async] }
+
+  # ----- reverse-ETL / content webhooks back into apps (CURRENT) ------
+  - { id: openedx-mitlearn-webhook, source: code-openedx, target: mit-learn, label: Content-files webhook (HMAC), sync: false, protocol: HTTPS, data: "POST /api/v1/webhooks/content_files/", trigger: after course export, tags: [async, webhook, cross-service], provenance: { derived_from: code, contract_kind: endpoint, contract_key: "/api/v1/webhooks/content_files/", repo: https://github.com/mitodl/ol-data-platform, path: packages/ol-orchestrate-lib/src/ol_orchestrate/resources/learn_api.py } }
+  - { id: domain-mitlearn-ovs, source: code-domain, target: mit-learn, label: OVS-video webhook (HMAC), sync: false, protocol: HTTPS, data: "POST /api/v1/webhooks/ovs_videos/", trigger: on OVS video ingest, tags: [async, webhook, cross-service], provenance: { derived_from: code, contract_kind: endpoint, contract_key: "/api/v1/webhooks/ovs_videos/", repo: https://github.com/mitodl/ol-data-platform, path: dg_projects/learning_resources/learning_resources/assets/ovs_videos.py } }
+  - { id: trino-hightouch, source: trino, target: hightouch, label: Read curated models, sync: false, protocol: SQL/Trino, data: Marts/dimensional rows (e.g. program certificates), trigger: "Hightouch sync schedule", tags: [async, reverse-etl], provenance: { derived_from: manual } }
+  - { id: hightouch-mitlearn, source: hightouch, target: mit-learn, label: Reverse-ETL write (Hightouch), sync: false, protocol: SQL, data: ProgramCertificate rows → Postgres, trigger: "Hightouch sync schedule", tags: [async, reverse-etl, cross-service], provenance: { derived_from: manual } }
+  - { id: domain-odlvideo, source: code-domain, target: odl-video, label: Pull video + transcripts, sync: false, protocol: REST, data: OVS video metadata, trigger: "schedule: every 10m", tags: [async, etl, cross-service] }
+
+  # ----- catalog / lineage harvesting ---------------------------------
+  - { id: metadata-trino, source: code-data-platform, target: trino, label: Harvest metadata, sync: false, protocol: SQL, data: Table/column schema, trigger: scheduled, tags: [async] }
+  - { id: metadata-openmetadata, source: code-data-platform, target: openmetadata, label: Push metadata workflow, sync: false, protocol: HTTPS, data: "Tables, columns, PII tags", trigger: scheduled, tags: [async] }
+  - { id: dbt-artifacts-s3, source: code-lakehouse, target: datalake, label: Upload dbt artifacts, sync: false, protocol: S3, data: "manifest/catalog/run_results.json", trigger: "after dbt build", tags: [async] }
+  - { id: openmetadata-artifacts, source: openmetadata, target: datalake, label: Ingest dbt artifacts, sync: false, protocol: S3, data: dbt lineage + descriptions, trigger: scheduled, tags: [async] }
+
+  # ----- TARGET: relocate app Celery ETL onto the platform ------------
+  - { id: target-mitxonline-etl, source: ol-data-platform, target: mitxonline, label: "TARGET: own edX-sync/certificate ETL", sync: false, protocol: Dagster, data: "ETL today in MITx Online Celery workers", trigger: planned, tags: [async, target, cross-service] }
+  - { id: target-mitlearn-etl, source: ol-data-platform, target: mit-learn, label: "TARGET: own catalog/resource ETL", sync: false, protocol: Dagster, data: "ETL today in MIT Learn edx_content Celery workers", trigger: planned, tags: [async, target, cross-service] }
+
+scenarios:
+  - id: ingest-to-raw
+    title: "App-database ingest into the raw lake (asynchronous)"
+    description: >-
+      The Dagster daemon triggers the per-connection sync_and_stage schedule in
+      the lakehouse location, which materializes the Airbyte assets. Airbyte
+      extracts a SOA app's Postgres/MySQL and lands raw Iceberg tables (carrying
+      _airbyte_* columns) in the lake on S3. Evidenced by OpenMetadata raw tables
+      raw__mitlearn__app__postgres__* and raw__mitxonline__openedx__mysql__*.
+    steps:
+      - { source: dagster-daemon, target: code-lakehouse, label: "Trigger sync_and_stage", sync: false }
+      - { source: code-lakehouse, target: airbyte, label: "Materialize Airbyte assets", sync: false }
+      - { source: airbyte, target: mitxonline, label: "Extract app + Open edX DBs", sync: false }
+      - { source: airbyte, target: datalake, label: "Land raw Iceberg tables", sync: false }
+
+  - id: transform-to-marts
+    title: "dbt transform raw to dimensional marts (asynchronous)"
+    description: >-
+      After staging, the lakehouse location runs the dbt project; dbt executes
+      its model DAG in Trino, reading raw and writing staging → intermediate →
+      dimensional/marts in the Iceberg lake. OpenMetadata lineage confirms
+      dim_course_run integrates raw__{micromasters,mitxonline,xpro}__app__postgres,
+      raw__mitx__openedx__mysql, raw__edxorg__s3 and raw__irx__edxorg__bigquery.
+    steps:
+      - { source: code-lakehouse, target: dbt, label: "Run dbt build", sync: false }
+      - { source: dbt, target: trino, label: "Execute model SQL", sync: false }
+      - { source: trino, target: datalake, label: "Write staging/intermediate/marts", sync: false }
+      - { source: code-lakehouse, target: superset, label: "Sync mart datasets", sync: false }
+
+  - id: reverse-etl-webhook
+    title: "Content webhook back into MIT Learn (asynchronous)"
+    description: >-
+      Today the platform's reverse path is HMAC-signed content webhooks (not
+      Hightouch — Hightouch lives on the mit-learn side). After an Open edX course
+      export, the openedx location POSTs to MIT Learn's
+      /api/v1/webhooks/content_files/ to trigger ingest of the new content files.
+    steps:
+      - { source: dagster-daemon, target: code-openedx, label: "Trigger course export", sync: false }
+      - { source: code-openedx, target: datalake, label: "Stage exported content", sync: false }
+      - { source: code-openedx, target: mit-learn, label: "POST content_files webhook (HMAC)", sync: false }
+
+  - id: catalog-lineage
+    title: "OpenMetadata catalog & lineage harvest (asynchronous)"
+    description: >-
+      The data_platform location runs the OpenMetadata metadata workflow against
+      Trino, while the lakehouse location uploads dbt docs artifacts to S3 that
+      OpenMetadata ingests — together producing the cross-system table/column
+      lineage and PII classification seen in the catalog.
+    steps:
+      - { source: code-data-platform, target: trino, label: "Harvest table metadata", sync: false }
+      - { source: code-data-platform, target: openmetadata, label: "Push metadata workflow", sync: false }
+      - { source: code-lakehouse, target: datalake, label: "Upload dbt artifacts", sync: false }
+      - { source: openmetadata, target: datalake, label: "Ingest dbt lineage artifacts", sync: false }
+
+  - id: target-consolidation
+    title: "TARGET: consolidate app ETL onto the platform"
+    description: >-
+      Goal state: heavy ETL currently embedded in each SOA app's Celery workers
+      (MITx Online edX-sync & certificate generation; MIT Learn edx_content
+      catalog/resource ingest) is relocated onto Dagster on this platform, leaving
+      the apps to serve requests. These edges are tagged `target` and are not yet
+      implemented.
+    steps:
+      - { source: ol-data-platform, target: mitxonline, label: "Own edX-sync/certificate ETL", sync: false }
+      - { source: ol-data-platform, target: mit-learn, label: "Own catalog/resource ETL", sync: false }
+
+etl_sources:
+  - { name: MIT Learn (app Postgres), transport: Airbyte Postgres, cadence: every 24h, data: "raw__mitlearn__app__postgres__*", source_ref: { repo: https://github.com/mitodl/ol-data-platform, path: dg_projects/lakehouse/lakehouse/definitions.py } }
+  - { name: MITx Online (app Postgres), transport: Airbyte Postgres, cadence: every 6h, data: "raw__mitxonline__app__postgres__*", source_ref: { path: dg_projects/lakehouse/lakehouse/definitions.py } }
+  - { name: MITx Online (Open edX MySQL), transport: Airbyte MySQL, cadence: every 12h, data: "raw__mitxonline__openedx__mysql__*", source_ref: { path: dg_projects/lakehouse/lakehouse/definitions.py } }
+  - { name: xPRO (app Postgres + Open edX MySQL), transport: Airbyte, cadence: every 12h, data: "raw__xpro__{app__postgres,openedx__mysql}__*", source_ref: { path: dg_projects/lakehouse/lakehouse/definitions.py } }
+  - { name: MicroMasters (app Postgres), transport: Airbyte Postgres, cadence: daily, data: "raw__micromasters__app__postgres__*", source_ref: { path: dg_projects/lakehouse/lakehouse/definitions.py } }
+  - { name: OCW Studio (app Postgres), transport: Airbyte Postgres, cadence: daily, data: "raw__ocw__studio__*", source_ref: { path: dg_projects/lakehouse/lakehouse/definitions.py } }
+  - { name: Bootcamps (app Postgres), transport: Airbyte Postgres, cadence: daily, data: "raw__bootcamps__app__postgres__*", source_ref: { path: dg_projects/lakehouse/lakehouse/definitions.py } }
+  - { name: Forums (mitx/mitxonline/xpro), transport: Airbyte / mongodump, cadence: daily, data: forum discussion data, source_ref: { path: dg_projects/legacy_openedx/legacy_openedx/ops/open_edx.py } }
+  - { name: Tracking logs (S3), transport: Airbyte S3 + DuckDB normalize, cadence: scheduled, data: Open edX tracking events, source_ref: { path: dg_projects/openedx/openedx/assets/openedx.py } }
+  - { name: edX.org archives + tracking logs, transport: GCS/S3 → dlt, cadence: scheduled, data: "raw__edxorg__s3__*", source_ref: { path: dg_projects/data_loading/data_loading/defs } }
+  - { name: Emeritus / IRX BigQuery, transport: Airbyte BigQuery, cadence: scheduled, data: "raw__irx__edxorg__bigquery__*", source_ref: { path: dg_projects/lakehouse/lakehouse/definitions.py } }
+  - { name: Salesforce, transport: Airbyte REST, cadence: every 24h, data: CRM objects, source_ref: { path: dg_projects/lakehouse/lakehouse/definitions.py } }
+  - { name: Mailgun, transport: Airbyte REST, cadence: every 6h, data: email events, source_ref: { path: dg_projects/lakehouse/lakehouse/definitions.py } }
+  - { name: ODL Video Service, transport: REST API (Dagster asset), cadence: every 10m, data: video + transcript metadata, source_ref: { path: dg_projects/learning_resources/learning_resources/assets/ovs_videos.py } }
+  - { name: Canvas, transport: Canvas API common-cartridge export → S3, cadence: every 6h, data: course exports, source_ref: { path: dg_projects/canvas } }
+  - { name: Sloan Executive Ed, transport: OAuth REST API (Dagster asset), cadence: daily, data: courses, source_ref: { path: dg_projects/learning_resources } }
+  - { name: MIT Climate / MITPE / OLL / podcasts, transport: dlt (REST/CSV/RSS), cadence: scheduled, data: catalog + feed content, fragile: true, source_ref: { path: dg_projects/data_loading/data_loading/defs } }

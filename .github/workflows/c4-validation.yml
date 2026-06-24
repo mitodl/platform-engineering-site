@@ -1,0 +1,92 @@
+---
+# C4 architecture-map validation: render every curated model against a Kroki
+# service container and fail if (a) any model errors / any diagram fails to
+# produce a valid <svg> (render validation), or (b) the committed generated
+# pages/SVGs are stale vs a fresh render (drift-check). Both are done in one pass
+# by `c4gen check` (see architecture_maps/c4gen/cli.py).
+#
+# Diagrams are C4-PlantUML rendered to SVG by Kroki (the repo moved off Mermaid
+# C4 — see architecture_maps/README.md), so this validates C4-PlantUML/Kroki, not
+# Mermaid.
+name: c4-validation
+
+on:
+  pull_request:
+    paths:
+      - architecture_maps/**
+      - docs/system_architecture/**
+      - .github/workflows/c4-validation.yml
+
+jobs:
+  c4-validate:
+    name: C4 render + drift check
+    runs-on: ubuntu-24.04
+
+    services:
+      # Kroki turns C4-PlantUML into SVG. Pinned to the SAME digest as
+      # architecture_maps/docker-compose.yml: the drift-check byte-compares SVGs,
+      # so a different PlantUML/Graphviz build would emit different bytes and
+      # report false drift. Bump both in lockstep (and re-render) when updating.
+      kroki:
+        image: yuzutech/kroki@sha256:c16303ecd8ae840a6e3a76efa53468836c6297eeb7b7316845c3b24e8dbd0398
+        ports:
+          - 8000:8000
+
+    env:
+      C4GEN_KROKI_URL: http://localhost:8000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Wait for Kroki
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf "$C4GEN_KROKI_URL/health" > /dev/null; then
+              echo "Kroki is up"; exit 0
+            fi
+            echo "waiting for Kroki ($i)…"; sleep 2
+          done
+          echo "Kroki did not become healthy"; exit 1
+
+      - name: Render + drift check every curated model
+        run: |
+          set -euo pipefail
+          fail=0
+          for model in architecture_maps/models/*.yaml; do
+            case "$model" in
+              *.graph.yaml) continue ;;  # generated slice, not a curated model
+            esac
+            name="$(basename "$model" .yaml)"
+            echo "::group::c4gen check $name"
+            if ! uv run --directory architecture_maps --group c4gen \
+                python -m c4gen check "$name"; then
+              fail=1
+            fi
+            echo "::endgroup::"
+          done
+          if [ "$fail" -ne 0 ]; then
+            echo "::error::C4 validation failed — see drift/render output above." \
+              "Regenerate with 'python -m c4gen render <system>' against a local" \
+              "Kroki and commit the result."
+            exit 1
+          fi
+
+      - name: Render + drift check the SOA System Landscape
+        run: |
+          set -euo pipefail
+          echo "::group::c4gen landscape --check"
+          if ! uv run --directory architecture_maps --group c4gen \
+              python -m c4gen landscape --check; then
+            echo "::error::SOA System Landscape is stale or failed to render." \
+              "Regenerate with 'python -m c4gen landscape' and commit the result."
+            exit 1
+          fi
+          echo "::endgroup::"

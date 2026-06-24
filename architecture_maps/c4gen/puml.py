@@ -13,6 +13,7 @@ but emits C4-PlantUML text. The Mermaid renderer is kept for reference.
 
 from __future__ import annotations
 
+from .landscape import Landscape
 from .render import (
     _group_alias,
     _owner_id,
@@ -40,6 +41,40 @@ def _title(text: str) -> str:
 def _rel(src: str, tgt: str, label: str, sync: bool) -> str:
     tag = "" if sync else ', $tags="async"'
     return f"Rel({src}, {tgt}, {q(_short(label, 50))}{tag})"
+
+
+# --------------------------------------------------------------------------
+# System Landscape (composed from every per-system model)
+# --------------------------------------------------------------------------
+def render_landscape_puml(landscape: Landscape, links: dict[str, str] | None = None) -> str:
+    """Render the composed SOA System Landscape.
+
+    Internal systems and the curated shared platform/AI nodes are drawn grouped by
+    domain (``Enterprise_Boundary``); aggregated cross-service edges carry a
+    representative label and keep sync/async styling. See ``landscape.compose``.
+    """
+    links = links or {}
+    out = [
+        "@startuml",
+        "!include <C4/C4_Context>",
+        _ASYNC_TAG,
+        "title System Landscape - MIT Open Learning SOA",
+    ]
+    for group, node_ids in landscape.groups().items():
+        out.append(f"Enterprise_Boundary({_group_alias(group)}, {q(group)}) {{")
+        for nid in node_ids:
+            node = landscape.node(nid)
+            macro = "System" if node.internal else "System_Ext"
+            link = links.get(nid)
+            link_arg = f', $link="{link}"' if link else ""
+            out.append(
+                f"  {macro}({alias(nid)}, {q(node.name)}, {q(_tagline(node.description))}{link_arg})"
+            )
+        out.append("}")
+    for edge in landscape.edges:
+        out.append(_rel(alias(edge.source), alias(edge.target), edge.summary(), edge.sync))
+    out.append("@enduml")
+    return "\n".join(out)
 
 
 # --------------------------------------------------------------------------
@@ -71,7 +106,7 @@ def render_context_puml(model: Model, links: dict[str, str] | None = None) -> st
         if s.context_group:
             continue
         macro = "System" if s.kind == "internal" else "System_Ext"
-        link = links.get(s.name)
+        link = links.get(s.id)
         link_arg = f', $link="{link}"' if link else ""
         out.append(f"{macro}({alias(s.id)}, {q(s.name)}, {q(_tagline(s.description))}{link_arg})")
     for label, members in groups.items():
@@ -99,7 +134,8 @@ def render_context_puml(model: Model, links: dict[str, str] | None = None) -> st
 # --------------------------------------------------------------------------
 # Container
 # --------------------------------------------------------------------------
-def render_container_puml(model: Model) -> str:
+def render_container_puml(model: Model, links: dict[str, str] | None = None) -> str:
+    links = links or {}
     primary = next((s for s in model.systems if s.id == model.meta.primary_system), None)
     if primary is None:
         raise ValueError(f"primary_system {model.meta.primary_system!r} not in model")
@@ -120,15 +156,23 @@ def render_container_puml(model: Model) -> str:
     out.append(f"System_Boundary({alias(primary.id)}_b, {q(primary.name)}) {{")
     for c in primary.containers:
         macro = _SHAPE_MACRO[c.shape]
+        link = links.get(c.id)
+        link_arg = f', $link="{link}"' if link else ""
         out.append(
-            f"  {macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or '')}, {q(_tagline(c.description))})"
+            f"  {macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or '')}, "
+            f"{q(_tagline(c.description))}{link_arg})"
         )
     out.append("}")
 
     for system in model.systems:
         if system.id == primary.id or system.id not in touch:
             continue
-        out.append(f"System_Ext({alias(system.id)}, {q(system.name)}, {q(_tagline(system.description))})")
+        link = links.get(system.id)
+        link_arg = f', $link="{link}"' if link else ""
+        out.append(
+            f"System_Ext({alias(system.id)}, {q(system.name)}, "
+            f"{q(_tagline(system.description))}{link_arg})"
+        )
 
     entry = model.meta.api_container
     seen: set[tuple[str, str, str]] = set()
@@ -152,6 +196,76 @@ def render_container_puml(model: Model) -> str:
         out.append(_rel(alias(s), alias(t), flow.label, flow.sync))
     out.append("@enduml")
     return "\n".join(out)
+
+
+# --------------------------------------------------------------------------
+# Component (one per container that declares components)
+# --------------------------------------------------------------------------
+def render_component_puml(model: Model, container_id: str) -> str:
+    """Zoom into one container's ``components`` (C4 Component level).
+
+    Components are drawn inside a ``Container_Boundary``; their ``relationships``
+    are drawn as edges to sibling components (intra-container) or out to adjacent
+    containers / external systems, which are declared as the surrounding context.
+    This is a projection over the same model — it never alters the other views.
+    """
+    container = model.container_of(container_id)
+    if container is None:
+        raise ValueError(f"no container {container_id!r}")
+    if not container.components:
+        raise ValueError(f"container {container_id!r} declares no components")
+
+    component_ids = {comp.id for comp in container.components}
+    # External targets a component points at that are not sibling components:
+    # either another container in the model or an external system.
+    neighbors: list[str] = []
+    for comp in container.components:
+        for rel in comp.relationships:
+            if rel.target not in component_ids and rel.target not in neighbors:
+                neighbors.append(rel.target)
+
+    out = [
+        "@startuml",
+        "!include <C4/C4_Component>",
+        _ASYNC_TAG,
+        f"title Component diagram - {_title(container.name)}",
+    ]
+
+    for nid in neighbors:
+        out.append(_declare_context_node(model, nid))
+
+    boundary = f"{alias(container.id)}_b"
+    out.append(f"Container_Boundary({boundary}, {q(container.name)}) {{")
+    for comp in container.components:
+        out.append(
+            f"  Component({alias(comp.id)}, {q(comp.name)}, {q(comp.technology or '')}, "
+            f"{q(_tagline(comp.description))})"
+        )
+    out.append("}")
+
+    for comp in container.components:
+        for rel in comp.relationships:
+            label = rel.label
+            if rel.technology:
+                label = f"{label} [{rel.technology}]" if label else rel.technology
+            out.append(_rel(alias(comp.id), alias(rel.target), label, rel.sync))
+    out.append("@enduml")
+    return "\n".join(out)
+
+
+def _declare_context_node(model: Model, node_id: str) -> str:
+    """Declare a neighbor of an expanded container: a sibling container keeps its
+    shape; a system/actor is drawn as its Context-level box; anything unknown
+    falls back to a generic external system so the edge still resolves."""
+    for system in model.systems:
+        for c in system.containers:
+            if c.id == node_id:
+                macro = _SHAPE_MACRO[c.shape]
+                return (
+                    f"{macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or '')}, "
+                    f"{q(_tagline(c.description))})"
+                )
+    return _declare_node(model, node_id)
 
 
 # --------------------------------------------------------------------------
