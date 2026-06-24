@@ -16,8 +16,7 @@
   function onArchPage() {
     // Architecture pages live under /system_architecture/; also match a nested
     // /architecture/ segment for backward compatibility with the prior layout.
-    var p = location.pathname;
-    return p.indexOf("/system_architecture/") !== -1 || p.indexOf("/architecture/") !== -1;
+    return /\/(system_)?architecture\//.test(location.pathname);
   }
 
   function enhance(box) {
