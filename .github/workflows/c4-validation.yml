@@ -15,6 +15,10 @@ on:
     paths:
       - architecture_maps/**
       - docs/system_architecture/**
+      # The cache-bust ?v= check reads mkdocs.yml + hashes these JS assets, so a
+      # PR touching only one of them must still trigger this workflow.
+      - mkdocs.yml
+      - docs/javascripts/**
       - .github/workflows/c4-validation.yml
 
 jobs:
@@ -45,6 +49,9 @@ jobs:
 
       - name: Set up Python
         run: uv python install 3.12
+
+      - name: Verify JS cache-bust fingerprints
+        run: python3 architecture_maps/scripts/update_asset_versions.py --check
 
       - name: Wait for Kroki
         run: |

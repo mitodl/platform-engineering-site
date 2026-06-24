@@ -24,8 +24,12 @@ extra_css:
 extra_javascript:
   # Pan/zoom for the C4 architecture diagrams (drill-down is native PlantUML
   # links). svg-pan-zoom is vendored and loaded before c4-zoom.js.
-  - javascripts/vendor/svg-pan-zoom.min.js
-  - javascripts/c4-zoom.js
+  # The ?v= is the file's sha256[:8] — a cache-busting fingerprint so a JS change
+  # is served fresh (browser + CDN) instead of stale. Regenerate after editing
+  # either file with: python architecture_maps/scripts/update_asset_versions.py
+  # (CI fails via --check if a committed ?v= doesn't match the file's content.)
+  - javascripts/vendor/svg-pan-zoom.min.js?v=f4637103
+  - javascripts/c4-zoom.js?v=c53b4ad7
 nav:
   - Home: index.md
   - Getting Started & How-Tos:
