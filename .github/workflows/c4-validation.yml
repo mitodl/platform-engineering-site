@@ -78,3 +78,15 @@ jobs:
               "Kroki and commit the result."
             exit 1
           fi
+
+      - name: Render + drift check the SOA System Landscape
+        run: |
+          set -euo pipefail
+          echo "::group::c4gen landscape --check"
+          if ! uv run --directory architecture_maps --group c4gen \
+              python -m c4gen landscape --check; then
+            echo "::error::SOA System Landscape is stale or failed to render." \
+              "Regenerate with 'python -m c4gen landscape' and commit the result."
+            exit 1
+          fi
+          echo "::endgroup::"

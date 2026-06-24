@@ -13,6 +13,7 @@ but emits C4-PlantUML text. The Mermaid renderer is kept for reference.
 
 from __future__ import annotations
 
+from .landscape import Landscape
 from .render import (
     _group_alias,
     _owner_id,
@@ -40,6 +41,40 @@ def _title(text: str) -> str:
 def _rel(src: str, tgt: str, label: str, sync: bool) -> str:
     tag = "" if sync else ', $tags="async"'
     return f"Rel({src}, {tgt}, {q(_short(label, 50))}{tag})"
+
+
+# --------------------------------------------------------------------------
+# System Landscape (composed from every per-system model)
+# --------------------------------------------------------------------------
+def render_landscape_puml(landscape: Landscape, links: dict[str, str] | None = None) -> str:
+    """Render the composed SOA System Landscape.
+
+    Internal systems and the curated shared platform/AI nodes are drawn grouped by
+    domain (``Enterprise_Boundary``); aggregated cross-service edges carry a
+    representative label and keep sync/async styling. See ``landscape.compose``.
+    """
+    links = links or {}
+    out = [
+        "@startuml",
+        "!include <C4/C4_Context>",
+        _ASYNC_TAG,
+        "title System Landscape - MIT Open Learning SOA",
+    ]
+    for group, node_ids in landscape.groups().items():
+        out.append(f"Enterprise_Boundary({_group_alias(group)}, {q(group)}) {{")
+        for nid in node_ids:
+            node = landscape.node(nid)
+            macro = "System" if node.internal else "System_Ext"
+            link = links.get(nid)
+            link_arg = f', $link="{link}"' if link else ""
+            out.append(
+                f"  {macro}({alias(nid)}, {q(node.name)}, {q(_tagline(node.description))}{link_arg})"
+            )
+        out.append("}")
+    for edge in landscape.edges:
+        out.append(_rel(alias(edge.source), alias(edge.target), edge.summary(), edge.sync))
+    out.append("@enduml")
+    return "\n".join(out)
 
 
 # --------------------------------------------------------------------------

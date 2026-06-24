@@ -27,6 +27,7 @@ import cyclopts
 import yaml
 
 from . import extract as extract_mod
+from . import landscape as landscape_mod
 from . import pages as pages_mod
 from . import puml as puml_mod
 from .schema import Flow, Model
@@ -249,6 +250,79 @@ def build(name: str) -> None:
     """Extract then render in one step."""
     extract(name)
     render(name)
+
+
+LANDSCAPE_DIR = DOCS_BASE / "soa-landscape" / "architecture"
+
+
+def _build_landscape() -> tuple[str, str, landscape_mod.Landscape]:
+    """Compose the SOA System Landscape from all curated models.
+
+    Returns ``(page_markdown, svg, landscape)``. Renders in memory only — shared by
+    ``landscape`` (which writes) and ``landscape --check`` (which diffs).
+    """
+    models: dict[str, Model] = {}
+    for path in sorted(MODELS_DIR.glob("*.yaml")):
+        if path.name.endswith(".graph.yaml"):
+            continue  # generated slice, not a curated model
+        models[path.stem] = Model.model_validate(_load_yaml(path))
+
+    ls = landscape_mod.compose(models)
+    generated_at = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M UTC")
+    svg = _kroki_svg(puml_mod.render_landscape_puml(ls))
+    page = pages_mod.page_landscape(ls, generated_at, _version())
+    return page, svg, ls
+
+
+@app.command
+def landscape(check: bool = False) -> None:
+    """Compose + render the SOA System Landscape from every per-system model.
+
+    Aggregates cross-service flows to the system level, reconciles cross-model ids,
+    and runs SOA-wide cycle detection. With ``--check``, verify the committed page
+    and SVG match a fresh render (drift-check) instead of writing them.
+    """
+    page, svg, ls = _build_landscape()
+    page_path = LANDSCAPE_DIR / "landscape.md"
+    svg_path = LANDSCAPE_DIR / "_diagrams" / "system-landscape.svg"
+
+    if check:
+        stale: list[str] = []
+        for path, fresh, byte in ((page_path, page, False), (svg_path, svg, True)):
+            rel = path.relative_to(REPO_ROOT)
+            if not path.exists():
+                stale.append(f"{rel} (missing — never generated)")
+            elif (path.read_text() if byte else _normalize_md(path.read_text())) != (
+                fresh if byte else _normalize_md(fresh)
+            ):
+                stale.append(f"{rel} (content differs)")
+        if stale:
+            print("DRIFT: committed SOA System Landscape is stale vs a fresh render:")
+            for s in stale:
+                print(f"  - {s}")
+            print(
+                "\nRegenerate and commit:\n"
+                "  uv run --directory architecture_maps --group c4gen python -m c4gen landscape"
+            )
+            sys.exit(1)
+        print(
+            f"OK: committed SOA System Landscape matches a fresh render "
+            f"({len(ls.internal_ids())} systems, {len(ls.edges)} edges, "
+            f"{len(ls.cycles)} cycles; kroki: {KROKI_URL})."
+        )
+        return
+
+    (LANDSCAPE_DIR / "_diagrams").mkdir(parents=True, exist_ok=True)
+    page_path.write_text(page)
+    svg_path.write_text(svg)
+    msg = (
+        f"wrote SOA System Landscape ({len(ls.internal_ids())} systems, "
+        f"{len(ls.edges)} cross-service edges, {len(ls.cycles)} cycles) to "
+        f"{page_path.relative_to(REPO_ROOT)} (kroki: {KROKI_URL})"
+    )
+    if ls.unresolved:
+        msg += f"\n  note: {len(ls.unresolved)} unresolved peer reference(s) — see page caveat"
+    print(msg)
 
 
 def main() -> None:

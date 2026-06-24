@@ -93,6 +93,7 @@ nav:
           - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
       - JupyterHub:
           - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
+      - SOA System Landscape: application_specific_guides/soa-landscape/architecture/landscape.md
       - MIT Learn:
           - Architecture & Data Flows: application_specific_guides/mit-learn/architecture/index.md
           - System Context: application_specific_guides/mit-learn/architecture/system-context.md
