@@ -1,21 +1,24 @@
 meta:
-  name: Open edX
-  primary_system: openedx
+  name: MITx Online Open edX
+  primary_system: mitxonline-openedx
   api_container: lms
   description: >-
-    Open edX (edx-platform) is the courseware/LMS that delivers MIT Open
-    Learning's courses. MIT runs operationalized Open edX instances (the
-    mitxonline and xPRO/residential stacks, from the mitodl edx-platform fork
-    with custom themes, social-auth-mitxpro, edx-sysadmin, and rapid-response
-    XBlocks). Two Django services share the data tier: the LMS (edxapp) serves
+    The MITx Online Open edX deployment — the self-hosted courseware/LMS that
+    delivers MITx Online / MIT Learn courses at courses.learn.mit.edu (k8s
+    namespace mitxonline-openedx). Built from the mitodl edx-platform fork with
+    MIT custom themes, social-auth-mitxpro, edx-sysadmin, and rapid-response
+    XBlocks. Two Django services share the data tier: the LMS (edxapp) serves
     learners and exposes the REST APIs the SOA apps drive (enrollment, grades,
-    certificates, edxval video, OAuth2/third-party-auth SSO), while Studio/CMS
-    authors courses. A forum service (cs_comments_service) and Notes API back
-    discussion and annotations; edx-search indexes courseware into
-    Elasticsearch. MySQL is the relational system of record; MongoDB holds the
-    modulestore (course structure) and forum content. Celery workers run
-    grading, certificate generation, bulk email, and course import/export to S3
-    (OLX), which downstream ETL ingests.
+    certificates, OAuth2/third-party-auth SSO), while Studio/CMS authors courses.
+    A forum service (cs_comments_service) and Notes API back discussion and
+    annotations; edx-search indexes courseware into Elasticsearch. MySQL is the
+    relational system of record; MongoDB holds the modulestore (course structure)
+    and forum content. Celery workers run grading, certificate generation, bulk
+    email, and course import/export to S3 (OLX). This deployment is the OAuth2
+    IdP for the mitxonline app (provider mitxonline-oauth2) and itself federates
+    learner identity to Keycloak (sso.ol.mit.edu); MITx Online pushes
+    enrollments and receives enrollment/certificate webhooks, while MicroMasters
+    batch-reads enrollments/grades/certs from it.
 
 actors:
   - id: learner
@@ -27,11 +30,13 @@ actors:
 
 systems:
   # ---- primary system ------------------------------------------------
-  - id: openedx
-    name: Open edX
+  - id: mitxonline-openedx
+    name: MITx Online Open edX
     kind: internal
-    repo: https://github.com/openedx/edx-platform
-    description: Courseware/LMS platform (edx-platform) delivering MIT Open Learning courses.
+    repo: https://github.com/mitodl/edx-platform
+    description: >-
+      Self-hosted Open edX (mitodl edx-platform fork) at courses.learn.mit.edu
+      (ns mitxonline-openedx) delivering MITx Online / MIT Learn courses.
     containers:
       - id: lms
         name: LMS (edxapp)
@@ -39,10 +44,10 @@ systems:
         description: >-
           Learner-facing courseware runtime + the REST API surface the SOA apps
           drive: enrollment (/api/enrollment/v1/, /bulk_enroll/v1/), grades
-          (/api/grades/v1/), certificates, user accounts, edxval video
-          (/api/val/v0/), and the OAuth2 / third-party-auth provider.
+          (/api/grades/v1/), certificates, user accounts, and the OAuth2 /
+          third-party-auth provider. Served at courses.learn.mit.edu.
         shape: container
-        source: { repo: https://github.com/openedx/edx-platform, path: lms }
+        source: { repo: https://github.com/mitodl/edx-platform, path: lms }
       - id: cms
         name: Studio / CMS
         technology: Django (cms.djangoapp, Python 3.11)
@@ -50,16 +55,17 @@ systems:
           Authoring environment for courses (Studio). Writes course structure to
           the modulestore and drives course import/export (OLX) and video upload.
         shape: container
-        source: { repo: https://github.com/openedx/edx-platform, path: cms }
+        source: { repo: https://github.com/mitodl/edx-platform, path: cms }
       - id: oauth-provider
         name: OAuth2 / Third-party-auth Provider
         technology: django-oauth-toolkit + social-auth (in LMS)
         description: >-
           Identity surface — OAuth2 authorization/token endpoints and the
-          social-auth backend the apps log in against. Open edX is the IdP for
-          xPRO and MicroMasters and issues the JWTs the apps use for API calls.
+          social-auth backend (mitxonline-oauth2) the MITx Online app logs in
+          against. Issues the JWTs the apps use for API calls and federates
+          learner login to Keycloak.
         shape: container
-        source: { repo: https://github.com/openedx/edx-platform, path: openedx/core/djangoapps/oauth_dispatch }
+        source: { repo: https://github.com/mitodl/edx-platform, path: openedx/core/djangoapps/oauth_dispatch }
       - id: forum
         name: Forum (cs_comments_service)
         technology: Ruby / Sinatra (forum) + MongoDB
@@ -84,11 +90,11 @@ systems:
           Async grading, certificate generation, bulk course email, course
           import/export, and bulk enrollment processing. Brokered by Redis.
         shape: container
-        source: { repo: https://github.com/openedx/edx-platform, path: lms/celery.py }
+        source: { repo: https://github.com/mitodl/edx-platform, path: lms/celery.py }
       - id: mysql
         name: MySQL
         technology: MySQL 8 (RDS in prod)
-        description: Relational system of record — users, enrollments, grades, certificates, edxval, OAuth tokens.
+        description: Relational system of record — users, enrollments, grades, certificates, OAuth tokens.
         shape: db
       - id: mongodb
         name: MongoDB
@@ -114,51 +120,39 @@ systems:
     kind: external
     context_group: Platform & Identity
     description: >-
-      OAuth2/OIDC identity provider. The mitxonline-stack Open edX federates
-      learner identity to Keycloak; Open edX in turn is an OAuth2 IdP to the apps.
+      OAuth2/OIDC identity provider (sso.ol.mit.edu). This Open edX deployment
+      federates learner identity to Keycloak; it is in turn the OAuth2 IdP to
+      the MITx Online app.
   - id: mailgun
     name: Mailgun
     kind: external
     context_group: Comms
     description: Transactional and bulk course email delivery (ACE / django-anymail).
 
-  # ---- SOA peers (apps that drive Open edX) -------------------------
+  # ---- SOA peers (apps that drive this deployment) ------------------
   - id: mitxonline
     name: MITx Online
     kind: external
     repo: https://github.com/mitodl/mitxonline
     description: >-
-      Enrollment/ecommerce platform paired with the mitxonline Open edX stack.
-      Pushes user/enrollment/email-settings and reads grades; receives
-      enrollment + certificate webhooks from Open edX.
-  - id: mitxpro
-    name: MITx Pro
-    kind: external
-    repo: https://github.com/mitodl/mitxpro
-    description: >-
-      Professional-ed ecommerce platform. Authenticates learners via Open edX
-      (OAuth2/social-auth), provisions edX users + tokens, enrolls, and pulls
-      grades/course-run data.
+      Enrollment/ecommerce platform paired with this Open edX deployment
+      (OPENEDX_API_BASE_URL=https://courses.learn.mit.edu). Authenticates via the
+      mitxonline-oauth2 provider, pushes user/enrollment/email-settings and reads
+      grades; receives enrollment + certificate webhooks back.
   - id: micromasters
     name: MicroMasters
     kind: external
     repo: https://github.com/mitodl/micromasters
     description: >-
-      Program/credential platform. Uses Open edX as an OAuth2 IdP and batch-syncs
-      enrollments, certificates, and current grades via edx-api-client.
-  - id: odl-video-service
-    name: ODL Video Service
-    kind: external
-    repo: https://github.com/mitodl/odl-video-service
-    description: >-
-      Video platform. Registers transcoded video metadata (HLS/MP4 CloudFront
-      URLs) into Open edX's edxval video API so videos play inside courses.
+      Program/credential platform. Batch-reads enrollments, certificates, and
+      current grades from this deployment (MITXONLINE_BASE_URL=https://courses.learn.mit.edu)
+      via edx-api-client to drive program dashboards.
 
 flows:
   # ----- synchronous: learner & author request path ------------------
   - { id: learner-lms, source: learner, target: lms, label: Take course, sync: true, protocol: HTTPS, data: "Courseware, problems, video, progress", trigger: on request }
   - { id: author-cms, source: course-author, target: cms, label: Author course, sync: true, protocol: HTTPS, data: "Course structure, problems, video uploads", trigger: on request }
-  - { id: lms-mysql, source: lms, target: mysql, label: Read/write, sync: true, protocol: SQL, data: "Users, enrollments, grades, certificates, edxval", trigger: on request }
+  - { id: lms-mysql, source: lms, target: mysql, label: Read/write, sync: true, protocol: SQL, data: "Users, enrollments, grades, certificates", trigger: on request }
   - { id: lms-mongodb, source: lms, target: mongodb, label: Read course structure, sync: true, protocol: Mongo, data: Modulestore course content, trigger: on request }
   - { id: lms-redis, source: lms, target: redis, label: Cache + enqueue tasks, sync: true, protocol: Redis, data: "Cached responses, task messages", trigger: on request }
   - { id: lms-forum, source: lms, target: forum, label: Threads / comments, sync: true, protocol: HTTPS, data: Forum discussion content, trigger: on request }
@@ -172,7 +166,7 @@ flows:
 
   # ----- identity: Open edX as OAuth2 IdP & Keycloak federation ------
   - { id: oauth-mysql, source: oauth-provider, target: mysql, label: Issue/verify tokens, sync: true, protocol: SQL, data: "OAuth2 apps, tokens, social-auth", trigger: on auth }
-  - { id: openedx-keycloak, source: oauth-provider, target: keycloak, label: Federate identity (OIDC), sync: true, protocol: OIDC, data: "Login redirect, userinfo (mitxonline stack)", trigger: on login, tags: [auth] }
+  - { id: openedx-keycloak, source: oauth-provider, target: keycloak, label: Federate identity (OIDC), sync: true, protocol: OIDC, data: "Login redirect, userinfo (sso.ol.mit.edu)", trigger: on login, tags: [auth] }
 
   # ----- async: grading, certs, email --------------------------------
   - { id: celery-redis, source: celery, target: redis, label: Consume task queue, sync: false, protocol: Redis, data: Task messages, trigger: "queue", tags: [async] }
@@ -182,22 +176,14 @@ flows:
   - { id: celery-content-s3, source: celery, target: content-s3, label: Course export + report files, sync: false, protocol: S3, data: "OLX export archives, grade/cert report CSVs", trigger: on export / report task, tags: [async] }
   - { id: cms-content-s3, source: cms, target: content-s3, label: Store assets / exports, sync: true, protocol: S3, data: "Uploaded assets, course export archives", trigger: on upload / export }
 
-  # ----- cross-service: MITx Online (enroll/grades + webhooks) --------
+  # ----- cross-service: MITx Online (SSO + enroll/grades + webhooks) --
+  - { id: mitxonline-oauth, source: mitxonline, target: oauth-provider, label: SSO (mitxonline-oauth2), sync: true, protocol: OAuth2, data: "Authorize/token, edX user info", trigger: on login, tags: [auth, cross-service] }
   - { id: mitxonline-lms, source: mitxonline, target: lms, label: Create user / enroll / read grades, sync: true, protocol: REST OAuth2, data: "User+auth creation, enrollments, email settings, current grades", trigger: on enroll / on request, tags: [cross-service] }
   - { id: lms-mitxonline, source: lms, target: mitxonline, label: Enrollment + certificate webhooks, sync: true, protocol: HTTPS, data: edX enrollment & certificate events, trigger: webhook, tags: [cross-service, webhook] }
   - { id: mitxonline-celery-lms, source: mitxonline, target: lms, label: Retry enrollments / repair users, sync: false, protocol: REST OAuth2, data: "Failed enrollments, user/token repair, email opt-in", trigger: "beat: enrollment-retry (MITx Online)", tags: [async, cross-service] }
 
-  # ----- cross-service: MITx Pro (SSO + enroll + grade sync) ----------
-  - { id: mitxpro-oauth, source: mitxpro, target: oauth-provider, label: SSO + provision user (social-auth), sync: true, protocol: OAuth2/HTTPS, data: "social-auth login, create edX user + token", trigger: on login / signup, tags: [auth, cross-service] }
-  - { id: mitxpro-lms-enroll, source: mitxpro, target: lms, label: Enroll learner, sync: true, protocol: REST, data: Course-run enrollment, trigger: on order fulfilled, tags: [cross-service] }
-  - { id: mitxpro-celery-lms, source: mitxpro, target: lms, label: Pull grades + run data / repair, sync: false, protocol: REST, data: "Grades, course-run titles/dates, failed-enroll repair", trigger: "beat: daily cron (MITx Pro)", tags: [async, cross-service] }
-
-  # ----- cross-service: MicroMasters (OAuth2 IdP + batch refresh) -----
-  - { id: micromasters-oauth, source: micromasters, target: oauth-provider, label: OAuth2 login + user info, sync: true, protocol: OAuth2, data: "Authorize/token, edX user info", trigger: on login, tags: [auth, cross-service] }
-  - { id: micromasters-celery-lms, source: micromasters, target: lms, label: Refresh enrollments/grades/certs, sync: false, protocol: REST OAuth2, data: "edx-api-client: enrollments, certificates, current grades", trigger: "beat: Fridays every 6h (MicroMasters)", tags: [async, etl, cross-service] }
-
-  # ----- cross-service: ODL Video Service -> edxval -------------------
-  - { id: ovs-lms-edxval, source: odl-video-service, target: lms, label: Register video metadata (edxval), sync: false, protocol: REST (JWT), data: "edxval video records (HLS+MP4 URLs) via /api/val/v0/videos/", trigger: on sync action / update, tags: [async, cross-service] }
+  # ----- cross-service: MicroMasters (batch enroll/grade/cert reads) --
+  - { id: micromasters-celery-lms, source: micromasters, target: lms, label: Refresh enrollments/grades/certs, sync: false, protocol: REST OAuth2, data: "edx-api-client: enrollments, certificates, current grades (courses.learn.mit.edu)", trigger: "beat: Fridays every 6h (MicroMasters)", tags: [async, etl, cross-service] }
 
 scenarios:
   - id: take-course
@@ -228,12 +214,13 @@ scenarios:
       - { source: cms, target: search, label: "Index content", sync: true }
 
   - id: enroll-grade-sync
-    title: "App enrollment, grade & certificate sync (cross-service, mixed)"
+    title: "MITx Online enrollment, grade & certificate sync (cross-service, mixed)"
     description: >-
-      MITx Online pushes user creation and enrollments to the LMS REST API and
-      reads grades; the LMS posts enrollment/certificate webhooks back. A periodic
-      MITx Online Celery task retries failed enrollments and repairs faulty edX
-      users. xPRO and MicroMasters similarly pull grades/certificates on a batch.
+      MITx Online pushes user creation and enrollments to the LMS REST API at
+      courses.learn.mit.edu and reads grades; the LMS posts enrollment/certificate
+      webhooks back. A periodic MITx Online Celery task retries failed enrollments
+      and repairs faulty edX users. MicroMasters batch-reads enrollments,
+      certificates, and current grades on a Friday cadence.
     steps:
       - { source: mitxonline, target: lms, label: "Create user + enroll (REST OAuth2)", sync: true }
       - { source: lms, target: mysql, label: "Persist enrollment", sync: true }
@@ -242,30 +229,17 @@ scenarios:
       - { source: micromasters, target: lms, label: "Batch grade/cert refresh (Fri 6h)", sync: false }
 
   - id: sso
-    title: "App SSO via Open edX (synchronous)"
+    title: "MITx Online SSO + Keycloak federation (synchronous)"
     description: >-
-      xPRO and MicroMasters authenticate learners against Open edX as the OAuth2
-      identity provider. The provider verifies the social-auth login, provisions
-      an edX user + access token, and persists OAuth state in MySQL. On the
-      mitxonline stack, Open edX itself federates login to Keycloak.
+      MITx Online authenticates learners against this Open edX deployment as the
+      OAuth2 identity provider (mitxonline-oauth2). The provider verifies the
+      login, issues an access token, and persists OAuth state in MySQL. The LMS
+      itself federates learner login to Keycloak (sso.ol.mit.edu).
     steps:
-      - { source: mitxpro, target: oauth-provider, label: "OAuth2 / social-auth login", sync: true }
-      - { source: micromasters, target: oauth-provider, label: "OAuth2 login + user info", sync: true }
+      - { source: mitxonline, target: oauth-provider, label: "OAuth2 login (mitxonline-oauth2)", sync: true }
       - { source: oauth-provider, target: mysql, label: "Issue token / persist social-auth", sync: true }
-      - { source: oauth-provider, target: keycloak, label: "Federate identity (mitxonline stack)", sync: true }
-
-  - id: video-register
-    title: "ODL video registration into edxval (cross-service, async)"
-    description: >-
-      ODL Video Service fetches a short-lived JWT and POSTs/PATCHes transcoded
-      video metadata (HLS/MP4 CloudFront URLs) to the LMS edxval API so the
-      videos play inside Open edX courses.
-    steps:
-      - { source: odl-video-service, target: lms, label: "OAuth2 token + POST /api/val/v0/videos/", sync: false }
-      - { source: lms, target: mysql, label: "Upsert edxval video records", sync: false }
+      - { source: oauth-provider, target: keycloak, label: "Federate identity (OIDC)", sync: true }
 
 etl_sources:
   - { name: "MITx Online (enrollment/grade API consumer)", transport: REST OAuth2, cadence: on enroll / scheduled, data: enrollments + current grades, source_ref: { repo: https://github.com/mitodl/mitxonline, path: "openedx/api.py" } }
-  - { name: "MITx Pro (grades/course-run API consumer)", transport: REST (edx-api-client), cadence: daily cron, data: grades + course-run data, source_ref: { repo: https://github.com/mitodl/mitxpro, path: "courses/tasks.py" } }
   - { name: "MicroMasters (batch enrollment/cert/grade refresh)", transport: REST OAuth2 (edx-api-client), cadence: Fridays every 6h, data: "enrollments, certificates, current grades", source_ref: { repo: https://github.com/mitodl/micromasters, path: "dashboard/tasks.py" } }
-  - { name: "ODL Video Service (edxval registration)", transport: REST (JWT), cadence: on sync action, data: video metadata (HLS/MP4 URLs), source_ref: { repo: https://github.com/mitodl/odl-video-service, path: "cloudsync/tasks.py" } }

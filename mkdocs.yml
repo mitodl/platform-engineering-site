@@ -59,12 +59,18 @@ nav:
           - Publishing to NPM: platform_services/cloud_infrastructure/publishing_to_npm.md
   - System Architecture:
       - SOA System Landscape: system_architecture/landscape.md
-      - Open edX:
-          - Architecture & Data Flows: system_architecture/openedx/index.md
-          - System Context: system_architecture/openedx/system-context.md
-          - Containers: system_architecture/openedx/container.md
-          - Data Flows: system_architecture/openedx/data-flows.md
-          - Dependencies & Cycles: system_architecture/openedx/dependencies-and-cycles.md
+      - MITx Online Open edX:
+          - Architecture & Data Flows: system_architecture/mitxonline-openedx/index.md
+          - System Context: system_architecture/mitxonline-openedx/system-context.md
+          - Containers: system_architecture/mitxonline-openedx/container.md
+          - Data Flows: system_architecture/mitxonline-openedx/data-flows.md
+          - Dependencies & Cycles: system_architecture/mitxonline-openedx/dependencies-and-cycles.md
+      - xPRO Open edX:
+          - Architecture & Data Flows: system_architecture/xpro-openedx/index.md
+          - System Context: system_architecture/xpro-openedx/system-context.md
+          - Containers: system_architecture/xpro-openedx/container.md
+          - Data Flows: system_architecture/xpro-openedx/data-flows.md
+          - Dependencies & Cycles: system_architecture/xpro-openedx/dependencies-and-cycles.md
       - MIT Learn:
           - Architecture & Data Flows: system_architecture/mit-learn/index.md
           - System Context: system_architecture/mit-learn/system-context.md

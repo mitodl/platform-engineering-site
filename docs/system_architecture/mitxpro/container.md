@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Containers — MITx Pro
 
-_Generated 2026-06-24 16:06 UTC · c4gen dev_
+_Generated 2026-06-24 16:33 UTC · c4gen dev_
 
 The runtime/deployable units inside **MITx Pro** and how data moves
 between them and adjacent systems.

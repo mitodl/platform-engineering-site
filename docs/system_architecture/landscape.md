@@ -6,10 +6,10 @@
      See architecture_maps/README.md. -->
 # SOA System Landscape — MIT Open Learning
 
-_Generated 2026-06-24 16:05 UTC · c4gen dev_
+_Generated 2026-06-24 16:38 UTC · c4gen dev_
 
 The holistic, whole-system view: every mapped MIT Open Learning system and the
-**cross-service data flows** between them, composed from the 9 per-system
+**cross-service data flows** between them, composed from the 10 per-system
 C4 models. Use it for onboarding and SOA-wide decisions — surfacing dependencies,
 cycles, and the shared platform every system leans on. Each per-system guide drills
 into containers and flows; this page is the map of maps.
@@ -40,12 +40,13 @@ all models (container-level flows lifted to their owning system; deduped).
 
 | System | Depends on → |
 | --- | --- |
-| **Open edX** | Keycloak (SSO), MITx Online |
-| **MITx Online** | Keycloak (SSO), Open edX |
-| **MITx Pro** | Open edX |
-| **MicroMasters** | MIT Learn, MITx Online, Open edX |
+| **MITx Online** | Keycloak (SSO), MITx Online Open edX |
+| **MITx Online Open edX** | Keycloak (SSO), MITx Online |
+| **MITx Pro** | xPRO Open edX |
+| **xPRO Open edX** | — |
+| **MicroMasters** | MIT Learn, MITx Online, MITx Online Open edX |
 | **OCW Studio** | MIT Learn |
-| **ODL Video Service** | Keycloak (SSO), Open edX |
+| **ODL Video Service** | Keycloak (SSO) |
 | **MIT Learn** | APISIX Gateway, LiteLLM Proxy, MITx Online, MITx Pro, MicroMasters, ODL Video Service |
 | **learn-ai** | Keycloak (SSO), LLM Provider, LiteLLM Proxy, MIT Learn |
 | **OL Data Platform** | MIT Learn, MITx Online, MITx Pro, MicroMasters, OCW Studio, ODL Video Service |
@@ -60,7 +61,7 @@ manufacture cycles that aren't harmful coupling.
     type: danger
 
 * `micromasters → mit-learn → micromasters`
-* `mitxonline → openedx → mitxonline`
+* `mitxonline → mitxonline-openedx → mitxonline`
 ///
 
 ## Shared platform & libraries

@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # Dependencies & Cycles — MITx Online
 
-_Generated 2026-06-24 16:06 UTC · c4gen dev_
+_Generated 2026-06-24 16:33 UTC · c4gen dev_
 
 Coupling between MITx Online and the rest of the SOA. The **matrix** and
 **cycles** below come from the deterministic witan-code graph extraction; the
@@ -18,8 +18,8 @@ Coupling between MITx Online and the rest of the SOA. The **matrix** and
 | **apisix** | mitxonline |
 | **keycloak** | mitxonline |
 | **mit-learn** | mitxonline |
-| **mitxonline** | keycloak, openedx, unified-ecommerce |
-| **openedx** | mitxonline |
+| **mitxonline** | keycloak, mitxonline-openedx, unified-ecommerce |
+| **mitxonline-openedx** | mitxonline |
 
 ## Cycles
 

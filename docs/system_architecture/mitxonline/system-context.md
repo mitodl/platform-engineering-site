@@ -5,7 +5,7 @@
      See architecture_maps/README.md. -->
 # System Context — MITx Online
 
-_Generated 2026-06-24 16:06 UTC · c4gen dev_
+_Generated 2026-06-24 16:33 UTC · c4gen dev_
 
 The widest view: **MITx Online** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
@@ -28,7 +28,7 @@ into its [container view](container.md).
 | **APISIX Gateway** | Shared API gateway enforcing OIDC via Keycloak. Proxies MITx Online's HTTP surface (/mitxonline/*) and injects userinfo headers consumed by the api_gateway auth. |
 | **Keycloak (SSO)** | OAuth2/OIDC identity provider. MITx Online authenticates via the gateway and reconciles B2B organizations/groups through the Keycloak Admin API. |
 | **HashiCorp Vault** | Secrets and dynamic credentials injected at runtime. |
-| **Open edX** | LMS for course delivery. MITx Online pushes user creation, enrollments, and email-opt settings via the edX REST API; Open edX returns grades and posts enrollment/certificate webhooks back. |
+| **MITx Online Open edX** | Self-hosted MITx Online Open edX deployment (courses.learn.mit.edu) for course delivery. MITx Online pushes user creation, enrollments, and email-opt settings via the edX REST API; Open edX returns grades and posts enrollment/certificate webhooks back. |
 | **CyberSource** | Hosted payment processor (via mitol-payment-gateway); secure acceptance + back-office refund API. |
 | **Unified Ecommerce** | SOA commerce service. MITx Online syncs flexible-pricing discounts to it and reads product metadata from its API. |
 | **Mailgun** | Transactional email delivery (via anymail / mitol-mail). |

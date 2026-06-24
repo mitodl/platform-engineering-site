@@ -103,12 +103,13 @@ systems:
     description: Secrets and dynamic credentials injected at runtime.
 
   # ---- course delivery ----------------------------------------------
-  - id: openedx
-    name: Open edX
+  - id: mitxonline-openedx
+    name: MITx Online Open edX
     kind: external
     context_group: Course Delivery
     description: >-
-      LMS for course delivery. MITx Online pushes user creation, enrollments, and
+      Self-hosted MITx Online Open edX deployment (courses.learn.mit.edu) for
+      course delivery. MITx Online pushes user creation, enrollments, and
       email-opt settings via the edX REST API; Open edX returns grades and posts
       enrollment/certificate webhooks back.
 
@@ -184,12 +185,12 @@ flows:
   - { id: django-ue, source: django-web, target: unified-ecommerce, label: Read product metadata, sync: true, protocol: REST, data: "/api/v0/meta/product/ lookups", trigger: on request, tags: [cross-service] }
 
   # ----- synchronous: Open edX delivery -------------------------------
-  - { id: django-openedx, source: django-web, target: openedx, label: Create user / enroll / grades, sync: true, protocol: REST OAuth2, data: "User+auth creation, enrollments, email settings, grade reads", trigger: on enroll / on request, tags: [cross-service] }
-  - { id: openedx-django, source: openedx, target: django-web, label: Enrollment + certificate webhooks, sync: true, protocol: HTTPS, data: edX enrollment & certificate events, trigger: webhook, tags: [cross-service, webhook] }
+  - { id: django-openedx, source: django-web, target: mitxonline-openedx, label: Create user / enroll / grades, sync: true, protocol: REST OAuth2, data: "User+auth creation, enrollments, email settings, grade reads", trigger: on enroll / on request, tags: [cross-service] }
+  - { id: openedx-django, source: mitxonline-openedx, target: django-web, label: Enrollment + certificate webhooks, sync: true, protocol: HTTPS, data: edX enrollment & certificate events, trigger: webhook, tags: [cross-service, webhook] }
 
   # ----- asynchronous: edX & certificate jobs -------------------------
   - { id: beat-redis, source: celery, target: redis, label: RedBeat schedule, sync: false, protocol: Redis, data: Beat schedule entries, trigger: "beat", tags: [async] }
-  - { id: celery-openedx, source: celery, target: openedx, label: Retry enrollments / repair users, sync: false, protocol: REST OAuth2, data: "Failed enrollments, user/token repair, email opt-in", trigger: "beat: enrollment-retry / repair offset", tags: [async, cross-service] }
+  - { id: celery-openedx, source: celery, target: mitxonline-openedx, label: Retry enrollments / repair users, sync: false, protocol: REST OAuth2, data: "Failed enrollments, user/token repair, email opt-in", trigger: "beat: enrollment-retry / repair offset", tags: [async, cross-service] }
   - { id: celery-postgres, source: celery, target: postgres, label: Generate certs / sync courseruns, sync: false, protocol: SQL, data: "Course+program certificates, courserun sync, program upgrades", trigger: "beat: daily / hourly", tags: [async] }
 
   # ----- asynchronous: CRM, comms & identity sync ---------------------
@@ -221,7 +222,7 @@ scenarios:
       - { source: django-web, target: cybersource, label: "Start payment", sync: true }
       - { source: cybersource, target: django-web, label: "Signed payment callback", sync: true }
       - { source: django-web, target: postgres, label: "Fulfill order", sync: true }
-      - { source: django-web, target: openedx, label: "Push enrollment", sync: true }
+      - { source: django-web, target: mitxonline-openedx, label: "Push enrollment", sync: true }
 
   - id: edx-sync
     title: "Open edX enrollment & grade sync (mixed)"
@@ -230,9 +231,9 @@ scenarios:
       Celery beat task retries failed enrollments and repairs faulty edX users, and
       the certificate jobs read grades from edX to generate certificates in Postgres.
     steps:
-      - { source: openedx, target: django-web, label: "Enrollment/certificate webhook", sync: true }
+      - { source: mitxonline-openedx, target: django-web, label: "Enrollment/certificate webhook", sync: true }
       - { source: celery, target: redis, label: "Beat schedules retry/repair", sync: false }
-      - { source: celery, target: openedx, label: "Retry enrollments / repair users / read grades", sync: false }
+      - { source: celery, target: mitxonline-openedx, label: "Retry enrollments / repair users / read grades", sync: false }
       - { source: celery, target: postgres, label: "Generate certificates", sync: false }
 
   - id: crm-identity-sync

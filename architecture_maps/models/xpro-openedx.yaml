@@ -1,0 +1,215 @@
+meta:
+  name: xPRO Open edX
+  primary_system: xpro-openedx
+  api_container: lms
+  description: >-
+    The xPRO Open edX deployment — the self-hosted courseware/LMS that delivers
+    MIT xPRO's professional-education courses at courses.xpro.mit.edu (k8s
+    namespace xpro-openedx). Built from the mitodl edx-platform fork with MIT
+    custom themes, social-auth-mitxpro, edx-sysadmin, and rapid-response XBlocks.
+    Two Django services share the data tier: the LMS (edxapp) serves learners and
+    exposes the REST APIs the xPRO app drives (enrollment, grades, certificates,
+    OAuth2/third-party-auth SSO), while Studio/CMS authors courses. A forum
+    service (cs_comments_service) and Notes API back discussion and annotations;
+    edx-search indexes courseware into Elasticsearch. MySQL is the relational
+    system of record; MongoDB holds the modulestore (course structure) and forum
+    content. Celery workers run grading, certificate generation, bulk email, and
+    course import/export to S3 (OLX). This deployment is the OAuth2 IdP for the
+    xPRO app (provider ol-oauth2): xPRO authenticates via social-auth, provisions
+    edX users + tokens, enrolls, and pulls grades / course-run data on a batch.
+
+actors:
+  - id: learner
+    name: Learner
+    description: Takes courses — watches video, submits problems, posts in the forum, earns certificates.
+  - id: course-author
+    name: Course Author / Staff
+    description: Authors course content (units, problems, video) in Studio and manages runs.
+
+systems:
+  # ---- primary system ------------------------------------------------
+  - id: xpro-openedx
+    name: xPRO Open edX
+    kind: internal
+    repo: https://github.com/mitodl/edx-platform
+    description: >-
+      Self-hosted Open edX (mitodl edx-platform fork) at courses.xpro.mit.edu
+      (ns xpro-openedx) delivering MIT xPRO professional-education courses.
+    containers:
+      - id: lms
+        name: LMS (edxapp)
+        technology: Django (lms.djangoapp, Python 3.11, gunicorn)
+        description: >-
+          Learner-facing courseware runtime + the REST API surface the xPRO app
+          drives: enrollment (/api/enrollment/v1/, /bulk_enroll/v1/), grades
+          (/api/grades/v1/), certificates, user accounts, and the OAuth2 /
+          third-party-auth provider. Served at courses.xpro.mit.edu.
+        shape: container
+        source: { repo: https://github.com/mitodl/edx-platform, path: lms }
+      - id: cms
+        name: Studio / CMS
+        technology: Django (cms.djangoapp, Python 3.11)
+        description: >-
+          Authoring environment for courses (Studio). Writes course structure to
+          the modulestore and drives course import/export (OLX) and video upload.
+        shape: container
+        source: { repo: https://github.com/mitodl/edx-platform, path: cms }
+      - id: oauth-provider
+        name: OAuth2 / Third-party-auth Provider
+        technology: django-oauth-toolkit + social-auth (in LMS)
+        description: >-
+          Identity surface — OAuth2 authorization/token endpoints and the
+          social-auth backend (ol-oauth2) the xPRO app logs in against. Issues
+          the JWTs xPRO uses for enrollment and grade API calls.
+        shape: container
+        source: { repo: https://github.com/mitodl/edx-platform, path: openedx/core/djangoapps/oauth_dispatch }
+      - id: forum
+        name: Forum (cs_comments_service)
+        technology: Ruby / Sinatra (forum) + MongoDB
+        description: Discussion service backing course forums; the LMS proxies threads/comments to it.
+        shape: container
+        source: { repo: https://github.com/openedx/cs_comments_service, path: . }
+      - id: notes
+        name: Notes API (edx-notes-api)
+        technology: Django + Elasticsearch (edx-notes-api)
+        description: Stores learner annotations/highlights; the LMS edxnotes app reads/writes it.
+        shape: container
+        source: { repo: https://github.com/openedx/edx-notes-api, path: . }
+      - id: search
+        name: edx-search / Elasticsearch
+        technology: edx-search + Elasticsearch
+        description: Courseware and discovery search index; LMS/CMS index course content into it.
+        shape: db
+      - id: celery
+        name: Celery Workers
+        technology: Celery (lms + cms workers; queues low/default/high)
+        description: >-
+          Async grading, certificate generation, bulk course email, course
+          import/export, and bulk enrollment processing. Brokered by Redis.
+        shape: container
+        source: { repo: https://github.com/mitodl/edx-platform, path: lms/celery.py }
+      - id: mysql
+        name: MySQL
+        technology: MySQL 8 (RDS in prod)
+        description: Relational system of record — users, enrollments, grades, certificates, OAuth tokens.
+        shape: db
+      - id: mongodb
+        name: MongoDB
+        technology: MongoDB (modulestore + forum)
+        description: Course structure/content (split modulestore) and forum threads/comments.
+        shape: db
+      - id: redis
+        name: Redis
+        technology: Redis / Valkey (ElastiCache in prod)
+        description: Celery broker/result backend and Django cache.
+        shape: queue
+      - id: content-s3
+        name: S3 Content / Export
+        technology: AWS S3
+        description: >-
+          Course export archives (OLX), uploaded assets, and grade/cert report
+          downloads. The OLX/content archives downstream ETL pulls live here.
+        shape: container
+
+  # ---- platform / shared infra --------------------------------------
+  - id: mailgun
+    name: Mailgun
+    kind: external
+    context_group: Comms
+    description: Transactional and bulk course email delivery (ACE / django-anymail).
+
+  # ---- SOA peers (apps that drive this deployment) ------------------
+  - id: mitxpro
+    name: MITx Pro
+    kind: external
+    repo: https://github.com/mitodl/mitxpro
+    description: >-
+      Professional-ed ecommerce platform paired with this Open edX deployment
+      (OPENEDX_API_BASE_URL=https://courses.xpro.mit.edu). Authenticates learners
+      via the ol-oauth2 provider, provisions edX users + tokens, enrolls, and
+      pulls grades / course-run data on a batch.
+
+flows:
+  # ----- synchronous: learner & author request path ------------------
+  - { id: learner-lms, source: learner, target: lms, label: Take course, sync: true, protocol: HTTPS, data: "Courseware, problems, video, progress", trigger: on request }
+  - { id: author-cms, source: course-author, target: cms, label: Author course, sync: true, protocol: HTTPS, data: "Course structure, problems, video uploads", trigger: on request }
+  - { id: lms-mysql, source: lms, target: mysql, label: Read/write, sync: true, protocol: SQL, data: "Users, enrollments, grades, certificates", trigger: on request }
+  - { id: lms-mongodb, source: lms, target: mongodb, label: Read course structure, sync: true, protocol: Mongo, data: Modulestore course content, trigger: on request }
+  - { id: lms-redis, source: lms, target: redis, label: Cache + enqueue tasks, sync: true, protocol: Redis, data: "Cached responses, task messages", trigger: on request }
+  - { id: lms-forum, source: lms, target: forum, label: Threads / comments, sync: true, protocol: HTTPS, data: Forum discussion content, trigger: on request }
+  - { id: lms-notes, source: lms, target: notes, label: Read/write annotations, sync: true, protocol: HTTPS, data: Learner notes/highlights, trigger: on request }
+  - { id: lms-search, source: lms, target: search, label: Search courseware, sync: true, protocol: HTTPS, data: Course/content search queries, trigger: on request }
+  - { id: forum-mongodb, source: forum, target: mongodb, label: Read/write threads, sync: true, protocol: Mongo, data: Forum threads/comments, trigger: on request }
+  - { id: notes-search, source: notes, target: search, label: Index/query notes, sync: true, protocol: HTTPS, data: Annotation index, trigger: on request }
+  - { id: cms-mongodb, source: cms, target: mongodb, label: Write course structure, sync: true, protocol: Mongo, data: Authored course content, trigger: on save }
+  - { id: cms-mysql, source: cms, target: mysql, label: Read/write, sync: true, protocol: SQL, data: "Course metadata, video, users", trigger: on request }
+  - { id: cms-search, source: cms, target: search, label: Index course content, sync: true, protocol: HTTPS, data: Authored content index, trigger: on publish }
+
+  # ----- identity: Open edX as OAuth2 IdP ----------------------------
+  - { id: oauth-mysql, source: oauth-provider, target: mysql, label: Issue/verify tokens, sync: true, protocol: SQL, data: "OAuth2 apps, tokens, social-auth", trigger: on auth }
+
+  # ----- async: grading, certs, email --------------------------------
+  - { id: celery-redis, source: celery, target: redis, label: Consume task queue, sync: false, protocol: Redis, data: Task messages, trigger: "queue", tags: [async] }
+  - { id: celery-mysql, source: celery, target: mysql, label: Persist grades / certificates, sync: false, protocol: SQL, data: "Computed grades, generated certificates", trigger: "on grade/cert task", tags: [async] }
+  - { id: celery-mongodb, source: celery, target: mongodb, label: Read course structure (grading), sync: false, protocol: Mongo, data: Course structure for grade compute, trigger: on grade task, tags: [async] }
+  - { id: celery-mailgun, source: celery, target: mailgun, label: Bulk + transactional course email, sync: false, protocol: HTTPS, data: "Enrollment, certificate, instructor emails", trigger: on event / bulk-email task, tags: [async] }
+  - { id: celery-content-s3, source: celery, target: content-s3, label: Course export + report files, sync: false, protocol: S3, data: "OLX export archives, grade/cert report CSVs", trigger: on export / report task, tags: [async] }
+  - { id: cms-content-s3, source: cms, target: content-s3, label: Store assets / exports, sync: true, protocol: S3, data: "Uploaded assets, course export archives", trigger: on upload / export }
+
+  # ----- cross-service: MITx Pro (SSO + enroll + grade sync) ----------
+  - { id: mitxpro-oauth, source: mitxpro, target: oauth-provider, label: SSO + provision user (ol-oauth2), sync: true, protocol: OAuth2/HTTPS, data: "social-auth login, create edX user + token", trigger: on login / signup, tags: [auth, cross-service] }
+  - { id: mitxpro-lms-enroll, source: mitxpro, target: lms, label: Enroll learner, sync: true, protocol: REST, data: Course-run enrollment, trigger: on order fulfilled, tags: [cross-service] }
+  - { id: mitxpro-celery-lms, source: mitxpro, target: lms, label: Pull grades + run data / repair, sync: false, protocol: REST, data: "Grades, course-run titles/dates, failed-enroll repair", trigger: "beat: daily cron (MITx Pro)", tags: [async, cross-service] }
+
+scenarios:
+  - id: take-course
+    title: "Learner takes a course (synchronous)"
+    description: >-
+      A learner works through courseware in the LMS. The LMS loads course
+      structure from the modulestore (MongoDB), reads/writes state in MySQL,
+      proxies forum activity to the comments service, and stores annotations in
+      the Notes API.
+    steps:
+      - { source: learner, target: lms, label: "Open courseware", sync: true }
+      - { source: lms, target: mongodb, label: "Load course structure", sync: true }
+      - { source: lms, target: mysql, label: "Read/write progress + state", sync: true }
+      - { source: lms, target: forum, label: "Post / read discussion", sync: true }
+      - { source: forum, target: mongodb, label: "Persist threads", sync: true }
+      - { source: lms, target: notes, label: "Save annotation", sync: true }
+
+  - id: authoring
+    title: "Course authoring & publish (synchronous + async)"
+    description: >-
+      An author edits a course in Studio. Studio writes structure to the
+      modulestore, stores uploaded assets and (on demand) course export archives
+      to S3, and indexes content into edx-search.
+    steps:
+      - { source: course-author, target: cms, label: "Edit course / upload video", sync: true }
+      - { source: cms, target: mongodb, label: "Write course structure", sync: true }
+      - { source: cms, target: content-s3, label: "Store assets / export OLX", sync: true }
+      - { source: cms, target: search, label: "Index content", sync: true }
+
+  - id: edx-sso
+    title: "xPRO SSO & user provisioning (synchronous)"
+    description: >-
+      xPRO authenticates learners through this Open edX deployment via social-auth
+      (ol-oauth2). On first login/signup xPRO creates the corresponding edX user
+      and an OpenEdxApiAuth access token, used later for enrollment and grade reads.
+    steps:
+      - { source: mitxpro, target: oauth-provider, label: "OAuth2 / social-auth login (ol-oauth2)", sync: true }
+      - { source: oauth-provider, target: mysql, label: "Issue token / persist social-auth", sync: true }
+      - { source: mitxpro, target: lms, label: "Create edX user + token", sync: true }
+
+  - id: courseware-sync
+    title: "xPRO enrollment, grade & run sync (cross-service, mixed)"
+    description: >-
+      xPRO enrolls learners in the LMS on order fulfillment and, on a daily cron,
+      repairs failed enrollments/faulty users and pulls grades and course-run data
+      (titles/dates) from this deployment to generate certificates.
+    steps:
+      - { source: mitxpro, target: lms, label: "Enroll learner (on order)", sync: true }
+      - { source: lms, target: mysql, label: "Persist enrollment", sync: true }
+      - { source: mitxpro, target: lms, label: "Pull grades + run data / repair (beat)", sync: false }
+
+etl_sources:
+  - { name: "MITx Pro (grades/course-run API consumer)", transport: REST (edx-api-client), cadence: daily cron, data: grades + course-run data, source_ref: { repo: https://github.com/mitodl/mitxpro, path: "courses/tasks.py" } }
