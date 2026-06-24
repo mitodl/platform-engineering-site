@@ -15,6 +15,10 @@ on:
     paths:
       - architecture_maps/**
       - docs/system_architecture/**
+      # The cache-bust ?v= check reads mkdocs.yml + hashes these JS assets, so a
+      # PR touching only one of them must still trigger this workflow.
+      - mkdocs.yml
+      - docs/javascripts/**
       - .github/workflows/c4-validation.yml
 
 jobs:
