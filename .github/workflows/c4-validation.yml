@@ -14,7 +14,7 @@ on:
   pull_request:
     paths:
       - architecture_maps/**
-      - docs/application_specific_guides/**/architecture/**
+      - docs/system_architecture/**
       - .github/workflows/c4-validation.yml
 
 jobs:

@@ -106,7 +106,7 @@ def render_context_puml(model: Model, links: dict[str, str] | None = None) -> st
         if s.context_group:
             continue
         macro = "System" if s.kind == "internal" else "System_Ext"
-        link = links.get(s.name)
+        link = links.get(s.id)
         link_arg = f', $link="{link}"' if link else ""
         out.append(f"{macro}({alias(s.id)}, {q(s.name)}, {q(_tagline(s.description))}{link_arg})")
     for label, members in groups.items():
@@ -134,7 +134,8 @@ def render_context_puml(model: Model, links: dict[str, str] | None = None) -> st
 # --------------------------------------------------------------------------
 # Container
 # --------------------------------------------------------------------------
-def render_container_puml(model: Model) -> str:
+def render_container_puml(model: Model, links: dict[str, str] | None = None) -> str:
+    links = links or {}
     primary = next((s for s in model.systems if s.id == model.meta.primary_system), None)
     if primary is None:
         raise ValueError(f"primary_system {model.meta.primary_system!r} not in model")
@@ -155,15 +156,23 @@ def render_container_puml(model: Model) -> str:
     out.append(f"System_Boundary({alias(primary.id)}_b, {q(primary.name)}) {{")
     for c in primary.containers:
         macro = _SHAPE_MACRO[c.shape]
+        link = links.get(c.id)
+        link_arg = f', $link="{link}"' if link else ""
         out.append(
-            f"  {macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or '')}, {q(_tagline(c.description))})"
+            f"  {macro}({alias(c.id)}, {q(c.name)}, {q(c.technology or '')}, "
+            f"{q(_tagline(c.description))}{link_arg})"
         )
     out.append("}")
 
     for system in model.systems:
         if system.id == primary.id or system.id not in touch:
             continue
-        out.append(f"System_Ext({alias(system.id)}, {q(system.name)}, {q(_tagline(system.description))})")
+        link = links.get(system.id)
+        link_arg = f', $link="{link}"' if link else ""
+        out.append(
+            f"System_Ext({alias(system.id)}, {q(system.name)}, "
+            f"{q(_tagline(system.description))}{link_arg})"
+        )
 
     entry = model.meta.api_container
     seen: set[tuple[str, str, str]] = set()

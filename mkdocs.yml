@@ -57,6 +57,58 @@ nav:
           - Moira Certificates: platform_services/cloud_infrastructure/moira_certificates.md
           - Recaptcha: platform_services/cloud_infrastructure/recaptcha.md
           - Publishing to NPM: platform_services/cloud_infrastructure/publishing_to_npm.md
+  - System Architecture:
+      - SOA System Landscape: system_architecture/landscape.md
+      - MIT Learn:
+          - Architecture & Data Flows: system_architecture/mit-learn/index.md
+          - System Context: system_architecture/mit-learn/system-context.md
+          - Containers: system_architecture/mit-learn/container.md
+          - Components: system_architecture/mit-learn/component.md
+          - Data Flows: system_architecture/mit-learn/data-flows.md
+          - Dependencies & Cycles: system_architecture/mit-learn/dependencies-and-cycles.md
+          - Infrastructure References: system_architecture/mit-learn/infrastructure-references.md
+      - learn-ai:
+          - Architecture & Data Flows: system_architecture/learn-ai/index.md
+          - System Context: system_architecture/learn-ai/system-context.md
+          - Containers: system_architecture/learn-ai/container.md
+          - Data Flows: system_architecture/learn-ai/data-flows.md
+          - Dependencies & Cycles: system_architecture/learn-ai/dependencies-and-cycles.md
+      - MITx Online:
+          - Architecture & Data Flows: system_architecture/mitxonline/index.md
+          - System Context: system_architecture/mitxonline/system-context.md
+          - Containers: system_architecture/mitxonline/container.md
+          - Data Flows: system_architecture/mitxonline/data-flows.md
+          - Dependencies & Cycles: system_architecture/mitxonline/dependencies-and-cycles.md
+      - MITx Pro:
+          - Architecture & Data Flows: system_architecture/mitxpro/index.md
+          - System Context: system_architecture/mitxpro/system-context.md
+          - Containers: system_architecture/mitxpro/container.md
+          - Data Flows: system_architecture/mitxpro/data-flows.md
+          - Dependencies & Cycles: system_architecture/mitxpro/dependencies-and-cycles.md
+      - MicroMasters:
+          - Architecture & Data Flows: system_architecture/micromasters/index.md
+          - System Context: system_architecture/micromasters/system-context.md
+          - Containers: system_architecture/micromasters/container.md
+          - Data Flows: system_architecture/micromasters/data-flows.md
+          - Dependencies & Cycles: system_architecture/micromasters/dependencies-and-cycles.md
+      - OCW Studio:
+          - Architecture & Data Flows: system_architecture/ocw-studio/index.md
+          - System Context: system_architecture/ocw-studio/system-context.md
+          - Containers: system_architecture/ocw-studio/container.md
+          - Data Flows: system_architecture/ocw-studio/data-flows.md
+          - Dependencies & Cycles: system_architecture/ocw-studio/dependencies-and-cycles.md
+      - ODL Video Service:
+          - Architecture & Data Flows: system_architecture/odl-video-service/index.md
+          - System Context: system_architecture/odl-video-service/system-context.md
+          - Containers: system_architecture/odl-video-service/container.md
+          - Data Flows: system_architecture/odl-video-service/data-flows.md
+          - Dependencies & Cycles: system_architecture/odl-video-service/dependencies-and-cycles.md
+      - OL Data Platform:
+          - Architecture & Data Flows: system_architecture/ol-data-platform/index.md
+          - System Context: system_architecture/ol-data-platform/system-context.md
+          - Containers: system_architecture/ol-data-platform/container.md
+          - Data Flows: system_architecture/ol-data-platform/data-flows.md
+          - Dependencies & Cycles: system_architecture/ol-data-platform/dependencies-and-cycles.md
   - Application Specific Guides:
       - Open edX:
           - MITx Online Bulk Rescore: application_specific_guides/openedx/mitxonline_bulk_rescore.md
@@ -79,11 +131,6 @@ nav:
           - Transitioning Postgres DB to RDS: application_specific_guides/heroku_legacy/transition_postgres_db_to_rds.md
       - OCW Studio:
           - Updating The OCW Studio Pipeline: application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline.md
-          - Architecture & Data Flows: application_specific_guides/ocw-studio/architecture/index.md
-          - System Context: application_specific_guides/ocw-studio/architecture/system-context.md
-          - Containers: application_specific_guides/ocw-studio/architecture/container.md
-          - Data Flows: application_specific_guides/ocw-studio/architecture/data-flows.md
-          - Dependencies & Cycles: application_specific_guides/ocw-studio/architecture/dependencies-and-cycles.md
       - OCW Site:
           - Accessing S3 Bucket Audit Logs: application_specific_guides/ocw_site/accessing_s3_audit_logs.md
       - Doof (Odlbot):
@@ -93,51 +140,6 @@ nav:
           - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
       - JupyterHub:
           - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
-      - SOA System Landscape: application_specific_guides/soa-landscape/architecture/landscape.md
-      - MIT Learn:
-          - Architecture & Data Flows: application_specific_guides/mit-learn/architecture/index.md
-          - System Context: application_specific_guides/mit-learn/architecture/system-context.md
-          - Containers: application_specific_guides/mit-learn/architecture/container.md
-          - Components: application_specific_guides/mit-learn/architecture/component.md
-          - Data Flows: application_specific_guides/mit-learn/architecture/data-flows.md
-          - Dependencies & Cycles: application_specific_guides/mit-learn/architecture/dependencies-and-cycles.md
-          - Infrastructure References: application_specific_guides/mit-learn/architecture/infrastructure-references.md
-      - ODL Video Service:
-          - Architecture & Data Flows: application_specific_guides/odl-video-service/architecture/index.md
-          - System Context: application_specific_guides/odl-video-service/architecture/system-context.md
-          - Containers: application_specific_guides/odl-video-service/architecture/container.md
-          - Data Flows: application_specific_guides/odl-video-service/architecture/data-flows.md
-          - Dependencies & Cycles: application_specific_guides/odl-video-service/architecture/dependencies-and-cycles.md
-      - MITx Pro:
-          - Architecture & Data Flows: application_specific_guides/mitxpro/architecture/index.md
-          - System Context: application_specific_guides/mitxpro/architecture/system-context.md
-          - Containers: application_specific_guides/mitxpro/architecture/container.md
-          - Data Flows: application_specific_guides/mitxpro/architecture/data-flows.md
-          - Dependencies & Cycles: application_specific_guides/mitxpro/architecture/dependencies-and-cycles.md
-      - MicroMasters:
-          - Architecture & Data Flows: application_specific_guides/micromasters/architecture/index.md
-          - System Context: application_specific_guides/micromasters/architecture/system-context.md
-          - Containers: application_specific_guides/micromasters/architecture/container.md
-          - Data Flows: application_specific_guides/micromasters/architecture/data-flows.md
-          - Dependencies & Cycles: application_specific_guides/micromasters/architecture/dependencies-and-cycles.md
-      - MITx Online:
-          - Architecture & Data Flows: application_specific_guides/mitxonline/architecture/index.md
-          - System Context: application_specific_guides/mitxonline/architecture/system-context.md
-          - Containers: application_specific_guides/mitxonline/architecture/container.md
-          - Data Flows: application_specific_guides/mitxonline/architecture/data-flows.md
-          - Dependencies & Cycles: application_specific_guides/mitxonline/architecture/dependencies-and-cycles.md
-      - learn-ai:
-          - Architecture & Data Flows: application_specific_guides/learn-ai/architecture/index.md
-          - System Context: application_specific_guides/learn-ai/architecture/system-context.md
-          - Containers: application_specific_guides/learn-ai/architecture/container.md
-          - Data Flows: application_specific_guides/learn-ai/architecture/data-flows.md
-          - Dependencies & Cycles: application_specific_guides/learn-ai/architecture/dependencies-and-cycles.md
-      - OL Data Platform:
-          - Architecture & Data Flows: application_specific_guides/ol-data-platform/architecture/index.md
-          - System Context: application_specific_guides/ol-data-platform/architecture/system-context.md
-          - Containers: application_specific_guides/ol-data-platform/architecture/container.md
-          - Data Flows: application_specific_guides/ol-data-platform/architecture/data-flows.md
-          - Dependencies & Cycles: application_specific_guides/ol-data-platform/architecture/dependencies-and-cycles.md
       - Keycloak:
           - Inviting New Users to Keycloak Realms: application_specific_guides/keycloak/inviting_users_to_realms.md
   - Monitoring And Observability:

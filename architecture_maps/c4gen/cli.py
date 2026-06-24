@@ -36,7 +36,7 @@ app = cyclopts.App(name="c4gen", help="Generate C4 data-flow docs (C4-PlantUML v
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MODELS_DIR = REPO_ROOT / "architecture_maps" / "models"
-DOCS_BASE = REPO_ROOT / "docs" / "application_specific_guides"
+DOCS_BASE = REPO_ROOT / "docs" / "system_architecture"
 
 # Kroki renders the C4-PlantUML source to SVG at generation time. Default to the
 # local container (see architecture_maps/docker-compose.yml); override in CI.
@@ -76,6 +76,11 @@ def _version() -> str:
 
 def _load_yaml(path: Path) -> dict:
     return yaml.safe_load(path.read_text()) or {}
+
+
+def _known_system_ids() -> set[str]:
+    """The canonical system ids = the curated model file stems (one per system)."""
+    return {p.stem for p in MODELS_DIR.glob("*.yaml") if not p.name.endswith(".graph.yaml")}
 
 
 def _merge_systems(curated: dict, slice_: dict) -> dict:
@@ -150,12 +155,27 @@ def _build_outputs(name: str) -> tuple[Model, dict[str, str], dict[str, str]]:
 
     # Render each C4-PlantUML diagram to an SVG via Kroki. Each page emits a
     # `.c4-box` placeholder that docs/javascripts/c4-zoom.js fills with the SVG.
+    # $link drill-down, relative to each page's pretty URL under system_architecture/:
+    #   context -> container (../container/) and known peer systems (../../<peer>/);
+    #   a container box with a component view -> ../component/.
     primary = model.system_of(model.meta.primary_system)
+    known = _known_system_ids()
+    ctx_links: dict[str, str] = {}
+    cont_links: dict[str, str] = {}
+    if primary:
+        ctx_links[primary.id] = "../container/"
+        for cont in primary.containers:
+            if cont.components:
+                cont_links[cont.id] = "../component/"
+    for s in model.systems:
+        canon = landscape_mod.ID_ALIASES.get(s.id, s.id)
+        if s.kind == "external" and canon in known and canon != model.meta.primary_system:
+            if not s.context_group:
+                ctx_links[s.id] = f"../../{canon}/"
+            cont_links[s.id] = f"../../{canon}/"
     puml = {
-        "system-context": puml_mod.render_context_puml(
-            model, {primary.name: "../container/"} if primary else None
-        ),
-        "container": puml_mod.render_container_puml(model),
+        "system-context": puml_mod.render_context_puml(model, ctx_links),
+        "container": puml_mod.render_container_puml(model, cont_links),
     }
     for sc in model.scenarios:
         puml[f"flow-{sc.id}"] = puml_mod.render_dynamic_puml(model, sc.id)
@@ -186,7 +206,7 @@ def render(name: str) -> None:
     """Render markdown pages for model ``name`` (uses an existing graph slice if present)."""
     model, pages, svgs = _build_outputs(name)
 
-    out = DOCS_BASE / model.meta.primary_system / "architecture"
+    out = DOCS_BASE / model.meta.primary_system
     out.mkdir(parents=True, exist_ok=True)
     svg_dir = out / "_diagrams"
     svg_dir.mkdir(parents=True, exist_ok=True)
@@ -214,7 +234,7 @@ def check(name: str) -> None:
     or a diagram that fails to produce a valid ``<svg>`` aborts the render.
     """
     model, pages, svgs = _build_outputs(name)
-    out = DOCS_BASE / model.meta.primary_system / "architecture"
+    out = DOCS_BASE / model.meta.primary_system
 
     stale: list[str] = []
     for fname, content in pages.items():
@@ -252,7 +272,7 @@ def build(name: str) -> None:
     render(name)
 
 
-LANDSCAPE_DIR = DOCS_BASE / "soa-landscape" / "architecture"
+LANDSCAPE_DIR = DOCS_BASE  # landscape.md lives at the System Architecture section root
 
 
 def _build_landscape() -> tuple[str, str, landscape_mod.Landscape]:
@@ -269,7 +289,10 @@ def _build_landscape() -> tuple[str, str, landscape_mod.Landscape]:
 
     ls = landscape_mod.compose(models)
     generated_at = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M UTC")
-    svg = _kroki_svg(puml_mod.render_landscape_puml(ls))
+    # Drill-down: each internal system box links to its overview page. From the
+    # landscape pretty URL (system_architecture/landscape/) that is ../<sid>/.
+    links = {sid: f"../{sid}/" for sid in ls.internal_ids()}
+    svg = _kroki_svg(puml_mod.render_landscape_puml(ls, links))
     page = pages_mod.page_landscape(ls, generated_at, _version())
     return page, svg, ls
 
