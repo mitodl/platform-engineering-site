@@ -72,13 +72,15 @@ def _base_url() -> str | None:
     return url or None
 
 
-def source_system(table_name: str) -> str | None:
+def source_system(table_name: str | None) -> str | None:
     """``stg__mitlearn__app__postgres__...`` -> ``mit-learn`` (model system id).
 
     Returns ``None`` for names that don't carry a recognized source token
     (``information_schema`` tables, ``combined_*`` reports without a source
-    segment, unknown sources) — the caller skips those.
+    segment, unknown sources, or a missing/empty name) — the caller skips those.
     """
+    if not table_name:
+        return None
     m = _NAME_RE.match(table_name)
     if not m or m.group("layer") not in _LAYER_PREFIXES:
         return None
@@ -120,7 +122,9 @@ class CatalogClient:
                 "/api/v1/search/query",
                 {"q": query, "index": "table_search_index", "from": frm, "size": size},
             )
-            hits = page.get("hits", {}).get("hits", [])
+            if not isinstance(page, dict):
+                break
+            hits = (page.get("hits") or {}).get("hits", [])
             if not hits:
                 break
             out.extend(h.get("_source", {}) for h in hits)
@@ -185,13 +189,15 @@ def cross_system_edges(client: CatalogClient, tables: list[dict]) -> list[Lineag
             graph = client.lineage(fqn)
         except (error.URLError, OSError, ValueError):
             continue
+        if not isinstance(graph, dict):
+            continue
 
-        nodes = list(graph.get("nodes", []))
-        entity = graph.get("entity", {})
+        nodes = list(graph.get("nodes") or [])
+        entity = graph.get("entity") or {}
         kinds = {
-            e.get("lineageDetails", {}).get("source")
-            for e in graph.get("upstreamEdges", [])
-            if (e.get("lineageDetails") or {}).get("source")
+            source
+            for e in (graph.get("upstreamEdges") or [])
+            if e and (source := (e.get("lineageDetails") or {}).get("source"))
         }
         # Distinct upstream source systems feeding this table (exclude itself).
         upstream: dict[str, str] = {}  # system id -> one example upstream fqn
