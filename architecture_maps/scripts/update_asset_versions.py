@@ -28,7 +28,8 @@ DOCS_DIR = REPO_ROOT / "docs"
 # Matches an extra_javascript list entry pointing at a local javascripts/*.js
 # asset, with an optional existing ?v=<hash>. Quote-agnostic, trailing space ok.
 _ENTRY = re.compile(
-    r'(?P<lead>-\s*)(?P<path>javascripts/\S+?\.js)(?:\?v=(?P<ver>[0-9a-f]+))?(?P<tail>[ \t]*)$',
+    r'(?P<lead>-\s*(?P<q>["\']?))(?P<path>javascripts/\S+?\.js)'
+    r'(?:\?v=(?P<ver>[0-9a-f]+))?(?P<tail>(?P=q)[ \t]*)$',
     re.MULTILINE,
 )
 
@@ -59,10 +60,14 @@ def main() -> int:
             stale.append(f"{m.group('path')}: committed v={have or '(none)'} expected v={want}")
         return f"{m.group('lead')}{m.group('path')}?v={want}{m.group('tail')}"
 
-    updated = _ENTRY.sub(repl, text)
-
     if not _ENTRY.search(text):
         print("no local javascripts/*.js entries found in mkdocs.yml extra_javascript", file=sys.stderr)
+        return 1
+
+    try:
+        updated = _ENTRY.sub(repl, text)
+    except FileNotFoundError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
         return 1
 
     if args.check:
