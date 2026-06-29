@@ -35,6 +35,7 @@ nav:
   - Getting Started & How-Tos:
       - Emergency Oncall Break Glass Procedure: getting_started_and_how_tos/emergency-break-glass.md
       - Developer EKS Access: getting_started_and_how_tos/developer_eks_access.md
+      - Experimental EKS Access Setup: getting_started_and_how_tos/experimental_eks_access_setup.md
       - Vault Access for Developers: getting_started_and_how_tos/vault_access_for_developers.md
       - Updating This Site: getting_started_and_how_tos/update_this_site.md
       - Applications & Services: getting_started_and_how_tos/pe-product-infra-map.md
