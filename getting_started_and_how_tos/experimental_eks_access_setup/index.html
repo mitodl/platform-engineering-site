@@ -9,24 +9,28 @@
       
       
       
+        <link rel="prev" href="../developer_eks_access/">
+      
+      
+        <link rel="next" href="../vault_access_for_developers/">
       
       
         
       
       
-      <link rel="icon" href="../../../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="zensical-0.0.46">
     
     
       
-        <title>Jupyterhub learner notebooks - Platform Engineering Documentation</title>
+        <title>Experimental EKS Access Setup - Platform Engineering Documentation</title>
       
     
     
       
         
       
-      <link rel="stylesheet" href="../../../assets/stylesheets/modern/main.19d3147f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.19d3147f.min.css">
       
       
 
@@ -45,9 +49,9 @@
       
     
     
-      <link rel="stylesheet" href="../../../stylesheets/c4.css">
+      <link rel="stylesheet" href="../../stylesheets/c4.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    <script>__md_scope=new URL("../..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
     
       
 
@@ -64,7 +68,8 @@
     <label class="md-overlay" for="__drawer" aria-label="Navigation"></label>
     <div data-md-component="skip">
       
-        <a href="#__skip" class="md-skip">
+        
+        <a href="#experimental-eks-access-setup" class="md-skip">
           Skip to content
         </a>
       
@@ -80,7 +85,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="Platform Engineering Documentation" class="md-header__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
+    <a href="../.." title="Platform Engineering Documentation" class="md-header__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
@@ -100,7 +105,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Jupyterhub learner notebooks
+              Experimental EKS Access Setup
             
           </span>
         </div>
@@ -153,7 +158,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="Platform Engineering Documentation" class="md-nav__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
+    <a href="../.." title="Platform Engineering Documentation" class="md-nav__button md-logo" aria-label="Platform Engineering Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
@@ -171,7 +176,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -194,18 +199,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
@@ -225,7 +232,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -242,7 +249,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/emergency-break-glass/" class="md-nav__link">
+      <a href="../emergency-break-glass/" class="md-nav__link">
         
   
   
@@ -269,7 +276,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/developer_eks_access/" class="md-nav__link">
+      <a href="../developer_eks_access/" class="md-nav__link">
         
   
   
@@ -293,10 +300,278 @@
                 
   
   
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Experimental EKS Access Setup
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Experimental EKS Access Setup
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Prerequisites
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Required tools
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Access requirements
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-manual-aws-configuration-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        No manual AWS configuration needed
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-authentication-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        How authentication works
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Setup scenarios
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#developer-access-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Developer access (default)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent-read-only-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Agent / read-only access
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admin-access-devops-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Admin access (DevOps only)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Optional flags
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional flags">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-custom-default-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Setting a custom default context
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-to-a-custom-kubeconfig-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Writing to a custom kubeconfig path
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-your-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Verifying your access
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-kubectl-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Common kubectl commands
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Troubleshooting
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Further reading
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/vault_access_for_developers/" class="md-nav__link">
+      <a href="../vault_access_for_developers/" class="md-nav__link">
         
   
   
@@ -323,7 +598,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/update_this_site/" class="md-nav__link">
+      <a href="../update_this_site/" class="md-nav__link">
         
   
   
@@ -350,7 +625,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/pe-product-infra-map/" class="md-nav__link">
+      <a href="../pe-product-infra-map/" class="md-nav__link">
         
   
   
@@ -377,7 +652,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started_and_how_tos/impersonate_users_keycloak/" class="md-nav__link">
+      <a href="../impersonate_users_keycloak/" class="md-nav__link">
         
   
   
@@ -501,7 +776,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../secrets_management/restore_vault_backups/" class="md-nav__link">
+      <a href="../../platform_services/secrets_management/restore_vault_backups/" class="md-nav__link">
         
   
   
@@ -528,7 +803,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../secrets_management/faking_it_with_consul_and_vault/" class="md-nav__link">
+      <a href="../../platform_services/secrets_management/faking_it_with_consul_and_vault/" class="md-nav__link">
         
   
   
@@ -608,7 +883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../service_discovery/consul_incantations/" class="md-nav__link">
+      <a href="../../platform_services/service_discovery/consul_incantations/" class="md-nav__link">
         
   
   
@@ -635,7 +910,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../service_discovery/fargate_service_discovery/" class="md-nav__link">
+      <a href="../../platform_services/service_discovery/fargate_service_discovery/" class="md-nav__link">
         
   
   
@@ -715,7 +990,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../container_orchestration/deploying_apps_with_kubernetes/" class="md-nav__link">
+      <a href="../../platform_services/container_orchestration/deploying_apps_with_kubernetes/" class="md-nav__link">
         
   
   
@@ -742,7 +1017,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../container_orchestration/kubernetes_cookbook/" class="md-nav__link">
+      <a href="../../platform_services/container_orchestration/kubernetes_cookbook/" class="md-nav__link">
         
   
   
@@ -822,7 +1097,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ci_cd/getting_started_with_concourse/" class="md-nav__link">
+      <a href="../../platform_services/ci_cd/getting_started_with_concourse/" class="md-nav__link">
         
   
   
@@ -849,7 +1124,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ci_cd/deploying_concourse/" class="md-nav__link">
+      <a href="../../platform_services/ci_cd/deploying_concourse/" class="md-nav__link">
         
   
   
@@ -876,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../ci_cd/concourse_github_issues_user_guide/" class="md-nav__link">
+      <a href="../../platform_services/ci_cd/concourse_github_issues_user_guide/" class="md-nav__link">
         
   
   
@@ -956,7 +1231,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade/" class="md-nav__link">
         
   
   
@@ -983,7 +1258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cloud_infrastructure/import_existing_resources_with_pulumi/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/import_existing_resources_with_pulumi/" class="md-nav__link">
         
   
   
@@ -1010,7 +1285,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects/" class="md-nav__link">
         
   
   
@@ -1037,7 +1312,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata/" class="md-nav__link">
         
   
   
@@ -1064,7 +1339,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cloud_infrastructure/moira_certificates/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/moira_certificates/" class="md-nav__link">
         
   
   
@@ -1091,7 +1366,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cloud_infrastructure/recaptcha/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/recaptcha/" class="md-nav__link">
         
   
   
@@ -1118,7 +1393,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cloud_infrastructure/publishing_to_npm/" class="md-nav__link">
+      <a href="../../platform_services/cloud_infrastructure/publishing_to_npm/" class="md-nav__link">
         
   
   
@@ -1205,7 +1480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/landscape/" class="md-nav__link">
+      <a href="../../system_architecture/landscape/" class="md-nav__link">
         
   
   
@@ -1277,7 +1552,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxonline-openedx/" class="md-nav__link">
+      <a href="../../system_architecture/mitxonline-openedx/" class="md-nav__link">
         
   
   
@@ -1304,7 +1579,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxonline-openedx/system-context/" class="md-nav__link">
+      <a href="../../system_architecture/mitxonline-openedx/system-context/" class="md-nav__link">
         
   
   
@@ -1331,7 +1606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxonline-openedx/container/" class="md-nav__link">
+      <a href="../../system_architecture/mitxonline-openedx/container/" class="md-nav__link">
         
   
   
@@ -1358,7 +1633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxonline-openedx/data-flows/" class="md-nav__link">
+      <a href="../../system_architecture/mitxonline-openedx/data-flows/" class="md-nav__link">
         
   
   
@@ -1385,7 +1660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxonline-openedx/dependencies-and-cycles/" class="md-nav__link">
+      <a href="../../system_architecture/mitxonline-openedx/dependencies-and-cycles/" class="md-nav__link">
         
   
   
@@ -1465,7 +1740,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/xpro-openedx/" class="md-nav__link">
+      <a href="../../system_architecture/xpro-openedx/" class="md-nav__link">
         
   
   
@@ -1492,7 +1767,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/xpro-openedx/system-context/" class="md-nav__link">
+      <a href="../../system_architecture/xpro-openedx/system-context/" class="md-nav__link">
         
   
   
@@ -1519,7 +1794,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/xpro-openedx/container/" class="md-nav__link">
+      <a href="../../system_architecture/xpro-openedx/container/" class="md-nav__link">
         
   
   
@@ -1546,7 +1821,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/xpro-openedx/data-flows/" class="md-nav__link">
+      <a href="../../system_architecture/xpro-openedx/data-flows/" class="md-nav__link">
         
   
   
@@ -1573,7 +1848,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/xpro-openedx/dependencies-and-cycles/" class="md-nav__link">
+      <a href="../../system_architecture/xpro-openedx/dependencies-and-cycles/" class="md-nav__link">
         
   
   
@@ -1653,7 +1928,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mit-learn/" class="md-nav__link">
+      <a href="../../system_architecture/mit-learn/" class="md-nav__link">
         
   
   
@@ -1680,7 +1955,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mit-learn/system-context/" class="md-nav__link">
+      <a href="../../system_architecture/mit-learn/system-context/" class="md-nav__link">
         
   
   
@@ -1707,7 +1982,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mit-learn/container/" class="md-nav__link">
+      <a href="../../system_architecture/mit-learn/container/" class="md-nav__link">
         
   
   
@@ -1734,7 +2009,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mit-learn/component/" class="md-nav__link">
+      <a href="../../system_architecture/mit-learn/component/" class="md-nav__link">
         
   
   
@@ -1761,7 +2036,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mit-learn/data-flows/" class="md-nav__link">
+      <a href="../../system_architecture/mit-learn/data-flows/" class="md-nav__link">
         
   
   
@@ -1788,7 +2063,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mit-learn/dependencies-and-cycles/" class="md-nav__link">
+      <a href="../../system_architecture/mit-learn/dependencies-and-cycles/" class="md-nav__link">
         
   
   
@@ -1815,7 +2090,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mit-learn/infrastructure-references/" class="md-nav__link">
+      <a href="../../system_architecture/mit-learn/infrastructure-references/" class="md-nav__link">
         
   
   
@@ -1895,7 +2170,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/learn-ai/" class="md-nav__link">
+      <a href="../../system_architecture/learn-ai/" class="md-nav__link">
         
   
   
@@ -1922,7 +2197,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/learn-ai/system-context/" class="md-nav__link">
+      <a href="../../system_architecture/learn-ai/system-context/" class="md-nav__link">
         
   
   
@@ -1949,7 +2224,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/learn-ai/container/" class="md-nav__link">
+      <a href="../../system_architecture/learn-ai/container/" class="md-nav__link">
         
   
   
@@ -1976,7 +2251,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/learn-ai/data-flows/" class="md-nav__link">
+      <a href="../../system_architecture/learn-ai/data-flows/" class="md-nav__link">
         
   
   
@@ -2003,7 +2278,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/learn-ai/dependencies-and-cycles/" class="md-nav__link">
+      <a href="../../system_architecture/learn-ai/dependencies-and-cycles/" class="md-nav__link">
         
   
   
@@ -2083,7 +2358,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxonline/" class="md-nav__link">
+      <a href="../../system_architecture/mitxonline/" class="md-nav__link">
         
   
   
@@ -2110,7 +2385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxonline/system-context/" class="md-nav__link">
+      <a href="../../system_architecture/mitxonline/system-context/" class="md-nav__link">
         
   
   
@@ -2137,7 +2412,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxonline/container/" class="md-nav__link">
+      <a href="../../system_architecture/mitxonline/container/" class="md-nav__link">
         
   
   
@@ -2164,7 +2439,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxonline/data-flows/" class="md-nav__link">
+      <a href="../../system_architecture/mitxonline/data-flows/" class="md-nav__link">
         
   
   
@@ -2191,7 +2466,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxonline/dependencies-and-cycles/" class="md-nav__link">
+      <a href="../../system_architecture/mitxonline/dependencies-and-cycles/" class="md-nav__link">
         
   
   
@@ -2271,7 +2546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxpro/" class="md-nav__link">
+      <a href="../../system_architecture/mitxpro/" class="md-nav__link">
         
   
   
@@ -2298,7 +2573,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxpro/system-context/" class="md-nav__link">
+      <a href="../../system_architecture/mitxpro/system-context/" class="md-nav__link">
         
   
   
@@ -2325,7 +2600,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxpro/container/" class="md-nav__link">
+      <a href="../../system_architecture/mitxpro/container/" class="md-nav__link">
         
   
   
@@ -2352,7 +2627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxpro/data-flows/" class="md-nav__link">
+      <a href="../../system_architecture/mitxpro/data-flows/" class="md-nav__link">
         
   
   
@@ -2379,7 +2654,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/mitxpro/dependencies-and-cycles/" class="md-nav__link">
+      <a href="../../system_architecture/mitxpro/dependencies-and-cycles/" class="md-nav__link">
         
   
   
@@ -2459,7 +2734,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/micromasters/" class="md-nav__link">
+      <a href="../../system_architecture/micromasters/" class="md-nav__link">
         
   
   
@@ -2486,7 +2761,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/micromasters/system-context/" class="md-nav__link">
+      <a href="../../system_architecture/micromasters/system-context/" class="md-nav__link">
         
   
   
@@ -2513,7 +2788,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/micromasters/container/" class="md-nav__link">
+      <a href="../../system_architecture/micromasters/container/" class="md-nav__link">
         
   
   
@@ -2540,7 +2815,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/micromasters/data-flows/" class="md-nav__link">
+      <a href="../../system_architecture/micromasters/data-flows/" class="md-nav__link">
         
   
   
@@ -2567,7 +2842,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/micromasters/dependencies-and-cycles/" class="md-nav__link">
+      <a href="../../system_architecture/micromasters/dependencies-and-cycles/" class="md-nav__link">
         
   
   
@@ -2647,7 +2922,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/ocw-studio/" class="md-nav__link">
+      <a href="../../system_architecture/ocw-studio/" class="md-nav__link">
         
   
   
@@ -2674,7 +2949,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/ocw-studio/system-context/" class="md-nav__link">
+      <a href="../../system_architecture/ocw-studio/system-context/" class="md-nav__link">
         
   
   
@@ -2701,7 +2976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/ocw-studio/container/" class="md-nav__link">
+      <a href="../../system_architecture/ocw-studio/container/" class="md-nav__link">
         
   
   
@@ -2728,7 +3003,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/ocw-studio/data-flows/" class="md-nav__link">
+      <a href="../../system_architecture/ocw-studio/data-flows/" class="md-nav__link">
         
   
   
@@ -2755,7 +3030,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/ocw-studio/dependencies-and-cycles/" class="md-nav__link">
+      <a href="../../system_architecture/ocw-studio/dependencies-and-cycles/" class="md-nav__link">
         
   
   
@@ -2835,7 +3110,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/odl-video-service/" class="md-nav__link">
+      <a href="../../system_architecture/odl-video-service/" class="md-nav__link">
         
   
   
@@ -2862,7 +3137,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/odl-video-service/system-context/" class="md-nav__link">
+      <a href="../../system_architecture/odl-video-service/system-context/" class="md-nav__link">
         
   
   
@@ -2889,7 +3164,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/odl-video-service/container/" class="md-nav__link">
+      <a href="../../system_architecture/odl-video-service/container/" class="md-nav__link">
         
   
   
@@ -2916,7 +3191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/odl-video-service/data-flows/" class="md-nav__link">
+      <a href="../../system_architecture/odl-video-service/data-flows/" class="md-nav__link">
         
   
   
@@ -2943,7 +3218,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/odl-video-service/dependencies-and-cycles/" class="md-nav__link">
+      <a href="../../system_architecture/odl-video-service/dependencies-and-cycles/" class="md-nav__link">
         
   
   
@@ -3023,7 +3298,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/ol-data-platform/" class="md-nav__link">
+      <a href="../../system_architecture/ol-data-platform/" class="md-nav__link">
         
   
   
@@ -3050,7 +3325,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/ol-data-platform/system-context/" class="md-nav__link">
+      <a href="../../system_architecture/ol-data-platform/system-context/" class="md-nav__link">
         
   
   
@@ -3077,7 +3352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/ol-data-platform/container/" class="md-nav__link">
+      <a href="../../system_architecture/ol-data-platform/container/" class="md-nav__link">
         
   
   
@@ -3104,7 +3379,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/ol-data-platform/data-flows/" class="md-nav__link">
+      <a href="../../system_architecture/ol-data-platform/data-flows/" class="md-nav__link">
         
   
   
@@ -3131,7 +3406,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../system_architecture/ol-data-platform/dependencies-and-cycles/" class="md-nav__link">
+      <a href="../../system_architecture/ol-data-platform/dependencies-and-cycles/" class="md-nav__link">
         
   
   
@@ -3263,7 +3538,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/mitxonline_bulk_rescore/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/mitxonline_bulk_rescore/" class="md-nav__link">
         
   
   
@@ -3290,7 +3565,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/prove_build_was_deployed/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/prove_build_was_deployed/" class="md-nav__link">
         
   
   
@@ -3317,7 +3592,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/access_django_manage/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/access_django_manage/" class="md-nav__link">
         
   
   
@@ -3344,7 +3619,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/enable_rapid_response_edxapp/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/enable_rapid_response_edxapp/" class="md-nav__link">
         
   
   
@@ -3371,7 +3646,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/mysql_access/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/mysql_access/" class="md-nav__link">
         
   
   
@@ -3398,7 +3673,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/retirement_pipeline/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/retirement_pipeline/" class="md-nav__link">
         
   
   
@@ -3425,7 +3700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/release_upgrades/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/release_upgrades/" class="md-nav__link">
         
   
   
@@ -3452,7 +3727,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/retire_an_openedx_user/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/retire_an_openedx_user/" class="md-nav__link">
         
   
   
@@ -3524,7 +3799,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/proctoring/proctortrack_integration_overview/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/proctoring/proctortrack_integration_overview/" class="md-nav__link">
         
   
   
@@ -3551,7 +3826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/proctoring/proctoring_js_architecture/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/proctoring/proctoring_js_architecture/" class="md-nav__link">
         
   
   
@@ -3578,7 +3853,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/proctoring/earthfile_fix/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/proctoring/earthfile_fix/" class="md-nav__link">
         
   
   
@@ -3605,7 +3880,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/openedx/proctoring/workers_json_requirements/" class="md-nav__link">
+      <a href="../../application_specific_guides/openedx/proctoring/workers_json_requirements/" class="md-nav__link">
         
   
   
@@ -3693,7 +3968,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/heroku_legacy/config_vars/" class="md-nav__link">
+      <a href="../../application_specific_guides/heroku_legacy/config_vars/" class="md-nav__link">
         
   
   
@@ -3720,7 +3995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/heroku_legacy/dynosaur_management/" class="md-nav__link">
+      <a href="../../application_specific_guides/heroku_legacy/dynosaur_management/" class="md-nav__link">
         
   
   
@@ -3747,7 +4022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/heroku_legacy/log_drains/" class="md-nav__link">
+      <a href="../../application_specific_guides/heroku_legacy/log_drains/" class="md-nav__link">
         
   
   
@@ -3774,7 +4049,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/heroku_legacy/transition_postgres_db_to_rds/" class="md-nav__link">
+      <a href="../../application_specific_guides/heroku_legacy/transition_postgres_db_to_rds/" class="md-nav__link">
         
   
   
@@ -3854,7 +4129,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline/" class="md-nav__link">
+      <a href="../../application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline/" class="md-nav__link">
         
   
   
@@ -3934,7 +4209,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/ocw_site/accessing_s3_audit_logs/" class="md-nav__link">
+      <a href="../../application_specific_guides/ocw_site/accessing_s3_audit_logs/" class="md-nav__link">
         
   
   
@@ -4014,7 +4289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/odlbot/Resetting_Doof_Github_Token/" class="md-nav__link">
+      <a href="../../application_specific_guides/odlbot/Resetting_Doof_Github_Token/" class="md-nav__link">
         
   
   
@@ -4041,7 +4316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/odlbot/Resetting_Doof_NPM_Token/" class="md-nav__link">
+      <a href="../../application_specific_guides/odlbot/Resetting_Doof_NPM_Token/" class="md-nav__link">
         
   
   
@@ -4121,7 +4396,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/renovate/updating_renovate_config/" class="md-nav__link">
+      <a href="../../application_specific_guides/renovate/updating_renovate_config/" class="md-nav__link">
         
   
   
@@ -4201,7 +4476,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/jupyterhub/jupyterhub_admin_guide/" class="md-nav__link">
+      <a href="../../application_specific_guides/jupyterhub/jupyterhub_admin_guide/" class="md-nav__link">
         
   
   
@@ -4281,7 +4556,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../application_specific_guides/keycloak/inviting_users_to_realms/" class="md-nav__link">
+      <a href="../../application_specific_guides/keycloak/inviting_users_to_realms/" class="md-nav__link">
         
   
   
@@ -4368,7 +4643,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/overview/" class="md-nav__link">
+      <a href="../../monitoring_observability/overview/" class="md-nav__link">
         
   
   
@@ -4395,7 +4670,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/inventory/" class="md-nav__link">
+      <a href="../../monitoring_observability/inventory/" class="md-nav__link">
         
   
   
@@ -4422,7 +4697,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/key_labels/" class="md-nav__link">
+      <a href="../../monitoring_observability/key_labels/" class="md-nav__link">
         
   
   
@@ -4449,7 +4724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/bump_sentry_credit/" class="md-nav__link">
+      <a href="../../monitoring_observability/bump_sentry_credit/" class="md-nav__link">
         
   
   
@@ -4476,7 +4751,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../monitoring_observability/rootly_management/" class="md-nav__link">
+      <a href="../../monitoring_observability/rootly_management/" class="md-nav__link">
         
   
   
@@ -4555,7 +4830,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/oncall_runbook/" class="md-nav__link">
+      <a href="../../runbooks_post_mortems/oncall_runbook/" class="md-nav__link">
         
   
   
@@ -4582,7 +4857,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/ol_production_outage_runbook/" class="md-nav__link">
+      <a href="../../runbooks_post_mortems/ol_production_outage_runbook/" class="md-nav__link">
         
   
   
@@ -4609,7 +4884,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/20231030_xpro_outage/" class="md-nav__link">
+      <a href="../../runbooks_post_mortems/20231030_xpro_outage/" class="md-nav__link">
         
   
   
@@ -4636,7 +4911,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/20260324_mitlearn_outage/" class="md-nav__link">
+      <a href="../../runbooks_post_mortems/20260324_mitlearn_outage/" class="md-nav__link">
         
   
   
@@ -4663,7 +4938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/20260603_xpro_outage/" class="md-nav__link">
+      <a href="../../runbooks_post_mortems/20260603_xpro_outage/" class="md-nav__link">
         
   
   
@@ -4690,7 +4965,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../runbooks_post_mortems/openedx_clear_user_grades/" class="md-nav__link">
+      <a href="../../runbooks_post_mortems/openedx_clear_user_grades/" class="md-nav__link">
         
   
   
@@ -4769,7 +5044,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../cookbooks_patterns/devops_patterns_cookbook/" class="md-nav__link">
+      <a href="../../cookbooks_patterns/devops_patterns_cookbook/" class="md-nav__link">
         
   
   
@@ -4848,7 +5123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../sso_onboarding/sso_config/" class="md-nav__link">
+      <a href="../../sso_onboarding/sso_config/" class="md-nav__link">
         
   
   
@@ -4889,6 +5164,13 @@
                     
                     
                     
+                      
+                    
+                    
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
                     
                   
                   <div class="md-sidebar__inner">
@@ -4899,6 +5181,210 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Prerequisites
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Required tools
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Access requirements
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-manual-aws-configuration-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        No manual AWS configuration needed
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-authentication-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        How authentication works
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Setup scenarios
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#developer-access-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Developer access (default)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent-read-only-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Agent / read-only access
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admin-access-devops-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Admin access (DevOps only)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Optional flags
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional flags">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-custom-default-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Setting a custom default context
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-to-a-custom-kubeconfig-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Writing to a custom kubeconfig path
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-your-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Verifying your access
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-kubectl-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Common kubectl commands
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Troubleshooting
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Further reading
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -4913,101 +5399,226 @@
                 
                   
 
-  <h1 id="__skip">Jupyterhub learner notebooks</h1>
-
-<p><strong>JupyterHub Usage Guidelines &amp; Expectations – MIT Learn Open edX</strong></p>
-<p>This document outlines the capabilities, limitations, and operational expectations for
-the JupyterHub environment provided for <strong>MIT Learn Open edX</strong>. Understanding these
-guidelines will ensure a positive experience for both instructors and learners.</p>
-<p><strong>1. Capabilities:</strong></p>
-<ul>
-<li><strong>Notebook Execution Environment:</strong> Learners can execute notebooks authored by
-    instructors within a pre-configured computational environment. This allows hands-on
-    practice with programming concepts, data analysis, and AI tools.</li>
-<li><strong>Instructor Notebook Authoring:</strong> Instructors can create and upload Jupyter
-    Notebooks for use in their courses. Please ensure notebooks are well-documented and
-    designed for learner engagement.  Notebook authoring is managed through <strong>MIT’s
-    enterprise GitHub repository:
-    <a href="https://github.mit.edu/ol-notebooks">github.mit.edu/ol-notebooks</a></strong>. All changes
-    must be submitted as pull requests, requiring approval from the Open Learning
-    engineering team.</li>
-<li><strong>Shared Environment:</strong> All learners share the same base environment. This
-    simplifies management but limits customization options (see Limitations).</li>
-</ul>
-<p><strong>2. Limitations &amp; Resource Management:</strong></p>
-<p>This JupyterHub instance is running on a shared Kubernetes cluster, requiring resource
-constraints to maintain stability and fairness for all users. The following limitations
-are in place:</p>
-<ul>
-<li><strong>Resource Limits per Notebook:</strong> Each notebook execution has the following resource
-    limits:<ul>
-<li><strong>CPU:</strong> 1 vCPU (core)</li>
-<li><strong>Memory:</strong> 2 GB RAM</li>
-<li><strong>Disk Space:</strong> 500 MB temporary storage. This is <em>not</em> persistent and will be
-    cleared upon notebook termination.</li>
-</ul>
-</li>
-<li><strong>GPU Resources:</strong> Limited GPU hardware is available for ML/AI focused
-    notebooks. These are not frontier-grade chips, so capacity is constrained.</li>
-<li><strong>Generative AI Workloads:</strong> For workloads involving generative AI models (e.g.,
-    large language model inference), it's strongly recommended to leverage managed
-    service APIs such as OpenAI or Hugging Face Inference endpoints instead of running
-    models directly within the JupyterHub environment. This will provide more reliable
-    performance and scalability.</li>
-<li><strong>No Persistent Workspaces:</strong> Currently, there are <strong>no persistent learner
-    workspaces</strong>. Any changes made within a notebook (e.g., file creation, data
-    modification) will be lost when the notebook server terminates. Learners should
-    download any necessary results or artifacts <em>before</em> closing their browser
-    tab/notebook. This is a deliberate design choice to manage resource consumption and
-    simplify infrastructure management.</li>
-<li><strong>Session Timeout:</strong> Inactive notebooks will automatically terminate after 30
-    minutes. This helps reclaim resources.</li>
-<li><strong>Kernel Limits:</strong> Each notebook can only have one kernel running at any given time.</li>
-</ul>
-<p><strong>3. Operational Expectations &amp; Support:</strong></p>
-<p>As the platform operator, I am responsible for maintaining the stability and performance
-of JupyterHub. To facilitate this:</p>
-<ul>
-<li><strong>Responsible Notebook Usage:</strong> Instructors are encouraged to design notebooks that
-    are efficient in terms of resource consumption. Avoid computationally intensive
-    tasks or large data downloads within a single notebook if possible.</li>
-<li><strong>Reporting Issues:</strong> Please report any unexpected behavior, errors, or performance
-    issues through <strong>mitlearn-support@mit.edu</strong>. Include details about the notebook
-    involved and steps to reproduce the issue.</li>
-<li><strong>No Direct Infrastructure Access:</strong> Instructors will <em>not</em> be granted direct access
-    to the underlying Kubernetes cluster or JupyterHub infrastructure. All requests for
-    changes or customizations must go through <strong>mitlearn-support@mit.edu</strong>.</li>
-<li><strong>Maintenance Windows:</strong> Periodic maintenance windows may occur, during which
-    JupyterHub availability may be temporarily impacted. Advance notice will be provided
-    whenever possible.</li>
-</ul>
-<p><strong>4. Future Considerations (Potential Enhancements):</strong></p>
-<p>We are exploring options to enhance the JupyterHub environment in the future, including:</p>
-<ul>
-<li><strong>Persistent Learner Workspaces:</strong> Providing learners with persistent storage for
-    their notebooks and data. This would require significant infrastructure investment
-    and changes to our operational procedures.</li>
-<li><strong>Customizable Environments:</strong> Allowing instructors (and potentially learners) to
-    select different base environments or install additional packages.</li>
-</ul>
+<h1 id="experimental-eks-access-setup">Experimental EKS Access Setup</h1>
+<p>This guide covers the <strong>new</strong> <code>eks.py</code>-based workflow for gaining access to MIT
+Open Learning EKS clusters. It replaces the older <code>login_helper.py</code>-based flow
+described in <a href="../developer_eks_access/">Developer EKS Access</a> and is the
+preferred approach going forward.</p>
+<p>The script discovers all OL EKS clusters automatically via the AWS API, handles
+Vault OIDC authentication through your browser, and writes a ready-to-use
+<code>~/.kube/config</code> for you. You do not need to manually export AWS credentials or
+run separate login steps.</p>
+<div class="admonition warning">
+<p class="admonition-title">Experimental</p>
+<p>This workflow is under active development. The underlying <code>eks.py</code> script lives
+in <code>scripts/eks/eks.py</code> inside the <code>ol-infrastructure</code> repository and may
+change. If you run into issues, check <code>KUBE_ACCESS.md</code> in that same directory
+for the latest notes.</p>
+</div>
 <hr />
-<p><strong>IMPORTANT NOTES &amp; CONSIDERATIONS:</strong></p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before running the setup script you need the following tools and access in
+place.</p>
+<h3 id="required-tools">Required tools</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Minimum version</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.python.org/">Python</a></td>
+<td>3.13</td>
+<td>Must match the <code>ol-infrastructure</code> requirement</td>
+</tr>
+<tr>
+<td><a href="https://docs.astral.sh/uv/">uv</a></td>
+<td>latest</td>
+<td>Used to run the script with its dependencies</td>
+</tr>
+<tr>
+<td><a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">AWS CLI v2</a></td>
+<td>latest</td>
+<td><code>aws eks get-token</code> must be on your <code>$PATH</code></td>
+</tr>
+<tr>
+<td><a href="https://kubernetes.io/docs/tasks/tools/">kubectl</a></td>
+<td>≥ 1.30</td>
+<td>Newer is better</td>
+</tr>
+</tbody>
+</table>
+<p>Install <code>uv</code> if you do not already have it:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+</span></code></pre></div>
+<h3 id="access-requirements">Access requirements</h3>
 <ul>
-<li><strong>Kubernetes Context is Key:</strong> The resource limits are <em>absolute</em>. Instructors need
-    to understand that exceeding these limits will result in notebook termination and
-    potential disruption for other users.</li>
-<li><strong>Communication is Crucial:</strong> This document should be prominently displayed within
-    your course materials. Proactive communication about the limitations can prevent
-    frustration and misunderstandings among learners.</li>
-<li><strong>Monitoring &amp; Adjustment:</strong> I’ll be monitoring resource usage closely. These limits
-    may need to be adjusted based on actual load and performance. Instructors will be
-    notified of any significant changes.</li>
-<li><strong>Security:</strong> Remind instructors that this is a shared environment, and they should
-    not store sensitive data within notebooks or upload potentially malicious code.</li>
-<li><strong>GitHub Workflow:</strong> Ensure all instructors are familiar with the pull request
-    workflow for contributing to the <code>ol-notebooks</code> repository.</li>
-<li><strong>Feedback Loop:</strong> I’m open to feedback on these guidelines. Your input can help us
-    improve the JupyterHub experience for everyone.</li>
+<li><strong>Vault access</strong> — you must be able to authenticate to
+  <code>https://vault-production.odl.mit.edu</code> via MIT OIDC. If you have never logged
+  in before, ask a DevOps team member to verify your Vault policy is in place.</li>
+<li><strong>ol-infrastructure repository</strong> — clone the repo if you have not already:</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/mitodl/ol-infrastructure.git
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">cd</span><span class="w"> </span>ol-infrastructure
+</span></code></pre></div>
+<h3 id="no-manual-aws-configuration-needed">No manual AWS configuration needed</h3>
+<p>The script generates short-lived AWS credentials through Vault and caches them
+locally under <code>~/.cache/ol-infrastructure/eks/</code>. You do <strong>not</strong> need a
+pre-configured AWS profile or permanent AWS credentials on your machine.</p>
+<hr />
+<h2 id="how-authentication-works">How authentication works</h2>
+<p>When you run <code>eks.py setup</code> for the first time (or after your cached token
+expires) the script:</p>
+<ol>
+<li>Opens a Vault OIDC authorization URL in your browser.</li>
+<li>Starts a short-lived local HTTP server on port <code>8250</code> to receive the
+   callback.</li>
+<li>Exchanges the callback code for a Vault token and caches it under
+   <code>~/.cache/ol-infrastructure/eks/</code>.</li>
+<li>Uses the Vault token to generate temporary AWS STS credentials.</li>
+<li>Calls the AWS EKS API to discover all clusters and writes <code>~/.kube/config</code>.</li>
+</ol>
+<p>On subsequent runs the cached Vault token and AWS credentials are reused until
+they expire, so no browser interaction is required.</p>
+<p>The generated kubeconfig uses an <code>exec</code> plugin that calls back into <code>eks.py</code>
+each time <code>kubectl</code> needs a bearer token. This means you never need to re-run
+the setup command unless you want to regenerate the config itself.</p>
+<hr />
+<h2 id="setup-scenarios">Setup scenarios</h2>
+<h3 id="developer-access-default">Developer access (default)</h3>
+<p>Use this if you are a developer who needs read/write access to the clusters for
+debugging, shelling into pods, port-forwarding, and similar day-to-day tasks.</p>
+<p>From the root of <code>ol-infrastructure</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/eks/eks.py<span class="w"> </span>setup
+</span></code></pre></div>
+<p>Or equivalently, specifying the mode explicitly:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/eks/eks.py<span class="w"> </span>setup<span class="w"> </span>--mode<span class="w"> </span>developer
+</span></code></pre></div>
+<p>This writes <code>~/.kube/config</code> with <strong>two contexts per cluster</strong>:</p>
+<ul>
+<li><code>&lt;cluster-name&gt;</code> — full developer read/write access (e.g. <code>applications-qa</code>)</li>
+<li><code>&lt;cluster-name&gt;-readonly</code> — read-only access for agents or safe exploration
+  (e.g. <code>applications-qa-readonly</code>)</li>
+</ul>
+<p>The default active context is set to <code>applications-qa</code> when that cluster exists,
+otherwise the first cluster found.</p>
+<p>Switch between clusters at any time:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>config<span class="w"> </span>use-context<span class="w"> </span>applications-production
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>kubectl<span class="w"> </span>config<span class="w"> </span>use-context<span class="w"> </span>operations-ci
+</span></code></pre></div>
+<p>List all available contexts:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>config<span class="w"> </span>get-contexts
+</span></code></pre></div>
+<h3 id="agent-read-only-access">Agent / read-only access</h3>
+<p>Use this if you are setting up an automated agent, a CI job, or you simply want
+a safe read-only view of the clusters with no risk of accidentally changing
+anything.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/eks/eks.py<span class="w"> </span>setup<span class="w"> </span>--mode<span class="w"> </span><span class="nb">readonly</span>
+</span></code></pre></div>
+<p>This writes <code>~/.kube/config</code> with a <strong>single read-only context per cluster</strong>.
+The contexts use a Vault AWS role bound to <code>AmazonEKSViewPolicy</code>, which allows
+listing and describing resources but cannot create, update, or delete anything.</p>
+<h3 id="admin-access-devops-only">Admin access (DevOps only)</h3>
+<div class="admonition danger">
+<p class="admonition-title">DevOps engineers only</p>
+<p>Admin mode grants <code>cluster-admin</code> privileges. It is intended exclusively for
+DevOps engineers performing cluster maintenance. Do not run this unless you have
+been explicitly granted admin access.</p>
+</div>
+<p>Admin mode authenticates via a separate Vault OIDC role (<code>admin</code>) and uses
+per-cluster IAM roles to assume cluster-admin access entries in each EKS
+cluster.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/eks/eks.py<span class="w"> </span>setup<span class="w"> </span>--mode<span class="w"> </span>admin
+</span></code></pre></div>
+<p>This writes <code>~/.kube/config</code> with <strong>two contexts per cluster</strong>:</p>
+<ul>
+<li><code>&lt;cluster-name&gt;</code> — cluster-admin credentials via the cluster's dedicated admin
+  IAM role</li>
+<li><code>&lt;cluster-name&gt;-readonly</code> — read-only credentials for safe inspection</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Admin mode uses readonly Vault AWS credentials for cluster discovery (listing
+and describing clusters). The elevated cluster-admin token is obtained at
+<code>kubectl</code> invocation time via <code>aws eks get-token --role</code>, not at setup time.</p>
+</div>
+<hr />
+<h2 id="optional-flags">Optional flags</h2>
+<h3 id="setting-a-custom-default-context">Setting a custom default context</h3>
+<p>By default the script sets <code>applications-qa</code> as the active context (if it
+exists). Override this at setup time:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/eks/eks.py<span class="w"> </span>setup<span class="w"> </span>--current-context<span class="w"> </span>applications-production
+</span></code></pre></div>
+<h3 id="writing-to-a-custom-kubeconfig-path">Writing to a custom kubeconfig path</h3>
+<p>By default the script overwrites <code>~/.kube/config</code>. Write to a different path
+instead:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/eks/eks.py<span class="w"> </span>setup<span class="w"> </span>--output-path<span class="w"> </span>~/kubeconfigs/ol.yaml
+</span></code></pre></div>
+<p>Then point <code>kubectl</code> at it:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nv">KUBECONFIG</span><span class="o">=</span>~/kubeconfigs/ol.yaml<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+</span></code></pre></div>
+<hr />
+<h2 id="verifying-your-access">Verifying your access</h2>
+<p>After setup, confirm everything is working:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Check which context is active</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>kubectl<span class="w"> </span>config<span class="w"> </span>current-context
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># List all nodes in the current cluster</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1"># List all namespaces</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>kubectl<span class="w"> </span>get<span class="w"> </span>namespaces
+</span></code></pre></div>
+<hr />
+<h2 id="common-kubectl-commands">Common kubectl commands</h2>
+<p>Once your kubeconfig is in place, here are useful commands to get started.</p>
+<p>List all pods in a namespace:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;
+</span></code></pre></div>
+<p>Describe a pod (shows events, IP, node, containers):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl<span class="w"> </span>describe<span class="w"> </span>pod<span class="w"> </span>&lt;pod-name&gt;<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;
+</span></code></pre></div>
+<p>Tail logs from a specific container:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>&lt;pod-name&gt;<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;<span class="w"> </span>-c<span class="w"> </span>&lt;container-name&gt;
+</span></code></pre></div>
+<p>Open an interactive shell in a running container:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>kubectl<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>&lt;pod-name&gt;<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;<span class="w"> </span>-c<span class="w"> </span>&lt;container-name&gt;<span class="w"> </span>--<span class="w"> </span>/bin/bash
+</span></code></pre></div>
+<p>Port-forward a service to your local machine:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>kubectl<span class="w"> </span>port-forward<span class="w"> </span>svc/&lt;service-name&gt;<span class="w"> </span><span class="m">8080</span>:80<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;
+</span></code></pre></div>
+<p>Switch to a different cluster context:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl<span class="w"> </span>config<span class="w"> </span>use-context<span class="w"> </span>&lt;context-name&gt;
+</span></code></pre></div>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong>Port 8250 is already in use during OIDC login</strong> Another process is occupying
+the OIDC callback port. Find and stop it:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>lsof<span class="w"> </span>-i<span class="w"> </span>:8250
+</span></code></pre></div>
+<p><strong><code>aws: command not found</code> when kubectl fetches a token</strong> The <code>aws</code> CLI is not
+on the <code>PATH</code> seen by the exec plugin. Ensure <code>aws</code> is installed and available
+in your standard shell <code>PATH</code> (not only a virtualenv-scoped install).</p>
+<p><strong>Vault authentication fails or token is rejected</strong> Your cached Vault token may
+be invalid. Remove it and re-run setup:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>rm<span class="w"> </span>-rf<span class="w"> </span>~/.cache/ol-infrastructure/eks/
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/eks/eks.py<span class="w"> </span>setup
+</span></code></pre></div>
+<p><strong>No clusters found</strong> The script logs a warning if it discovers zero clusters.
+Verify that your Vault AWS role has been granted the correct permissions by
+checking with a DevOps engineer.</p>
+<hr />
+<h2 id="further-reading">Further reading</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/">Kubernetes kubeconfig
+  documentation</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/">Configuring access to multiple
+  clusters</a></li>
+<li><a href="../developer_eks_access/">Developer EKS Access</a> — the older workflow, kept for
+  reference</li>
 </ul>
 
 
@@ -5060,14 +5671,14 @@ of JupyterHub. To facilitate this:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate":null,"base":"../../..","features":["content.code.copy"],"search":"../../../assets/javascripts/workers/search.b6b7e04f.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["content.code.copy"],"search":"../../assets/javascripts/workers/search.b6b7e04f.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.ee611ef6.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ee611ef6.min.js"></script>
       
-        <script src="../../../javascripts/vendor/svg-pan-zoom.min.js"></script>
+        <script src="../../javascripts/vendor/svg-pan-zoom.min.js?v=f4637103"></script>
       
-        <script src="../../../javascripts/c4-zoom.js"></script>
+        <script src="../../javascripts/c4-zoom.js?v=c53b4ad7"></script>
       
     
   </body>
