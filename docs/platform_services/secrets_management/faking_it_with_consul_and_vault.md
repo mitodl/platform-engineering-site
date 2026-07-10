@@ -2,7 +2,7 @@
 
 ## Why?
 
-Sometimes you want to test an AMI build process without all all the supporting stuff that allows an EC2 instance to talk to vault and consul like a good little box. All that supporting stuff typically happens are instance start time and rides in on `user_data` which you don't have if you fired up an EC2 by hand just to see what your AMI looks like so far.
+Sometimes you want to test an AMI build process without all the supporting stuff that allows an EC2 instance to talk to vault and consul like a good little box. All that supporting stuff typically happens are instance start time and rides in on `user_data` which you don't have if you fired up an EC2 by hand just to see what your AMI looks like so far.
 
 So, for development purposes here is an abbreviated guide of faking it until you make it.
 

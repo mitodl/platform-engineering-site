@@ -61,7 +61,7 @@ Now change directory to the Git repo you checked our earlier and type:
 
 `npm publish`.
 
-If it blows up, check the `packages.json` file and ensure the the
+If it blows up, check the `packages.json` file and ensure the
 organization is set correctly. It should be 'mitodl'. See
 [this commit](https://github.com/mitodl/brand-mitol-residential/commit/8c998e6cc87f4d020b5011be5a8cdf3b003660de) for
 an example fix.

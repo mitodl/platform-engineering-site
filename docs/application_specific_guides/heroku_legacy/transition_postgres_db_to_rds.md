@@ -64,7 +64,7 @@ Now, test that you can connect using the URL you just built with:
 If you get an access denied message, make sure you got the correct password for the app and environment (e.g. CI, QA or production) and check the
 other components.
 
-We'll assume $DATABASE_URL is set to to the new RDS database we've created for the rest of the runbook.
+We'll assume $DATABASE_URL is set to the new RDS database we've created for the rest of the runbook.
 
 ## Put the Heroku App Into Maintenance Mode
 
