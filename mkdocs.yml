@@ -4,9 +4,18 @@ theme:
   user_color_mode_toggle: true
   features:
     - content.code.copy
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.indexes
+    - navigation.top
 draft_docs: |
   drafts/
 markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:zensical.extensions.emoji.twemoji
+      emoji_generator: !!python/name:zensical.extensions.emoji.to_svg
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -32,147 +41,175 @@ extra_javascript:
   - javascripts/c4-zoom.js?v=c53b4ad7
 nav:
   - Home: index.md
-  - Getting Started & How-Tos:
-      - Emergency Oncall Break Glass Procedure: getting_started_and_how_tos/emergency-break-glass.md
-      - Developer EKS Access: getting_started_and_how_tos/developer_eks_access.md
-      - Experimental EKS Access Setup: getting_started_and_how_tos/experimental_eks_access_setup.md
-      - Vault Access for Developers: getting_started_and_how_tos/vault_access_for_developers.md
-      - Updating This Site: getting_started_and_how_tos/update_this_site.md
-      - Applications & Services: getting_started_and_how_tos/pe-product-infra-map.md
-      - Impersonating Users in Keycloak: getting_started_and_how_tos/impersonate_users_keycloak.md
-  - Platform Services:
-      - Secrets Management (Vault):
-          - Restoring Vault Backups: platform_services/secrets_management/restore_vault_backups.md
-          - Faking It with Consul and Vault: platform_services/secrets_management/faking_it_with_consul_and_vault.md
-      - Service Discovery (Consul):
-          - Consul Incantations: platform_services/service_discovery/consul_incantations.md
-          - Fargate Service Discovery: platform_services/service_discovery/fargate_service_discovery.md
-      - Container Orchestration (Kubernetes):
-          - Deploying Apps with Kubernetes: platform_services/container_orchestration/deploying_apps_with_kubernetes.md
-          - Kubernetes Cookbook: platform_services/container_orchestration/kubernetes_cookbook.md
-      - CI/CD (Concourse):
-          - Getting Started with Concourse: platform_services/ci_cd/getting_started_with_concourse.md
-          - Deploying Concourse: platform_services/ci_cd/deploying_concourse.md
-          - Concourse GitHub Issues User Guide: platform_services/ci_cd/concourse_github_issues_user_guide.md
-      - Cloud Infrastructure (AWS & Pulumi):
-          - Pulumi AWS Classic 5 to 6 Upgrade: platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade.md
-          - Importing Existing Resources with Pulumi: platform_services/cloud_infrastructure/import_existing_resources_with_pulumi.md
-          - Testing and Deploying Pulumi Packer Projects: platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects.md
-          - Tagging AMIs with Software Metadata: platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata.md
-          - Moira Certificates: platform_services/cloud_infrastructure/moira_certificates.md
-          - Recaptcha: platform_services/cloud_infrastructure/recaptcha.md
-          - Publishing to NPM: platform_services/cloud_infrastructure/publishing_to_npm.md
-  - System Architecture:
-      - SOA System Landscape: system_architecture/landscape.md
-      - MITx Online Open edX:
-          - Architecture & Data Flows: system_architecture/mitxonline-openedx/index.md
-          - System Context: system_architecture/mitxonline-openedx/system-context.md
-          - Containers: system_architecture/mitxonline-openedx/container.md
-          - Data Flows: system_architecture/mitxonline-openedx/data-flows.md
-          - Dependencies & Cycles: system_architecture/mitxonline-openedx/dependencies-and-cycles.md
-      - xPRO Open edX:
-          - Architecture & Data Flows: system_architecture/xpro-openedx/index.md
-          - System Context: system_architecture/xpro-openedx/system-context.md
-          - Containers: system_architecture/xpro-openedx/container.md
-          - Data Flows: system_architecture/xpro-openedx/data-flows.md
-          - Dependencies & Cycles: system_architecture/xpro-openedx/dependencies-and-cycles.md
-      - MIT Learn:
-          - Architecture & Data Flows: system_architecture/mit-learn/index.md
-          - System Context: system_architecture/mit-learn/system-context.md
-          - Containers: system_architecture/mit-learn/container.md
-          - Components: system_architecture/mit-learn/component.md
-          - Data Flows: system_architecture/mit-learn/data-flows.md
-          - Dependencies & Cycles: system_architecture/mit-learn/dependencies-and-cycles.md
-          - Infrastructure References: system_architecture/mit-learn/infrastructure-references.md
-      - learn-ai:
-          - Architecture & Data Flows: system_architecture/learn-ai/index.md
-          - System Context: system_architecture/learn-ai/system-context.md
-          - Containers: system_architecture/learn-ai/container.md
-          - Data Flows: system_architecture/learn-ai/data-flows.md
-          - Dependencies & Cycles: system_architecture/learn-ai/dependencies-and-cycles.md
-      - MITx Online:
-          - Architecture & Data Flows: system_architecture/mitxonline/index.md
-          - System Context: system_architecture/mitxonline/system-context.md
-          - Containers: system_architecture/mitxonline/container.md
-          - Data Flows: system_architecture/mitxonline/data-flows.md
-          - Dependencies & Cycles: system_architecture/mitxonline/dependencies-and-cycles.md
-      - MITx Pro:
-          - Architecture & Data Flows: system_architecture/mitxpro/index.md
-          - System Context: system_architecture/mitxpro/system-context.md
-          - Containers: system_architecture/mitxpro/container.md
-          - Data Flows: system_architecture/mitxpro/data-flows.md
-          - Dependencies & Cycles: system_architecture/mitxpro/dependencies-and-cycles.md
-      - MicroMasters:
-          - Architecture & Data Flows: system_architecture/micromasters/index.md
-          - System Context: system_architecture/micromasters/system-context.md
-          - Containers: system_architecture/micromasters/container.md
-          - Data Flows: system_architecture/micromasters/data-flows.md
-          - Dependencies & Cycles: system_architecture/micromasters/dependencies-and-cycles.md
-      - OCW Studio:
-          - Architecture & Data Flows: system_architecture/ocw-studio/index.md
-          - System Context: system_architecture/ocw-studio/system-context.md
-          - Containers: system_architecture/ocw-studio/container.md
-          - Data Flows: system_architecture/ocw-studio/data-flows.md
-          - Dependencies & Cycles: system_architecture/ocw-studio/dependencies-and-cycles.md
-      - ODL Video Service:
-          - Architecture & Data Flows: system_architecture/odl-video-service/index.md
-          - System Context: system_architecture/odl-video-service/system-context.md
-          - Containers: system_architecture/odl-video-service/container.md
-          - Data Flows: system_architecture/odl-video-service/data-flows.md
-          - Dependencies & Cycles: system_architecture/odl-video-service/dependencies-and-cycles.md
-      - OL Data Platform:
-          - Architecture & Data Flows: system_architecture/ol-data-platform/index.md
-          - System Context: system_architecture/ol-data-platform/system-context.md
-          - Containers: system_architecture/ol-data-platform/container.md
-          - Data Flows: system_architecture/ol-data-platform/data-flows.md
-          - Dependencies & Cycles: system_architecture/ol-data-platform/dependencies-and-cycles.md
-  - Application Specific Guides:
-      - Open edX:
-          - MITx Online Bulk Rescore: application_specific_guides/openedx/mitxonline_bulk_rescore.md
-          - Proving Build Was Deployed: application_specific_guides/openedx/prove_build_was_deployed.md
-          - Accessing Django Manage: application_specific_guides/openedx/access_django_manage.md
-          - Enabling Rapid Response edXApp: application_specific_guides/openedx/enable_rapid_response_edxapp.md
-          - MySQL Access: application_specific_guides/openedx/mysql_access.md
-          - Retirement Pipeline: application_specific_guides/openedx/retirement_pipeline.md
-          - Release Upgrades: application_specific_guides/openedx/release_upgrades.md
-          - Retiring a User: application_specific_guides/openedx/retire_an_openedx_user.md
-          - ProctorTrack:
-              - Integration Overview: application_specific_guides/openedx/proctoring/proctortrack_integration_overview.md
-              - JS Architecture: application_specific_guides/openedx/proctoring/proctoring_js_architecture.md
-              - Build Fix: application_specific_guides/openedx/proctoring/earthfile_fix.md
-              - Workers JSON Build Requirements: application_specific_guides/openedx/proctoring/workers_json_requirements.md
-      - Heroku (Legacy):
-          - Config Vars: application_specific_guides/heroku_legacy/config_vars.md
-          - Dynosaur Management: application_specific_guides/heroku_legacy/dynosaur_management.md
-          - Log Drains: application_specific_guides/heroku_legacy/log_drains.md
-          - Transitioning Postgres DB to RDS: application_specific_guides/heroku_legacy/transition_postgres_db_to_rds.md
-      - OCW Studio:
-          - Updating The OCW Studio Pipeline: application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline.md
-      - OCW Site:
-          - Accessing S3 Bucket Audit Logs: application_specific_guides/ocw_site/accessing_s3_audit_logs.md
-      - Doof (Odlbot):
-          - Resetting Doof Github Token: application_specific_guides/odlbot/Resetting_Doof_Github_Token.md
-          - Resetting Doof NPMJS Token: application_specific_guides/odlbot/Resetting_Doof_NPM_Token.md
-      - Renovate:
-          - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
-      - JupyterHub:
-          - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
-      - Keycloak:
-          - Inviting New Users to Keycloak Realms: application_specific_guides/keycloak/inviting_users_to_realms.md
-  - Monitoring And Observability:
-      - Overview: monitoring_observability/overview.md
-      - Inventory: monitoring_observability/inventory.md
-      - Key Labels: monitoring_observability/key_labels.md
-      - Bumping Sentry Credit: monitoring_observability/bump_sentry_credit.md
-      - Managing Rootly: monitoring_observability/rootly_management.md
-  - Runbooks & Post-Mortems:
-      - On-Call Runbook: runbooks_post_mortems/oncall_runbook.md
-      - OL Production Outage Runbook: runbooks_post_mortems/ol_production_outage_runbook.md
-      - 20231030 xPro Outage Post-Mortem: runbooks_post_mortems/20231030_xpro_outage.md
-      - 20260423 MIT Learn Outage Post-Mortem: runbooks_post_mortems/20260324_mitlearn_outage.md
-      - 20260603 MIT XPro Certificate Outage Post Mortem: runbooks_post_mortems/20260603_xpro_outage.md
-      - Clear User Grades In Open edX: runbooks_post_mortems/openedx_clear_user_grades.md
-  - Cookbooks & Patterns:
-      - DevOps Patterns Cookbook: cookbooks_patterns/devops_patterns_cookbook.md
-  - Partner Documentation:
-      - Integrating With MIT Learn SSO: sso_onboarding/sso_config.md
+  - Engineering Handbook:
+      - Overview: handbook/index.md
+      - How We Deliver:
+          - Overview: handbook/delivering/index.md
+          - Code Review: handbook/delivering/code-review.md
+          - Development Process: handbook/delivering/development-process.md
+          - Environments: handbook/delivering/environments.md
+          - How We Work: handbook/delivering/how-we-work.md
+          - Production Ready: handbook/delivering/production-ready.md
+          - Release Process:
+              - Overview: handbook/delivering/release-process/index.md
+              - Webapp Release Process: handbook/delivering/release-process/webapp-release-process.md
+      - How-To Guides:
+          - Overview: handbook/how-to/index.md
+          - Caching: handbook/how-to/caching.md
+          - Common Web App Guide: handbook/how-to/common-web-app-guide.md
+          - New Projects: handbook/how-to/new-projects.md
+          - Touchstone Integration: handbook/how-to/touchstone.md
+      - Open edX (Legacy Handbook):
+          - Overview: handbook/openedx/index.md
+          - Configuring Themes in edX: handbook/openedx/configuring_theme_in_edX.md
+          - edx-api-client Release Process: handbook/openedx/edx-api-client-release-process.md
+          - Platform Development: handbook/openedx/edx-platform-development.md
+          - Enabling CCX: handbook/openedx/enable-ccx.md
+          - Integrating MIT Applications with Open edX using Tutor: handbook/openedx/MITx-edx-integration-tutor.md
+      - Deprecated Docs:
+          - Integrating MIT Applications with Open edX using Devstack: handbook/deprecated-docs/MITx-edx-integration-devstack.md
+  - Platform Engineering:
+      - Getting Started & How-Tos:
+          - Emergency Oncall Break Glass Procedure: getting_started_and_how_tos/emergency-break-glass.md
+          - Developer EKS Access: getting_started_and_how_tos/developer_eks_access.md
+          - Experimental EKS Access Setup: getting_started_and_how_tos/experimental_eks_access_setup.md
+          - Vault Access for Developers: getting_started_and_how_tos/vault_access_for_developers.md
+          - Updating This Site: getting_started_and_how_tos/update_this_site.md
+          - Applications & Services: getting_started_and_how_tos/pe-product-infra-map.md
+          - Impersonating Users in Keycloak: getting_started_and_how_tos/impersonate_users_keycloak.md
+      - Platform Services:
+          - Secrets Management (Vault):
+              - Restoring Vault Backups: platform_services/secrets_management/restore_vault_backups.md
+              - Faking It with Consul and Vault: platform_services/secrets_management/faking_it_with_consul_and_vault.md
+          - Service Discovery (Consul):
+              - Consul Incantations: platform_services/service_discovery/consul_incantations.md
+              - Fargate Service Discovery: platform_services/service_discovery/fargate_service_discovery.md
+          - Container Orchestration (Kubernetes):
+              - Deploying Apps with Kubernetes: platform_services/container_orchestration/deploying_apps_with_kubernetes.md
+              - Kubernetes Cookbook: platform_services/container_orchestration/kubernetes_cookbook.md
+          - CI/CD (Concourse):
+              - Getting Started with Concourse: platform_services/ci_cd/getting_started_with_concourse.md
+              - Deploying Concourse: platform_services/ci_cd/deploying_concourse.md
+              - Concourse GitHub Issues User Guide: platform_services/ci_cd/concourse_github_issues_user_guide.md
+          - Cloud Infrastructure (AWS & Pulumi):
+              - Pulumi AWS Classic 5 to 6 Upgrade: platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade.md
+              - Importing Existing Resources with Pulumi: platform_services/cloud_infrastructure/import_existing_resources_with_pulumi.md
+              - Testing and Deploying Pulumi Packer Projects: platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects.md
+              - Tagging AMIs with Software Metadata: platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata.md
+              - Moira Certificates: platform_services/cloud_infrastructure/moira_certificates.md
+              - Recaptcha: platform_services/cloud_infrastructure/recaptcha.md
+              - Publishing to NPM: platform_services/cloud_infrastructure/publishing_to_npm.md
+      - System Architecture:
+          - SOA System Landscape: system_architecture/landscape.md
+          - MITx Online Open edX:
+              - Architecture & Data Flows: system_architecture/mitxonline-openedx/index.md
+              - System Context: system_architecture/mitxonline-openedx/system-context.md
+              - Containers: system_architecture/mitxonline-openedx/container.md
+              - Data Flows: system_architecture/mitxonline-openedx/data-flows.md
+              - Dependencies & Cycles: system_architecture/mitxonline-openedx/dependencies-and-cycles.md
+          - xPRO Open edX:
+              - Architecture & Data Flows: system_architecture/xpro-openedx/index.md
+              - System Context: system_architecture/xpro-openedx/system-context.md
+              - Containers: system_architecture/xpro-openedx/container.md
+              - Data Flows: system_architecture/xpro-openedx/data-flows.md
+              - Dependencies & Cycles: system_architecture/xpro-openedx/dependencies-and-cycles.md
+          - MIT Learn:
+              - Architecture & Data Flows: system_architecture/mit-learn/index.md
+              - System Context: system_architecture/mit-learn/system-context.md
+              - Containers: system_architecture/mit-learn/container.md
+              - Components: system_architecture/mit-learn/component.md
+              - Data Flows: system_architecture/mit-learn/data-flows.md
+              - Dependencies & Cycles: system_architecture/mit-learn/dependencies-and-cycles.md
+              - Infrastructure References: system_architecture/mit-learn/infrastructure-references.md
+          - learn-ai:
+              - Architecture & Data Flows: system_architecture/learn-ai/index.md
+              - System Context: system_architecture/learn-ai/system-context.md
+              - Containers: system_architecture/learn-ai/container.md
+              - Data Flows: system_architecture/learn-ai/data-flows.md
+              - Dependencies & Cycles: system_architecture/learn-ai/dependencies-and-cycles.md
+          - MITx Online:
+              - Architecture & Data Flows: system_architecture/mitxonline/index.md
+              - System Context: system_architecture/mitxonline/system-context.md
+              - Containers: system_architecture/mitxonline/container.md
+              - Data Flows: system_architecture/mitxonline/data-flows.md
+              - Dependencies & Cycles: system_architecture/mitxonline/dependencies-and-cycles.md
+          - MITx Pro:
+              - Architecture & Data Flows: system_architecture/mitxpro/index.md
+              - System Context: system_architecture/mitxpro/system-context.md
+              - Containers: system_architecture/mitxpro/container.md
+              - Data Flows: system_architecture/mitxpro/data-flows.md
+              - Dependencies & Cycles: system_architecture/mitxpro/dependencies-and-cycles.md
+          - MicroMasters:
+              - Architecture & Data Flows: system_architecture/micromasters/index.md
+              - System Context: system_architecture/micromasters/system-context.md
+              - Containers: system_architecture/micromasters/container.md
+              - Data Flows: system_architecture/micromasters/data-flows.md
+              - Dependencies & Cycles: system_architecture/micromasters/dependencies-and-cycles.md
+          - OCW Studio:
+              - Architecture & Data Flows: system_architecture/ocw-studio/index.md
+              - System Context: system_architecture/ocw-studio/system-context.md
+              - Containers: system_architecture/ocw-studio/container.md
+              - Data Flows: system_architecture/ocw-studio/data-flows.md
+              - Dependencies & Cycles: system_architecture/ocw-studio/dependencies-and-cycles.md
+          - ODL Video Service:
+              - Architecture & Data Flows: system_architecture/odl-video-service/index.md
+              - System Context: system_architecture/odl-video-service/system-context.md
+              - Containers: system_architecture/odl-video-service/container.md
+              - Data Flows: system_architecture/odl-video-service/data-flows.md
+              - Dependencies & Cycles: system_architecture/odl-video-service/dependencies-and-cycles.md
+          - OL Data Platform:
+              - Architecture & Data Flows: system_architecture/ol-data-platform/index.md
+              - System Context: system_architecture/ol-data-platform/system-context.md
+              - Containers: system_architecture/ol-data-platform/container.md
+              - Data Flows: system_architecture/ol-data-platform/data-flows.md
+              - Dependencies & Cycles: system_architecture/ol-data-platform/dependencies-and-cycles.md
+      - Application Specific Guides:
+          - Open edX:
+              - MITx Online Bulk Rescore: application_specific_guides/openedx/mitxonline_bulk_rescore.md
+              - Proving Build Was Deployed: application_specific_guides/openedx/prove_build_was_deployed.md
+              - Accessing Django Manage: application_specific_guides/openedx/access_django_manage.md
+              - Enabling Rapid Response edXApp: application_specific_guides/openedx/enable_rapid_response_edxapp.md
+              - MySQL Access: application_specific_guides/openedx/mysql_access.md
+              - Retirement Pipeline: application_specific_guides/openedx/retirement_pipeline.md
+              - Release Upgrades: application_specific_guides/openedx/release_upgrades.md
+              - Retiring a User: application_specific_guides/openedx/retire_an_openedx_user.md
+              - ProctorTrack:
+                  - Integration Overview: application_specific_guides/openedx/proctoring/proctortrack_integration_overview.md
+                  - JS Architecture: application_specific_guides/openedx/proctoring/proctoring_js_architecture.md
+                  - Build Fix: application_specific_guides/openedx/proctoring/earthfile_fix.md
+                  - Workers JSON Build Requirements: application_specific_guides/openedx/proctoring/workers_json_requirements.md
+          - Heroku (Legacy):
+              - Config Vars: application_specific_guides/heroku_legacy/config_vars.md
+              - Dynosaur Management: application_specific_guides/heroku_legacy/dynosaur_management.md
+              - Log Drains: application_specific_guides/heroku_legacy/log_drains.md
+              - Transitioning Postgres DB to RDS: application_specific_guides/heroku_legacy/transition_postgres_db_to_rds.md
+          - OCW Studio:
+              - Updating The OCW Studio Pipeline: application_specific_guides/ocw-studio/Update_OCW_Studio_Pipeline.md
+          - OCW Site:
+              - Accessing S3 Bucket Audit Logs: application_specific_guides/ocw_site/accessing_s3_audit_logs.md
+          - Doof (Odlbot):
+              - Resetting Doof Github Token: application_specific_guides/odlbot/Resetting_Doof_Github_Token.md
+              - Resetting Doof NPMJS Token: application_specific_guides/odlbot/Resetting_Doof_NPM_Token.md
+          - Renovate:
+              - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
+          - JupyterHub:
+              - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
+          - Keycloak:
+              - Inviting New Users to Keycloak Realms: application_specific_guides/keycloak/inviting_users_to_realms.md
+      - Monitoring And Observability:
+          - Overview: monitoring_observability/overview.md
+          - Inventory: monitoring_observability/inventory.md
+          - Key Labels: monitoring_observability/key_labels.md
+          - Bumping Sentry Credit: monitoring_observability/bump_sentry_credit.md
+          - Managing Rootly: monitoring_observability/rootly_management.md
+      - Runbooks & Post-Mortems:
+          - On-Call Runbook: runbooks_post_mortems/oncall_runbook.md
+          - OL Production Outage Runbook: runbooks_post_mortems/ol_production_outage_runbook.md
+          - 20231030 xPro Outage Post-Mortem: runbooks_post_mortems/20231030_xpro_outage.md
+          - 20260423 MIT Learn Outage Post-Mortem: runbooks_post_mortems/20260324_mitlearn_outage.md
+          - 20260603 MIT XPro Certificate Outage Post Mortem: runbooks_post_mortems/20260603_xpro_outage.md
+          - Clear User Grades In Open edX: runbooks_post_mortems/openedx_clear_user_grades.md
+      - Cookbooks & Patterns:
+          - DevOps Patterns Cookbook: cookbooks_patterns/devops_patterns_cookbook.md
+      - Partner Documentation:
+          - Integrating With MIT Learn SSO: sso_onboarding/sso_config.md
