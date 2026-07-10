@@ -1,8 +1,33 @@
 ![MIT Logo 3 Line Black](img/mit_lockup_std-three-line_rgb_black.png)
 
-# Handy Links
+# MIT Open Learning Engineering
 
-## For Engineering
+Documentation for how MIT Open Learning's Engineering and Platform Engineering teams build, ship, and operate software.
+
+<div class="grid cards" markdown>
+
+- :material-book-open-page-variant:{ .lg .middle } __Engineering Handbook__
+
+    ---
+
+    Coding conventions, delivery process, and how-to guides for OL engineers.
+
+    [:octicons-arrow-right-24: Read the Handbook](handbook/index.md)
+
+- :material-server-network:{ .lg .middle } __Platform Engineering__
+
+    ---
+
+    Runbooks, infrastructure, CI/CD, and system architecture for the platforms OL runs on.
+
+    [:octicons-arrow-right-24: Explore Platform Engineering](getting_started_and_how_tos/emergency-break-glass.md)
+
+</div>
+
+## Handy Links
+
+### For Engineering
+
 - [Oncall Emergency Break Glass](getting_started_and_how_tos/emergency-break-glass.md)
 - [Celery Monitoring Production](https://celery-monitoring.odl.mit.edu/)
 - [Concourse Pipelines Production](https://cicd.odl.mit.edu/)
@@ -11,6 +36,7 @@
 - [MIT Online Learning Intranet](https://openlearning-intranet.mit.edu/)
 - [MIT Atlas Status](https://atlas-status.mit.edu/)
 
-## For Platform Engineering
+### For Platform Engineering
+
 - [Oncall Runbook](runbooks_post_mortems/oncall_runbook.md)
 - [Grafana Production](https://mitolproduction.grafana.net/explore?orgId=1&left=%7B%22datasource%22:%22grafanacloud-logs%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22grafanacloud-logs%22%7D,%22editorMode%22:%22code%22,%22expr%22:%22%7Benvironment%3D%5C%22mitxonline-production%5C%22,%20application%3D%5C%22edxapp%5C%22%7D%20%7C%20json%20%7C%20log_process%3D%5C%22edxapp%5C%22%20%7C~%20%5C%22motosharky%5C%22%22,%22queryType%22:%22range%22%7D%5D,%22range%22:%7B%22from%22:%22now-24h%22,%22to%22:%22now%22%7D%7D)
