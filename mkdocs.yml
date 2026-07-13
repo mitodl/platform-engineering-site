@@ -58,7 +58,6 @@ nav:
           - Caching: handbook/how-to/caching.md
           - Common Web App Guide: handbook/how-to/common-web-app-guide.md
           - New Projects: handbook/how-to/new-projects.md
-          - Touchstone Integration: handbook/how-to/touchstone.md
       - Open edX (Legacy Handbook):
           - Overview: handbook/openedx/index.md
           - Configuring Themes in edX: handbook/openedx/configuring_theme_in_edX.md

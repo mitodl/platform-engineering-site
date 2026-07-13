@@ -10,7 +10,6 @@ from an infrastructure perspective. Here's a checklist:
 - [ ] Are the tests running on a CI server like Travis?
 - [ ] Do you have relevant linters setup for the languages you're using?
 
-
 READMEs for your project.
 
 - [ ] Does it include how to install the app?
@@ -19,9 +18,8 @@ READMEs for your project.
 - [ ] Does it link to relevant documents?
 - [ ] Does it mention the software license used?
 
-
 For Django projects specifically..
 
 - [ ] Does it use the same database backend locally as it will in production?
-- [ ] Does it support both python 2.7 and either python 3.4 or 3.5 (pick one)?
-- [ ] Does it run pylint & pep8 as linters?
+- [ ] Does it support both python 3.12 and python 3.14?
+- [ ] Does it run mypy & ruff as linters?
