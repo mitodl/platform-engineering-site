@@ -14,14 +14,12 @@
 
 ### Major Dependencies
 - Docker
-  - _[OSX only]_ We use **Docker for Mac**&#42;, a desktop development environment that includes Docker.  
-    Recommended OSX install method: [Download from Docker website](https://store.docker.com/editions/community/docker-ce-desktop-mac)
+  - _[OSX only]_ We use **Docker Desktop**&#42;, a desktop development environment that includes Docker.  
+    Recommended OSX install method: [Download from Docker website](https://docs.docker.com/desktop/setup/install/mac-install/)
 - docker-compose
-  - Recommended install: pip (`pip install docker-compose`)
-
-_&#42; For OSX development, we previously used docker-machine, which is used to run Docker containers
-inside of a VM. Since that time, Docker for Mac has improved to the point that Docker can be run from
-the host machine._
+  - If you've installed Docker Desktop, you already have `docker-compose` installed. 
+  - If not you may need to install it separately.
+    - Recommended install: pip (`pip install docker-compose`)
 
 ### Build And Configure Docker Containers
 
