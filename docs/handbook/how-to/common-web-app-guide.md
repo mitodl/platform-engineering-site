@@ -51,7 +51,7 @@ It will prompt you for the username and some other details for this user.
 There are two scenarios where this will be needed:
 
 1. Multiple locally-running apps need to share a cookie (e.g.: MicroMasters and Open Discussions).
-1. You are an MacOS user. Due to networking differences between Docker for Mac and standard Docker, locally running apps can only communicate
+1. You are a MacOS user. Due to networking differences between Docker Desktop for Mac and standard Docker, locally running apps can only communicate
 with each other in MacOS if `/etc/hosts` aliases are created for each app.
 
 Our established pattern is to use `odl.local` as the domain. The `/etc/hosts` entry for a locally-running site will look like this:
@@ -73,7 +73,7 @@ Start all the services that are required to run the app:
 
     docker-compose up
 
-*NOTE: In most repos this will also apply migrations. Consult your docker-compose.yml file to see what specific actions are taken*
+*NOTE: In most repos this will also apply migrations. Consult your docker-compose.yml file to see what specific actions are taken.*
 
 #### 2) Navigate to the running app in your browser
 
@@ -249,6 +249,6 @@ You can speed up JS test development in the same way described in the Python tes
 
 Try running `docker-compose run web ./manage.py migrate auth`, then run `docker-compose run web ./manage.py migrate`.
 
-#### _[MacOS only]_ Error indicating that Docker for Mac is not running (even though it is running)
+#### _[MacOS only]_ Error indicating that Docker Desktop is not running (even though it is running)
 
 Open a new terminal tab/window, navigate to the same directory, and re-run the same command (e.g.: `docker-compose up`). For whatever reason, a terminal window can sometimes fail to recognize that Docker for Mac is running, and a fresh terminal window will fix that.
