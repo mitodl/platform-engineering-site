@@ -39,12 +39,6 @@ project's README file.
 
 *NOTE: You will also need to run this command whenever requirements files change (``requirements.txt``, ``test_requirements.txt``, etc.)*
 
-#### 3) Create database tables from the Django models
-
-    docker-compose run web ./manage.py migrate
-
-*NOTE: You will also need to run this command whenever there are new migrations (i.e.: database models have been changed/added/removed).*
-
 #### _(Optional)_ Create a superuser
 Some of our apps include user creation as part of their specific setup steps. If the given app does not
 include steps to create a user, you can create one easily via Django's `createsuperuser` command.
@@ -79,6 +73,8 @@ Start all the services that are required to run the app:
 
     docker-compose up
 
+*NOTE: In most repos this will also apply migrations. Consult your docker-compose.yml file to see what specific actions are taken*
+
 #### 2) Navigate to the running app in your browser
 
 Your app should now be accessible via browser:
@@ -100,7 +96,7 @@ There are a few different commands for running tests/linters and formatting code
 
 ### Python tests, linting, and formatting
 
-We use `pytest` (with various plugins) to run our Python test suite in most of our projects. In some of legacy projects, we use `tox` to invoke `pytest`. You'll run `pytest` if there is no `tox` requirement in `test_requirements.txt` for your project.
+We use `pytest` (with various plugins) to run our Python test suite in most of our projects.
 
 #### With `pytest`...
 ```bash
@@ -122,20 +118,10 @@ docker-compose run --rm web bash -c "pylint ./**/*.py"
 docker-compose run --rm web pytest --pylint -m pylint
 ```
 
-#### With `tox`...
-```bash
-# Run Python tests
-docker-compose run --rm web tox
-# Run Python tests in a single file
-docker-compose run --rm web tox /path/to/test.py
-# Run Python test cases in a single file that match some function/class name
-docker-compose run --rm web tox /path/to/test.py -- -k test_some_logic
-# Run Python linter
-docker-compose run --rm web pylint
-```
-
 #### Formatting
 Most of our projects use the `black` formatter to enforce certain formatting rules. This should be run before any commit that makes changes to Python code (ignore this if your project does not list `black` in the `test_requirements.txt`).
+Additionally, many of our projects perform formatting as a part of their `pre-commit` hook, so if you have that hook installed it will automatically run formatting checks on commit.
+
 ```bash
 # Format all Python files in the repo
 docker-compose run --rm web black .
@@ -160,10 +146,7 @@ There are many scenarios where you'll want to run tests many times in a row (aut
 # On host machine...
 docker-compose run --rm web bash
 # On the bash prompt inside the new container
-# Without tox...
 pytest /path/to/test.py
-# With tox...
-tox /path/to/test.py
 ```
 
 ### JS/CSS tests, linting, formatting, and type-checking
@@ -208,6 +191,7 @@ docker-compose run --rm watch yarn run test:coverage
 ```
 
 #### Linting and formatting
+Many of our projects perform formatting as a part of their `pre-commit` hook, so if you have that hook installed it will automatically run formatting checks on commit.
 
 ```bash
 # Run the JS linter
@@ -220,9 +204,7 @@ docker-compose run --rm watch yarn run fmt
 
 #### Type-checking
 
-Most of our legacy projects use [Flow](https://flow.org/en/docs/) 
-type-checking. We switched to Typescript for new projects in 2021. Type-checking only needs to be invoked directly 
-in our projects that use Flow. If your project has files with the extension `.ts`/`.tsx`, your project is 
+If your project has files with the extension `.ts`/`.tsx`, your project is 
 Typescript-enabled.
 
 **Typescript** 
@@ -238,6 +220,10 @@ This runs `tsc --noEmit`, which basically type-checks the program and outputs
 any error but does not run a full compilation. We have incremental compilation
 turned on, so this should be relatively fast. It uses a file called
 `.tsbuildinfo` for incremental compilation.
+
+Most of our legacy projects use [Flow](https://flow.org/en/docs/) 
+type-checking. We switched to Typescript for new projects in 2021. Type-checking only needs to be invoked directly 
+in our projects that use Flow. 
 
 **Flow**
 
@@ -256,50 +242,6 @@ You can speed up JS test development in the same way described in the Python tes
 #### Running a Django shell
 
     docker-compose run --rm web ./manage.py shell
-
-#### Running the app in a notebook
-
-Some of our repos include a config for running a [Jupyter notebook](https://jupyter.org/) in a
-Docker container. This enables you to do in a Jupyter notebook anything you might otherwise do
-in a Django shell, with the added benefit of saving code that you frequently run, and running entire
-blocks of code at once. **If the repo includes a `.ipynb.example` file, that means the app is configured
-to run in a Notebook.** To get started:
-
-- Copy the example file
-    ```bash
-    # Choose any name for the resulting .ipynb file
-    cp localdev/app.ipynb.example localdev/app.ipynb
-    ```
-- Build the `notebook` container _(for first time use, or when requirements change)_
-    ```bash
-    docker-compose -f docker-compose-notebook.yml build
-    ```
-- Run all the standard containers (`docker-compose up`)
-- In another terminal window, run the `notebook` container
-    ```bash
-    docker-compose -f docker-compose-notebook.yml run --rm --service-ports notebook
-    ```
-- Visit the running notebook server in your browser. The `notebook` container log output will
-  indicate the URL and `token` param with some output that looks like this:
-    ```
-    notebook_1  |     To access the notebook, open this file in a browser:
-    notebook_1  |         file:///home/mitodl/.local/share/jupyter/runtime/nbserver-8-open.html
-    notebook_1  |     Or copy and paste one of these URLs:
-    notebook_1  |         http://(2c19429d04d0 or 127.0.0.1):8080/?token=2566e5cbcd723e47bdb1b058398d6bb9fbf7a31397e752ea
-    ```
-  Here is a one-line command that will produce a browser-ready URL from that output. Run this in a separate terminal:
-    ```bash
-    # Replace "myapp.odl.local" with the etc/hosts alias for your app (e.g.: "xpro.odl.local")
-    APP_HOST="myapp.odl.local"; docker logs $(docker ps --format '{{.Names}}' | grep "_notebook_run_") | grep -E "http://(.*):8080[^ ]+\w" | tail -1 | sed -e 's/^[[:space:]]*//' | sed -e "s/(.*)/$APP_HOST/"
-    ```
-  OSX users can pipe that output to `xargs open` to open a browser window directly with the URL from that command.
-- Navigate to the `.ipynb` file that you created and click it to run the notebook
-- Execute the first block to confirm it's working properly (click inside the block
-  and press Shift+Enter)
-
-From there, you should be able to run code snippets with a live Django app just like you
-would in a Django shell.
-
 
 # Troubleshooting
 
