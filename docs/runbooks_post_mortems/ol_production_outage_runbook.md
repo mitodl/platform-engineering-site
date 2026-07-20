@@ -69,7 +69,7 @@ Someone, possibly the communications lead, should track the overall duration of 
 
 ### Incident Wrap-Up
 
-The on-call engineer ends the incident in Rootly. This closes out the incident document and begins the retrospective process, during which action items can be assigned to responsible individuals and a more formal incident document can be filed on the Platform Engineering team [website](https://pe.ol.mit.edu) for posterity.
+The on-call engineer ends the incident in Rootly. This closes out the incident document and begins the retrospective process, during which action items can be assigned to responsible individuals and a more formal incident document can be filed on the Platform Engineering team [website](https://engineering.ol.mit.edu) for posterity.
 
 ## Postmortem (Retrospective)
 
