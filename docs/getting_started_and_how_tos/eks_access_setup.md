@@ -1,22 +1,22 @@
-# Experimental EKS Access Setup
+# EKS Access Setup
 
-This guide covers the **new** `eks.py`-based workflow for gaining access to MIT
-Open Learning EKS clusters. It replaces the older `login_helper.py`-based flow
-described in [Developer EKS Access](developer_eks_access.md) and is the
-preferred approach going forward.
+This guide covers the `eks.py`-based workflow for gaining access to MIT Open
+Learning EKS clusters. This is the **supported** method for developer EKS
+access. It replaces the older `login_helper.py`-based flow described in
+[Developer EKS Access (Legacy)](developer_eks_access.md), which relied on
+GitHub token authentication; that method is no longer supported.
 
 The script discovers all OL EKS clusters automatically via the AWS API, handles
 Vault OIDC authentication through your browser, and writes a ready-to-use
 `~/.kube/config` for you. You do not need to manually export AWS credentials or
 run separate login steps.
 
-/// admonition | Experimental
-    type: warning
+/// admonition | Note
+    type: note
 
-This workflow is under active development. The underlying `eks.py` script lives
-in `scripts/eks/eks.py` inside the `ol-infrastructure` repository and may
-change. If you run into issues, check `KUBE_ACCESS.md` in that same directory
-for the latest notes.
+The underlying `eks.py` script lives in `scripts/eks/eks.py` inside the
+`ol-infrastructure` repository. If you run into issues, check
+`KUBE_ACCESS.md` in that same directory for the latest notes.
 ///
 
 ---
@@ -102,11 +102,16 @@ Or equivalently, specifying the mode explicitly:
 uv run python scripts/eks/eks.py setup --mode developer
 ```
 
-This writes `~/.kube/config` with **two contexts per cluster**:
+By default this writes `~/.kube/config` with **one context per cluster**:
 
 - `<cluster-name>` — full developer read/write access (e.g. `applications-qa`)
-- `<cluster-name>-readonly` — read-only access for agents or safe exploration
-  (e.g. `applications-qa-readonly`)
+
+Add `--include-readonly-contexts` to also generate a paired read-only context
+per cluster (e.g. `applications-qa-readonly`) for agents or safe exploration:
+
+```bash
+uv run python scripts/eks/eks.py setup --mode developer --include-readonly-contexts
+```
 
 The default active context is set to `applications-qa` when that cluster exists,
 otherwise the first cluster found.
@@ -156,11 +161,13 @@ cluster.
 uv run python scripts/eks/eks.py setup --mode admin
 ```
 
-This writes `~/.kube/config` with **two contexts per cluster**:
+By default this writes `~/.kube/config` with **one context per cluster**:
 
 - `<cluster-name>` — cluster-admin credentials via the cluster's dedicated admin
   IAM role
-- `<cluster-name>-readonly` — read-only credentials for safe inspection
+
+Add `--include-readonly-contexts` to also generate a paired
+`<cluster-name>-readonly` context for safe inspection.
 
 /// admonition | Note
     type: note
@@ -265,8 +272,16 @@ kubectl config use-context <context-name>
 the OIDC callback port. Find and stop it:
 
 ```bash
-lsof -i :8250
+lsof -nP -iTCP:8250 -sTCP:LISTEN
 ```
+
+/// admonition | Note
+    type: note
+
+The script's friendly error message for this case only fires on macOS. On
+Linux (including WSL2) a port conflict surfaces as a raw `OSError: [Errno 98]
+Address already in use` instead — the fix is the same either way.
+///
 
 **`aws: command not found` when kubectl fetches a token** The `aws` CLI is not
 on the `PATH` seen by the exec plugin. Ensure `aws` is installed and available
@@ -292,5 +307,5 @@ checking with a DevOps engineer.
   documentation](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
 - [Configuring access to multiple
   clusters](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/)
-- [Developer EKS Access](developer_eks_access.md) — the older workflow, kept for
-  reference
+- [Developer EKS Access (Legacy)](developer_eks_access.md) — the older,
+  no-longer-supported GitHub token workflow, kept for reference
