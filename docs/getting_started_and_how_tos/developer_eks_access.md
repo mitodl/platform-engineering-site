@@ -1,8 +1,18 @@
-# Developer EKS Access
+# Developer EKS Access (Legacy)
+
+/// admonition | No longer supported
+    type: danger
+
+The `GITHUB_TOKEN` / `login_helper.py` workflow documented on this page is
+**no longer supported**. GitHub token-based authentication has been removed.
+Use [EKS Access Setup](eks_access_setup.md) instead, which is now
+the standard, supported way to gain EKS access. This page is kept only for
+historical reference.
+///
 
 ## Pre-reqs
 
-- an environment variable `GITHUB_TOKEN` set to a classic GitHub [token](https://github.com/settings/tokens) with `read:org` permissions.
+- ~~an environment variable `GITHUB_TOKEN` set to a classic GitHub [token](https://github.com/settings/tokens) with `read:org` permissions.~~ (no longer supported)
 - Latest (as of 02-19-2025) `aws-cli` is installed and available on your `$PATH`.
 - `kubectl` >= 1.30 is installed and available on your `$PATH`. (Newer is better, usually)
 - Cloned copy of [ol-infrastructure](https://github.com/mitodl/ol-infrastructure)
