@@ -1,4 +1,3 @@
----
 # C4 architecture-map validation: render every curated model against a Kroki
 # service container and fail if (a) any model errors / any diagram fails to
 # produce a valid <svg> (render validation), or (b) the committed generated
@@ -9,7 +8,6 @@
 # C4 — see architecture_maps/README.md), so this validates C4-PlantUML/Kroki, not
 # Mermaid.
 name: c4-validation
-
 on:
   pull_request:
     paths:
@@ -20,12 +18,12 @@ on:
       - mkdocs.yml
       - docs/javascripts/**
       - .github/workflows/c4-validation.yml
-
 jobs:
   c4-validate:
     name: C4 render + drift check
     runs-on: ubuntu-24.04
-
+    permissions:
+      contents: read
     services:
       # Kroki turns C4-PlantUML into SVG. Pinned to the SAME digest as
       # architecture_maps/docker-compose.yml: the drift-check byte-compares SVGs,
@@ -35,26 +33,20 @@ jobs:
         image: yuzutech/kroki@sha256:c16303ecd8ae840a6e3a76efa53468836c6297eeb7b7316845c3b24e8dbd0398
         ports:
           - 8000:8000
-
     env:
       C4GEN_KROKI_URL: http://localhost:8000
-
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
-
       - name: Install uv
         uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
         with:
           enable-cache: true
-
       - name: Set up Python
         run: uv python install 3.12
-
       - name: Verify JS cache-bust fingerprints
         run: python3 architecture_maps/scripts/update_asset_versions.py --check
-
       - name: Wait for Kroki
         run: |
           for i in $(seq 1 30); do
@@ -64,7 +56,6 @@ jobs:
             echo "waiting for Kroki ($i)…"; sleep 2
           done
           echo "Kroki did not become healthy"; exit 1
-
       - name: Render + drift check every curated model
         run: |
           set -euo pipefail
@@ -87,7 +78,6 @@ jobs:
               "Kroki and commit the result."
             exit 1
           fi
-
       - name: Render + drift check the SOA System Landscape
         run: |
           set -euo pipefail
