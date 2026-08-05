@@ -71,3 +71,8 @@ repos:
     rev: v0.0.3
     hooks:
       - id: packer_fmt
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.29.0
+    hooks:
+      - id: zizmor
+        args: [--no-progress, --min-severity=high, --min-confidence=medium]
