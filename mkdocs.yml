@@ -210,6 +210,7 @@ nav:
           - 20260423 MIT Learn Outage Post-Mortem: runbooks_post_mortems/20260324_mitlearn_outage.md
           - 20260603 MIT XPro Certificate Outage Post Mortem: runbooks_post_mortems/20260603_xpro_outage.md
           - 20260720 engineering.ol.mit.edu Domain Hijack Post-Mortem: runbooks_post_mortems/20260720_engineering_domain_hijack.md
+          - 20260810 MITx Online Cart HTTP 406 Errors Post-Mortem: runbooks_post_mortems/20260810_http_406_errors_on_cart_endpoints.md
           - Clear User Grades In Open edX: runbooks_post_mortems/openedx_clear_user_grades.md
       - Cookbooks & Patterns:
           - DevOps Patterns Cookbook: cookbooks_patterns/devops_patterns_cookbook.md
