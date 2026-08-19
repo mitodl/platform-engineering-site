@@ -369,8 +369,11 @@ In between 4 and 8 joins, decide with `EXPLAIN (ANALYZE, BUFFERS)` on production
 
 - Actual rows far above the page size means something multiplied
 - `Batches:` above 1 or `Method: external merge Disk:` means you exceeded `work_mem`
-- Estimates off from actual by an order of magnitude mean the plan is guessing - and that error 
+- Estimates off from actual by an order of magnitude mean the plan is guessing - and that error
   compounds with each join.
+
+[See the queries Django is running](#see-the-queries-django-is-running) covers how to get the plan -
+and the SQL behind it - out of Django, from a shell or from a test.
 
 ### `prefetch()` for indirect relationships
 
@@ -908,6 +911,59 @@ endpoint is flat in the number of children - stated as an assertion rather than 
   ceiling instead.
 - **Expect to update the numbers.** A legitimate change to a view moves the count, and that diff line
   is the prompt to check the new number is still constant in cardinality.
+
+### See the queries Django is running
+
+A count tells you how many; the SQL tells you why. **In a test**, both fixtures above yield the
+capture context, so the queries are right there when an assertion fails:
+
+```python
+with django_assert_max_num_queries(10) as captured:
+    client.get(url)
+
+for query in captured.captured_queries:
+    print(query["time"], query["sql"])
+```
+
+`CaptureQueriesContext(connection)` from `django.test.utils` is the same capture without an assertion,
+for when you only want to look.
+
+**In a shell or a dev server**, point the `django.db.backends` logger at the console to log every
+statement as it runs. This one does need `DEBUG = True`:
+
+```python
+LOGGING = {
+    "version": 1,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {
+        "django.db.backends": {"handlers": ["console"], "level": "DEBUG"},
+    },
+}
+```
+
+**To read a query without running it**, `str(queryset.query)` renders the SQL - enough to see which
+joins Django will emit, though parameters are interpolated lazily and the result isn't runnable:
+
+```python
+print(Course.objects.filter(platform__name="edx").select_related("platform").query)
+```
+
+**To get the plan**, `QuerySet.explain()` passes its options through to the database, so the
+`EXPLAIN (ANALYZE, BUFFERS)` that [Evaluating more joins](#evaluating-more-joins) asks for
+is:
+
+```python
+print(
+    Course.objects.filter(platform__name="edx")
+    .select_related("platform")
+    .explain(analyze=True, buffers=True)
+)
+```
+
+**Do not run this against production databases**
+
+`analyze=True` really executes the query, which is the point - the plan without it is only an
+estimate - but it also means you pay for the query on whatever data you point it at.
 
 ### Lint serializers with `drf-lint`
 
