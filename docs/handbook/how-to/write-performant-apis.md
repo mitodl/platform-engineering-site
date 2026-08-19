@@ -294,7 +294,35 @@ It is possible to overuse `select_related()` to the point that you're actually h
 too much data and too many joins will slow down the main query. It's best to profile the difference.
 
 **When in doubt, reach for `prefetch_related()`** - splitting the work into a separate query is the
-safer default.
+safer default, with one systematic exception.
+
+#### Unless the queryset already joins that table
+
+Defaulting to `prefetch_related()` can be the wrong choice and actually counterintuitively negatively
+impact performance when the base queryset filters or orders on a column of the related table. Django
+has to join that table to evaluate the `WHERE` clause whether or not you asked for its data, so
+`prefetch_related()` buys a second query on top of a join you are already paying for:
+
+```python
+# Don't - the join happens for the filter, then a second query re-reads the same rows
+Course.objects.filter(platform__name="edx").prefetch_related("platform")
+```
+
+```python
+# Do - the join is already there; select_related() just adds its columns to the SELECT
+Course.objects.filter(platform__name="edx").select_related("platform")
+```
+
+`filter(platform__name=...)` emits `INNER JOIN platform` but selects nothing from it.
+`prefetch_related("platform")` then issues `SELECT ... FROM platform WHERE id IN (...)` for rows the
+database already had in hand, while `select_related("platform")` reuses the existing join: one query,
+one join, same response. `order_by("platform__name")` forces the join the same way.
+
+Note:
+
+- **Foreign keys and one-to-ones only.** A filter across a to-many relation also joins, but there the
+  join multiplies parent rows, so `prefetch_related()` - plus `distinct()` on the outer query - is
+  still the right tool.
 
 ### `prefetch()` for indirect relationships
 
@@ -733,7 +761,7 @@ context into child serializers as well.
 ### Catch N+1s with `zeal`
 
 Both mit-learn and mitxonline run [`django-zeal`](https://pypi.org/project/django-zeal/) over their
-test suites. If your project is not setup with this, you should configure it. Zeal instruments the 
+test suites. If your project is not setup with this, you should configure it. Zeal instruments the
 ORM and reports when the same relation is queried more than once, naming the line responsible:
 
 ```
