@@ -1,7 +1,7 @@
 # Write Performant APIs
 
 A fast API is really two problems: the shape of the response you return, and the cost of the queries
-that fill it. This guide covers both, in that order.
+that fill it.
 
 /// admonition | The short version
     type: tip
@@ -186,7 +186,7 @@ aggregations or wide joins - and the cost scales with production data, not with 
 This is not hypothetical: it is the proximate cause of the
 [2026-03-24 MIT Learn outage](../../runbooks_post_mortems/20260324_mitlearn_outage.md), where moving
 an aggregation into the main query was fine locally and on RC, then exhausted the production
-database's temp space and storage under real ordinality.
+database's temp space and storage under real cardinality.
 ///
 
 DRF's default `get_count()` is just `queryset.count()`. When the queryset is `DISTINCT` and carries
@@ -282,16 +282,30 @@ erDiagram
 
 #### Writing a prefetcher
 
-To return the titles of the programs an enrollment is in without returning the entire tree, define a
-`Prefetcher` with these hooks:
+A prefetcher is a join Django can't express, executed in Python. The hooks are the two sides of that
+join:
+
+1. `mapper()` runs over the objects already in your queryset and computes one **key** for each.
+2. `filter()` receives all the distinct keys at once and returns the related rows in a single query.
+3. `reverse_mapper()` runs over those related rows and says which keys each one belongs to.
+4. The library matches the two sets of keys and calls `decorator()` to attach the results.
 
 | Hook | Returns | Purpose |
 | --- | --- | --- |
-| `collect` | `bool` | When `True`, groups the base objects by the return value of `mapper()` |
-| `mapper(obj)` | A key | The value on the base object to match on |
-| `filter(ids)` | A `QuerySet` | One query fetching everything for the collected keys |
-| `reverse_mapper(related)` | Key(s) | Maps a related object back to the base-object keys it belongs to |
-| `decorator(obj, related)` | `None` | Attaches the result to the base object |
+| `mapper(obj)` | one hashable key | The join key for an object in your queryset. Defaults to `obj.pk`. |
+| `filter(keys)` | `QuerySet` | One query fetching every related row for all the collected keys |
+| `reverse_mapper(related)` | `list` of keys | The keys a related row belongs to |
+| `decorator(obj, related=None)` | `None` | Attaches the matches to the base object |
+| `collect` | `bool` | Set `True` when several objects can share a key |
+
+The asymmetry between the two mappers is deliberate: **`mapper()` returns a single key, while
+`reverse_mapper()` returns a list of them**, because one related row can belong to many of your
+objects. In the example below a `Program` contains many courses, so its `reverse_mapper` hands back
+every course id in the program.
+
+`collect` defaults to `False`, which keeps only one object per key - if two objects in your queryset
+produce the same key, only the last of them gets decorated. Set it to `True` whenever `mapper()`
+isn't unique across the queryset, as here, where several enrollments can share a course.
 
 ```python
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -335,105 +349,218 @@ class Enrollment(models.Model):
 Enrollment.objects.prefetch("program_titles")
 ```
 
-/// admonition | Two footguns
+/// admonition | Footguns
     type: danger
 
-- **Return an explicit empty queryset when there are no ids.** Otherwise you risk weird edge cases
+- **Return an explicit empty queryset when there are no keys.** Otherwise you risk weird edge cases
   where `filter()` returns the entire table.
-- **Handle the `None` case in `decorator()`.** Its related argument is either `None` (nothing
-  matched) or the list of matches, so always provide a default value.
+- **Give `decorator()`'s related argument a default.** It is called once for *every* object with no
+  related argument at all, and then a second time only for the objects that matched - so the default
+  you supply is the final answer for everything that matched nothing.
+- **Don't use a key that can be falsy.** Matching skips falsy keys, so a key of `0` or `""` silently
+  drops the relation. Tuples are safe here: any non-empty tuple is truthy.
 ///
+
+#### Joining on a composite key
+
+The key is only ever used as a dictionary key, so it just has to be hashable. An `int` or `str`
+covers most cases - but when the relationship is identified by more than one column, return a
+**tuple**.
+
+mitxonline's certificate and grade prefetchers join on `(run, user)` rather than a single id
+([`courses/models.py`](https://github.com/mitodl/mitxonline/blob/main/courses/models.py)):
+
+```python
+class CourseRunEnrollmentCertificatePrefetcher(Prefetcher):
+    """Prefetcher for CourseRunEnrollment certificates"""
+
+    @staticmethod
+    def mapper(course_run_enrollment):
+        """Map each enrollment to (run_id, user_id)"""
+        return (course_run_enrollment.run_id, course_run_enrollment.user_id)
+
+    @staticmethod
+    def filter(course_run_and_user_ids):
+        if not course_run_and_user_ids:
+            return CourseRunCertificate.objects.none()
+
+        id_filters = Q()
+
+        # django 5.1 supports this via
+        # django.db.models.fields.tuple_lookups.{Tuple,TupleIn}
+        for course_run_id, user_id in course_run_and_user_ids:
+            id_filters |= Q(course_run_id=course_run_id, user_id=user_id)
+
+        return CourseRunCertificate.objects.filter(id_filters)
+
+    @staticmethod
+    def reverse_mapper(certificate):
+        return [(certificate.course_run_id, certificate.user_id)]
+
+    @staticmethod
+    def decorator(course_run_enrollment, certificates=None):
+        course_run_enrollment._certificate = certificates[0] if certificates else None
+```
+
+Three things to notice:
+
+- **`reverse_mapper()` still returns a list**, just a one-element one - a certificate belongs to
+  exactly one `(run, user)` pair. Contrast the program prefetcher above, which returns many keys.
+- **A composite key can't be a single `__in` lookup**, so `filter()` ORs the pairs together with `Q`.
+  On Django 5.1+ you can express this directly with
+  `django.db.models.fields.tuple_lookups.{Tuple,TupleIn}`.
+- **`mapper()` is unique per enrollment here**, so these prefetchers leave `collect` at its default.
+
+`decorator()` writes to `_certificate` rather than `certificate`, because `certificate` is a
+`cached_property` that falls back to querying when the prefetch didn't run - see
+[making one property work with and without a prefetch](#make-one-property-work-with-and-without-a-prefetch).
 
 #### Custom `QuerySet`s
 
-`PrefetchManagerMixin` hardcodes `get_queryset_class` to return `PrefetchQuerySet`, so a custom
-`QuerySet` needs a little extra configuration:
+`PrefetchManagerMixin` overrides `get_queryset()` and builds the queryset from
+`get_queryset_class()`, which is hardcoded to return `PrefetchQuerySet`. It never looks at
+`_queryset_class` - the attribute `models.Manager.from_queryset()` sets.
+
+**So `models.Manager.from_queryset(EnrollmentQuerySet) + PrefetchManagerMixin` is not enough on its
+own.** The mixin's `get_queryset()` wins the MRO, hands back a plain `PrefetchQuerySet`, and your
+custom queryset is silently ignored - its methods then raise `AttributeError` at the call site. You
+have to name the queryset a second time:
 
 ```python
-class EnrollmentQuerySet(QuerySet, PrefetchQuerySet): ...
-
-class EnrollmentManager(PrefetchManagerMixin):
-
+class EnrollmentQuerySet(TimestampedModelQuerySet, PrefetchQuerySet):
     ...
 
-    def get_queryset_class(self):
+class EnrollmentManager(
+    models.Manager.from_queryset(EnrollmentQuerySet), PrefetchManagerMixin
+):
+    """Base manager class for enrollments"""
+
+    @classmethod
+    def get_queryset_class(cls):
         return EnrollmentQuerySet
 ```
 
+Two requirements, both load-bearing:
+
+- **The queryset must subclass `PrefetchQuerySet`.** `PrefetchManagerMixin.get_queryset()` passes
+  `prefetch_definitions=` to the constructor, and `.prefetch()` only exists there.
+- **`get_queryset_class` must be a `@classmethod`**, matching the mixin's own declaration.
+
+Naming `EnrollmentQuerySet` in both places looks redundant, but the two do different jobs:
+`from_queryset()` copies the queryset's methods onto the manager, while `get_queryset_class()`
+decides what the manager actually instantiates. mitxonline repeats this pattern for every
+prefetch-enabled model - see `CourseManager`, `CourseRunManager`, and `EnrollmentManager` in
+[`courses/models.py`](https://github.com/mitodl/mitxonline/blob/main/courses/models.py).
+
 ### Make one property work with and without a prefetch
 
-Prefetching only happens on the path that built the queryset for it. The same derived data is usually
-also wanted from a celery task, a management command, the admin, or a shell session - none of which
-went through your API's queryset. You don't want two implementations of "the programs this enrollment
-is in" that can drift apart.
+A prefetch only happens on the queryset that asked for it. The same derived data is usually also
+wanted from a celery task, a management command, the admin, or a shell session - none of which went
+through your API's queryset. Writing it twice means two implementations that can drift apart.
 
-`cached_property` and a prefetcher can share one attribute, because **`cached_property` is a non-data
-descriptor**: it defines `__get__` but not `__set__`, so a matching entry in the instance's `__dict__`
-takes precedence and the property body never runs. `decorator()` sets a plain instance attribute,
-which lands in exactly that `__dict__`. Give the `cached_property` the same name as the prefetch and
-the two compose with no extra wiring:
+One `cached_property` can serve both paths. `cached_property` is a **non-data descriptor** - it
+defines `__get__` but not `__set__` - so if the instance's `__dict__` already holds that name, the
+property body never runs. Both of Django's `Prefetch(..., to_attr=...)` and django-prefetch's
+`Prefetcher.decorator()` fill `__dict__` with a plain `setattr`. Give the property the same name as
+the prefetch and you get the prefetched value when it's there and a query when it isn't, with no
+extra wiring.
+
+This is a supported pattern, not a trick: Django's prefetch machinery explicitly checks
+`to_attr in instance.__dict__` rather than `hasattr()` when the attribute is a `cached_property`,
+specifically so it doesn't trigger the fallback while deciding whether the value is already loaded.
+
+#### With `prefetch_related()`
+
+If you only need to *read* a relation, you need none of this - `.all()` already uses a warm prefetch
+cache and queries when there isn't one:
+
+```python
+class Course(models.Model):
+    @cached_property
+    def topic_names(self) -> list[str]:
+        return [topic.name for topic in self.topics.all()]
+```
+
+/// admonition | Filtering after `.all()` bypasses the prefetch cache
+    type: warning
+
+`self.topics.filter(published=True)` ignores a warm cache and issues a fresh query for every object -
+the N+1 you thought you had prefetched away. Either filter in Python over `.all()`, or move the
+filter into the prefetch itself.
+///
+
+Moving the filter into the prefetch is where `to_attr` earns its keep. Prefetch under the same name
+the property uses:
+
+```python
+Course.objects.prefetch_related(
+    Prefetch("topics", queryset=Topic.objects.published(), to_attr="published_topics")
+)
+```
 
 ```python
 from django.utils.functional import cached_property
 
+class Course(models.Model):
+    @cached_property
+    def published_topics(self) -> list["Topic"]:
+        # Fallback: runs only when the prefetch above didn't fill __dict__.
+        return list(self.topics.published())
+```
+
+- **Prefetched** - `to_attr`'s `setattr` filled `__dict__`, so the property never runs.
+- **Not prefetched** - the property runs, queries for this one course, and caches the result on the
+  instance.
+
+#### With `prefetch()`
+
+Same mechanism, for the indirect case from above - `decorator()` does the `setattr` instead of
+`to_attr`:
+
+```python
 class Enrollment(models.Model):
     objects = EnrollmentManager()
 
     @cached_property
     def program_titles(self) -> list[str]:
-        # Fallback. Only runs when prefetch("program_titles") did not populate
-        # this instance, i.e. outside the API path.
+        # Fallback: runs only when prefetch("program_titles") didn't fill __dict__.
         return list(
             Program.objects.for_course_ids([self.course_id]).values_list("title", flat=True)
         )
 ```
 
-- `Enrollment.objects.prefetch("program_titles")` - `decorator()` fills `__dict__`, so
-  `enrollment.program_titles` is already there and the property is never evaluated.
-- `Enrollment.objects.get(pk=1)` - nothing filled `__dict__`, so the property runs and queries for
-  that one enrollment, then caches the result on the instance.
-
-Callers read `enrollment.program_titles` either way and never need to know which happened.
+Either way callers just read `course.published_topics` or `enrollment.program_titles` and never need
+to know which path they got.
 
 #### Keep the two paths querying the same thing
 
 The pattern is only safe if both paths mean the same thing by the data. Put the predicate in one
-queryset method and have both call it, rather than writing the filter twice:
+queryset method and call it from both, rather than writing the filter twice:
 
 ```python
-class ProgramQuerySet(models.QuerySet):
-    def for_course_ids(self, course_ids):
-        if not course_ids:
-            return self.none()
-        return self.filter(course__id__in=course_ids)
+class TopicQuerySet(models.QuerySet):
+    def published(self):
+        return self.filter(published=True)
 
-class Program(models.Model):
-    objects = ProgramQuerySet.as_manager()
+class Topic(models.Model):
+    objects = TopicQuerySet.as_manager()
 ```
 
-The prefetcher's `filter()` calls `Program.objects.for_course_ids(ids)` for every collected course id
-at once; the `cached_property` calls it with a single id. One definition of the relationship, two
-batching strategies - so a change to the predicate can't apply to only one of them.
+Now `Prefetch("topics", queryset=Topic.objects.published(), ...)` and the `cached_property`'s
+`self.topics.published()` share one definition of "published topics", so a change to the predicate
+can't reach only one of them. The same discipline applies to a `Prefetcher.filter()` - have it call
+the same queryset method with all the collected ids at once.
 
 /// admonition | The fallback is the N+1 you were avoiding
     type: warning
 
-Per-object querying is exactly what prefetching exists to prevent. That's an acceptable trade in a
-celery task walking a handful of records, and unacceptable in a list API.
+Per-object querying is exactly what prefetching exists to prevent. That's a fine trade in a celery
+task walking a handful of records, and unacceptable in a list API.
 
-The danger is that the fallback is *silent* - a missing prefetch doesn't raise, it just quietly
-issues one query per row. That is precisely why serializers declare
+The real danger is that the fallback is *silent* - a missing prefetch doesn't raise, it just quietly
+issues one query per row. That is why serializers declare
 [`required_prefetches`](#require-prefetches-in-serializers): it turns the silent N+1 back into a loud
 failure on the path where it matters.
-///
-
-/// admonition | Not needed for `prefetch_related()`
-    type: info
-
-This pattern is for `prefetch()` and `Prefetcher.decorator()`, which assign instance attributes.
-`select_related()` and `prefetch_related()` populate Django's own relation caches, and accessing
-`enrollment.course` or `.topics.all()` already uses those caches transparently when they're warm and
-queries when they aren't. Don't wrap those in a `cached_property`.
 ///
 
 ### Require prefetches in serializers
@@ -468,7 +595,7 @@ context into child serializers as well.
 ### Give N+1 checks enough data
 
 Projects are set up with N+1 checks on tests. To ensure these checks can detect problems, make sure
-you test APIs with data of enough ordinality.
+you test APIs with data of enough cardinality.
 
 For a list API, create 5-10 records at each level of the response. Taking `/api/courses/?id=234,62`
 from above, that means creating several courses and then several topics per course. If you use a
