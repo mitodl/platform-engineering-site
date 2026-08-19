@@ -13,6 +13,7 @@ that fill it.
 - Pick the narrowest prefetch tool that works - `select_related()` for foreign keys,
   `prefetch_related()` for to-many relationships, `prefetch()` for data the model has no direct
   relationship to.
+- Never query inside a serializer; the view's queryset assembles the data.
 - Declare `required_prefetches` on every serializer so a missing prefetch fails loudly.
 - Back a prefetch with a same-named `cached_property` so non-API callers get the same answer.
 - Test list APIs with 5-10 records at each level, or the N+1 checks won't fire.
@@ -98,7 +99,7 @@ grows with your data - it passes review, passes tests, passes RC, and then falls
 when the table it reads is an order of magnitude larger. "This table is small" is a statement about
 today, not about the endpoint.
 
-#### Set one default and opt out explicitly
+#### Set one default, override per view
 
 Define pagination once in a shared module rather than per app. Before
 [mit-learn#3106](https://github.com/mitodl/mit-learn/pull/3106), an identical `DefaultPagination`
@@ -133,7 +134,8 @@ class LargePagination(DefaultPagination):
 
 `max_limit` is not optional. Without it, `?limit=100000` defeats the pagination you just configured.
 
-Make it the framework default so a new viewset is paginated without opting in:
+Register that class as the framework default in `settings.py`, so a new viewset arrives paginated
+without opting in:
 
 ```python
 REST_FRAMEWORK = {
@@ -141,14 +143,48 @@ REST_FRAMEWORK = {
 }
 ```
 
-With that set, delete the per-viewset `pagination_class = DefaultPagination` lines - they're now
-redundant. Views that genuinely must return an unpaginated list opt out **explicitly**, which keeps
-the exemption visible in review instead of implied by an absent setting:
+Two things to know about the setting:
+
+- **It's a dotted path, not an import.** DRF resolves it on first access, so `main/pagination.py` can
+  import from the rest of the project without creating a circular import while settings load.
+- **Naming a default class doesn't by itself guarantee pagination.** `PageNumberPagination` takes its
+  page size from the `PAGE_SIZE` setting and returns *everything* when that is unset.
+  `DefaultPagination` above sidesteps this by declaring `default_limit` on the class, which is where
+  you want it anyway - next to `max_limit`, not in settings.
+
+With the default registered, delete the per-viewset `pagination_class = DefaultPagination` lines.
+They are redundant, and they are the copy-paste that drifts. From then on a `pagination_class` on a
+view means "this one is deliberately different", in one of three ways:
 
 ```python
+# 1. A different page size - reuse a class from the shared module
+class AttestationViewSet(viewsets.ReadOnlyModelViewSet):
+    pagination_class = LargePagination
+
+
+# 2. A different count query - subclass next to the view that needs it
+class SummaryPagination(LargePagination):
+    """LargePagination that keeps annotations out of the count query."""
+
+    def get_count(self, queryset):
+        """Count distinct pks; .values() drops the annotation, .only() would not"""
+        return queryset.values(*self.count_fields).distinct().count()
+
+
+# 3. No pagination at all - stated, not implied
 class UserSearchSubscriptionViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = None  # unpaginated by design; preserves the existing interface
 ```
+
+All three are visible in review, which is the point: an exemption should be a line somebody approved,
+not the absence of a setting. Subclass `DefaultPagination` rather than `LimitOffsetPagination` so the
+cheap `get_count()` and the `max_limit` cap come along - `LargePagination` is exactly that, two
+attributes over an inherited body.
+
+The second case is the one to remember. `.only()` narrows the columns Django *loads*, but it does not
+reliably strip annotations out of the count subquery, and an annotation left in there is evaluated
+once per row counted. `.values()` does strip them. If the queryset a view builds carries annotations,
+subclass and swap `.only()` for `.values()` - that is why mit-learn's real `SummaryPagination` exists.
 
 #### Pick the right pagination class
 
@@ -532,6 +568,52 @@ class Enrollment(models.Model):
 Either way callers just read `course.published_topics` or `enrollment.program_titles` and never need
 to know which path they got.
 
+#### Antipattern: a sentinel attribute plus `hasattr()`
+
+That dispatch is often written out by hand instead - the prefetch targets a private or prefixed name,
+and the property branches on whether it landed:
+
+```python
+# b2b/api.py
+Prefetch(
+    "contract_programs",
+    queryset=ContractProgramItem.objects.order_by("sort_order"),
+    to_attr="_contract_program_ids",
+)
+
+# b2b/models.py
+@cached_property
+def contract_program_ids(self):
+    return (
+        self._contract_program_ids
+        if hasattr(self, "_contract_program_ids")
+        else self.contract_programs.order_by("sort_order").all()
+    )
+```
+
+Dropping the underscore - `to_attr="contract_program_ids"` - makes the property body unreachable when
+the prefetch ran, leaving no branch to maintain. `Prefetcher.decorator()` has the same choice:
+`setattr(obj, "certificate", ...)` over `obj._certificate = ...`.
+
+The sentinel costs more than it buys:
+
+- **The branch is re-implemented per property** and leaks to callers -
+  `hasattr(self, "prefetched_products")` appears in three places in mitxonline's `courses/models.py`,
+  one of them testing a *different* object's sentinel.
+- **The private attribute is written from outside its class**, so prefetchers and tests need
+  `# noqa: SLF001`.
+- **Two names for one value drift** - A prefetch may be used in multiple places and this can be
+  inclined to drift over time.
+
+/// admonition | When the property isn't the prefetched value
+    type: info
+
+Shadowing needs the property to *be* what the prefetch produces. `is_upgradable`, deriving a boolean
+from prefetched products, can't be a `to_attr` target - and `to_attr` can't take the relation's own
+name either (`to_attr=products conflicts with a field on the CourseRun model.`). Give the relation
+its own same-name `cached_property` and let the derived property read that.
+///
+
 #### Keep the two paths querying the same thing
 
 The pattern is only safe if both paths mean the same thing by the data. Put the predicate in one
@@ -562,6 +644,61 @@ issues one query per row. That is why serializers declare
 [`required_prefetches`](#require-prefetches-in-serializers): it turns the silent N+1 back into a loud
 failure on the path where it matters.
 ///
+
+### Keep queries out of serializers
+
+A serializer body runs once per object. Any query inside it is therefore multiplied by the page size,
+and a query in a nested serializer is multiplied again by the number of children. This is where
+essentially every N+1 in our APIs comes from.
+
+**The view assembles the data; the serializer only formats what is already in memory.** A
+`SerializerMethodField` that touches the ORM has taken on the view's job:
+
+```python
+# Don't - one COUNT query per course in the response
+class CourseSerializer(serializers.ModelSerializer):
+    topic_count = serializers.SerializerMethodField()
+
+    def get_topic_count(self, instance):
+        return instance.topics.count()
+```
+
+```python
+# Do - one query for the whole page, computed by the database
+# views.py
+queryset = Course.objects.annotate(topic_count=Count("topics"))
+
+# serializers.py
+class CourseSerializer(serializers.ModelSerializer):
+    topic_count = serializers.IntegerField(read_only=True)
+```
+
+The usual moves, all of them from the serializer into the view's `get_queryset()`:
+
+| In a serializer method | Move it to |
+| --- | --- |
+| `.count()`, when you don't need the rows | `.annotate(Count(...))` |
+| `.exists()` | `.annotate(Exists(...))` |
+| `instance.related.all()` | `prefetch_related("related")`, then a nested serializer or a plain loop |
+| `instance.related.filter(...)` | `Prefetch("related", queryset=..., to_attr=...)` |
+| `instance.related.order_by(...).first()` | an ordered `Prefetch`, then index `[0]` in Python |
+| `Model.objects.get(...)` | `select_related()`, or accept the id and let the client resolve it |
+
+Two things that are easy to miss:
+
+- **`.count()` and `.exists()` are free on a *prefetched* relation** - the related manager hands back
+  the warm cache, and `QuerySet.count()` just measures it. `.annotate(Count(...))` still wins when
+  the count is all you need, because it never fetches the rows. But adding `.filter()`, `.order_by()`,
+  or `.exclude()` discards the cache and puts you back to one query per object.
+- **`__init__` and `to_representation()` count too.** The rule is about the whole serializer, not just
+  `SerializerMethodField`.
+
+Logic that genuinely can't move into the queryset - anything a non-API caller also needs - belongs
+behind a [same-named `cached_property`](#make-one-property-work-with-and-without-a-prefetch) on the
+model, so the serializer still just reads an attribute.
+
+`drf-lint` enforces this rule statically in CI and pre-commit; see
+[Lint serializers with `drf-lint`](#lint-serializers-with-drf-lint).
 
 ### Require prefetches in serializers
 
@@ -601,6 +738,52 @@ For a list API, create 5-10 records at each level of the response. Taking `/api/
 from above, that means creating several courses and then several topics per course. If you use a
 lower count, the quantity may not exceed the N+1 checker's detection thresholds.
 
+### Lint serializers with `drf-lint`
+
+Runtime N+1 checks only fire on code paths your tests actually exercise.
+[`mitol-drf-lint`](https://github.com/mitodl/ol-django/tree/main/src/drf_lint) closes the gap
+statically: it parses serializer modules with [LibCST](https://libcst.readthedocs.io/) and flags ORM
+calls made inside serializer methods, which is where N+1s come from.
+
+Two rules:
+
+| Rule | Flags |
+| --- | --- |
+| `ORM001` | Manager access inside a serializer method - `Course.objects.filter(...)` |
+| `ORM002` | Related-manager queryset call inside a serializer method - `instance.topics.all()`, `instance.children.order_by(...).first()` |
+
+Both mitxonline and mit-learn run it as a local `pre-commit` hook over `serializers.py`:
+
+```yaml
+- repo: local
+  hooks:
+    - id: drf-serializer-orm-check
+      name: DRF Serializer ORM Check
+      description: "Detects Django ORM queries inside DRF serializer methods (N+1 risk)"
+      entry: drf-lint
+      args: [--baseline, drf_lint_baseline.json]
+      language: python
+      files: 'serializers\.py$'
+      additional_dependencies:
+        - mitol-drf-lint
+```
+
+`drf_lint_baseline.json` records the violations that already existed when the hook was adopted, so
+the build only fails on **new** ones. Regenerate it with `drf-lint --generate-baseline --baseline
+drf_lint_baseline.json <paths>`. A single line can be suppressed with `# noqa: ORM001` /
+`# noqa: ORM002`.
+
+/// admonition | A baseline entry is a known bug, not a decision
+    type: warning
+
+Growing the baseline is how we increase technical debt. Fix the serializer with a prefetch instead,
+and let the baseline shrink over time.
+
+The linter also can't tell whether a prefetch is in place - it only sees the query in the serializer.
+Keep [`required_prefetches`](#require-prefetches-in-serializers) and the runtime N+1 checks doing
+that half of the job.
+///
+
 ## Resources
 
 - [Django: `select_related()`](https://docs.djangoproject.com/en/stable/ref/models/querysets/#select-related)
@@ -610,4 +793,5 @@ lower count, the quantity may not exceed the N+1 checker's detection thresholds.
 - [DRF: Pagination](https://www.django-rest-framework.org/api-guide/pagination/)
 - [mit-learn#3106: Query for less data on pagination count](https://github.com/mitodl/mit-learn/pull/3106)
 - [`django-prefetch`](https://pypi.org/project/django-prefetch/)
+- [`mitol-drf-lint`](https://github.com/mitodl/ol-django/tree/main/src/drf_lint)
 - [2026-03-24 MIT Learn outage post-mortem](../../runbooks_post_mortems/20260324_mitlearn_outage.md)
