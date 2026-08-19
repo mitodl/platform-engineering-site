@@ -17,6 +17,7 @@ that fill it.
 - Declare `required_prefetches` on every serializer so a missing prefetch fails loudly.
 - Back a prefetch with a same-named `cached_property` so non-API callers get the same answer.
 - Test list APIs with 5-10 records at each level, or the N+1 checks won't fire.
+- Assert a *constant* query count across varying data with `django_assert_num_queries`.
 ///
 
 ## Shape the response
@@ -610,7 +611,7 @@ The sentinel costs more than it buys:
 
 Shadowing needs the property to *be* what the prefetch produces. `is_upgradable`, deriving a boolean
 from prefetched products, can't be a `to_attr` target - and `to_attr` can't take the relation's own
-name either (`to_attr=products conflicts with a field on the CourseRun model.`). Give the relation
+name either (`to_attr=products` conflicts with a field on the CourseRun model.) Give the relation
 its own same-name `cached_property` and let the derived property read that.
 ///
 
@@ -729,14 +730,108 @@ context into child serializers as well.
 
 ## Test it
 
+### Catch N+1s with `zeal`
+
+Both mit-learn and mitxonline run [`django-zeal`](https://pypi.org/project/django-zeal/) over their
+test suites. If your project is not setup with this, you should configure it. Zeal instruments the 
+ORM and reports when the same relation is queried more than once, naming the line responsible:
+
+```
+N+1 detected on courses.Course.runs at courses/models.py:25 in get_runs
+```
+
+Zeal also flags N+1s caused by `.only()`, `.defer()`, and `.get()`, not just missing prefetches.
+
 ### Give N+1 checks enough data
 
-Projects are set up with N+1 checks on tests. To ensure these checks can detect problems, make sure
-you test APIs with data of enough cardinality.
+A detector that never sees a query repeat has nothing to report, so the checks are only as good as
+the data the test creates.
 
 For a list API, create 5-10 records at each level of the response. Taking `/api/courses/?id=234,62`
-from above, that means creating several courses and then several topics per course. If you use a
-lower count, the quantity may not exceed the N+1 checker's detection thresholds.
+from above, that means creating several courses and then several topics per course. `zeal` reports on
+`ZEAL_NPLUSONE_THRESHOLD`, which defaults to the same query twice, so a single related record can
+never trip it - one course with one topic is indistinguishable from a properly prefetched endpoint.
+
+### `skip_nplusone_check` is for tech debt only
+
+Both repos register a marker that turns zeal off for a single test, through an autouse fixture in
+`fixtures/common.py`:
+
+```python
+@pytest.fixture(autouse=True)
+def check_nplusone(request):
+    """Raise nplusone errors"""
+    if request.node.get_closest_marker("skip_nplusone_check"):
+        with zeal_ignore():
+            yield
+    else:
+        yield
+```
+
+`zeal_ignore()` with no arguments suppresses **every** check for the duration of the test, so
+`@pytest.mark.skip_nplusone_check` is a blanket exemption. It exists so that known, pre-existing N+1s
+don't block unrelated work, and it is used at that scale - across mitxonline's `ecommerce`, `courses`,
+`cms`, and `b2b` tests, and mit-learn's `channels`, `profiles`, `news_events`, and
+`learning_resources` tests.
+
+/// admonition | Don't add the marker to a new test
+    type: danger
+
+On new code the marker isn't recording tech debt, it's hiding a bug before it ships - along with
+every *other* N+1 in that test. Add the prefetch instead.
+
+For a genuine false positive, scope the exemption instead of the whole test:
+`zeal_ignore([{"model": "polls.Question", "field": "options"}])` silences exactly one relation, and
+`ZEAL_ALLOWLIST` does the same globally. Removing a marker is also a legitimate piece of work in its
+own right - the count only goes down if somebody drives it down.
+///
+
+### Assert query counts directly
+
+Zeal answers "does anything repeat here?" It won't notice a view going from 4 queries to 14 as long as
+none of them repeat. `pytest-django` provides two fixtures for that:
+
+| Fixture | Asserts | Reach for it when |
+| --- | --- | --- |
+| `django_assert_num_queries(n)` | exactly `n` queries | you want the count pinned |
+| `django_assert_max_num_queries(n)` | at most `n` queries | you want a budget and the exact number is noisy |
+
+The assertion that actually pins down an N+1 is a **constant count over a varying amount of data**.
+Parametrize the cardinality and keep the expected number fixed - mit-learn's channel tests are the
+pattern to copy:
+
+```python
+@pytest.mark.parametrize("related_count", [1, 5, 10])
+def test_no_excess_by_type_name_detail_queries(
+    client, django_assert_num_queries, related_count
+):
+    """By-type detail query count should remain constant."""
+    expected_query_count = 4
+
+    channel = ChannelFactory.create(is_topic=True)
+    ChannelListFactory.create_batch(related_count, channel=channel)
+    SubChannelFactory.create_batch(related_count, parent_channel=channel)
+
+    url = reverse(
+        "channels:v0:channel_by_type_name_api-detail",
+        kwargs={"channel_type": ChannelType.topic.name, "name": channel.name},
+    )
+
+    with django_assert_num_queries(expected_query_count):
+        response = client.get(url)
+```
+
+Passing at `related_count=10` with the same number as at `1` is the property you care about - the
+endpoint is flat in the number of children - stated as an assertion rather than inferred.
+
+- **A failure prints the queries it captured**, which is usually enough to spot the relation that was
+  missed. Both fixtures also yield the context, so `context.captured_queries` is there for a closer
+  look.
+- **Use both.** mit-learn pins `django_assert_num_queries(21)  # should be same # regardless of child
+  count` on program detail, and gives user lists a `django_assert_max_num_queries(query_budget)`
+  ceiling instead.
+- **Expect to update the numbers.** A legitimate change to a view moves the count, and that diff line
+  is the prompt to check the new number is still constant in cardinality.
 
 ### Lint serializers with `drf-lint`
 
