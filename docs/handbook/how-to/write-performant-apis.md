@@ -291,7 +291,7 @@ If you need an aggregate in the response, prefer computing it outside the pagina
 ### `select_related()` vs `prefetch_related()`
 
 It is possible to overuse `select_related()` to the point that you're actually harming performance -
-too much data and too many joins will slow down the main query. It's best to profile the difference.
+too much data and too many joins will slow down the main query.
 
 **When in doubt, reach for `prefetch_related()`** - splitting the work into a separate query is the
 safer default, with one systematic exception.
@@ -323,6 +323,54 @@ Note:
 - **Foreign keys and one-to-ones only.** A filter across a to-many relation also joins, but there the
   join multiplies parent rows, so `prefetch_related()` - plus `distinct()` on the outer query - is
   still the right tool.
+
+#### How many joins is too many?
+
+/// admonition | The short version
+    type: tip
+
+- Three or four to-one joins are ok (`ForeignKey` or `OneToOneField`)
+- Eight is the aboslute limit where you split the query instead of widening it.
+- Performance above 8 joins will both degrade rapidly and be unpredictable.
+///
+
+There are two ways an extra join hurts:
+
+- **Width** - each `select_related()` hop appends that table's columns to every row, and Django takes
+  all of them by default. Three joins across 10-column tables is a 40-column row, times the page
+  size, serialized and instantiated as Python objects. Degrades gradually; narrow it with
+  `.only("title", "platform__name")`.
+- **Multiplication** - a to-many join returns one row per combination, so 100 courses with 20 topics
+  each is 2,000 rows to build 100 objects, and the `DISTINCT` that cleans that up sorts all 2,000.
+  Doesn't degrade gradually. `select_related()` won't do this, but a `filter()` across a to-many will.
+
+Table size enters through the plan, not the join count:
+
+| Situation | What joining a large table costs |
+| --- | --- |
+| Foreign key to primary key, indexed both sides | One index probe per output row; size shows up only as `log(n)` and cache misses |
+| Join column not indexed | The planner hashes or sorts the whole table, so its size dominates |
+| Hash or sort exceeds `work_mem` | It spills to disk in batches and throughput falls off a cliff |
+
+That last row is the shape of the
+[MIT Learn outage](../../runbooks_post_mortems/20260324_mitlearn_outage.md) - in memory at RC scale,
+on disk at production cardinality.
+
+Postgres also shifts behavior at fixed relation counts: past **8** (`join_collapse_limit`) the planner
+stops reordering joins and runs them roughly as written, so nine joins can plan worse than eight for
+reasons unrelated to your data; past **12** (`geqo_threshold`) planning becomes a genetic search and
+the plan can vary between runs.
+
+#### Evaluating more joins
+
+**Do not do this against live production databases.**
+
+In between 4 and 8 joins, decide with `EXPLAIN (ANALYZE, BUFFERS)` on production-scale data:
+
+- Actual rows far above the page size means something multiplied
+- `Batches:` above 1 or `Method: external merge Disk:` means you exceeded `work_mem`
+- Estimates off from actual by an order of magnitude mean the plan is guessing - and that error 
+  compounds with each join.
 
 ### `prefetch()` for indirect relationships
 
