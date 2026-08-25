@@ -29,7 +29,7 @@ These types could in theory be layered, but such an approach should be taken wit
 
 #### Application level caching
 
-Application level caching should be considered for data that is resource intensive to compute or is requested very frequently. It also typically requires that this data isn't user-dependent. It can be done at any level within the application (view, database query, etc). These values would typically be cached in the configured django cache (typically Redis for us). Because we control the cache storage and retrieval, we can invalidate it ourselves as well.
+Application level caching should be considered for data that is resource intensive to compute or is requested very frequently. It also typically requires that this data isn't user-dependent. It can be done at any level within the application (view, database query, etc). These values would typically be cached in the configured django cache (the specific backend depends on the app - check `CACHES` in `settings.py`; not every app defaults to Redis). Because we control the cache storage and retrieval, we can invalidate it ourselves as well.
 
 Data can be cached for hours, minutes, seconds, or even just for the duration of the request. Which is best is highly dependent on the nature of the data and testing and experimentation with values is always a good idea.
 
@@ -76,9 +76,9 @@ Caches may occasionally need purging, it's important to know ahead of time how t
 
 We use Wagtail in many of our products, some best practices on caching performantly:
 
-- Using the dynamic image serve view ([Example in xPro](https://docs.wagtail.io/en/stable/advanced_topics/images/image_serve_view.html))
+- Using the dynamic image serve view ([Example in xPro](https://docs.wagtail.org/en/stable/advanced_topics/images/image_serve_view.html))
 - Adding a header to cache the dynamically-served images in a user's browser ([Example in xPro](https://github.com/mitodl/mitxpro/blob/abef74ad530770cc8772620dedae20714fc1a2e5/mitxpro/urls.py#L95-L105))
-- Caching image renditions in Redis ([Example in xPro](https://docs.wagtail.io/en/v2.9.3/advanced_topics/performance.html#caching-image-renditions) - requires Wagtail 2.9+)
+- Caching image renditions in Redis ([Example in xPro](https://docs.wagtail.org/en/stable/advanced_topics/performance.html#caching-image-renditions))
 - Using a custom templatetag which adds a version to each rendered image, allowing us to cache at the CDN level ([Example in xPro](https://github.com/mitodl/mitxpro/blob/e8e5002662f794c3b17a63063af0d1aad293bff3/cms/templatetags/image_version_url.py#L12))
 
 
