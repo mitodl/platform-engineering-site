@@ -502,7 +502,7 @@ class CourseRunEnrollmentCertificatePrefetcher(Prefetcher):
 
         id_filters = Q()
 
-        # django 5.1 supports this via
+        # django 5.2 supports this via
         # django.db.models.fields.tuple_lookups.{Tuple,TupleIn}
         for course_run_id, user_id in course_run_and_user_ids:
             id_filters |= Q(course_run_id=course_run_id, user_id=user_id)
@@ -523,7 +523,7 @@ Three things to notice:
 - **`reverse_mapper()` still returns a list**, just a one-element one - a certificate belongs to
   exactly one `(run, user)` pair. Contrast the program prefetcher above, which returns many keys.
 - **A composite key can't be a single `__in` lookup**, so `filter()` ORs the pairs together with `Q`.
-  On Django 5.1+ you can express this directly with
+  On Django 5.2+ you can express this directly with
   `django.db.models.fields.tuple_lookups.{Tuple,TupleIn}`.
 - **`mapper()` is unique per enrollment here**, so these prefetchers leave `collect` at its default.
 
