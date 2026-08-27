@@ -221,8 +221,17 @@ for r in json.load(sys.stdin)["deployment"]["resources"]:
 ' | sort -u
 ```
 
-All of an app's Deployments normally share one digest. Pass the digest part,
-e.g. `MIT_LEARN_DOCKER_SHA=sha256:... pulumi preview ...`.
+All of an app's Deployments normally share one digest. `export` it rather than
+prefixing a single command, so the apply in step 5 runs against the same digest
+you previewed:
+
+```bash
+export MIT_LEARN_DOCKER_SHA=sha256:...
+```
+
+A one-shot `MIT_LEARN_DOCKER_SHA=... pulumi preview ...` leaves the variable
+unset for the next command, and the bare `pulumi up` below then fails with the
+`OSError` above.
 
 ### 5. Apply
 
@@ -253,3 +262,9 @@ Pulumi: reactivate the previous version in the Fastly UI or API. **Then run
 step 2 again** — otherwise Pulumi's state now describes the version you just
 rolled away from, and you have re-created the same lying-state condition by
 hand.
+
+That makes the rollback true, not durable. The source still declares the change
+you just rolled back, so the next ordinary deploy of this stack reapplies it —
+reverting a bad snippet in the Fastly UI buys you time, nothing more. Revert or
+fix the declaration in `ol-infrastructure` before the next deploy lands, or
+expect the rollback to be silently undone by someone else's unrelated merge.
