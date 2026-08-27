@@ -16,10 +16,9 @@
 - Docker
   - _[MacOS only]_ We use **Docker Desktop**&#42;, a desktop development environment that includes Docker.  
     Recommended MacOS install method: [Download from Docker website](https://docs.docker.com/desktop/setup/install/mac-install/)
-- docker-compose
-  - If you've installed Docker Desktop, you already have `docker-compose` installed. 
-  - If not you may need to install it separately.
-    - Recommended install: pip (`pip install docker-compose`)
+- Docker Compose
+  - If you've installed Docker Desktop, you already have Compose (invoked as `docker compose`, no hyphen) installed as a Docker CLI plugin.
+  - If not, install the `docker-compose-plugin` package for your platform. Avoid `pip install docker-compose` - that installs the older, no-longer-maintained Compose v1, whose `docker-compose` (hyphenated) command is a different tool from the `docker compose` used throughout this guide.
 
 ### Build And Configure Docker Containers
 
@@ -35,16 +34,16 @@ project's README file.
 
 #### 2) Build the containers
 
-    docker-compose build
+    docker compose build
 
-*NOTE: You will also need to run this command whenever requirements files change (``requirements.txt``, ``test_requirements.txt``, etc.)*
+*NOTE: You will also need to run this command whenever dependency files change. Newer projects manage Python dependencies with [`uv`](https://docs.astral.sh/uv/) (``pyproject.toml`` and a committed ``uv.lock``, updated via ``uv add``/``uv sync``) rather than hand-maintained ``requirements.txt``/``test_requirements.txt`` files - check which convention your project uses.*
 
 #### _(Optional)_ Create a superuser
 Some of our apps include user creation as part of their specific setup steps. If the given app does not
 include steps to create a user, you can create one easily via Django's `createsuperuser` command.
 It will prompt you for the username and some other details for this user.
 
-    docker-compose run web ./manage.py createsuperuser
+    docker compose run web ./manage.py createsuperuser
 
 ### Add `/etc/hosts` alias for the site
 
@@ -71,7 +70,7 @@ Our established pattern is to use `odl.local` as the domain. The `/etc/hosts` en
 
 Start all the services that are required to run the app:
 
-    docker-compose up
+    docker compose up
 
 *NOTE: In most repos this will also apply migrations. Consult your docker-compose.yml file to see what specific actions are taken.*
 
@@ -80,7 +79,7 @@ Start all the services that are required to run the app:
 Your app should now be accessible via browser:
 
 1. The URL of the locally-running site needs to include the port number that the `nginx` service is running on.
-    - One-line command to figure out that port number: `docker-compose ps nginx | perl -nle '/[0-9\.]*:(\d+)/ && print "$1";'`
+    - One-line command to figure out that port number: `docker compose ps nginx | perl -nle '/[0-9\.]*:(\d+)/ && print "$1";'`
     - This port number is specified for the `nginx` service in `docker-compose.yml`
 1. _[Linux only]:_ Navigate to `localhost:PORT` (e.g.: `localhost:8079`)
 1. _[MacOS only]:_ Navigate to `ETC_HOSTS_ALIAS:PORT` (e.g.: `mm.odl.local:8079`). Like Linux users, you _can_ navigate to `localhost:PORT` (e.g.: `localhost:8079`) to use the
@@ -92,7 +91,7 @@ Your app should now be accessible via browser:
 
 There are a few different commands for running tests/linters and formatting code.
 
-*NOTE: The `--rm` option for the `docker-compose run` command tells Docker to destroy the container after it finishes running. This is useful for running specific commands in one-off containers. This prevents the accumulation of unused Docker containers on your machine.*
+*NOTE: The `--rm` option for the `docker compose run` command tells Docker to destroy the container after it finishes running. This is useful for running specific commands in one-off containers. This prevents the accumulation of unused Docker containers on your machine.*
 
 ### Python tests, linting, and formatting
 
@@ -101,42 +100,44 @@ We use `pytest` (with various plugins) to run our Python test suite in most of o
 #### With `pytest`...
 ```bash
 # Run Python tests with linting
-docker-compose run --rm web pytest
+docker compose run --rm web pytest
 # Run Python tests in a single file
-docker-compose run --rm web pytest /path/to/test.py
+docker compose run --rm web pytest /path/to/test.py
 # Run Python test cases in a single file that match some function/class name
-docker-compose run --rm web pytest /path/to/test.py -k test_some_logic
-# Run Python tests without linter, without coverage report, and without log capture
-docker-compose run --rm web pytest --no-cov --no-pylint --show-capture=no
-# Some of our projects allow you to pass in a single flag to run tests only (no linter, cov report, or log capture)
-docker-compose run --rm web pytest --simple
+docker compose run --rm web pytest /path/to/test.py -k test_some_logic
+# Run Python tests without coverage report and without log capture
+docker compose run --rm web pytest --no-cov --show-capture=no
+# Some of our projects allow you to pass in a single flag to run tests only (no cov report or log capture)
+docker compose run --rm web pytest --simple
 
 ### Linting
-# If the pytest-pylint is NOT installed (check test_requirements.txt), run pylint directly
-docker-compose run --rm web bash -c "pylint ./**/*.py"
-# If the pytest-pylint IS installed, run the pylint via pytest
-docker-compose run --rm web pytest --pylint -m pylint
+# Most of our actively-developed projects use ruff for linting (confirmed in mitxonline, mit-learn, mitxpro, ol-infrastructure, ocw-studio, and learn-ai)
+docker compose run --rm web ruff check .
 ```
 
 #### Formatting
-Most of our projects use the `black` formatter to enforce certain formatting rules. This should be run before any commit that makes changes to Python code (ignore this if your project does not list `black` in the `test_requirements.txt`).
-Additionally, many of our projects perform formatting as a part of their `pre-commit` hook, so if you have that hook installed it will automatically run formatting checks on commit.
+Most of our projects use [`ruff`](https://docs.astral.sh/ruff/) for both formatting and linting, replacing `black`, `isort`, and `pylint`. This should be run before any commit that makes changes to Python code (ignore this if your project does not list `ruff` in its dependencies).
+Additionally, many of our projects perform formatting/linting as a part of their `pre-commit` hook, so if you have that hook installed it will automatically run these checks on commit.
 
 ```bash
 # Format all Python files in the repo
-docker-compose run --rm web black .
+docker compose run --rm web ruff format .
 # Format a specific file
-docker-compose run --rm web black /path/to/file.py
+docker compose run --rm web ruff format /path/to/file.py
+# Check for lint errors, including import sort order (ruff's `I` rule) - no separate isort step needed
+docker compose run --rm web ruff check .
 ```
 
-#### Import sorting
-Some of our projects include [`isort`](https://pypi.org/project/isort/) to automatically sort Python imports. If your project uses `isort` and requires sorted imports as a part of the build, that package will be included in `test_requirements.txt`
+#### Older projects: `black`/`isort`/`pylint`
+Some projects predate the move to `ruff` and still use `black` for formatting, `isort` for import sorting, and `pylint` for linting - for example, `open-discussions` uses all three, and `micromasters` uses `isort`/`pylint` (no `black`). Check `test_requirements.txt` or `pyproject.toml` to see which tools your project actually uses.
 
-```
-# Sort all imports 
-docker-compose run --rm web bash -c "isort ."
-# Check to see if imports are sorted
-docker-compose run --rm web bash -c "isort -c ."
+```bash
+# Format all Python files in the repo
+docker compose run --rm web black .
+# Sort all imports
+docker compose run --rm web bash -c "isort ."
+# Run pylint directly
+docker compose run --rm web bash -c "pylint ./**/*.py"
 ```
 
 #### Speeding up test development
@@ -144,7 +145,7 @@ There are many scenarios where you'll want to run tests many times in a row (aut
 
 ```bash
 # On host machine...
-docker-compose run --rm web bash
+docker compose run --rm web bash
 # On the bash prompt inside the new container
 pytest /path/to/test.py
 ```
@@ -158,11 +159,11 @@ Most of our projects include a helper script to run JS tests.
 If your project includes `/scripts/test/js_test.sh` or `/js_test.sh`, this is how you can run the JS test suite:
 
 ```bash
-docker-compose run --rm watch ./scripts/test/js_test.sh
+docker compose run --rm watch ./scripts/test/js_test.sh
 # Run JS tests in specific file
-docker-compose run --rm watch ./scripts/test/js_test.sh path/to/file.js
+docker compose run --rm watch ./scripts/test/js_test.sh path/to/file.js
 # Run JS tests in specific file with a description that matches some text
-docker-compose run --rm watch ./scripts/test/js_test.sh path/to/file.js "should test basic arithmetic"
+docker compose run --rm watch ./scripts/test/js_test.sh path/to/file.js "should test basic arithmetic"
 ```
 
 **NOTE:** 
@@ -178,16 +179,16 @@ as our testing framework.
 If your project DOES NOT include a `js_test.sh` file, this is how you can run the JS test suite:
 
 ```bash
-docker-compose run --rm watch yarn run test
+docker compose run --rm watch yarn run test
 # Run JS tests in specific file
-docker-compose run --rm watch yarn run test path/to/file.test.js
+docker compose run --rm watch yarn run test path/to/file.test.js
 # Run JS tests in specific file with a description that matches some text
-docker-compose run --rm watch yarn run test path/to/file.test.js -- -t "should test basic arithmetic"
+docker compose run --rm watch yarn run test path/to/file.test.js -- -t "should test basic arithmetic"
 
 # Run jest in watch mode (`jest --watch`) to continuously catch test failures
-docker-compose run --rm watch yarn run test:watch
+docker compose run --rm watch yarn run test:watch
 # Generate a coverage report
-docker-compose run --rm watch yarn run test:coverage
+docker compose run --rm watch yarn run test:coverage
 ```
 
 #### Linting and formatting
@@ -195,11 +196,11 @@ Many of our projects perform formatting as a part of their `pre-commit` hook, so
 
 ```bash
 # Run the JS linter
-docker-compose run --rm watch yarn run lint
+docker compose run --rm watch yarn run lint
 # Run SCSS linter
-docker-compose run --rm watch yarn run scss_lint
+docker compose run --rm watch yarn run scss_lint
 # Run prettier-eslint, which fixes style issues that may be causing the build to fail
-docker-compose run --rm watch yarn run fmt
+docker compose run --rm watch yarn run fmt
 ```
 
 #### Type-checking
@@ -213,7 +214,7 @@ As stated above, type-checking is done automatically with Typescript-enabled pro
 any commands, but you can still type-check with a command if you prefer:
 
 ```bash
-docker-compose run --rm watch yarn run typecheck
+docker compose run --rm watch yarn run typecheck
 ```
 
 This runs `tsc --noEmit`, which basically type-checks the program and outputs
@@ -229,7 +230,7 @@ in our projects that use Flow.
 
 ```bash
 # Run the Flow type checker to check for typing errors
-docker-compose run --rm watch yarn run-script flow
+docker compose run --rm watch yarn run-script flow
 ```
 
 #### Speeding up test development
@@ -241,14 +242,14 @@ You can speed up JS test development in the same way described in the Python tes
 
 #### Running a Django shell
 
-    docker-compose run --rm web ./manage.py shell
+    docker compose run --rm web ./manage.py shell
 
 # Troubleshooting
 
 #### Error message indicating that the `auth_user` table doesn't exist
 
-Try running `docker-compose run web ./manage.py migrate auth`, then run `docker-compose run web ./manage.py migrate`.
+Try running `docker compose run web ./manage.py migrate auth`, then run `docker compose run web ./manage.py migrate`.
 
 #### _[MacOS only]_ Error indicating that Docker Desktop is not running (even though it is running)
 
-Open a new terminal tab/window, navigate to the same directory, and re-run the same command (e.g.: `docker-compose up`). For whatever reason, a terminal window can sometimes fail to recognize that Docker for Mac is running, and a fresh terminal window will fix that.
+Open a new terminal tab/window, navigate to the same directory, and re-run the same command (e.g.: `docker compose up`). For whatever reason, a terminal window can sometimes fail to recognize that Docker for Mac is running, and a fresh terminal window will fix that.
