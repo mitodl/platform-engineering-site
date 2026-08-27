@@ -95,6 +95,7 @@ nav:
           - Cloud Infrastructure (AWS & Pulumi):
               - Pulumi AWS Classic 5 to 6 Upgrade: platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade.md
               - Importing Existing Resources with Pulumi: platform_services/cloud_infrastructure/import_existing_resources_with_pulumi.md
+              - Repairing Fastly/Pulumi State Drift: platform_services/cloud_infrastructure/fastly_pulumi_state_drift.md
               - Testing and Deploying Pulumi Packer Projects: platform_services/cloud_infrastructure/test_and_deploy_pulumi_packer_projects.md
               - Tagging AMIs with Software Metadata: platform_services/cloud_infrastructure/tagging_amis_with_installed_software_metadata.md
               - Moira Certificates: platform_services/cloud_infrastructure/moira_certificates.md
