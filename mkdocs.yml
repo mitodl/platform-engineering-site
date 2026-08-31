@@ -195,7 +195,8 @@ nav:
           - Renovate:
               - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
           - JupyterHub:
-              - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
+              - Course Notebooks Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
+              - Data Platform Notebooks: application_specific_guides/jupyterhub/data_platform_notebooks.md
           - Keycloak:
               - Inviting New Users to Keycloak Realms: application_specific_guides/keycloak/inviting_users_to_realms.md
       - Monitoring And Observability:
