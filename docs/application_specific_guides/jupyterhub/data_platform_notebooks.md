@@ -30,10 +30,20 @@ This page describes the environment **after** two changes land:
 (which seeds all three template files instead of only `getting_started.py`, and
 supplies `TRINO_CATALOG`).
 
-Until both are merged **and applied**, `~/notebooks/` holds only an older
-`getting_started.py` that authenticates with a Keycloak token Galaxy rejects, so
-the sign-in flow below does not yet exist and `demo.py` and `README.md` are not
-there. Remove this notice once both stacks are deployed.
+There are three states, and they differ:
+
+- **Neither landed.** `~/notebooks/` holds only a `getting_started.py` that
+  authenticates with a Keycloak token Galaxy rejects, so every query 401s and
+  the sign-in flow below does not exist yet.
+- **#2630 merged and its image published, #5700 not yet applied.** The existing
+  hook copies only `getting_started.py` — but from the new image, so a user
+  spawning a fresh server gets the working OAuth2 template. `demo.py` and
+  `README.md` are still absent.
+- **Both applied.** All three files arrive.
+
+In every state, a user who *already* has `~/notebooks/getting_started.py` keeps
+their old copy, because the hook uses `cp -n` — see Troubleshooting for the
+reseed. Remove this notice once both stacks are deployed.
 ///
 
 ## Audience
@@ -248,8 +258,10 @@ normalise `SELECT *` on a table full of identifiers.
 | Memory         | 8 GB     | 32 GB |
 | Home directory | 5 GB persistent (EFS) | 5 GB persistent (EFS) |
 
-Kernels are culled after **4 hours idle**; there is no absolute session limit.
-Home directories survive; anything held only in memory does not.
+After **4 hours idle** the culler stops your whole single-user server — the pod
+and JupyterLab with it, not just the kernels — and there is no absolute session
+limit. Home directories survive; anything held only in memory does not, and you
+sign in to Galaxy again on the next server.
 
 ## Sharing work
 
@@ -311,9 +323,11 @@ rename the file when a change matters.
   nothing is broken in production today.
 - **All three stacks point `trino_host` at the production Galaxy cluster** while
   the IRSA role grants S3 and Glue on `ol-data-lake-*-<environment>`. Notebooks
-  on `nb-ci` and `nb-qa` therefore query production through Trino but hold
-  QA-scoped AWS credentials — the two access paths disagree about which
-  environment the pod is in.
+  on `nb-ci` and `nb-qa` therefore query production through Trino while holding
+  AWS credentials scoped to their own environment — the policy is parameterised
+  by `stack_info.env_suffix`, so `nb-ci` gets CI-scoped and `nb-qa` QA-scoped
+  access. Either way the two access paths disagree about which environment the
+  pod is in.
 - **Direct lake access is not authorized or attributed per user.** That IRSA
   policy is attached to one service-account role shared by every single-user
   pod, so a notebook can read a table from S3/Glue even where the user's Galaxy
