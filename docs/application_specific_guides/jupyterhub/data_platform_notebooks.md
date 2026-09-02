@@ -177,6 +177,8 @@ The warehouse is built by dbt in layers, and the schema suffix names the layer:
 | `_dimensional` | The star schema | **Start here** |
 | `_mart` | Purpose-built wide tables per business area | Yes, if one fits |
 | `_reporting` | Shaped for specific dashboards | Only to reproduce a dashboard figure |
+| `_external` | Extracts shaped for outside consumers | Only if you are that consumer |
+| `_integrations` | Payloads for other MIT applications | No |
 
 Within `_dimensional`: `dim_*` is something to group or filter by, `tfact_*` is
 a transaction fact (one row per event), `afact_*` is a pre-summarised aggregate
@@ -212,13 +214,15 @@ reactive graph so downstream cells update by themselves. One statement, one
 result, whole result in memory, no parameter binding.
 
 **The DB-API cursor** — `cur.execute("SELECT ...")`. Ordinary Python: loop it,
-build the SQL from a list, stream with `fetchmany`. Needed for anything that is
-not a single `SELECT` (`SHOW`, `EXPLAIN`, `SET SESSION`), and `cur.stats` is how
-to find out why a query is slow. Returns tuples, no SQL editing support, and
+build the SQL from a list, stream with `fetchmany`. It also holds
+connection-scoped state — `SET SESSION` and `USE` survive on the cursor but not
+in a SQL cell, which opens a fresh connection per statement — and `cur.stats` is
+how to find out why a query is slow. Returns tuples, no SQL editing support, and
 marimo cannot see the dependency.
 
-Reach for a SQL cell; drop to the cursor for a loop, a stream, or a
-non-`SELECT`.
+Reach for a SQL cell. It is not restricted to `SELECT`: `SHOW`, `EXPLAIN` and
+DDL run there too, and any statement returning rows comes back as a dataframe.
+Drop to the cursor for a loop, a stream, session state, or `cur.stats`.
 
 ## Working with personal data
 
@@ -260,9 +264,9 @@ Home directories survive; anything held only in memory does not.
 
 | Symptom | Cause and fix |
 |---|---|
-| `401 Authentication required`, and no login link ever appears | You are on an old `getting_started.py` from before the Galaxy OAuth2 change. The seeding hook uses `cp -n`, so it never overwrites a file you already have — a pre-existing copy is left in place and keeps using the rejected Keycloak token. Delete or rename `~/notebooks/getting_started.py` (and `demo.py`), then restart your server so the hook reseeds them. |
+| `401 Authentication required`, and no login link ever appears | You are on an old `getting_started.py` from before the Galaxy OAuth2 change. The seeding hook uses `cp -n`, so it never overwrites a file you already have — a pre-existing copy is left in place and keeps using the rejected Keycloak token. Delete or rename `~/notebooks/getting_started.py`, then restart your server so the hook reseeds it. Only that file is affected — `demo.py` ships with the OAuth2 flow already, so leave it alone rather than risk your edits. |
 | `401 Authentication required` | Galaxy sign-in never completed, or the kernel restarted. Re-run the connect cell and open the link. |
-| The login link never appears | Look at the cell's **console** output, not its rendered output. The link is printed while the query blocks. |
+| The login link never appears | It renders as a callout in the cell's own output while the cell blocks. If that output is empty, check the cell's **console** pane — the templates also `print()` the URL as a fallback for when the callout cannot reach the frontend. |
 | The login link does not work | Each retry mints a new link and retires the previous one. Re-run the connect cell for a fresh link. |
 | `Catalog must be specified` | An unqualified table name with no session catalog. Qualify it, or query through the `warehouse` engine. |
 | Counts look too high | A join to an SCD2 dimension missing `AND is_current`. |
