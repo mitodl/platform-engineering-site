@@ -20,6 +20,22 @@ per-course images built from the `ol-notebooks` GitHub Enterprise org. Different
 Pulumi stack, different image, different audience.
 ///
 
+/// admonition | Pending two deployments
+    type: warning
+
+This page describes the environment **after** two changes land:
+[ol-data-platform#2630](https://github.com/mitodl/ol-data-platform/pull/2630)
+(the OAuth2-enabled templates) and
+[ol-infrastructure#5700](https://github.com/mitodl/ol-infrastructure/pull/5700)
+(which seeds all three template files instead of only `getting_started.py`, and
+supplies `TRINO_CATALOG`).
+
+Until both are merged **and applied**, `~/notebooks/` holds only an older
+`getting_started.py` that authenticates with a Keycloak token Galaxy rejects, so
+the sign-in flow below does not yet exist and `demo.py` and `README.md` are not
+there. Remove this notice once both stacks are deployed.
+///
+
 ## Audience
 
 Anyone who needs to answer a question from warehouse data that a dashboard
@@ -53,7 +69,11 @@ The environment runs JupyterLab, so `.ipynb` notebooks still work, but the
 templates are [marimo](https://docs.marimo.io) notebooks.
 
 A marimo notebook is a **Python file**, not JSON. It diffs and code-reviews like
-source, and `python demo.py` runs it outside marimo. It also has no hidden
+source, and `marimo edit --sandbox demo.py` runs it outside JupyterLab. (Plain
+`python demo.py` does not: it ignores the PEP 723 header described below, and
+the image carries none of the notebook packages, so the connection cell fails on
+import. Sandbox mode builds the environment from that header and adds marimo
+itself.) It also has no hidden
 state: marimo tracks which cells read which variables and re-runs the affected
 cells when a value changes, so out-of-order execution — the most common source
 of results that cannot be reproduced — is not possible. In exchange, two cells
@@ -83,7 +103,7 @@ kernel. This is deliberate: the header is a complete, versioned record of what
 the notebook needs, so it runs the same way for the next person.
 
 The templates ship with polars, pandas, numpy, pyarrow, and altair. Heavier
-libraries (scikit-learn, statsmodels, pyiceberg) are intentionally not
+libraries (scikit-learn, statsmodels, scipy) are intentionally not
 pre-declared — adding them per notebook keeps notebooks that do not need them
 starting quickly.
 
@@ -139,9 +159,6 @@ one-click "Quick add" Trino connection when `TRINO_HOST`, `TRINO_USER` and
 `TRINO_CATALOG` are all present, and the snippet it generates uses
 `BasicAuthentication` or no auth at all — neither of which Galaxy accepts here.
 Setting it would surface a one-click connection that 401s.
-
-AWS credentials for S3 and Glue come from the pod's IAM role (IRSA), so `boto3`
-and `pyiceberg` work with no keys in the notebook.
 
 ## Finding data
 
@@ -232,8 +249,10 @@ Home directories survive; anything held only in memory does not.
 
 ## Sharing work
 
-- `marimo run <file>.py` serves the notebook as an app with the code hidden —
-  `mo.ui` inputs become the controls.
+- `marimo run --sandbox <file>.py` serves the notebook as an app with the code
+  hidden — `mo.ui` inputs become the controls. `--sandbox` is what builds the
+  environment from the `/// script` header; without it marimo uses the base
+  environment, which has none of the notebook packages.
 - Export to self-contained HTML, or to `.ipynb` for a Jupyter collaborator.
 - The notebook is a `.py` file, so commit it. It reviews like code.
 
@@ -241,6 +260,7 @@ Home directories survive; anything held only in memory does not.
 
 | Symptom | Cause and fix |
 |---|---|
+| `401 Authentication required`, and no login link ever appears | You are on an old `getting_started.py` from before the Galaxy OAuth2 change. The seeding hook uses `cp -n`, so it never overwrites a file you already have — a pre-existing copy is left in place and keeps using the rejected Keycloak token. Delete or rename `~/notebooks/getting_started.py` (and `demo.py`), then restart your server so the hook reseeds them. |
 | `401 Authentication required` | Galaxy sign-in never completed, or the kernel restarted. Re-run the connect cell and open the link. |
 | The login link never appears | Look at the cell's **console** output, not its rendered output. The link is printed while the query blocks. |
 | The login link does not work | Each retry mints a new link and retires the previous one. Re-run the connect cell for a fresh link. |
@@ -288,5 +308,12 @@ rename the file when a change matters.
 - **All three stacks point `trino_host` at the production Galaxy cluster** while
   the IRSA role grants S3 and Glue on `ol-data-lake-*-<environment>`. Notebooks
   on `nb-ci` and `nb-qa` therefore query production through Trino but hold
-  QA-scoped AWS credentials, so a direct `pyiceberg`/S3 read works only in
-  production.
+  QA-scoped AWS credentials — the two access paths disagree about which
+  environment the pod is in.
+- **Direct lake access is not authorized or attributed per user.** That IRSA
+  policy is attached to one service-account role shared by every single-user
+  pod, so a notebook can read a table from S3/Glue even where the user's Galaxy
+  role denies it, and CloudTrail records the pod identity rather than their SSO
+  identity. The notebook templates deliberately document no direct-read recipe,
+  but that is documentation, not a control. Narrowing the role or issuing
+  per-user credentials is the actual fix.
