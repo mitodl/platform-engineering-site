@@ -153,8 +153,12 @@ The upside of Galaxy owning the handshake is real: queries run as the individual
 user, so access is exactly what that user's Galaxy role grants, and queries are
 attributable in the audit log.
 
-The token is cached in memory for the life of the kernel, so users sign in once
-per session. Restarting the kernel means signing in again.
+The token is cached in memory and reused for as long as Galaxy accepts it, so
+signing in is not per-query. It is not guaranteed to be once per session either:
+`trino-python-client` re-runs the redirect flow whenever a cached token is
+rejected — expiry or revocation — and this deployment sets no maximum session
+age, so a user can be prompted again mid-session. Restarting the kernel also
+means signing in again.
 
 Only the endpoint is configured for users:
 
@@ -210,7 +214,11 @@ new row and keeps the old one, marked by `effective_date`, `end_date` and
 
 So a join on the key alone matches every version, and counts multiply by the
 number of times that row has been edited. **Every join to an SCD2 dimension
-needs `AND <dim>.is_current`.**
+needs a version filter.** Which filter depends on the question: for
+current-state analysis it is `AND <dim>.is_current`, and for a point-in-time or
+as-of join it is the row's `effective_date`/`end_date` interval matched against
+the fact's own date — `is_current` there would assign today's attributes to a
+past fact.
 
 This produces plausible wrong numbers rather than an error, which is why
 `demo.py` §4 is built around it.
@@ -248,7 +256,9 @@ normalise `SELECT *` on a table full of identifiers.
   anyone who knows the cohort.
 - Home directories are persistent volumes. A CSV of learner rows written there
   outlives the question it was written to answer.
-- Queries run as the individual user and are logged.
+- Queries **through Galaxy** run as the individual user and are logged. That
+  does not extend to direct S3/Glue reads, which run under the shared pod role
+  — see Known gaps.
 
 ## Resource limits
 
@@ -309,8 +319,10 @@ Edit them in `ol-data-platform`, merge to `main`, wait for the image build, then
 restart notebook servers so users pull the new image. Because `cp -n` will not
 overwrite, **users who already have a copy keep their old one** — that is the
 right trade-off for not destroying someone's work, but it means template fixes
-do not reach existing users automatically. Tell them to delete their copy, or
-rename the file when a change matters.
+do not reach existing users automatically. Tell them to delete or rename their
+copy **and then restart their notebook server** — the reseed runs only in the
+pod's `postStart` hook, so deleting a file in a running server does not bring
+the new one back and leaves them with neither.
 
 ### Known gaps
 
@@ -319,8 +331,10 @@ rename the file when a change matters.
   Trino access, but client credentials against Keycloak yield a Keycloak JWT,
   which Galaxy rejects for the same reason described above. Published apps have
   no user session, so the OAuth2 flow is not available to them either — they
-  need a Galaxy service account. Nothing consumes that Vault secret yet, so
-  nothing is broken in production today.
+  need a Galaxy service account. The credentials themselves are already synced
+  — `marimo_data` creates an `OLVaultK8SSecret` that reads `sso/marimo-app`
+  into the `marimo-app-oidc-secret` Kubernetes Secret — but no application
+  consumes that Secret yet, so nothing is broken in production today.
 - **All three stacks point `trino_host` at the production Galaxy cluster** while
   the IRSA role grants S3 and Glue on `ol-data-lake-*-<environment>`. Notebooks
   on `nb-ci` and `nb-qa` therefore query production through Trino while holding
