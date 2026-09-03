@@ -30,7 +30,7 @@ LOG C-0x55cb586d2e00: db1/v-aws-mitxpro-OC7crfPS2rL3jSryzvHE-1698696728@127.0.0.
 - 4:09PM Cached credentials are cleared and Heroku configuration is re-applied via Salt.
 - ~4:10PM Verified the issue is not resolved.
 - 4:12PM Cleared cached credentials again and Heroku configuration is re-applied via Salt.
-- 4:14PM Verified the issue is not resolved and that the credentials applied via Salt are truely different.
+- 4:14PM Verified the issue is not resolved and that the credentials applied via Salt are truly different.
 - 4:15PM Decided alternative solution did not work. Begin implementing database parameter group fix known to work.
 - ~4:20PM A new database parameter group is created and applied to the running database.
 - ~4:23PM The database is listed as Available in the RDS web console.
