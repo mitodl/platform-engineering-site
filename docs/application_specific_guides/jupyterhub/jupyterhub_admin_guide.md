@@ -1,3 +1,15 @@
+/// admonition | This page covers the course-notebook JupyterHub
+    type: info
+
+`nb.learn.mit.edu` — ephemeral notebooks from per-course images, authenticated
+against the `olapps` Keycloak realm with `TmpAuthenticator`.
+
+The separate **data platform** JupyterHub (`nb.data.ol.mit.edu`) runs marimo
+notebooks against the data warehouse and is documented in
+[Data Platform Notebooks](data_platform_notebooks.md). Different Pulumi stack,
+different image, different audience.
+///
+
 # Architecture
 ![Jupyterhub Architectural Diagram](jupyterhub_box_diagram.svg)
 
