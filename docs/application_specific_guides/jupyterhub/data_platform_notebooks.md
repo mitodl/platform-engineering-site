@@ -291,7 +291,7 @@ sign in to Galaxy again on the next server.
 | The login link never appears | It renders as a callout in the cell's own output while the cell blocks. If that output is empty, check the cell's **console** pane — the templates also `print()` the URL as a fallback for when the callout cannot reach the frontend. |
 | The login link does not work | Each retry mints a new link and retires the previous one. Re-run the connect cell for a fresh link. |
 | `Catalog must be specified` | An unqualified table name with no session catalog. Qualify it, or query through the `warehouse` engine. |
-| Counts look too high | A join to an SCD2 dimension missing `AND is_current`. |
+| Counts look too high | A join to an SCD2 dimension missing its version filter, so the key matched every historical version. Add `AND <dim>.is_current` for a current-state question, or match the fact's date against the row's `effective_date`/`end_date` interval for an as-of one. |
 | Data sources panel looks empty | Expand `warehouse`; schemas load lazily. An entry reading *no databases available* is a raw DB-API connection and can never show a tree. |
 | Query never returns | Missing `LIMIT` on a fact table. `cur.stats` shows what the cluster is processing. |
 | `ModuleNotFoundError` right after `pip install` | Sandbox mode. Add the package to the `/// script` header and restart the kernel. |
