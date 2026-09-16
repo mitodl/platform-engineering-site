@@ -78,6 +78,11 @@ Responsibilities include:
 - Acting as the sole point of contact for the Communicator so they can update stakeholders and, after Mitigation,
   ensure that the pain is stopped so the incident can conclude and be Resolved.
 
+**Leader note:** Key Slack messages can be added to the Rootly incident timeline by right-clicking the message and
+selecting **Connected Applications** → **Add Event To Rootly Timeline**:
+
+![Adding a Slack message to the Rootly incident timeline](img/AddSlackToRootlyTimeline.png)
+
 ### Communicator
 
 This should be someone who is not directly involved in mitigation. During a severe or prolonged outage it is difficult
@@ -134,6 +139,9 @@ during which action items can be assigned to responsible individuals and a more 
 on the Platform Engineering team [website](https://engineering.ol.mit.edu) for posterity.
 
 ### Postmortem (retrospective)
+
+**Leader note: Do not close out the retrospective until you are 100% sure that all data you will ever want has been
+gathered. Once you close it, the timeline is frozen forever and cannot be modified.**
 
 The on-call engineer who handled the incident is also responsible for preparing a postmortem, if one is warranted.
 Postmortems are useful whenever there is a significant outage or when questions remain about the exact nature of the
