@@ -53,7 +53,8 @@ nav:
           - Production Ready: handbook/delivering/production-ready.md
           - Release Process:
               - Overview: handbook/delivering/release-process/index.md
-              - Webapp Release Process: handbook/delivering/release-process/webapp-release-process.md
+              - Concourse Release Workflow: handbook/delivering/release-process/concourse-release-workflow.md
+              - Webapp Release Process (Legacy): handbook/delivering/release-process/webapp-release-process.md
       - How-To Guides:
           - Overview: handbook/how-to/index.md
           - Caching: handbook/how-to/caching.md
@@ -92,6 +93,8 @@ nav:
               - Getting Started with Concourse: platform_services/ci_cd/getting_started_with_concourse.md
               - Deploying Concourse: platform_services/ci_cd/deploying_concourse.md
               - Concourse GitHub Issues User Guide: platform_services/ci_cd/concourse_github_issues_user_guide.md
+              - Release Workflow Machinery: platform_services/ci_cd/release_workflow_machinery.md
+              - Migrating an App to the Release Workflow: platform_services/ci_cd/migrating_an_app_to_the_release_workflow.md
           - Cloud Infrastructure (AWS & Pulumi):
               - Pulumi AWS Classic 5 to 6 Upgrade: platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade.md
               - Importing Existing Resources with Pulumi: platform_services/cloud_infrastructure/import_existing_resources_with_pulumi.md
