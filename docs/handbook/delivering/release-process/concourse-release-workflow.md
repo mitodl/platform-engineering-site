@@ -31,6 +31,7 @@ sequenceDiagram
   participant main as main branch
   participant cc as Concourse
   participant gh as GitHub
+  participant bot as Release bot
   participant qa as QA/RC
   participant prod as Production
 
@@ -40,21 +41,23 @@ sequenceDiagram
     cc->>qa: Deploy to CI
   end
 
-  Note over eng: /doof release <app>
+  Note over eng,bot: /doof release APP
+  bot->>cc: Trigger the release build
   cc->>cc: Compute next version YYYY.M.D.N
-  cc->>gh: Cut releases/<version> branch, tag pre-bump HEAD
-  cc->>cc: Build image tagged <version>
+  cc->>gh: Cut the release branch, tag pre-bump HEAD
+  cc->>cc: Build image tagged with the version
   cc->>qa: Deploy that image to QA
   cc->>gh: Open release issue with per-author checklist
   cc->>gh: Record RC Deployment
   eng->>qa: Verify your changes
   eng->>gh: Check your boxes
-  gh-->>eng: Bot posts "ready to promote" in Slack
-  Note over eng: Promote (button, /doof promote, or close the issue)
+  bot->>gh: Poll the checklist
+  bot-->>eng: Post "ready to promote" in Slack
+  Note over eng,bot: Promote (button, /doof promote, or close the issue)
   gh->>cc: Closed release issue triggers production
   cc->>prod: Deploy the same image
   cc->>gh: Record Production Deployment
-  cc->>main: Merge releases/<version> back, delete the branch
+  cc->>main: Merge the release branch back, delete it
 ```
 
 Closing the release issue _is_ the promotion gate. The Slack button and
@@ -98,11 +101,11 @@ commits in the release. Verify your own changes in QA and check your boxes. When
 every box is checked the bot posts a "ready to promote" message with a button
 into the app's Slack channel, mentioning whoever ran `/doof release`.
 
-Two things about that message are worth knowing. The authors in the checklist
-are commit email addresses, not Slack users, so nobody is @-mentioned by the
-checklist itself (Doof fuzzy-matched those names against the Slack directory).
-And the `promote-ready` label the bot applies is bookkeeping to stop the
-notification repeating, not a gate signal.
+Two things about that message are worth knowing. The checklist itself mentions
+nobody: the authors in it are commit email addresses written into a GitHub issue.
+`/doof wait-for-checkboxes <app>` is where authors get @-mentioned, by resolving
+those emails through Slack's user lookup. And the `promote-ready` label the bot
+applies is bookkeeping to stop the notification repeating, not a gate signal.
 
 ## Hotfixes
 
@@ -123,8 +126,9 @@ It refuses, rather than guessing, when:
 - GitHub cannot confirm that the last release actually deployed to production,
 - the commit is already contained in production.
 
-While a hotfix request is pending, `/doof release` and `/doof preview` refuse
-too, because a release cut at that moment would cut the hotfix instead.
+While a hotfix request is pending, `/doof release` refuses, because a release cut
+at that moment would cut the hotfix instead. `/doof preview` reports the pending
+hotfix rather than a preview, so the two do not contradict each other.
 
 ## In-flight releases, superseding, and abandoning
 

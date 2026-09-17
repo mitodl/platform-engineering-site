@@ -1,18 +1,21 @@
 # Migrating an App to the Release Workflow
 
 Moving an app off the legacy release-candidate/release pipeline and onto the
-[modernized release workflow](release_workflow_machinery.md) is a one-field
-change in `src/bridge/settings/apps.py`, but the field is only safe to flip once
-the app's repo is ready for it. This is the per-app checklist, the verification,
-and the failures that have actually happened.
+[modernized release workflow](release_workflow_machinery.md) is a one-field change
+in `src/bridge/settings/apps.py`, but the field is only safe to flip once the
+app's repo is ready for it. This is the per-app checklist, the verification, and
+the failures that have actually happened. What the app's engineers get on the
+other side is described in
+[Concourse Release Workflow](../../handbook/delivering/release-process/concourse-release-workflow.md).
 
 ## Preconditions
 
 - The App is installed. `ol-release-bot` must be installed on the app's
   repo. A missing installation fails at authentication and looks nothing like a
-  ruleset denial. Installation is `repository_selection: selected`, so check the
-  org installation settings page, or mint an App JWT and call
-  `/app/installations/150138801/repositories`.
+  ruleset denial. The installation is `repository_selection: selected`, so check
+  the org installation settings page, or read the installation id from
+  `gh api /orgs/mitodl/installations` and call
+  `/app/installations/<id>/repositories` with an App JWT.
 - The ruleset bypass covers the repo. Read `gh api /orgs/mitodl/rulesets`,
   then GET each id (the list response omits `bypass_actors`). The App id is
   4437866, and it needs mode `always` on every ruleset governing a default-branch
@@ -26,8 +29,8 @@ and the failures that have actually happened.
 - The Pulumi project exists at
   `src/ol_infrastructure/applications/<app_with_underscores>` with CI, QA and
   Production stacks, since the generated jobs assume that path.
-- The image repos exist: `mitodl/<app>-app` on Docker Hub and the matching
-  ECR repo.
+- The Docker Hub repo `mitodl/<app>-app` exists. The ECR repository does not need
+  creating: both build jobs create it idempotently.
 - No stale release refs. A leftover `releases/<version>` branch, usually from an
   earlier experiment, reads as an in-flight release and the first cut will
   supersede it. Check with `git ls-remote --heads origin 'releases/*'` and delete
@@ -60,7 +63,7 @@ including for apps that are already migrated.
 
 ```bash
 # The pipeline regenerated in the new shape (zero means it did not).
-fly -t odl-inf get-pipeline -p <app>-pipeline | grep -c NEEDS_SEED
+fly -t <your-target> get-pipeline -p <app>-pipeline | grep -c NEEDS_SEED
 
 # The bot picked up the app.
 kubectl -n operations get deploy release-bot-production \

@@ -72,8 +72,8 @@ the whole git side of a release:
 `issue_state: closed` and `skip_if_labeled: [abandoned]`, acts as the production
 gate. `github-deployments` records the RC and Production GitHub Deployments.
 
-The resource's own reference documentation, including every source field and the
-full hotfix contract, is in
+The resource's own reference documentation, covering the source fields and the
+hotfix contract, is in
 [`resources/release/README.md`](https://github.com/mitodl/ol-concourse/blob/main/resources/release/README.md).
 
 ### The app registry
@@ -81,9 +81,11 @@ full hotfix contract, is in
 `src/bridge/settings/apps.py` in `ol-infrastructure` is the single registry of
 repo, default branch, Slack channel and workflow opt-in. The pipeline generator
 and the bot both read it, so an app cannot be migrated in one control surface and
-not the other. `release_workflow_repos()` also feeds the GitHub ruleset bypass
-registered in `src/ol_infrastructure/saas/github/` (both the org rulesets and the
-per-repo ones).
+not the other. `release_workflow_repos()` also decides which repos get the
+release bot's bypass on their required-status-checks ruleset, in
+`src/ol_infrastructure/saas/github/repositories/rulesets.py`. The org-level
+bypass is separate: it is granted to the App for every tier-1 default branch in
+`saas/github/organization/org_rulesets.py`, regardless of the registry.
 
 ### The generated pipeline
 
@@ -118,9 +120,10 @@ machinery above: `/doof release` forces a resource check then triggers a job,
 
 Its background loops:
 
-- ready-to-promote, every 120s: any open release issue whose checklist is fully
+- ready-to-promote, every 120s: an open release issue whose checklist is fully
   checked gets a Slack message with a promote button, deduped with the
-  `promote-ready` label.
+  `promote-ready` label. An app with neither a `slack_channel` in the registry nor
+  the `RELEASE_ANNOUNCE_CHANNEL` fallback is skipped entirely.
 - release progress, every 120s: announces RC and Production deployments as they
   reach success, and nags every 24h about a release that has been cut but not
   finished for longer than `RELEASE_STUCK_AFTER_HOURS` (default 24).
@@ -149,8 +152,9 @@ frozen release version, with no red build anywhere to show for it.
 
 Writes to a mitodl default branch are governed by org-level GitHub _rulesets_,
 not classic branch protection, and each ruleset carries its own bypass actor
-list. `ol-release-bot` (App id 4437866) is registered as an `always` bypass on
-the rulesets that govern default-branch pushes for the release-workflow repos.
+list. `ol-release-bot` (App id 4437866) holds an `always` bypass on the org rulesets
+covering tier-1 default branches, and on the required-status-checks ruleset of
+each repo in the app registry.
 Without that, `action: finish` fails with `GH013: Repository rule violations
 found`. Doof was unaffected only because its `odlbot` identity inherits the
 `odl-engineering-owners` team bypass.
@@ -174,8 +178,9 @@ checkout's `src` on `PYTHONPATH`, so `ol_concourse.pipelines` resolves to the
 checkout while `ol_concourse.lib.tasks` (where `bump_version_task` lives)
 resolves to the package installed in the `mitodl/ol-infrastructure` image. A
 change to a task in `ol-concourse` only reaches generated pipelines after that
-image is rebuilt, which happens in the `ol-infrastructure-docker-container`
-pipeline in Concourse team `main`.
+image is rebuilt, which happens in an image-build pipeline in Concourse team
+`main` (`ol-infrastructure-docker-container` at the time of writing), not in the
+app pipelines.
 
 Concourse is split across two teams. `<app>-pipeline` and the infrastructure meta
 pipelines live in `infrastructure`; the image builds and the library publish meta
