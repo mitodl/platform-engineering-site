@@ -1,5 +1,10 @@
 # Web Application Release Process
 
+This describes the legacy release-candidate/release branch workflow driven by
+Doof. Apps migrated to the
+[Concourse release workflow](concourse-release-workflow.md) do not use release
+branches at all.
+
 ## Responsibilities
 
 ### Individual Engineer
@@ -21,7 +26,7 @@ Collectively, the team members who have made changes are responsible for coordin
 - The team members who have changes to the main branch are responsible for verifying their changes:
   - The release candidate PR will contain a checklist of the included changes by commit message.
   - Each engineer should:
-    - Perform a functional test of their changes.  
+    - Perform a functional test of their changes.
     - If testing is successful, the engineer should check the box next to the associated PR in the release-candidate PR.
     - Any bug or regression discovered during testing should be communicated.
 - When all changes in the release candidate have been verified by the team (all checkboxes have been checked), the engineer who has been designated Release Manager releases it to production.
@@ -78,10 +83,8 @@ Our releases are versioned using a date-based versioning scheme following the pa
 - `DD` - zero-padded day of the month
 - `#` - release number starting at `0` for the first release that day and incrementing on each subsequent release
 
-For example: 
+For example:
 
 - `2022.03.15.0` would be the first release on March 15, 2022.
 - `2022.03.15.7` would be the seventh release on March 15, 2022.
 - `2022.03.16.0` would be the first release on March 16, 2022 (release number resets the next day).
-
-

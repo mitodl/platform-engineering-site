@@ -1,5 +1,18 @@
 # Release Process
 
+We run two release workflows while the migration off Doof finishes.
+
+- [Concourse Release Workflow](concourse-release-workflow.md): calendar-versioned
+  releases cut by the `release` Concourse resource, verified through a GitHub
+  issue checklist, promoted by closing that issue, driven from Slack with
+  `/doof`.
+- [Webapp Release Process](webapp-release-process.md): the legacy
+  release-candidate/release branch pattern Doof drives.
+
+Which one an app uses is set in `src/bridge/settings/apps.py` in
+`ol-infrastructure`, and the release bot refuses commands for apps that have not
+been migrated. The responsibilities below apply to both.
+
 ## Release Responsibilities
 
 ### Communication
@@ -21,8 +34,8 @@ When a new release candidate is created, the role of "release manager" is design
 ## When can releases happen?
 
 ### Release Candidates
-  
-Engineers create release candidates whenever they need to.  Release candidates (releases to the CI and RC environments) can be performed whenever, unless a hold or blocker as been communicated by another team member.  
+
+Engineers create release candidates whenever they need to.  Release candidates (releases to the CI and RC environments) can be performed whenever, unless a hold or blocker as been communicated by another team member.
 
 - Consider the following when there is already a release candidate in progress:
   - If your changes **aren't** urgent, wait for this release candidate to be completed.
