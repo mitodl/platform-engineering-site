@@ -54,8 +54,10 @@ That file is on the trigger paths of both control surfaces, so merging:
    makes the bot stop refusing commands for the app.
 
 The bot's deploy is preview-gated: `deploy-ol-infrastructure-release-bot-default`
-only runs after someone closes the gate issue in
-`github.mit.edu/ol-platform-eng/concourse-workflow`. Until that issue is closed
+only runs after someone closes its gate issue in the Concourse workflow issue
+repo (see the
+[Concourse GitHub Issues User Guide](concourse_github_issues_user_guide.md)).
+Until that issue is closed
 the running pod still has the old config and refuses every release command,
 including for apps that are already migrated.
 

@@ -162,8 +162,7 @@ found`. Doof was unaffected only because its `odlbot` identity inherits the
 The shared credential is named `github_app`, not `github`. Every Concourse team
 already has a team-scoped `github` secret, and Concourse's Vault credential
 manager tries team-scoped paths before the shared fallback, so a credential named
-`github` silently resolves to the wrong secret. It is backed by
-`secret-concourse/shared/github_app` and referenced as
+`github` silently resolves to the wrong secret. Pipelines reference it as
 `((github_app.release_bot_app_id))` and friends.
 
 The bot runs a single replica on purpose. Socket Mode holds one persistent
