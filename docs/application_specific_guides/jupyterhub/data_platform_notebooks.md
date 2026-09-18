@@ -260,6 +260,39 @@ normalise `SELECT *` on a table full of identifiers.
   does not extend to direct S3/Glue reads, which run under the shared pod role
   — see Known gaps.
 
+## Using Claude
+
+Claude runs on AWS Bedrock, with no key to manage: the notebook environment's
+AWS role is allowed to invoke Bedrock models, and `AWS_REGION` and
+`AWS_DEFAULT_REGION` are set.
+
+**Writing notebooks.** marimo's AI assistant (the chat panel and AI edits to
+cells) defaults to Claude. Pick a different model under **Settings > AI** and
+your choice is kept across restarts. Model names are
+`bedrock/<inference profile>`, e.g. `bedrock/us.anthropic.claude-sonnet-5`.
+
+**In a cell.** Add `boto3` to the `/// script` header, then:
+
+```python
+import boto3
+
+bedrock = boto3.client("bedrock-runtime")
+response = bedrock.converse(
+    modelId="us.anthropic.claude-sonnet-5",
+    messages=[{"role": "user", "content": [{"text": "Summarise this table..."}]}],
+)
+response["output"]["message"]["content"][0]["text"]
+```
+
+Use the `us.`-prefixed inference profile ID. Newer models reject the bare
+model ID. Models already enabled for the AWS account work straight away. A
+third-party model nobody here has used yet may answer for a few minutes, then
+returns `AccessDeniedException` until the platform team enables it (see
+Operating this environment).
+
+The guidance in [Working with personal data](#working-with-personal-data)
+applies to what you put in a prompt too.
+
 ## Resource limits
 
 |                | Standard | Large |
@@ -296,6 +329,8 @@ sign in to Galaxy again on the next server.
 | Query never returns | Missing `LIMIT` on a fact table. `cur.stats` shows what the cluster is processing. |
 | `ModuleNotFoundError` right after `pip install` | Sandbox mode. Add the package to the `/// script` header and restart the kernel. |
 | Pod will not start | Check the chosen profile; **Large** needs a node with room. Retry with **Standard**. |
+| `AccessDeniedException` calling a Bedrock model, possibly after it worked for a few minutes | The model isn't enabled for the AWS account. Ask the platform team to enable it, or use one that is (the assistant's default is). |
+| The AI assistant says `pydantic-ai-slim` is required | Your server is on an image from before Bedrock support. Stop and restart your server from the hub control panel. |
 
 ## Operating this environment
 
@@ -324,6 +359,35 @@ copy **and then restart their notebook server** — the reseed runs only in the
 pod's `postStart` hook, so deleting a file in a running server does not bring
 the new one back and leaves them with neither.
 
+### Claude and Bedrock
+
+The notebook IRSA role can invoke Bedrock foundation models and system-defined
+(cross-Region) inference profiles, with no vendor restriction. It has no
+`aws-marketplace` permissions, so enabling a third-party model (e.g.
+Anthropic's) for the account stays an administrator's decision. Invoking a
+model the account hasn't enabled makes Bedrock try to subscribe the account in
+the background. Without the caller's Marketplace permissions that fails, and
+calls return `AccessDeniedException` once the setup window (up to 15 minutes)
+closes. Calls can succeed during that window, so this is not a hard block on
+first use; blocking a model outright takes an explicit Deny on invoking it.
+Once a model is enabled, invoking it needs no Marketplace permissions
+([AWS docs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)).
+
+To enable a new one, either invoke it once as an identity holding
+`aws-marketplace:Subscribe`, `Unsubscribe` and `ViewSubscriptions`, or run
+`aws bedrock list-foundation-model-agreement-offers --model-id <id>` and pass
+the offer token to `aws bedrock create-foundation-model-agreement`. The account
+also needs a valid Marketplace payment method, and Anthropic models need the
+one-time use-case form (already done for this account).
+`aws bedrock get-foundation-model-availability --model-id <id>` reports
+`agreementAvailability: AVAILABLE` once it is enabled. Models not sold through
+Marketplace (Amazon, Meta, Mistral, DeepSeek, Qwen) need no enablement.
+
+The assistant's default model is the `jupyterhub_data:bedrock_chat_model` stack
+config value. A postStart script fills it into each user's marimo config only
+where the user has not chosen a model, and moves users who never changed it
+when the value changes.
+
 ### Known gaps
 
 - **Published (run-mode) marimo apps cannot authenticate to Galaxy yet.** The
@@ -348,4 +412,5 @@ the new one back and leaves them with neither.
   role denies it, and CloudTrail records the pod identity rather than their SSO
   identity. The notebook templates deliberately document no direct-read recipe,
   but that is documentation, not a control. Narrowing the role or issuing
-  per-user credentials is the actual fix.
+  per-user credentials is the actual fix. Bedrock calls go through the same
+  shared role, so they aren't attributable to a user either.
