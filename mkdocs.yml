@@ -89,6 +89,7 @@ nav:
           - Container Orchestration (Kubernetes):
               - Deploying Apps with Kubernetes: platform_services/container_orchestration/deploying_apps_with_kubernetes.md
               - Kubernetes Cookbook: platform_services/container_orchestration/kubernetes_cookbook.md
+              - Application Developer Shell: platform_services/container_orchestration/developer_shell.md
           - CI/CD (Concourse):
               - Getting Started with Concourse: platform_services/ci_cd/getting_started_with_concourse.md
               - Deploying Concourse: platform_services/ci_cd/deploying_concourse.md
