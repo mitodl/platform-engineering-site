@@ -41,7 +41,7 @@
 | ------------------------------| ----| ------- | --------|
 | Bootcamp production | bootcamp.odl.mit.edu | yes |  no |
 | MITx CAS | cas.mitx.mit.edu | yes |  no |
-| MITx Online Production Application | nitxonline.mit.edu | yes |  no |
+| MITx Online Production Application | mitxonline.mit.edu | yes |  no |
 | MITx Online Production edX | courses.mitxonline.mit.edu | yes |  no |
 | MITx Online QA edX Application | courses-qa.mitxonline.mit.edu | yes |  no |
 | MITx Online RC Application | rc.mitxonline.mit.edu | yes |  no |

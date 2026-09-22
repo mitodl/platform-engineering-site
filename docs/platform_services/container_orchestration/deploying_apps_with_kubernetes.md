@@ -82,7 +82,7 @@ General Rules:
 | Production | 10.110.146.0/23 | 10.7.128.0/21<br/>10.7.136.0/21<br/>10.7.144.0/21<br/>10.7.152.0/21 |
 
 
-Additionally there are four 'public' subnets per VPC used exclusively for NAT gateways. These are not terribly important and are documented in the yaml configration. NAT gateways are somewhat expensive so we have two ways of deploying them. `single` deploys one NAT gateway in the first availability zone only. `all` deploys a NAT gateway in each availability zone. `all` is preferred for production environments.
+Additionally there are four 'public' subnets per VPC used exclusively for NAT gateways. These are not terribly important and are documented in the yaml configuration. NAT gateways are somewhat expensive so we have two ways of deploying them. `single` deploys one NAT gateway in the first availability zone only. `all` deploys a NAT gateway in each availability zone. `all` is preferred for production environments.
 
 Networking Configuration YAML
 
@@ -93,7 +93,7 @@ Networking Configuration YAML
 #### EKS Cluster
 
 [This](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/eks/Pulumi.infrastructure.aws.eks.data.QA.yaml) is the beating heart of where your kubernetes cluster is defined in Pulumi.
-It contains a multitude of configuration optioons including namespaces defined
+It contains a multitude of configuration options including namespaces defined
 in this cluster, what operating environment (e.g. CI, QA, or Production) the
 cluster will operate in.
 
@@ -136,7 +136,7 @@ Kubernetes Provider](https://github.com/pulumi/pulumi-kubernetes).
 
 Helm charts are deployed by Pulumi by translating the helm chart into a
 [kubernetes.helm.v3.release](https://github.com/mitodl/ol-infrastructure/blob/3321e8499509199ffd2002bd15ac255e6ce3e2c2/src/ol_infrastructure/applications/open_metadata/__main__.py#L295)
-object. Click the link about for an example of how we translated Open Metadata's
+object. Click the link above for an example of how we translated Open Metadata's
 helm chart. Pay particular attention to the Values dictionary.
 
 ## Make It So
@@ -160,14 +160,14 @@ configuration here that can't be covered in a simple doc.
 
 Then you'll want to build the resources in substructure for your project, so
 once again for the data CI cluster we'd want to change directory to
-ol-infrastucture/src/ol_infrastructure/substructure/aws/eks and run pulumi up.
+ol-infrastructure/src/ol_infrastructure/substructure/aws/eks and run pulumi up.
 
 ```bash
 pulumi up -s substructure.aws.eks.data.CI
 ```
 
 Then you'll want to deploy your application. So for OMD as an example, cd to
-ol-infrastucture/src/ol_infrastructure/applications/open_metadata and run pulumi
+ol-infrastructure/src/ol_infrastructure/applications/open_metadata and run pulumi
 up.
 
 ```bash
