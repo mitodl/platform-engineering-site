@@ -14,7 +14,7 @@
 
 ### Major Dependencies
 - Docker
-  - _[MacOS only]_ We use **Docker Desktop**&#42;, a desktop development environment that includes Docker.  
+  - _[MacOS only]_ We use **Docker Desktop**&#42;, a desktop development environment that includes Docker.
     Recommended MacOS install method: [Download from Docker website](https://docs.docker.com/desktop/setup/install/mac-install/)
 - Docker Compose
   - If you've installed Docker Desktop, you already have Compose (invoked as `docker compose`, no hyphen) installed as a Docker CLI plugin.
@@ -154,7 +154,7 @@ pytest /path/to/test.py
 
 #### Running tests via helper script
 
-Most of our projects include a helper script to run JS tests. 
+Most of our projects include a helper script to run JS tests.
 
 If your project includes `/scripts/test/js_test.sh` or `/js_test.sh`, this is how you can run the JS test suite:
 
@@ -166,14 +166,14 @@ docker compose run --rm watch ./scripts/test/js_test.sh path/to/file.js
 docker compose run --rm watch ./scripts/test/js_test.sh path/to/file.js "should test basic arithmetic"
 ```
 
-**NOTE:** 
+**NOTE:**
 In some of our projects we include a shell script that runs the entire test suite including linting, etc.: `./test_suite.sh`.
 If you're in yarn workspaces enabled project e.g. MITxOnline, you will need to replace `yarn run` with `yarn workspaces foreach run` for the below commands.
 
 
 #### Running tests via yarn
 
-In 2021 we changed our JS testing practice to use yarn directly to run the JS test suite, and to use [jest](https://jestjs.io/docs/getting-started) 
+In 2021 we changed our JS testing practice to use yarn directly to run the JS test suite, and to use [jest](https://jestjs.io/docs/getting-started)
 as our testing framework.
 
 If your project DOES NOT include a `js_test.sh` file, this is how you can run the JS test suite:
@@ -205,10 +205,10 @@ docker compose run --rm watch yarn run fmt
 
 #### Type-checking
 
-If your project has files with the extension `.ts`/`.tsx`, your project is 
+If your project has files with the extension `.ts`/`.tsx`, your project is
 Typescript-enabled.
 
-**Typescript** 
+**Typescript**
 
 As stated above, type-checking is done automatically with Typescript-enabled projects, so it's not necessary to run
 any commands, but you can still type-check with a command if you prefer:
@@ -222,9 +222,9 @@ any error but does not run a full compilation. We have incremental compilation
 turned on, so this should be relatively fast. It uses a file called
 `.tsbuildinfo` for incremental compilation.
 
-Most of our legacy projects use [Flow](https://flow.org/en/docs/) 
-type-checking. We switched to Typescript for new projects in 2021. Type-checking only needs to be invoked directly 
-in our projects that use Flow. 
+Most of our legacy projects use [Flow](https://flow.org/en/docs/)
+type-checking. We switched to Typescript for new projects in 2021. Type-checking only needs to be invoked directly
+in our projects that use Flow.
 
 **Flow**
 

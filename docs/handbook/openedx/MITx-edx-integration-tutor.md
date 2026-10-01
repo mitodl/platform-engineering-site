@@ -9,7 +9,7 @@ In order to create user accounts in Open edX and permit authentication from MIT 
 
 ## Prerequisite
 
-To begin, you need to follow the [Installing Tutor for development](https://docs.tutor.edly.io/dev.html#open-edx-development) instructions provided by Tutor **for local development installations**. 
+To begin, you need to follow the [Installing Tutor for development](https://docs.tutor.edly.io/dev.html#open-edx-development) instructions provided by Tutor **for local development installations**.
 
 Once Tutor has bootstrapped itself and is available, create a superuser account:
 
@@ -79,7 +79,7 @@ To set up the MIT Application:
 3. Run the **configure_instance** command
 
     For `gateway_ip`, use the Gateway IP from the first step. (Specify `macos` or `linux` based on your OS. You can also skip --gateway.) The command will print `Client ID` and `Client Secret` that you will need further in the setup, so keep them safe. Alternatively, you can access the `Client ID` and `Client Secret` through the MIT Application's `/admin/oauth2_provider/application/`
-           
+
        docker-compose run --rm web ./manage.py configure_instance <linux or macos> --gateway <gateway_ip from above step> --tutor-dev
 
 ## EdX Application Setup
@@ -91,7 +91,7 @@ To set up the MIT Application:
 2. Install the required dependencies using one of the following:
 
    - **Option 1:** Open the LMS container shell using `tutor dev exec -it lms bash` and run:
-     
+
          pip install ol-social-auth openedx-companion-auth
 
    - **Option 2:** Follow the [Tutor guide for installing extra requirements](https://docs.tutor.edly.io/configuration.html#installing-extra-xblocks-and-requirements).

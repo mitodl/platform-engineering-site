@@ -17,6 +17,8 @@ dependencies = [
 ]
 
 [dependency-groups]
+prek = ["prek==0.5.4"]
+dev = [{ include-group = "prek" }]
 # Tooling for architecture_maps/c4gen (the C4 data-flow generator).
 # `extract` additionally needs the witan-code tool installed separately.
 c4gen = [
@@ -24,3 +26,10 @@ c4gen = [
     "pyyaml>=6",
     "cyclopts>=3",
 ]
+
+# ol_concourse (the Concourse pipeline DSL used by .concourse/pipeline.py) and
+# witan_code (used by `c4gen extract`) are deployment- and authoring-time tools
+# that are not installed in the mypy hook's environment.
+[[tool.mypy.overrides]]
+module = ["ol_concourse.*", "witan_code.*"]
+ignore_missing_imports = true

@@ -1,14 +1,17 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-ci:
-  skip:
-    - packer_fmt
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: trailing-whitespace
+        # Generated C4 SVGs (byte-compared by c4-validation's drift check) and
+        # vendored third-party JS (hashed by update_asset_versions.py --check).
+        exclude: ^docs/(system_architecture/(.+/)?_diagrams/.+\.svg|javascripts/vendor/)
       - id: end-of-file-fixer
+        # Generated C4 SVGs (byte-compared by c4-validation's drift check) and
+        # vendored third-party JS (hashed by update_asset_versions.py --check).
+        exclude: ^docs/(system_architecture/(.+/)?_diagrams/.+\.svg|javascripts/vendor/)
       - id: check-yaml
         args: [--unsafe]
       - id: check-added-large-files
@@ -57,6 +60,8 @@ repos:
           - pydantic>2
           - types-PyYAML
           - types-requests
+          # c4gen's CLI framework; pinned to the version in uv.lock.
+          - cyclopts==4.23.0
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.10.0.1
     hooks:
@@ -67,10 +72,6 @@ repos:
       - id: actionlint
         name: actionlint
         description: Runs actionlint to lint GitHub Actions workflow files
-  - repo: https://github.com/mitodl/pre-commit-packer
-    rev: v0.0.3
-    hooks:
-      - id: packer_fmt
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
     rev: v1.29.0
     hooks:

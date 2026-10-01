@@ -47,7 +47,10 @@ def _ensure_witan_importable() -> None:
         base = subprocess.run(
             ["uv", "tool", "dir"], capture_output=True, text=True, check=True
         ).stdout.strip()
-    except (subprocess.CalledProcessError, FileNotFoundError) as exc:  # pragma: no cover
+    except (
+        subprocess.CalledProcessError,
+        FileNotFoundError,
+    ) as exc:  # pragma: no cover
         raise RuntimeError(
             "witan_code is not importable and `uv tool dir` failed; install witan-code "
             "(`uv tool install witan-code`) before running the extractor."
@@ -102,7 +105,9 @@ class Contract:
     consumer_ref: dict[str, dict] = field(default_factory=dict)
 
 
-def group_contracts(rows: list[dict], min_confidence: float = 0.5) -> dict[tuple[str, str], Contract]:
+def group_contracts(
+    rows: list[dict], min_confidence: float = 0.5
+) -> dict[tuple[str, str], Contract]:
     """Group bindings into per-``(kind, key_norm)`` contracts.
 
     Low-confidence endpoint *consumer* bindings (``confidence < min_confidence``)
@@ -123,7 +128,9 @@ def group_contracts(rows: list[dict], min_confidence: float = 0.5) -> dict[tuple
         key = (b["kind"], b["key_norm"])
         c = groups.get(key)
         if c is None:
-            c = groups[key] = Contract(b["kind"], b.get("key", b["key_norm"]), b["key_norm"])
+            c = groups[key] = Contract(
+                b["kind"], b.get("key", b["key_norm"]), b["key_norm"]
+            )
         if role == "provider":
             c.providers.add(b["repo"])
         else:
@@ -184,7 +191,7 @@ def find_cycles(edges: list[CrossEdge]) -> list[list[str]]:
     def dfs(node: str, stack: list[str], on_stack: set[str]) -> None:
         for nxt in adj[node]:
             if nxt in on_stack:
-                cyc = stack[stack.index(nxt):]
+                cyc = stack[stack.index(nxt) :]
                 if len(cyc) >= 2:
                     cycles.add(canonical(cyc))
             elif nxt not in visited_global:

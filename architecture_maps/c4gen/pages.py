@@ -126,7 +126,9 @@ into its [container view](container.md).
 
 
 def page_container(model: Model) -> str:
-    primary = next((s for s in model.systems if s.id == model.meta.primary_system), None)
+    primary = next(
+        (s for s in model.systems if s.id == model.meta.primary_system), None
+    )
     if primary is None:
         raise ValueError(f"primary_system {model.meta.primary_system!r} not in model")
     rows = ["| Container | Technology | Responsibility |", "| --- | --- | --- |"]
@@ -150,13 +152,15 @@ def page_component(model: Model) -> str:
     section with its own C4 Component diagram and a responsibility table. Only
     emitted when at least one container is expanded to Component level."""
     expanded = model.containers_with_components()
-    parts = [f"""{_banner(model)}# Components — {model.meta.name}
+    parts = [
+        f"""{_banner(model)}# Components — {model.meta.name}
 
 {_stamp(model)}
 The innermost view: the **components** inside containers that have been expanded
 to C4 Component level — the major code groupings within a deployable unit and how
 they collaborate and reach out to adjacent containers and systems.
-{_LEGEND}"""]
+{_LEGEND}"""
+    ]
     for container in expanded:
         parts.append(f"## {container.name}\n")
         if container.description:
@@ -172,12 +176,14 @@ they collaborate and reach out to adjacent containers and systems.
 
 
 def page_data_flows(model: Model) -> str:
-    parts = [f"""{_banner(model)}# Data Flows — {model.meta.name}
+    parts = [
+        f"""{_banner(model)}# Data Flows — {model.meta.name}
 
 {_stamp(model)}
 Each scenario below replays one interaction as a C4 **Dynamic** diagram.
 Amber steps are asynchronous (queued / scheduled / event-driven).
-{_LEGEND}"""]
+{_LEGEND}"""
+    ]
     for sc in model.scenarios:
         parts.append(f"## {sc.title}\n")
         if sc.description:
@@ -191,8 +197,10 @@ Amber steps are asynchronous (queued / scheduled / event-driven).
             "pull from, with transport and cadence. ⚠️ marks brittle linkages "
             "(HTML/token scrapes, hardcoded URLs).\n"
         )
-        rows = ["| Source | Transport | Cadence | Data | Source of truth |",
-                "| --- | --- | --- | --- | --- |"]
+        rows = [
+            "| Source | Transport | Cadence | Data | Source of truth |",
+            "| --- | --- | --- | --- | --- |",
+        ]
         for s in sorted(model.etl_sources, key=lambda x: x.name):
             warn = "⚠️ " if s.fragile else ""
             ref = ""
@@ -205,7 +213,9 @@ Amber steps are asynchronous (queued / scheduled / event-driven).
     return "\n".join(parts)
 
 
-def page_dependencies(model: Model, cycles: list[list[str]], candidates: list[Flow]) -> str:
+def page_dependencies(
+    model: Model, cycles: list[list[str]], candidates: list[Flow]
+) -> str:
     # curated cross-service edges actually drawn in the diagrams
     cross = [f for f in model.flows if "cross-service" in f.tags]
     # dependency matrix at system level (curated, verified)
@@ -223,7 +233,11 @@ def page_dependencies(model: Model, cycles: list[list[str]], candidates: list[Fl
     matrix_md = "\n".join(matrix) if deps else "_No curated cross-service edges._"
 
     if cycles:
-        cyc_lines = ["/// admonition | Dependency cycles detected", "    type: danger", ""]
+        cyc_lines = [
+            "/// admonition | Dependency cycles detected",
+            "    type: danger",
+            "",
+        ]
         for c in cycles:
             cyc_lines.append(f"* `{ ' → '.join(c + [c[0]]) }`")
         cyc_lines.append("///")
@@ -235,9 +249,12 @@ def page_dependencies(model: Model, cycles: list[list[str]], candidates: list[Fl
         )
 
     fragile = [f for f in model.flows if "fragile" in f.tags]
-    frag_md = "\n".join(
-        f"- **{f.source} → {f.target}**: {f.label} — {f.data}" for f in fragile
-    ) or "_None flagged._"
+    frag_md = (
+        "\n".join(
+            f"- **{f.source} → {f.target}**: {f.label} — {f.data}" for f in fragile
+        )
+        or "_None flagged._"
+    )
 
     return f"""{_banner(model)}# Dependencies & Cycles — {model.meta.name}
 
@@ -276,12 +293,16 @@ actual client/route code before treating it as a real runtime dependency.
 def _candidate_rows(candidates: list[Flow]) -> str:
     if not candidates:
         return "_None extracted._"
-    rows = ["| Consumer → Provider | Contract sample | Source of truth |",
-            "| --- | --- | --- |"]
+    rows = [
+        "| Consumer → Provider | Contract sample | Source of truth |",
+        "| --- | --- | --- |",
+    ]
     for f in sorted(candidates, key=lambda x: (x.source, x.target)):
         url = f.provenance.url()
-        loc = f"[{f.provenance.path}]({url})" if url and f.provenance.path else (
-            f"`{f.provenance.path}`" if f.provenance.path else "—"
+        loc = (
+            f"[{f.provenance.path}]({url})"
+            if url and f.provenance.path
+            else (f"`{f.provenance.path}`" if f.provenance.path else "—")
         )
         rows.append(
             f"| {f.source} → {f.target} ({f.label}) | `{f.provenance.contract_key or ''}` | {loc} |"
@@ -311,7 +332,9 @@ def page_landscape(landscape: Landscape, generated_at: str, version: str) -> str
     matrix = ["| System | Depends on → |", "| --- | --- |"]
     for src in landscape.internal_ids():
         targets = sorted(landscape.node(t).name for t in deps.get(src, set()))
-        matrix.append(f"| **{landscape.node(src).name}** | {', '.join(targets) or '—'} |")
+        matrix.append(
+            f"| **{landscape.node(src).name}** | {', '.join(targets) or '—'} |"
+        )
     matrix_md = "\n".join(matrix)
 
     if landscape.cycles:
@@ -327,7 +350,8 @@ def page_landscape(landscape: Landscape, generated_at: str, version: str) -> str
 
     if landscape.unresolved:
         rows = "\n".join(
-            f"- `{rid}` (referenced in **{model}**)" for model, rid in landscape.unresolved
+            f"- `{rid}` (referenced in **{model}**)"
+            for model, rid in landscape.unresolved
         )
         unresolved_md = (
             "/// admonition | Unresolved peer references\n    type: warning\n\n"
