@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-prek = ["prek==0.5.4"]
+prek = ["prek==0.5.3"]
 dev = [{ include-group = "prek" }]
 # Tooling for architecture_maps/c4gen (the C4 data-flow generator).
 # `extract` additionally needs the witan-code tool installed separately.
