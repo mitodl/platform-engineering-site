@@ -27,7 +27,7 @@ For each of our applications, we have a theme that overrides the branding in our
    ```
    cd env/build/openedx/themes/
    ```
-   Then clone the theme repo inside this folder. 
+   Then clone the theme repo inside this folder.
    ```
    git clone <theme-repo-url for e.g, https://github.com/mitodl/mitxonline-theme>
    ```

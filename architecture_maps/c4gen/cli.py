@@ -32,7 +32,9 @@ from . import pages as pages_mod
 from . import puml as puml_mod
 from .schema import Flow, Model
 
-app = cyclopts.App(name="c4gen", help="Generate C4 data-flow docs (C4-PlantUML via Kroki).")
+app = cyclopts.App(
+    name="c4gen", help="Generate C4 data-flow docs (C4-PlantUML via Kroki)."
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MODELS_DIR = REPO_ROOT / "architecture_maps" / "models"
@@ -47,7 +49,10 @@ def _kroki_svg(puml: str) -> str:
     """Render C4-PlantUML to an inline-ready SVG string via Kroki."""
     url = f"{KROKI_URL}/c4plantuml/svg"
     req = request.Request(
-        url, data=puml.encode("utf-8"), headers={"Content-Type": "text/plain"}, method="POST"
+        url,
+        data=puml.encode("utf-8"),
+        headers={"Content-Type": "text/plain"},
+        method="POST",
     )
     try:
         with request.urlopen(req, timeout=30) as resp:  # noqa: S310 (trusted local URL)
@@ -63,7 +68,9 @@ def _kroki_svg(puml: str) -> str:
     # than write a bogus .svg file.
     i = svg.find("<svg")
     if i == -1:
-        raise RuntimeError(f"Kroki returned a non-SVG response from {url}: {svg[:200]!r}")
+        raise RuntimeError(
+            f"Kroki returned a non-SVG response from {url}: {svg[:200]!r}"
+        )
     return svg[i:]
 
 
@@ -80,7 +87,9 @@ def _load_yaml(path: Path) -> dict:
 
 def _known_system_ids() -> set[str]:
     """The canonical system ids = the curated model file stems (one per system)."""
-    return {p.stem for p in MODELS_DIR.glob("*.yaml") if not p.name.endswith(".graph.yaml")}
+    return {
+        p.stem for p in MODELS_DIR.glob("*.yaml") if not p.name.endswith(".graph.yaml")
+    }
 
 
 def _merge_systems(curated: dict, slice_: dict) -> dict:
@@ -155,12 +164,16 @@ def _build_outputs(name: str) -> tuple[Model, dict[str, str], dict[str, str]]:
     slice_path = MODELS_DIR / f"{name}.graph.yaml"
     slice_ = _load_yaml(slice_path) if slice_path.exists() else {}
     cycles_path = MODELS_DIR / f"{name}.cycles.json"
-    cycles = json.loads(cycles_path.read_text(encoding="utf-8")) if cycles_path.exists() else []
+    cycles = (
+        json.loads(cycles_path.read_text(encoding="utf-8"))
+        if cycles_path.exists()
+        else []
+    )
 
     merged = _merge_systems(curated, slice_)
-    merged.setdefault("meta", {})["generated_at"] = (
-        datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M UTC")
-    )
+    merged.setdefault("meta", {})["generated_at"] = datetime.datetime.now(
+        datetime.UTC
+    ).strftime("%Y-%m-%d %H:%M UTC")
     merged["meta"]["generator_version"] = _version()
     model = Model.model_validate(merged)
 
@@ -183,7 +196,11 @@ def _build_outputs(name: str) -> tuple[Model, dict[str, str], dict[str, str]]:
                 cont_links[cont.id] = "../component/"
     for s in model.systems:
         canon = landscape_mod.ID_ALIASES.get(s.id, s.id)
-        if s.kind == "external" and canon in known and canon != model.meta.primary_system:
+        if (
+            s.kind == "external"
+            and canon in known
+            and canon != model.meta.primary_system
+        ):
             if not s.context_group:
                 ctx_links[s.id] = f"../../{canon}/"
             cont_links[s.id] = f"../../{canon}/"
@@ -208,7 +225,9 @@ def _build_outputs(name: str) -> tuple[Model, dict[str, str], dict[str, str]]:
         "system-context.md": pages_mod.page_context(model),
         "container.md": pages_mod.page_container(model),
         "data-flows.md": pages_mod.page_data_flows(model),
-        "dependencies-and-cycles.md": pages_mod.page_dependencies(model, cycles, candidates),
+        "dependencies-and-cycles.md": pages_mod.page_dependencies(
+            model, cycles, candidates
+        ),
     }
     if expanded:
         pages["component.md"] = pages_mod.page_component(model)
@@ -279,11 +298,15 @@ def check(name: str) -> None:
     expected_md = set(pages) | _CURATED_FILES
     for path in sorted(out.glob("*.md")):
         if path.name not in expected_md:
-            stale.append(f"{path.relative_to(REPO_ROOT)} (orphaned — no longer generated)")
+            stale.append(
+                f"{path.relative_to(REPO_ROOT)} (orphaned — no longer generated)"
+            )
     expected_svg = {f"{d}.svg" for d in svgs}
     for path in sorted((out / "_diagrams").glob("*.svg")):
         if path.name not in expected_svg:
-            stale.append(f"{path.relative_to(REPO_ROOT)} (orphaned — no longer generated)")
+            stale.append(
+                f"{path.relative_to(REPO_ROOT)} (orphaned — no longer generated)"
+            )
 
     if stale:
         print(f"DRIFT: committed docs for {name!r} are stale vs a fresh render:")
@@ -294,8 +317,10 @@ def check(name: str) -> None:
             f"  uv run --directory architecture_maps --group c4gen python -m c4gen render {name}"
         )
         sys.exit(1)
-    print(f"OK: committed docs for {name!r} match a fresh render ({len(pages)} pages, "
-          f"{len(svgs)} SVGs; kroki: {KROKI_URL}).")
+    print(
+        f"OK: committed docs for {name!r} match a fresh render ({len(pages)} pages, "
+        f"{len(svgs)} SVGs; kroki: {KROKI_URL})."
+    )
 
 
 @app.command
@@ -348,9 +373,11 @@ def landscape(check: bool = False) -> None:
             rel = path.relative_to(REPO_ROOT)
             if not path.exists():
                 stale.append(f"{rel} (missing — never generated)")
-            elif (path.read_text(encoding="utf-8") if byte else _normalize_md(path.read_text(encoding="utf-8"))) != (
-                fresh if byte else _normalize_md(fresh)
-            ):
+            elif (
+                path.read_text(encoding="utf-8")
+                if byte
+                else _normalize_md(path.read_text(encoding="utf-8"))
+            ) != (fresh if byte else _normalize_md(fresh)):
                 stale.append(f"{rel} (content differs)")
         if stale:
             print("DRIFT: committed SOA System Landscape is stale vs a fresh render:")

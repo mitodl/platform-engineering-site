@@ -147,8 +147,12 @@ class Flow(Base):
     sync: bool = True  # True = synchronous request/response; False = asynchronous
     protocol: str | None = None  # HTTPS | GraphQL | S3 | Celery | SQL | SMTP | ...
     data: str = ""  # what information moves
-    trigger: str | None = None  # "on request" | "beat: <name> every 120m" | "event: ..."
-    tags: list[str] = Field(default_factory=list)  # etl | cross-service | auth | cycle | ...
+    trigger: str | None = (
+        None  # "on request" | "beat: <name> every 120m" | "event: ..."
+    )
+    tags: list[str] = Field(
+        default_factory=list
+    )  # etl | cross-service | auth | cycle | ...
     provenance: Provenance = Field(default_factory=Provenance)
 
 
@@ -221,9 +225,7 @@ class Model(Base):
         return None
 
     def containers_with_components(self) -> list[Container]:
-        return [
-            c for s in self.systems for c in s.containers if c.components
-        ]
+        return [c for s in self.systems for c in s.containers if c.components]
 
     def node_label(self, node_id: str) -> str:
         for actor in self.actors:
