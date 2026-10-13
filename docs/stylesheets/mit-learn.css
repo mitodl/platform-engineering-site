@@ -36,6 +36,7 @@
 }
 
 .md-header {
+  --md-accent-fg-color: var(--mit-white);
   background-color: var(--mit-nav-gray);
   color: var(--mit-white);
   -webkit-backdrop-filter: none;
