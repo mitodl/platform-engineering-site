@@ -70,6 +70,12 @@ nav:
           - Integrating MIT Applications with Open edX using Tutor: handbook/openedx/MITx-edx-integration-tutor.md
       - Deprecated Docs:
           - Integrating MIT Applications with Open edX using Devstack: handbook/deprecated-docs/MITx-edx-integration-devstack.md
+  - Policies:
+      - Overview: policies/index.md
+      - Change Management: policies/change-management.md
+      - Incident Response: policies/incident-response.md
+      - Patch Management: policies/patch-management.md
+      - Vulnerability Management: policies/vulnerability-management.md
   - Platform Engineering:
       - Getting Started & How-Tos:
           - Emergency Oncall Break Glass Procedure: getting_started_and_how_tos/emergency-break-glass.md
