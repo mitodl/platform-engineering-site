@@ -144,14 +144,14 @@ tmpfs           389M     0  389M   0% /run/user/1000
 root@ip-10-7-0-78:~# cd /edx/var           <<<<<<<<<<<<<<<<<<< intuition / memory
 
 root@ip-10-7-0-78:/edx/var# du -h | sort -hr | head
-8.8G .
-8.7G ./log
-8.2G ./log/xqwatcher         <<<<<<<<<<<< Offender
-546M ./log/supervisor
-8.0K ./supervisor
-4.0K ./xqwatcher
-4.0K ./log/aws
-4.0K ./aws
+8.8G	.
+8.7G	./log
+8.2G	./log/xqwatcher         <<<<<<<<<<<< Offender
+546M	./log/supervisor
+8.0K	./supervisor
+4.0K	./xqwatcher
+4.0K	./log/aws
+4.0K	./aws
 root@ip-10-7-0-78:/edx/var/log/xqwatcher# cd log/xqwatcher/
 root@ip-10-7-0-78:/edx/var/log/xqwatcher# ls -tlrha
 total 8.2G

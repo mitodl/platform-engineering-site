@@ -8,6 +8,9 @@ config:
   # Python-Markdown only nests a list item indented by 4 spaces.
   MD007:
     indent: 4
+  # Tabs inside code blocks are part of the quoted command or output.
+  MD010:
+    code_blocks: false
   # line-length: paragraphs here are written one per line.
   MD013: false
   MD024:
