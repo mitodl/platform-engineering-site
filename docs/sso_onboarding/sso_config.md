@@ -1,3 +1,5 @@
+# Integrating with MIT Learn SSO
+
 ## Overview
 This document provides guidance for configuring single sign-on (SSO) with our platform using either OpenID Connect (OIDC) or SAML protocols. This integration allows your users to access our services using their existing organizational credentials from any compatible identity provider.
 

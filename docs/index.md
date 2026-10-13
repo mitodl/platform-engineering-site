@@ -1,5 +1,3 @@
-![MIT Logo 3 Line Black](img/mit_lockup_std-three-line_rgb_black.png)
-
 # MIT Open Learning Engineering
 
 Documentation for how MIT Open Learning's Engineering and Platform Engineering teams build, ship, and operate software.
