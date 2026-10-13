@@ -83,7 +83,7 @@ In order:
 
 **IR-7. Escalate security incidents.**
 Confirmed security incidents, including any exposure of personal data or
-credentials, are reported to MIT IS&T Security (security@mit.edu) by the
+credentials, are reported to MIT IS&T Security (<security@mit.edu>) by the
 incident leader as soon as possible, and no later than 24 hours after
 confirmation. Platform Engineering decides with MIT IS&T whether
 users or other parties must be notified.
