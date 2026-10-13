@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "annotations": false,
+    "dates_times.am_pm": false,
+    "industrial_language.chatspeak": false,
+    "lexical_illusions": false,
+    "typography.punctuation.exclamation": false,
+    "typography.punctuation.spacing": false,
+    "typography.symbols": false
+  }
+}
