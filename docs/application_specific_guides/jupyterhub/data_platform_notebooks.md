@@ -203,7 +203,6 @@ of `ol_warehouse_production_<username>_*` schemas — developer sandboxes from
 `ol-dbt local`, not authoritative and not maintained. If a schema name has a
 person in it, it is not for you.
 
-
 /// admonition | The SCD2 trap
     type: warning
 

@@ -2,7 +2,7 @@
 
 ## Reference
 
-https://github.com/mitodl/rapid-response-xblock/blob/master/README.md
+<https://github.com/mitodl/rapid-response-xblock/blob/master/README.md>
 
 ## How-To
 

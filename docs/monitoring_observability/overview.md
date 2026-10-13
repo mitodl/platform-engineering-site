@@ -27,6 +27,7 @@ There are a couple different patterns at play in our environment.
 For applications deployed in EC2, we install and configure Vector at AMI build time. We pull in global secrets (values that are the same regardless of where the AMI is running) at build time. Other secrets are interpolated runtime secrets using environment variables populated via `/etc/default/` files and vault-template.
 
 Examples:
+
 - Config files laid down at AMI build time [here](https://github.com/mitodl/ol-infrastructure/blob/main/src/bilder/images/concourse/templates/vector)
 - `/etc/default` secrets from runtime [here](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/applications/concourse/__main__.py)
 

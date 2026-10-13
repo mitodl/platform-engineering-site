@@ -9,6 +9,7 @@ You'll need to ssh into an edx-worker for the appropriate environment you're wor
 Run `sudo su - edxapp -s /bin/bash` and then `source edxapp_env` to get to where you need to be to run the Django manage application.
 
 You can follow the doc verbatim with the exception that:
+
 * The manage.py executable is located in the edx-platform folder, so you'd start your invocations with `python edx-platform/manage.py`
 * Ignore the `--settings <your settings>` option as we already have our settings defined in the LMS configuration.
 
@@ -18,6 +19,7 @@ print a number of warnings, which can be ignored.
 Here's what the output of each section should look approxiately like:
 
 ## Retirement States Creation
+
 ```
 States have been synchronized. Differences:
    Added: {'COMPLETE', 'FORUMS_COMPLETE', 'ENROLLMENTS_COMPLETE', 'RETIRING_LMS_MISC', 'RETIRING_LMS', 'NOTES_COMPLETE', 'RETIRING_ENROLLMENTS', 'PENDING', 'RETIRING_NOTES', 'PROCTORING_COMPLETE', 'RETIRING_FORUMS', 'ABORTED', 'ERRORED', 'LMS_MISC_COMPLETE', 'RETIRING_PROCTORING', 'LMS_COMPLETE'}
@@ -55,6 +57,7 @@ Removing user "retirement_service_worker" from groups []
 ```
 
 ## Retirement DOT Application Creation
+
 ```
 None] [ip None] create_dot_application.py:82 - Created retirement application with id: 10, client_id: XXXXXXXXXXXXXXXXXXXXXXXX, and client_secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
@@ -70,7 +73,6 @@ In order to do that, we'll use a utility called [sops](https://github.com/mozill
 Unfortunately setting yourself up to use sops is a bit of a process in and of itself and it outside the scope of this document.
 
 Once you've got sops squared away, use it on the appropriate operational configuration file. Here's the one for [QA](https://github.com/mitodl/ol-infrastructure/blob/main/src/bridge/secrets/concourse/operations.qa.yaml).
-
 
 So you'd invoke: `sops operations.qa.yml`. At that point, sops will decrypt the file and open your editor of choice with its contents.
 
@@ -110,7 +112,7 @@ Once we have a suitable target defined, we can use it to actually create our pip
 * From a checked out mitodl/ol-infrastructure repository, change directory to the `src/ol_concourse/pipelines/open_edx/tubular` folder.
 * Run `poetry run python tubular.py` - This should print a reasonable looking blob of JSON to the screen with a fly command to run at the bottom.
 * Go ahead and run that command! For example, given the mo-qa target I defined above, I ran: `fly -t mo-qa sp -p misc-cloud-tubular -c definition.json`.
-  * At this point fly should show you the pipeline definition and will ask you if you want to actually make the change. Answer yes.
+    * At this point fly should show you the pipeline definition and will ask you if you want to actually make the change. Answer yes.
 * Assuming there were no errors, your pipeline definition should be in place and we're ready to get the ball rolling!
 * You can either use the fly unpause-pipeline or else, in the Concourse web UI, click the little Play icon at the very top right of the screen. <!-- TODO add screenshot -->
 * The build is set to run once a week, so once you unpause the pipeline, you may noeed to click the + icon in order to actually kick off a build.

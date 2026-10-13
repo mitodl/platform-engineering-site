@@ -12,6 +12,7 @@ to be the enemy of the good :)
 ## Setup
 
 ### Git
+
 Check out the Git repository that equates to the NPM module
 that needs publishing. Usually the dev asking for help can
 give you this if it's not obvious.
@@ -19,6 +20,7 @@ give you this if it's not obvious.
 ### npm login
 
 #### Fun with Vault's Web UI
+
 Now login to npm from the command line. You'll need to have
 npm and node installed in order for this to work. If you're
 on a Mac, you can use homebrew `brew install npm` but YMMV.

@@ -6,7 +6,6 @@ In Slack, simply type:
 /rootly page
 ```
 
-
 At this point you'll be presented with a dialog that looks something like this:
 
 ![Rootly Page Dialog in Slack](img/Rootly-Page-Dialog.png)

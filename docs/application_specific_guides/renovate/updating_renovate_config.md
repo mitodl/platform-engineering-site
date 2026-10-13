@@ -6,6 +6,7 @@ our mitodl organization
 
 You can validate any changes you make by running the following `npx` command.
 (This requires a working node.js installation):
+
 ```
 npx --package renovate renovate-config-validator
 ```

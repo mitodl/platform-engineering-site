@@ -1,9 +1,11 @@
 # Code Review
+
 A guide for reviewing code and having your code reviewed.
 
 > Peer code reviews are the single biggest thing you can do to improve your code - [Jeff Atwood](http://blog.codinghorror.com/code-reviews-just-do-it/)
 
 # Purpose
+
 Code review is an important part of a team's development process. It helps to:
 
 * disseminate knowledge about the codebase/technology/techniques across teams
@@ -16,6 +18,7 @@ Code review is an important part of a team's development process. It helps to:
 When doing code reviews, **the process is as important as the result**, therefore, some guidelines are presented below to help improve the process of code review.
 
 # Everyone
+
 * Accept that many programming decisions are opinions. Discuss tradeoffs, which
 you prefer, and reach a resolution quickly.
 * Ask questions; don't make demands. ("What do you think about naming this
@@ -32,6 +35,7 @@ you prefer, and reach a resolution quickly.
 solution:" comments. Post a follow-up comment summarizing offline discussion.
 
 # Having Your Code Reviewed
+
 * Review your code before anybody else.
 * Provide context about what the change is and why is it important - Write informative commit messages [4] and pull request descriptions.
 * Use the pull request description template [3]. You only need to answer the relevant questions. Pro tip: use the bookmarklet [11] or chrome extension [12] for pull request description templates.
@@ -49,6 +53,7 @@ tells you the test suite is green in the branch.
 * Delete the backing branch.
 
 # Reviewing Code
+
 * Code review often and for short sessions. The effectiveness of code review drops after around an hour. Set aside time throughout your day to coincide with breaks in order to not disrupt your flow.
 * Review at least part of the code, even if you can't do all of it. If you can't do all of it, comment on the PR to indicate this, so the author can get a full review.
 * Review the right things, let tools to do the rest. Don't focus on reviewing things that can be reviewed by tools (e.g. eslint, pylint, etc). If the tools don't provide good feedback, change the config or improve the tools.
@@ -61,8 +66,8 @@ Understand why the code is necessary (bug, user experience, refactoring). Then:
 author make the final decision on alternative implementations.
 * Offer alternative implementations, but assume the author already considered
 them. ("What do you think about using a custom validator here?")
-  * If possible, use GitHub's suggestion feature to propose specific changes to a line or two of code.
-  * If you want to propose a complex alternative, discuss with the author first, then consider opening a PR with your changes that targets the PR you are reviewing. Don't add commits directly to the branch you are reviewing. This helps to prevent misunderstandings and merge conflicts.
+    * If possible, use GitHub's suggestion feature to propose specific changes to a line or two of code.
+    * If you want to propose a complex alternative, discuss with the author first, then consider opening a PR with your changes that targets the PR you are reviewing. Don't add commits directly to the branch you are reviewing. This helps to prevent misunderstandings and merge conflicts.
 * Seek to understand the author's perspective.
 * Sign off on the pull request with a :thumbsup: or "Ready to merge" comment... always!
 * Compliment/reinforce good practices.
@@ -83,6 +88,7 @@ Some suggestions of things to look for when reviewing code:
 Pro tip: Keep your own checklist of things you look for in a code review as in [9] [7].
 
 # Links
+
 Links from places on the Internet that helped write this:
 
 (The most useful ones are [9], [1], [3] and [2].)
@@ -100,6 +106,5 @@ Links from places on the Internet that helped write this:
 * [11] [Pull request template bookmarklet](https://quickleft.com/blog/pull-request-template-bookmarklet/)
 * [12] [Pull request template chrome extension](https://github.com/sprintly/pull-request-template-chrome-extension)
 
-
 Thanks to @marionzualo for compiling this list.
-https://gist.github.com/marionzualo/82fbf4e3d20ef253d3ef
+<https://gist.github.com/marionzualo/82fbf4e3d20ef253d3ef>

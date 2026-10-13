@@ -11,7 +11,6 @@
 | Purpose      | The purpose of the environment.                      |
 | Expectations | Expectations for environment usage and processes.    |
 
-
 ## CI
 
 |              |                                                                                                                                    |
@@ -19,7 +18,6 @@
 | Git Branch   | `main` or `master`                                                                                                                 |
 | Purpose      | Testing code from `main` or `master` in a deployed environment prior to being included in a release candidate and release process. |
 | Expectations | Code is tested and functionality confirmed shortly after releasing to CI.                                                          |
-
 
 ## RC
 

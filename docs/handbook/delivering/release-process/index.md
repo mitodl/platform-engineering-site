@@ -38,8 +38,8 @@ When a new release candidate is created, the role of "release manager" is design
 Engineers create release candidates whenever they need to.  Release candidates (releases to the CI and RC environments) can be performed whenever, unless a hold or blocker as been communicated by another team member.
 
 - Consider the following when there is already a release candidate in progress:
-  - If your changes **aren't** urgent, wait for this release candidate to be completed.
-  - If your changes **are** urgent, communicate with the rest of the team before closing the current one and starting a new one. There may be other urgent work in the queue ahead of you that can't wait for a release candidate to be refreshed or it's undesirable to have other changes included.
+    - If your changes **aren't** urgent, wait for this release candidate to be completed.
+    - If your changes **are** urgent, communicate with the rest of the team before closing the current one and starting a new one. There may be other urgent work in the queue ahead of you that can't wait for a release candidate to be refreshed or it's undesirable to have other changes included.
 
 ### Production Releases
 

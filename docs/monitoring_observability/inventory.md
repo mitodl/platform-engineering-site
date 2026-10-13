@@ -1,17 +1,17 @@
 # Tools
 
 - Sentry
-  - Purpose: Detailed application monitoring and error logging.
+    - Purpose: Detailed application monitoring and error logging.
 - Healthchecks.io
-  - Purpose: Absence of alerting detection. For determining when other alerting tools may have failed or become unresponsive.
+    - Purpose: Absence of alerting detection. For determining when other alerting tools may have failed or become unresponsive.
 - GrafanaCloud
-  - Purpose: Collecting and storing metric and log data from applications and infrastructure.
-  - Subcomponents:
-    - Grafana: Visualization and alerting on metric and log data.
-    - Cortex: Backend for storing metric data.
-    - Loki: Backend for storing log data
+    - Purpose: Collecting and storing metric and log data from applications and infrastructure.
+    - Subcomponents:
+        - Grafana: Visualization and alerting on metric and log data.
+        - Cortex: Backend for storing metric data.
+        - Loki: Backend for storing log data
 - Pingdom
-  - Purpose: External synthetic and HTTP monitoring.
+    - Purpose: External synthetic and HTTP monitoring.
 
 # Usage Matrix
 

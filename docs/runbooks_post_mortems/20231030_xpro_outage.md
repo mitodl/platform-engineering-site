@@ -1,5 +1,4 @@
 
-
 # xPro Outage - October 30, 2023
 
 ## Timeline
@@ -9,17 +8,20 @@ Undetermined date within the past 6 months:
 - AWS RDS config updated to default new credentials to use SCRAM rather than md5
 
 Monday, October 30th 2023
+
 - 3:45PM - Configuration update deployed xPro Production Heroku stack via Salt.
 - 3:51PM - [Pingdom alerts DevOps on-call](https://mitodl.app.opsgenie.com/alert/detail/909993c0-72e7-4433-9e9e-30a2196e8f87-1698695490940/details).
 - 3:51PM - Alert Acknowledged by DevOps on-call (Mike Davidson).
 - 3:52PM - Verified that site was non-responsive.
 - 3:52PM - Begin detailed investigation.
 - ~3:53PM - Confirm log messages in Heroku regarding failed database logins:
+
 ```
 LOG C-0x55cb586d2540: db1/v-aws-mitxpro-OC7crfPS2rL3jSryzvHE-1698696728@127.0.0.1:55038 login attempt: db=db1 user=v-aws-mitxpro-OC7crfPS2rL3jSryzvHE-1698696728 tls=no
 ERROR S-0x55cb586d5580: db1/v-aws-mitxpro-OC7crfPS2rL3jSryzvHE-1698696728@3.209.36.28:5432 cannot do SCRAM authentication: wrong password type
 LOG C-0x55cb586d2e00: db1/v-aws-mitxpro-OC7crfPS2rL3jSryzvHE-1698696728@127.0.0.1:52474 closing because: server login failed: wrong password type (age=14s)
 ```
+
 - ~3:55PM Determined this matches the fingerprint of a previously encountered issue seen when setting up the new MITOpen environments.
 - 3:56PM Found [previous PR](https://github.com/mitodl/ol-infrastructure/pull/1703) that addressed this for MITOpen:
 - 3:56PM Started looking for code location for make the above modification.
@@ -49,4 +51,4 @@ When attempting to establish a pool of database connections, pgbouncer was rejec
 ## Action Items
 
 - [Migrate management of XPro resources into Pulumi](https://github.com/mitodl/ol-infrastructure/issues/1886)
-  - One of the key factors delaying the resolution of the outage was the fact that none, or nearly none, of the configuration for this stack was managed as code. In particular the RDS instance and its associated resources. Additionally, the RDS instance was using an instance of the default parameter group provided by AWS, which cannot be modified. As such, we were required to duplicate this default parameter group definitions, make the required modifications, and then associate the newly created group with the instance. This is a more time consuming task than modifying a parameter configuration on an already associated parameter group. All of this would have been mitigated if the resources were managed with pulumi, where we do not utilize AWS sourced default parameter groups.
+    - One of the key factors delaying the resolution of the outage was the fact that none, or nearly none, of the configuration for this stack was managed as code. In particular the RDS instance and its associated resources. Additionally, the RDS instance was using an instance of the default parameter group provided by AWS, which cannot be modified. As such, we were required to duplicate this default parameter group definitions, make the required modifications, and then associate the newly created group with the instance. This is a more time consuming task than modifying a parameter configuration on an already associated parameter group. All of this would have been mitigated if the resources were managed with pulumi, where we do not utilize AWS sourced default parameter groups.
