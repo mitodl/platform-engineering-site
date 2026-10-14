@@ -8,7 +8,7 @@ title: "OL Data Platform — Architecture & Data Flows"
      See architecture_maps/README.md. -->
 # OL Data Platform — Architecture & Data Flows
 
-_Generated 2026-10-14 15:05 UTC · c4gen dev_
+_Generated 2026-10-14 15:27 UTC · c4gen dev_
 
 The OL Data Platform is the ingest & ETL backbone of the MIT Open Learning SOA. Dagster (webserver + daemon + per-domain code locations) orchestrates Airbyte and dlt ingestion of every SOA app's Postgres/MySQL/forum database and tracking logs into a raw Iceberg lake on S3; dbt transforms raw → staging → intermediate → marts/dimensional in Trino/Starburst (catalog `ol_data_lake_production`); Superset reads the marts and OpenMetadata catalogs the warehouse and its lineage. The platform also pushes data back to the apps — today via HMAC-signed content webhooks to MIT Learn. The strategic TARGET (tagged `target` below) is to relocate heavy ETL that currently runs inside each app's Celery workers (edX sync, catalog ingest, certificate generation, CRM sync) onto this platform.
 

@@ -198,6 +198,12 @@ systems:
     kind: external
     description: >-
       Dagster pipelines POST content webhooks; Hightouch reverse-ETL writes ProgramCertificate rows directly into MIT Learn's Postgres.
+  - id: ol-analytics-api
+    name: OL Analytics API
+    kind: external
+    repo: https://github.com/mitodl/ol-analytics-api
+    description: >-
+      B2B site-license analytics over StarRocks. The organization dashboard calls it from the browser on analytics.learn.mit.edu, behind the b2b-contract-manager-dashboard and b2b-learner-analytics PostHog flags.
   # ---- aggregate external content sources (enumerated on data-flows) -
   - id: course-apis
     name: External Course REST APIs
@@ -232,6 +238,8 @@ flows:
   - {id: vault-django, source: vault, target: django-web, label: Secrets + dynamic DB creds, sync: true, protocol: HTTPS, data: Credentials (24h TTL), trigger: on startup / renewal, tags: [config]}
   # ----- AI discovery (learn-ai) — code-verified ----------------------
   - {id: apisix-learnai, source: apisix, target: learn-ai, label: Proxy /ai/* (OIDC), sync: true, protocol: HTTPS, data: User prompts (streamed), trigger: on request}
+  # ----- B2B org analytics (ol-analytics-api) — code-verified ---------
+  - {id: apisix-analyticsapi, source: apisix, target: ol-analytics-api, label: Proxy B2B org analytics (session cookie + X-Userinfo), sync: true, protocol: HTTPS/JSON, data: "GET /api/v1/analytics/organizations/{sso_organization_id}/...", trigger: on org dashboard load, tags: [cross-service], provenance: {derived_from: code, contract_kind: endpoint, contract_key: /api/v1/analytics, repo: 'https://github.com/mitodl/mit-learn', path: frontends/api/src/analytics/clients.ts, line: 22}}
   - {id: learnai-django, source: learn-ai, target: django-web, label: Vector/syllabus search (tool calls), sync: true, protocol: HTTPS, data: Resource & content-file lookups, trigger: on request}
   - {id: learnai-litellm, source: learn-ai, target: litellm, label: LLM completions, sync: true, protocol: HTTPS, data: Prompts / streamed responses, trigger: on request}
   - {id: litellm-openai, source: litellm, target: openai, label: Model backend, sync: true, protocol: HTTPS, data: Prompts / responses, trigger: on request}

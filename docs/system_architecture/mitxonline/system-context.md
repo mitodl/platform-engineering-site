@@ -8,7 +8,7 @@ title: "System Context — MITx Online"
      See architecture_maps/README.md. -->
 # System Context — MITx Online
 
-_Generated 2026-10-14 15:05 UTC · c4gen dev_
+_Generated 2026-10-14 15:14 UTC · c4gen dev_
 
 The widest view: **MITx Online** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
@@ -40,3 +40,4 @@ into its [container view](container.md).
 | **PostHog / GTM** | Product analytics and feature flags (PostHog) plus Google Tag Manager in the frontend. |
 | **Google reCAPTCHA** | Bot protection on registration/auth forms. |
 | **MIT Learn** | Discovery platform; SOA consumer that pulls the MITx Online course/program catalog and S3 content files into its learning-resource index. |
+| **OL Analytics API** | B2B analytics gateway. Asks MITx Online whether a Keycloak user manages an organization before serving that org's analytics. |

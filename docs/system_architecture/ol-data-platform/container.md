@@ -8,7 +8,7 @@ title: "Containers — OL Data Platform"
      See architecture_maps/README.md. -->
 # Containers — OL Data Platform
 
-_Generated 2026-10-14 15:05 UTC · c4gen dev_
+_Generated 2026-10-14 15:27 UTC · c4gen dev_
 
 The runtime/deployable units inside **OL Data Platform** and how data moves
 between them and adjacent systems.
@@ -30,6 +30,7 @@ between them and adjacent systems.
 | **dbt (ol_dbt)** | dbt-trino (profile open_learning) | Transforms raw → staging → intermediate → marts/dimensional/reporting, executed by Trino. Run from Dagster via DbtCliResource; emits docs artifacts for OpenMetadata. |
 | **Trino / Starburst Galaxy** | Starburst Galaxy (Trino) — catalog ol_data_lake_production | Query/compute engine over the Iceberg lake. dbt and Superset run their SQL here; host mitol-ol-data-lake-production.trino.galaxy.starburst.io. |
 | **S3 / Iceberg Data Lake** | AWS S3 + Apache Iceberg (Glue catalogs) | The lake: landing zone (ol-data-lake-landing-zone), raw Iceberg (ol_warehouse_*_raw), then staging/intermediate/dimensional/mart layers. |
+| **StarRocks (lakehouse)** | StarRocks on the data EKS cluster (MySQL protocol :9030) | Serving engine for B2B analytics. dbt (tag:starrocks) builds manual-refresh materialized views in the b2b_analytics and b2b_learner_records databases over the dimensional Iceberg tables via the ol_data_lake_{env} external catalog. |
 | **Dagster Postgres** | PostgreSQL (pooled storage classes) | Dagster run, event-log, and schedule storage. Uses PooledPostgresRunStorage to cap connections. |
 | **Apache Superset** | Superset (Trino + StarRocks datasources) | BI layer. Dagster syncs dbt mart/reporting/dimensional models as Superset datasets; analysts build dashboards with row-level-security policies. |
 | **OpenMetadata** | OpenMetadata (catalog + lineage) | Data catalog. Harvests Trino metadata directly and ingests dbt artifacts from S3 to build column- and table-level lineage and PII tags. |

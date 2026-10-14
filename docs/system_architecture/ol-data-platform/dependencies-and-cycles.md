@@ -8,7 +8,7 @@ title: "Dependencies & Cycles — OL Data Platform"
      See architecture_maps/README.md. -->
 # Dependencies & Cycles — OL Data Platform
 
-_Generated 2026-10-14 15:05 UTC · c4gen dev_
+_Generated 2026-10-14 15:27 UTC · c4gen dev_
 
 Coupling between OL Data Platform and the rest of the SOA. The **matrix** and
 **cycles** below come from the deterministic witan-code graph extraction; the
@@ -19,6 +19,7 @@ Coupling between OL Data Platform and the rest of the SOA. The **matrix** and
 | Depends on → | …on these systems |
 | --- | --- |
 | **hightouch** | mit-learn |
+| **ol-analytics-api** | ol-data-platform |
 | **ol-data-platform** | bootcamps, micromasters, mit-learn, mitxonline, mitxpro, ocw-studio, odl-video |
 
 ## Cycles

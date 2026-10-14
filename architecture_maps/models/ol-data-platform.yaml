@@ -97,6 +97,13 @@ systems:
           The lake: landing zone (ol-data-lake-landing-zone), raw Iceberg (ol_warehouse_*_raw), then staging/intermediate/dimensional/mart layers.
         shape: db
         source: {repo: 'https://github.com/mitodl/ol-data-platform', path: dg_projects/data_loading/data_loading/.dlt/config.toml}
+      - id: starrocks
+        name: StarRocks (lakehouse)
+        technology: StarRocks on the data EKS cluster (MySQL protocol :9030)
+        description: >-
+          Serving engine for B2B analytics. dbt (tag:starrocks) builds manual-refresh materialized views in the b2b_analytics and b2b_learner_records databases over the dimensional Iceberg tables via the ol_data_lake_{env} external catalog.
+        shape: db
+        source: {repo: 'https://github.com/mitodl/ol-data-platform', path: src/ol_dbt/models/b2b_analytics}
       - id: dagster-postgres
         name: Dagster Postgres
         technology: PostgreSQL (pooled storage classes)
@@ -168,6 +175,14 @@ systems:
     kind: external
     context_group: SOA Apps
     description: Bootcamps app Postgres ingested into raw.
+  # ---- data consumers ------------------------------------------------
+  - id: ol-analytics-api
+    name: OL Analytics API
+    kind: external
+    repo: https://github.com/mitodl/ol-analytics-api
+    context_group: Data Consumers
+    description: >-
+      Read-only FastAPI gateway serving the b2b_analytics and b2b_learner_records MVs to MIT Learn's org dashboard and partner integrations.
   # ---- aggregate external sources (enumerated on data-flows) ---------
   - id: edxorg-archives
     name: edX.org Archives & BigQuery
@@ -223,6 +238,10 @@ flows:
   - {id: dbt-trino, source: dbt, target: trino, label: Execute model SQL, sync: false, protocol: SQL, data: "raw -> staging -> intermediate -> marts/dimensional", trigger: during dbt run, tags: [async, etl]}
   - {id: trino-datalake, source: trino, target: datalake, label: Read/write Iceberg, sync: false, protocol: Iceberg, data: All warehouse layers, trigger: during query, tags: [async]}
   - {id: lakehouse-superset, source: code-lakehouse, target: superset, label: Sync mart datasets, sync: false, protocol: HTTPS, data: "mart/reporting/dimensional datasets + RLS", trigger: "after dbt build", tags: [async]}
+  # ----- serving: B2B analytics MVs in StarRocks ----------------------
+  - {id: lakehouse-starrocks, source: code-lakehouse, target: starrocks, label: Build + refresh b2b MVs, sync: false, protocol: dbt-starrocks / SQL, data: "dbt build tag:starrocks, then REFRESH MATERIALIZED VIEW per MV", trigger: "schedule: b2b_analytics_starrocks_nightly 06:00 UTC (ships stopped; enabled in the Dagster UI)", tags: [async, etl], provenance: {derived_from: code, repo: 'https://github.com/mitodl/ol-data-platform', path: dg_projects/lakehouse/lakehouse/definitions.py, line: 487}}
+  - {id: starrocks-datalake, source: starrocks, target: datalake, label: Read dimensional Iceberg, sync: false, protocol: Iceberg external catalog, data: "dim_contract, bridge_organization_courserun, tfact_enrollment, ...", trigger: on MV refresh, tags: [async], provenance: {derived_from: code, repo: 'https://github.com/mitodl/ol-data-platform', path: src/ol_dbt/models/b2b_analytics/_b2b_analytics__sources.yml, line: 4}}
+  - {id: analyticsapi-starrocks, source: ol-analytics-api, target: starrocks, label: Read b2b MVs, sync: true, protocol: MySQL protocol, data: "b2b_analytics.mv_b2b_*, b2b_learner_records.mv_b2b_*", trigger: on API request, tags: [cross-service], provenance: {derived_from: code, repo: 'https://github.com/mitodl/ol-analytics-api', path: src/ol_analytics_api/core/db/client.py}}
   # ----- reverse-ETL / content webhooks back into apps (CURRENT) ------
   - {id: openedx-mitlearn-webhook, source: code-openedx, target: mit-learn, label: Content-files webhook (HMAC), sync: false, protocol: HTTPS, data: "POST /api/v1/webhooks/content_files/", trigger: after course export, tags: [async, webhook, cross-service], provenance: {derived_from: code, contract_kind: endpoint, contract_key: "/api/v1/webhooks/content_files/", repo: 'https://github.com/mitodl/ol-data-platform', path: packages/ol-orchestrate-lib/src/ol_orchestrate/resources/learn_api.py}}
   - {id: domain-mitlearn-ovs, source: code-domain, target: mit-learn, label: OVS-video webhook (HMAC), sync: false, protocol: HTTPS, data: "POST /api/v1/webhooks/ovs_videos/", trigger: on OVS video ingest, tags: [async, webhook, cross-service], provenance: {derived_from: code, contract_kind: endpoint, contract_key: "/api/v1/webhooks/ovs_videos/", repo: 'https://github.com/mitodl/ol-data-platform', path: dg_projects/learning_resources/learning_resources/assets/ovs_videos.py}}

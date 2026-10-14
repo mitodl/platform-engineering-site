@@ -8,7 +8,7 @@ title: "System Context — MIT Learn"
      See architecture_maps/README.md. -->
 # System Context — MIT Learn
 
-_Generated 2026-10-14 15:05 UTC · c4gen dev_
+_Generated 2026-10-14 15:14 UTC · c4gen dev_
 
 The widest view: **MIT Learn** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
@@ -41,6 +41,7 @@ into its [container view](container.md).
 | **MITx Online** | MITx Online course/enrollment platform; SOA peer (catalog source + consumer). |
 | **MicroMasters** | MicroMasters program platform; SOA peer (catalog + Wagtail pages source). |
 | **OL Data Platform (Dagster / Hightouch)** | Dagster pipelines POST content webhooks; Hightouch reverse-ETL writes ProgramCertificate rows directly into MIT Learn's Postgres. |
+| **OL Analytics API** | B2B site-license analytics over StarRocks. The organization dashboard calls it from the browser on analytics.learn.mit.edu, behind the b2b-contract-manager-dashboard and b2b-learner-analytics PostHog flags. |
 | **External Course REST APIs** | edX, MIT Professional Ed, Sloan Executive Ed, MIT Climate, ODL Video. |
 | **S3 Content Archives** | edX/xPRO/xOnline/Canvas OLX & .imscc, OCW site data, OpenLearningLibrary CSV, PostHog Parquet. |
 | **Media & News Feeds** | YouTube Data API, podcast RSS, Medium RSS, OL events (Drupal), Sloan Aura, marketing pages. |

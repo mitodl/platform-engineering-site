@@ -8,7 +8,7 @@ title: "Components — MIT Learn"
      See architecture_maps/README.md. -->
 # Components — MIT Learn
 
-_Generated 2026-10-14 15:05 UTC · c4gen dev_
+_Generated 2026-10-14 15:14 UTC · c4gen dev_
 
 The innermost view: the **components** inside containers that have been expanded
 to C4 Component level — the major code groupings within a deployable unit and how

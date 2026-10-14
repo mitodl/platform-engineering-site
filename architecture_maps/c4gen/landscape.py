@@ -54,6 +54,7 @@ INTERNAL_ORDER = [
     "mit-learn",
     "learn-ai",
     "ol-data-platform",
+    "ol-analytics-api",
 ]
 
 # Shared platform / identity / AI systems that recur across models and are worth
@@ -81,6 +82,7 @@ INTERNAL_GROUP: dict[str, str] = {
     "mit-learn": "Discovery",
     "learn-ai": "AI",
     "ol-data-platform": "Data Platform",
+    "ol-analytics-api": "Data Platform",
 }
 
 # Cross-model id aliases that ``repo``-matching cannot catch (the alias system has

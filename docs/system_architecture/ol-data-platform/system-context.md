@@ -8,7 +8,7 @@ title: "System Context — OL Data Platform"
      See architecture_maps/README.md. -->
 # System Context — OL Data Platform
 
-_Generated 2026-10-14 15:05 UTC · c4gen dev_
+_Generated 2026-10-14 15:27 UTC · c4gen dev_
 
 The widest view: **OL Data Platform** and every external actor and system it
 exchanges data with. Edges shown are **curated and code-verified**; raw
@@ -36,6 +36,7 @@ into its [container view](container.md).
 | **OCW Studio** | App Postgres ingested into raw; OCW site JSON also flows via S3. |
 | **ODL Video Service** | Video/transcript metadata ingested via API; OVS webhooks pushed back. |
 | **Bootcamps** | Bootcamps app Postgres ingested into raw. |
+| **OL Analytics API** | Read-only FastAPI gateway serving the b2b_analytics and b2b_learner_records MVs to MIT Learn's org dashboard and partner integrations. |
 | **edX.org Archives & BigQuery** | edX.org course tarballs/tracking logs from GCS/S3 and Emeritus/IRX BigQuery exports — landed via dlt and Airbyte. |
 | **SaaS Sources (Salesforce / Mailgun / feeds)** | Salesforce and Mailgun via Airbyte; MIT Climate, MIT Professional Ed, Open Learning Library, and podcast RSS via dlt. |
 | **Hightouch** | Third-party reverse-ETL SaaS. Reads curated models from the warehouse (Starburst) and syncs rows into operational systems — notably writing ProgramCertificate records into MIT Learn's Postgres. Operated outside this repo (no Hightouch code lives here); it connects to the warehouse as an external consumer. |

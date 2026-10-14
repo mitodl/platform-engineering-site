@@ -8,7 +8,7 @@ title: "Containers — MITx Online"
      See architecture_maps/README.md. -->
 # Containers — MITx Online
 
-_Generated 2026-10-14 15:05 UTC · c4gen dev_
+_Generated 2026-10-14 15:14 UTC · c4gen dev_
 
 The runtime/deployable units inside **MITx Online** and how data moves
 between them and adjacent systems.
