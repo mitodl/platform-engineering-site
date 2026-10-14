@@ -6,6 +6,8 @@ placeholder div that docs/javascripts/c4-zoom.js fills with the pre-rendered SVG
 
 from __future__ import annotations
 
+import json
+
 from .landscape import Landscape
 from .render import ASYNC_COLOR, BANNER, SYNC_COLOR, _owner_id
 from .schema import Flow, Model
@@ -51,6 +53,17 @@ def _banner(model: Model) -> str:
     return BANNER.format(model=model.meta.primary_system)
 
 
+def _heading(banner: str, title: str) -> str:
+    """Front matter, the generated banner, and the H1 for a generated page.
+
+    zensical (>= 0.0.59) titles a page by its mkdocs.yml nav label, which for these
+    pages is the bare view name ("Containers"). The front-matter title keeps the
+    system name in the browser title and the header.
+    """
+    front_matter = f"---\ntitle: {json.dumps(title, ensure_ascii=False)}\n---\n"
+    return f"{front_matter}{banner}# {title}"
+
+
 def page_index(model: Model) -> str:
     # The infrastructure-references page is hand-authored, not generated; only
     # link to it for systems that actually have one (see Meta).
@@ -70,7 +83,7 @@ def page_index(model: Model) -> str:
         if model.meta.has_infrastructure_references
         else ""
     )
-    return f"""{_banner(model)}# {model.meta.name} — Architecture & Data Flows
+    return f"""{_heading(_banner(model), f"{model.meta.name} — Architecture & Data Flows")}
 
 {_stamp(model)}
 {model.meta.description}
@@ -103,7 +116,7 @@ def page_context(model: Model) -> str:
     rows = ["| System | Role |", "| --- | --- |"]
     for s in externals:
         rows.append(f"| **{s.name}** | {s.description} |")
-    return f"""{_banner(model)}# System Context — {model.meta.name}
+    return f"""{_heading(_banner(model), f"System Context — {model.meta.name}")}
 
 {_stamp(model)}
 The widest view: **{model.meta.name}** and every external actor and system it
@@ -134,7 +147,7 @@ def page_container(model: Model) -> str:
     rows = ["| Container | Technology | Responsibility |", "| --- | --- | --- |"]
     for c in primary.containers:
         rows.append(f"| **{c.name}** | {c.technology or ''} | {c.description} |")
-    return f"""{_banner(model)}# Containers — {primary.name}
+    return f"""{_heading(_banner(model), f"Containers — {primary.name}")}
 
 {_stamp(model)}
 The runtime/deployable units inside **{primary.name}** and how data moves
@@ -153,7 +166,7 @@ def page_component(model: Model) -> str:
     emitted when at least one container is expanded to Component level."""
     expanded = model.containers_with_components()
     parts = [
-        f"""{_banner(model)}# Components — {model.meta.name}
+        f"""{_heading(_banner(model), f"Components — {model.meta.name}")}
 
 {_stamp(model)}
 The innermost view: the **components** inside containers that have been expanded
@@ -177,7 +190,7 @@ they collaborate and reach out to adjacent containers and systems.
 
 def page_data_flows(model: Model) -> str:
     parts = [
-        f"""{_banner(model)}# Data Flows — {model.meta.name}
+        f"""{_heading(_banner(model), f"Data Flows — {model.meta.name}")}
 
 {_stamp(model)}
 Each scenario below replays one interaction as a C4 **Dynamic** diagram.
@@ -256,7 +269,7 @@ def page_dependencies(
         or "_None flagged._"
     )
 
-    return f"""{_banner(model)}# Dependencies & Cycles — {model.meta.name}
+    return f"""{_heading(_banner(model), f"Dependencies & Cycles — {model.meta.name}")}
 
 {_stamp(model)}
 Coupling between {model.meta.name} and the rest of the SOA. The **matrix** and
@@ -368,7 +381,7 @@ def page_landscape(landscape: Landscape, generated_at: str, version: str) -> str
 
     n_internal = len(landscape.internal_ids())
 
-    return f"""{_LANDSCAPE_BANNER}# SOA System Landscape — MIT Open Learning
+    return f"""{_heading(_LANDSCAPE_BANNER, "SOA System Landscape — MIT Open Learning")}
 
 {stamp}
 The holistic, whole-system view: every mapped MIT Open Learning system and the
