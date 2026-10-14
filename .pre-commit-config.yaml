@@ -64,7 +64,7 @@ repos:
           - types-PyYAML
           - types-requests
           # c4gen's CLI framework; pinned to the version in uv.lock.
-          - cyclopts==4.23.0
+          - cyclopts==5.0.0
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.10.0.1
     hooks:
