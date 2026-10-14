@@ -55,7 +55,7 @@ def _kroki_svg(puml: str) -> str:
         method="POST",
     )
     try:
-        with request.urlopen(req, timeout=30) as resp:  # noqa: S310 (trusted local URL)
+        with request.urlopen(req, timeout=30) as resp:
             svg = resp.read().decode("utf-8")
     except error.URLError as exc:
         raise RuntimeError(

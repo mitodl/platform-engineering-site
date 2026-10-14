@@ -38,7 +38,7 @@ def _ensure_witan_importable() -> None:
     we locate that tool venv's site-packages and add it to ``sys.path``.
     """
     try:
-        import witan_code  # noqa: F401
+        import witan_code
 
         return
     except ImportError:
