@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
         # Generated C4 SVGs (byte-compared by c4-validation's drift check) and
@@ -23,7 +23,7 @@ repos:
     hooks:
       - id: yamlfmt
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.35.1
+    rev: v1.38.0
     hooks:
       - id: yamllint
         args: [--format, parsable, -d, relaxed]
@@ -42,13 +42,16 @@ repos:
           - src/ol_infrastructure/applications/ocw_site/redirect_dict
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.5.0"
+    rev: "v0.16.9"
     hooks:
       - id: ruff-format
-      - id: ruff
+        # The upstream hook now also matches markdown and would reformat
+        # the Python code fences in docs/, some of which quote upstream source.
+        types_or: [python, pyi]
+      - id: ruff-check
         args: [--extend-ignore=D1, --fix]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.1
+    rev: v2.3.1
     hooks:
       - id: mypy
         args:
@@ -61,19 +64,19 @@ repos:
           - types-PyYAML
           - types-requests
           # c4gen's CLI framework; pinned to the version in uv.lock.
-          - cyclopts==4.23.0
+          - cyclopts==5.0.0
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.10.0.1
     hooks:
       - id: shellcheck
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.1
+    rev: v1.7.12
     hooks:
       - id: actionlint
         name: actionlint
         description: Runs actionlint to lint GitHub Actions workflow files
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.29.0
+    rev: v1.30.1
     hooks:
       - id: zizmor
         args: [--no-progress, --min-severity=medium, --min-confidence=medium]

@@ -30,7 +30,7 @@ runtime units) → **Dynamic** (a single data flow, step by step).
 """
 
 
-def _diagram(model: Model, name: str) -> str:  # noqa: ARG001 (kept for signature stability)
+def _diagram(model: Model, name: str) -> str:
     """A placeholder div that docs/javascripts/c4-zoom.js fills with the
     pre-rendered SVG (fetched from a sibling ``_diagrams/`` file) and turns into a
     pan/zoom viewport. Client-side injection of a static SVG keeps this
@@ -239,7 +239,7 @@ def page_dependencies(
             "",
         ]
         for c in cycles:
-            cyc_lines.append(f"* `{ ' → '.join(c + [c[0]]) }`")
+            cyc_lines.append(f"* `{' → '.join(c + [c[0]])}`")
         cyc_lines.append("///")
         cyc_md = "\n".join(cyc_lines)
     else:
