@@ -19,11 +19,13 @@ to remove it when done.)
 ```
 sudo apt install mariadb-client
 ```
+
 OR
 
 ```
 sudo apt install mysql-client
 ```
+
 ## Get the Database Credentials
 
 Use docker compose to connect to a container like the LMS or CMS:

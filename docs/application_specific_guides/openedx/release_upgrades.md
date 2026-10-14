@@ -1,6 +1,7 @@
 # How To Update The Release Version Of An Open edX Deployment
 
 ## Open edX Releases
+
 Open edX cuts new named releases [approximately every 6
 months](https://openedx.atlassian.net/wiki/spaces/COMM/pages/3613392957/Open+edX+release+schedule). Each
 of our deployments needs to be able to independently upgrade the respective version on
@@ -13,6 +14,7 @@ from the master branches of the different applications and has a weekly release
 schedule.
 
 ## Open Learning's Open edX Deployments
+
 At Open Learning we have four distinct installations of Open edX, each with their own
 release cadence and configuration requirements. For each of those deployments we have
 multiple environment stages (e.g. CI, QA, Production). Each of those deployment * stages
@@ -27,10 +29,11 @@ the MITx Residential deployment we need to get it installed in the CI
 environment. Meanwhile, we may have a bug-fix or security patch that needs to be tested
 in the QA environment and propagated to Production.
 
-In addition to the cartesian product of (versions * deployments * env stages) we also
+In addition to the cartesian product of (versions \* deployments \* env stages) we also
 have to manage these values across the different components of the Open edX
 ecosystem. For example, the core of the platform is called edx-platform, which in turn
 relies on:
+
 - a forum service
 - the edx-notes API service
 - a codejail REST API service
@@ -40,6 +43,7 @@ For any of these different components we may need to be able to override the rep
 and/or branch that we are building/deploying from.
 
 ## Versioning of Build and Deploy
+
 In order to support this sea of complexity we have a module of `bridge.settings.openedx`
 that has a combination of data structures and helper functions to control what
 applications and versions get deployed where and when. These values are then used in the
@@ -47,6 +51,7 @@ build stages of the different components, as well as driving the deployment pipe
 Concourse that are responsible for orchestrating all of this.
 
 ## Managing Supported Releases
+
 We only want to support the build and deployment of a minimal subset of Open edX
 releases. This is controlled by the Enum `OpenEdxSupportedRelease` in the
 `bridge.settings.openedx.types` module. When there is a new release created it needs to
@@ -58,6 +63,7 @@ so that we no longer need to worry about maintaining configuration/code/etc. for
 release.
 
 ## Performing An Upgrade
+
 There are two data structures that control the applications and versions that get
 included in a given deployment and which version to use in the respective environment
 stage. The `OpenLearningOpenEdxDeployment` Enum is the top level that sets the release
@@ -160,17 +166,18 @@ This involves updating our edx-platform fork and rebasing the correct branch.
 For instance, to update our forked OpenEdX Sumac branch for MITxOnline, you
 would:
 
-* Check out our fork of the edx-platform repo - `gh repo clone
+- Check out our fork of the edx-platform repo - `gh repo clone
 mitodl/edx-platform`
-* Change to the right branch - `git checkout mitx/sumac`
-* Update all the things - `git fetch --all`
-* Rebase from upstream - `git pull --rebase upstream open-release/sumac.master`
-* Check the results, and if correct push the branch - `git push origin
+- Change to the right branch - `git checkout mitx/sumac`
+- Update all the things - `git fetch --all`
+- Rebase from upstream - `git pull --rebase upstream open-release/sumac.master`
+- Check the results, and if correct push the branch - `git push origin
 mitx/sumac --force`
 
 ## Troubleshooting
 
 ### OpenEdX Redwood
+
 With each new OpenEdX release, inevitably there will be problems. For instance,
 in the Redwood release, we noticed that login for MITX CI was failing with a 500
 response code.

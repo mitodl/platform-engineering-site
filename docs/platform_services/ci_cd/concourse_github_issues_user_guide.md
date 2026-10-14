@@ -75,7 +75,7 @@ see a new build in progress. Just click that tab to see the details.
 And that's all there is to know! It's a simple system for busy people.
 
 If you have any questions, don't hesitate to reach out to @sre on slack or send
-us E-mail at oldevops@mit.edu
+us E-mail at <oldevops@mit.edu>
 
 Thanks for taking the time to read this doc! Obviously feel free to suggest any
 improvements or let me know if anything's unclear.

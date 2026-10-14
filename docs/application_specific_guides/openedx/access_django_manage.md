@@ -3,10 +3,11 @@
 ## Pre-requisites
 
 You will need the following pieces of information to get started:
+
 - The product you want to access e.g. mitxonline, ocw-studio, xpro, mitx
 - The environment you want - one of ci, qa, or production.
 - Valid credentials to login to the MIT Open Learning AWS Account
-  - You should most likely have been given these as a part of your onboarding.
+    - You should most likely have been given these as a part of your onboarding.
 - The MIT oldevops AWS key file - oldevops.pem which at the time of this document's
   writing can be accessed from (TBD: I forget and have asaked my team to remind me.)
 
@@ -16,7 +17,7 @@ You will need the following pieces of information to get started:
 2. Click the service selector (the tightly grouped bunch of white square boxes in the upper left) and choose EC2.
 3. Now click "Instances (running)"
 4. You will now see a text box with the prompt "Find instances by attribute..."
-5. In this box, type 'edxapp-worker-<product>-<environment>' - for instance, for mitxonline production you would type
+5. In this box, type `edxapp-worker-<product>-<environment>` - for instance, for mitxonline production you would type
    'edxapp-worker-mitxonline-production' and hit enter/return.
 6. You should now see a list of instances named edxapp-worker-mitxonline-production
 7. You'll need to temporarily add ssh access to the security group for your instance. Right click on the first instance

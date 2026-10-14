@@ -25,7 +25,7 @@ There are 2 different methods for running devstack on your own machine: Vagrant 
 
 MIT ODL maintains a fork of the `edx-platform` repo.
 
-- MIT ODL fork: https://github.com/mitodl/edx-platform
-- Upstream edX repo: https://github.com/edx/edx-platform
+- MIT ODL fork: <https://github.com/mitodl/edx-platform>
+- Upstream edX repo: <https://github.com/edx/edx-platform>
 
 The MIT ODL fork is used for most/all MIT courses that run on the edX platform. Almost all of our edX development work centers around feature additions and bug fixes for MIT courses, so we do most of our work in that fork. We maintain our own IT infrastructure for MIT courses (separate from edX). The 'main development branch' specified above is the branch that releases are created from. We do to put up some PRs against the upstream edX-maintained repo, mostly to make it easier to keep our fork up to date with that repo.

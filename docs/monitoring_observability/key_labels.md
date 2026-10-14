@@ -8,11 +8,13 @@
 There may be multiple instances (environments) of a service. A service is comprised of applications.
 
 ## Environments
+
 - ci
 - production
 - qa
 
 ## Services
+
 - bootcamps
 - micromasters
 - mitx-online
@@ -22,6 +24,7 @@ There may be multiple instances (environments) of a service. A service is compri
 - xpro
 
 ## Applications
+
 - concourse
 - consul
 - django

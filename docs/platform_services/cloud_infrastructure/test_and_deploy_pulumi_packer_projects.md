@@ -5,7 +5,6 @@ components with various moving parts, so it can be difficult to understand where
 to start, what to change, and moreover how to safely test your changes without
 breaking production. This document will address these issues.
 
-
 # The Pipeline
 
 Each MIT OL project that uses this technique has an accompanying
@@ -27,7 +26,7 @@ The first couple stages are reasonable self explanatory:
 producing an AMI.
 
 You can find the pyinfra sources in ol-infrastructure
-src/bilder/images/<projectr>. Here is the pyinfra folder for
+`src/bilder/images/<project>`. Here is the pyinfra folder for
 [Tika](https://github.com/mitodl/ol-infrastructure/tree/main/src/bilder/images/tika).
 
 ### Testing

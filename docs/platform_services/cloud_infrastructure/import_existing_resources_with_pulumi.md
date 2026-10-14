@@ -121,7 +121,7 @@ In order to fix this discrepancy, we go back to our ResourceOptions line we adde
 adding the tags attribute into it to tell Pulumi to leave the current tags alone
 and not complain that they differ:
 
-`    opts=ResourceOptions(import_=bootcamps_storage_bucket_name,ignore_changes=["policy","tags"]),`
+`opts=ResourceOptions(import_=bootcamps_storage_bucket_name,ignore_changes=["policy","tags"]),`
 
 You'll also note that "policy" is in that attributes list. That's needed because
 Pulumi signalled a mismatch on a previous run.

@@ -2,9 +2,8 @@
 
 ## Pre-Requisites
 
-- You'll need the email address the user registered under. e.g. cpatti@mit.edu
+- You'll need the email address the user registered under. e.g. <cpatti@mit.edu>
 - You'll need the pre-requisites defined in [How To Access An MIT OL OpenEdX Django Admin manage.py](access_django_manage.md).
-
 
 ## Look Up This User's username
 
@@ -18,7 +17,7 @@ URL from the [Application Links Page](https://github.mit.edu/odl-engineering/pro
 Find the product in question (e.g. mitxonline) and choose the LMS url for the environment you want (e.g. production) as a base.
 Then add /admin on to the end. Ensure there's only one slash before /admin or things will go awry.
 
-In our case, since we are looking to retire users from mitxonline, we'll use https://courses.mitxonline.mit.edu/admin
+In our case, since we are looking to retire users from mitxonline, we'll use <https://courses.mitxonline.mit.edu/admin>
 
 Find the Users link on that page, click it. Now type the email address into the search box and click Search.
 
@@ -72,9 +71,9 @@ unnecessarily. You'd be surprised how many systems have been brought down by som
 Now that we've successfully staged our user for retirement, we need to tell the retirement pipeline to actually retire the user.
 
 - Surf to the appropriate concourse URL for the entironment you're working with:
-  - [CI](https://cicd-ci.odl.mit.edu)
-  - [QA](https://cicd-qa.odl.mit.edu/)
-  - [Production](https://cicd.odl.mit.edu)
+    - [CI](https://cicd-ci.odl.mit.edu)
+    - [QA](https://cicd-qa.odl.mit.edu/)
+    - [Production](https://cicd.odl.mit.edu)
 
   and search for 'tubular'. You'll want the tubular pipeline in the group associated with whichever product you're working with. In our case, it'd be
   the [misc-cloud-tubular pipeline in the mitxonline group](https://cicd.odl.mit.edu/teams/mitxonline/pipelines/misc-cloud-tubular).

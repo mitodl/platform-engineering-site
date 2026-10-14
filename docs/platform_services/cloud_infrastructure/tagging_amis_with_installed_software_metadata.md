@@ -37,6 +37,7 @@ files.put(
     user="root",
 )
 ```
+
 This file persists as part of the AMI and will exist on any instances spawned from the image.
 
 Next, we need to add three steps to our packer `build` stanza.
@@ -48,7 +49,9 @@ provisioner "shell-local" {
   inline = ["scp -o StrictHostKeyChecking=no -i /tmp/packer-${build.ID}.pem ${build.User}@${build.Host}:/etc/ami_tags.json /tmp/ami_tags-${build.ID}.json"]
 }
 ```
+
 Second, we create a `post-processor` that generates a `packer manifest` for the build. This is just a json file local to the machine running the packer build (not the remote ec2 build instance as before). Because this is the first `post-processor` and follows the last `provisioner` step, the remote EC2 instance has been terminated and an AMI has been generated. The manifest will contain the AMI ID which is needed for the next step.
+
 ```
 post-processor "manifest" {
   output = "/tmp/packer-build-manifest-${build.ID}.json"

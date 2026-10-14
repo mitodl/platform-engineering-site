@@ -31,6 +31,7 @@ API instead.
 **Avoid this:**
 
 `GET /api/enrollments/`
+
 ```json
 [{
     "id": 1,
@@ -60,6 +61,7 @@ Two things go wrong here:
 **Do this instead** - normalize the data and split it across two calls:
 
 `GET /api/enrollments/`
+
 ```json
 [{
     "id": 1,
@@ -68,6 +70,7 @@ Two things go wrong here:
 ```
 
 `GET /api/courses/?id=234,62`
+
 ```json
 [{
     "id": 62,
@@ -209,6 +212,7 @@ unique, or append a unique tiebreaker:
 ```python
 queryset = Enrollment.objects.order_by("-created_on", "id")
 ```
+
 ///
 
 #### Keep the count query cheap
@@ -803,7 +807,7 @@ this situation is anything that should be `prefetch()`, `prefetch_related()`, or
 
 Tests and async code such as celery tasks can opt out by passing
 `{"skip_prefetch_checks": THIS_IS_NOT_AN_API}`. As the name (and you) attests to, this should not be
-used _anywhere_ near an API - including when other serializers call it, since DRF propagates the
+used *anywhere* near an API - including when other serializers call it, since DRF propagates the
 context into child serializers as well.
 ///
 

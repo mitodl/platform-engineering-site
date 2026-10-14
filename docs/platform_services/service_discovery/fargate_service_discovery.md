@@ -1,6 +1,7 @@
 # Integrating Fargate Services Into Our Existing Systems Architecture
 
 ## The Goal
+
 We want to start using ECS Fargate from AWS as a low-complexity way of running
 containerized workloads. It allows us to specify a set of containers that we would like
 to run as a single task, with simple autoscaling and resource allocation, and no need to
@@ -9,6 +10,7 @@ slight cost markup that it brings. It is highly likely that we will save at leas
 much money in engineering time.
 
 ## The Challenges
+
 In order to for us to properly integrate applications and services into our infrastructure,
 we need to be able to connect them to our Vault and Consul clusters. This allows us to
 expose the services that they provide to our other systems, as well as allowing us to
@@ -27,6 +29,7 @@ complicates the configuration of Vault agents for locating the server cluster th
 needs to authenticate to.
 
 ## The Solution
+
 In order to work around these constraints it is possible to use the AWS Cloud Map
 service as a means of registering and discovering services across our
 infrastructure. This in conjunction with the
@@ -39,6 +42,7 @@ available, regardless of whether they are communicating with the cloud-map DNS o
 Consul DNS.
 
 ## Design Challenges
+
 While the use of Consul and AWS Cloud Map provides a low-complexity means of keeping
 things in sync, it does provide some friction in how applications are configured. This
 is due to the fact that the DNS names for a given service will be different depending on

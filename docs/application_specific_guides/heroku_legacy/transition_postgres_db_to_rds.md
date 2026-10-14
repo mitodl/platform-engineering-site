@@ -9,7 +9,7 @@ You'll also need the postgresql tools, specifically the `pg_dump` and `psql` too
 
 Record the following information somewhere persistent that you'll be able to refer back to through this process. I like using my [notes](https://joplinapp.org/).
 
-- The Heroku application's name. Our convention is generally <application>-<environment> so for the CI environment of the micromasters
+- The Heroku application's name. Our convention is generally `<application>-<environment>` so for the CI environment of the micromasters
 application, you'd use `micromasters-ci`.
 - The applications's `DATABASE_URL`. You can obtain this with the following invocation: `heroku config:get DATABASE_URL -a <your app>`
 - The currently attached Heroku database name as well as the alias they have assigned to it by default. You can get this with:
