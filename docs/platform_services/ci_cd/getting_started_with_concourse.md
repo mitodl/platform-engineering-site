@@ -1,3 +1,6 @@
+---
+title: "Getting Started Building Concourse Pipelines in Python"
+---
 # Getting Started Building Concourse Pipelines in Python
 
 ## Getting Set Up

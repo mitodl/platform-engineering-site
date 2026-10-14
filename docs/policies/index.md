@@ -1,3 +1,6 @@
+---
+title: "Policies"
+---
 # Policies
 
 These policies set the rules MIT Open Learning engineering follows to change,

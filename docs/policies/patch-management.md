@@ -1,3 +1,6 @@
+---
+title: "Patch Management Policy"
+---
 # Patch Management Policy
 
 ## Purpose

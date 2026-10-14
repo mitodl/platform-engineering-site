@@ -1,3 +1,6 @@
+---
+title: "How To Update The Release Version Of An Open edX Deployment"
+---
 # How To Update The Release Version Of An Open edX Deployment
 
 ## Open edX Releases
