@@ -1,3 +1,6 @@
+---
+title: "Querying An MIT OL Open EdX Mysql Database"
+---
 # Querying An MIT OL Open EdX Mysql Database
 
 This is a quick and dirty guide to connecting to the OpenEdX MySQL database for

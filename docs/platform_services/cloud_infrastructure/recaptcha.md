@@ -1,3 +1,6 @@
+---
+title: "reCAPTCHA Errors"
+---
 # reCAPTCHA Errors
 
 ```

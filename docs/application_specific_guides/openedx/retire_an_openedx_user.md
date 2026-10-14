@@ -1,3 +1,6 @@
+---
+title: "How To Retire An MIT Online Learning OpenEdX User"
+---
 # How To Retire An MIT Online Learning OpenEdX User
 
 ## Pre-Requisites

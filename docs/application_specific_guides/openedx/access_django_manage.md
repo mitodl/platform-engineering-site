@@ -1,3 +1,6 @@
+---
+title: "How To Access An OpenEdX Django Admin manage.py"
+---
 # How To Access An OpenEdX Django Admin manage.py
 
 ## Pre-requisites

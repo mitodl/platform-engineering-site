@@ -1,3 +1,6 @@
+---
+title: "Moving a Heroku Managed Postgres DB to Pulumi Managed AWS RDS"
+---
 # Moving a Heroku Managed Postgres DB to Pulumi Managed AWS RDS
 
 ## Preparation

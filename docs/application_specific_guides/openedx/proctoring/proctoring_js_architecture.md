@@ -1,3 +1,6 @@
+---
+title: "Open edX Proctoring JavaScript Architecture: JS 1.0 vs JS 2.0"
+---
 # Open edX Proctoring JavaScript Architecture: JS 1.0 vs JS 2.0
 
 **Date:** November 5, 2024

@@ -1,3 +1,6 @@
+---
+title: "Resetting odlbot / Doof's Github Access Token"
+---
 # Resetting odlbot / Doof's Github Access Token
 
 ## Note: This doc makes lots of assumptions about prior knowledge. TODO :)

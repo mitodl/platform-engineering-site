@@ -1,3 +1,6 @@
+---
+title: "Monitoring Overview"
+---
 # Monitoring Overview
 
 We primarily use [Vector](https://vector.dev/) for collecting both metrics and logs from our applications. Vector is pretty flexible and offers `sources` and `sinks` to/from many different systems.

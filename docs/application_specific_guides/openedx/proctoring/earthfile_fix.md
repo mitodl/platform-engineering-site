@@ -1,3 +1,6 @@
+---
+title: "Earthfile Configuration Fix for Proctoring Worker Bundles"
+---
 # Earthfile Configuration Fix for Proctoring Worker Bundles
 
 **Date:** November 5, 2024

@@ -1,3 +1,6 @@
+---
+title: "OpenedX"
+---
 # OpenedX
 
 Legacy guides for working with the Open edX platform at OL.

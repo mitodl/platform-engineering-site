@@ -1,3 +1,6 @@
+---
+title: "Resetting Doof (odl-release-bot) npmjs Publish Token"
+---
 # Resetting Doof (odl-release-bot) npmjs Publish Token
 
 The token Doof uses to publish to npm is stored in the odl-release-bot Heroku app's Configuration under NPM_TOKEN.

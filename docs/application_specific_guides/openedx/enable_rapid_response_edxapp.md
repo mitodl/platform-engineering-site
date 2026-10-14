@@ -1,3 +1,6 @@
+---
+title: "Enable Rapid Response in edxapp"
+---
 # Enable Rapid Response in edxapp
 
 ## Reference

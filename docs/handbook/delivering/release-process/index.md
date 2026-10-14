@@ -1,3 +1,6 @@
+---
+title: "Release Process"
+---
 # Release Process
 
 We run two release workflows while the migration off Doof finishes.
