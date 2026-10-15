@@ -69,14 +69,40 @@ the way first.
 
 2. Stop writes: scale the application's web and worker deployments to zero
    in its namespace, so nothing writes to the old instance.
-3. Rename the damaged instance. Keep it until the recovery is confirmed:
+3. Delete the read replica, if the instance has one (named
+   `<instance>-replica`). It would stay attached to the damaged instance and
+   block Pulumi from creating a new replica under the same name. Replicas
+   hold no data of their own, so no snapshot is needed:
+
+    ```bash
+    aws rds delete-db-instance --db-instance-identifier <instance>-replica \
+      --skip-final-snapshot
+    aws rds wait db-instance-deleted --db-instance-identifier <instance>-replica
+    ```
+
+    If deletion protection is on, turn it off first with
+    `aws rds modify-db-instance --no-deletion-protection --apply-immediately`.
+
+4. Rename the damaged instance. Keep it until the recovery is confirmed:
 
     ```bash
     aws rds modify-db-instance --db-instance-identifier <instance> \
       --new-db-instance-identifier <instance>-damaged --apply-immediately
     ```
 
-4. Restore into the original name, using the same subnet group, security
+    The rename reboots the instance and takes a few minutes. Wait until the
+    renamed instance is available and the original name is free, or the
+    restore fails with `DBInstanceAlreadyExists`:
+
+    ```bash
+    aws rds wait db-instance-available \
+      --db-instance-identifier <instance>-damaged
+    aws rds describe-db-instances --db-instance-identifier <instance>
+    ```
+
+    The second command should return `DBInstanceNotFound`.
+
+5. Restore into the original name, using the same subnet group, security
    groups and parameter group as the original:
 
     ```bash
@@ -90,23 +116,24 @@ the way first.
       --multi-az
     ```
 
-5. Wait for the instance to become available (usually under an hour,
+6. Wait for the instance to become available (usually under an hour,
    longer for large databases):
 
     ```bash
     aws rds wait db-instance-available --db-instance-identifier <instance>
     ```
 
-6. Run `pulumi refresh` and then `pulumi up` on the application's stack (for
+7. Run `pulumi refresh` and then `pulumi up` on the application's stack (for
    MIT Learn, project `ol-application-mit-learn`, stack `Production`, in
-   `src/ol_infrastructure/applications/mit_learn`). This reconciles
-   settings and recreates the read replica, which doesn't survive a restore.
-7. Scale the application back up, then run its migrations if the restored
+   `src/ol_infrastructure/applications/mit_learn`). The refresh drops the
+   deleted replica from the state, and the update reconciles settings and
+   creates a new replica from the restored instance.
+8. Scale the application back up, then run its migrations if the restored
    data is older than the deployed code.
-8. Check the application works, then hand over to the application team to
+9. Check the application works, then hand over to the application team to
    confirm the data.
-9. Once everyone agrees the recovery is good, remove deletion protection
-   from `<instance>-damaged` and delete it, keeping a final snapshot.
+10. Once everyone agrees the recovery is good, remove deletion protection
+    from `<instance>-damaged` and delete it, keeping a final snapshot.
 
 ## Restore MongoDB Atlas
 
