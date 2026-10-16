@@ -2,7 +2,7 @@
 
 ## Background
 
-We are looking to start a new pattern where each AMI we produce is tagged with metadata about the software installed on it. This included 3rd party software such as Hashicorp products as well as information our applications. Recently we've been asked 'What version of X is running in production right now?" and it was a surprisingly difficult question to answer. The idea behind this new pattern is to change that, by providing the required information simply by inspecting the AMI behind any running EC2 instance.
+We are looking to start a new pattern where each AMI we produce is tagged with metadata about the software installed on it. This includes 3rd party software such as Hashicorp products as well as information about our applications. Recently we've been asked 'What version of X is running in production right now?" and it was a surprisingly difficult question to answer. The idea behind this new pattern is to change that, by providing the required information simply by inspecting the AMI behind any running EC2 instance.
 
 # Implementation
 

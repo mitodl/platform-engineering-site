@@ -13,7 +13,7 @@ is our edx platform meta-pipeline.
 
 ## The Ask
 
-Most of the time, there are exactly two questions software developers wants
+Most of the time, there are exactly two questions software developers want
 answered when it comes to deploying their software:
 
 1. How can I tell when my code has been deployed to $X?

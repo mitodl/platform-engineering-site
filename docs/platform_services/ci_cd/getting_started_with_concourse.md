@@ -17,7 +17,7 @@ title: "Getting Started Building Concourse Pipelines in Python"
 
 - Work through the entire tutorial including building and actually creating pipelines from all the examples. This is critical so
 you'll have an understanding of what all the component parts are and how they fit together as you code your Python in later steps.
-- Actually make a point of working with some of the later examples involving Git repos. Commit some chnges to your test repo and
+- Actually make a point of working with some of the later examples involving Git repos. Commit some changes to your test repo and
 watch them flow through the pipeline. Pretty neat eh?
 - You may notice that some of the later examples get pretty unwieldy and become difficult to get right. It can be tricky figuring
 out what level of indentation is correct just by eyeballing it. You might find the [yamllint](https://github.com/adrienverge/yamllint)
@@ -33,7 +33,7 @@ Each YAML section is wrapped in a Python object. It's a 1 to 1 mapping because t
 schema defined by Concourse.
 
 <!-- markdownlint-disable-next-line MD042 -->
-Tahe a look at the simplest hello-world tutorial example converted into Python [here](). I've put the explanatory comments inline
+Take a look at the simplest hello-world tutorial example converted into Python [here](). I've put the explanatory comments inline
 to make it easier to understand what's going on.
 
 ## Actually Building a Pipeline From Your Python
