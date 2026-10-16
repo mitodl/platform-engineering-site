@@ -25,7 +25,7 @@ HA Enabled               true                  <<<<< And it is supposed too!
 
 ## What to do!?!
 
-1. Go to the apporpriate S3 bucket and find the most recent backup. Production backs up every six hours. QA + CI backup once a day. Bucket names are: **ol-infra-ci-vault-backups**, **ol-infra-qa-vault-backups**, **ol-infra-production-vault-backups**.
+1. Go to the apporpriate S3 bucket and find the most recent backup. Production backs up every three hours. QA + CI backup once a day. Bucket names are: **ol-infra-ci-vault-backups**, **ol-infra-qa-vault-backups**, **ol-infra-production-vault-backups**.
 2. Download the most recent backup locally to your machine and stage it to the vault node you're going to run the restore on. **You only run this procedure ONCE! You do not need to run this on every vault node.**
 ```
 scp -i <path to your oldevops.pem ssh private key> <path to downloaded .snapshot file> admin@<IP address of the vault node you're restoring to>:/tmp

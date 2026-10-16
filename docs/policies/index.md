@@ -22,8 +22,10 @@ These policies apply to:
 
 | Policy | ID prefix | Owner | Last reviewed |
 |---|---|---|---|
+| [Business Continuity](business-continuity.md) | `BC` | Platform Engineering | 2026-10-15 |
 | [Change Management](change-management.md) | `CM` | Platform Engineering | 2026-10-13 |
-| [Incident Response](incident-response.md) | `IR` | Platform Engineering | 2026-10-13 |
+| [Disaster Recovery](disaster-recovery.md) | `DR` | Platform Engineering | 2026-10-15 |
+| [Incident Response](incident-response.md) | `IR` | Platform Engineering | 2026-10-15 |
 | [Patch Management](patch-management.md) | `PM` | Platform Engineering | 2026-10-13 |
 | [Vulnerability Management](vulnerability-management.md) | `VM` | Platform Engineering | 2026-10-13 |
 

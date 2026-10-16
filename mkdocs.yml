@@ -77,7 +77,9 @@ nav:
           - Integrating MIT Applications with Open edX using Devstack: handbook/deprecated-docs/MITx-edx-integration-devstack.md
   - Policies:
       - Overview: policies/index.md
+      - Business Continuity: policies/business-continuity.md
       - Change Management: policies/change-management.md
+      - Disaster Recovery: policies/disaster-recovery.md
       - Incident Response: policies/incident-response.md
       - Patch Management: policies/patch-management.md
       - Vulnerability Management: policies/vulnerability-management.md
@@ -231,6 +233,7 @@ nav:
           - On-Call Runbook: runbooks_post_mortems/oncall_runbook.md
           - OL Production Incident Response Runbook: runbooks_post_mortems/ol_production_outage_runbook.md
           - Compromised Account Response Runbook: runbooks_post_mortems/compromised_account_runbook.md
+          - Disaster Recovery Runbook: runbooks_post_mortems/disaster_recovery_runbook.md
           - 20231030 xPro Outage Post-Mortem: runbooks_post_mortems/20231030_xpro_outage.md
           - 20260324 MIT Learn Outage Post-Mortem: runbooks_post_mortems/20260324_mitlearn_outage.md
           - 20260603 MIT XPro Certificate Outage Post Mortem: runbooks_post_mortems/20260603_xpro_outage.md

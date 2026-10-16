@@ -80,7 +80,12 @@ In order:
    rotate exposed credentials.
 2. **Preserve evidence**: keep the logs, the affected accounts and any other
    artifacts the investigation needs. Disable affected accounts; don't delete
-   or retire them.
+   or retire them. Export the logs for the whole period of the incident,
+   starting from the earliest suspected activity, before their retention
+   period can remove them: application and gateway logs in Grafana,
+   CloudTrail, and any S3 access logs and Keycloak or Vault audit logs that
+   cover the affected systems. Ask MIT
+   IS&T whether anything else must be kept.
 3. **Investigate and recover** only once access is contained and the evidence
    is safe.
 
@@ -89,7 +94,15 @@ Confirmed security incidents, including any exposure of personal data or
 credentials, are reported to MIT IS&T Security (<security@mit.edu>) by the
 incident leader as soon as possible, and no later than 24 hours after
 confirmation. Platform Engineering decides with MIT IS&T whether
-users or other parties must be notified.
+users or other parties must be notified. When personal data may have been
+exposed, the incident leader gathers what that decision needs:
+
+- how many users are affected;
+- which kinds of personal data were exposed or accessed;
+- where the affected users live, since notification rules depend on it;
+- whether payment card data was involved; and
+- how the access happened, for example a stolen password or token, a
+  vulnerability, or a misconfiguration.
 
 **IR-8. Write a post-mortem.**
 A blameless post-mortem is required for every SEV1 incident (which includes
@@ -117,9 +130,11 @@ Handled as described in [Policies: Exceptions](index.md#exceptions).
 - [Emergency Oncall Break Glass Procedure](../getting_started_and_how_tos/emergency-break-glass.md)
 - [Managing Rootly](../monitoring_observability/rootly_management.md)
 - [Change Management Policy](change-management.md)
+- [Business Continuity Policy](business-continuity.md)
+- [Disaster Recovery Policy](disaster-recovery.md)
 
 ## Review
 
 | Owner | Version | Last reviewed |
 |---|---|---|
-| Platform Engineering | 1.0 (draft) | 2026-10-13 |
+| Platform Engineering | 1.1 (draft) | 2026-10-15 |
