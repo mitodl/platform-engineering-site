@@ -1,16 +1,20 @@
+---
+title: "Getting Started Building Concourse Pipelines in Python"
+---
 # Getting Started Building Concourse Pipelines in Python
 
 ## Getting Set Up
+
 - Use the [Tutorial](https://concourse-ci.org/getting-started.html) on the Concourse website under Docs->Getting Started to get set up.
-  - Do NOT use any other tutorials you find linked elsewhere. Some are out of date and the failure modes can be incredibly hard to debug!
-  - If you're using an Arm64 Mac (e.g. M1, M2, etc.) just substitute [this](https://github.com/robinhuiser/concourse-arm64) platform specific image for the one cited in the tutorial. So the first line of your docker-compose.yml should look something like this: `image: rdclda/concourse:7.7.1`
-  - Nota Bene: You should probably use the latest version of this. At the time of this writing the latest has a bug but that will likely be fixed by the time anyone reads this.
-  - You'll also need to install Docker Desktop for Mac.
-  - Be sure that at the end of this process you have a Concourse instance running locally in your Docker install. If you
+    - Do NOT use any other tutorials you find linked elsewhere. Some are out of date and the failure modes can be incredibly hard to debug!
+    - If you're using an Arm64 Mac (e.g. M1, M2, etc.) just substitute [this](https://github.com/robinhuiser/concourse-arm64) platform specific image for the one cited in the tutorial. So the first line of your docker-compose.yml should look something like this: `image: rdclda/concourse:7.7.1`
+    - Nota Bene: You should probably use the latest version of this. At the time of this writing the latest has a bug but that will likely be fixed by the time anyone reads this.
+    - You'll also need to install Docker Desktop for Mac.
+    - Be sure that at the end of this process you have a Concourse instance running locally in your Docker install. If you
     didn't end up running `docker-compose up -d` or similar then you may have missed something. Watch for errors and check that your newly launched Concourse is healthy and that you can browse to the localhost URL cited in the tutorial which should get you the Concourse main page with the giant spinning turbine blade icon.
 
-
 ## Now We're Cooking with Gas! Learning How Concourse Works By Building Pipelines
+
 - Work through the entire tutorial including building and actually creating pipelines from all the examples. This is critical so
 you'll have an understanding of what all the component parts are and how they fit together as you code your Python in later steps.
 - Actually make a point of working with some of the later examples involving Git repos. Commit some changes to your test repo and
@@ -28,6 +32,7 @@ that Tobias Macey wrote.
 Each YAML section is wrapped in a Python object. It's a 1 to 1 mapping because the Python models are auto-generated from the
 schema defined by Concourse.
 
+<!-- markdownlint-disable-next-line MD042 -->
 Take a look at the simplest hello-world tutorial example converted into Python [here](). I've put the explanatory comments inline
 to make it easier to understand what's going on.
 
@@ -43,6 +48,7 @@ already properly logged into your Concourse instance. For our purposes use the s
 tutorials.
 
 The output should look something like this:
+
 ```json
 {
   "jobs": [
@@ -110,10 +116,10 @@ The output should look something like this:
   "resources": null
 }
 ```
+
 ```bash
 fly -t pr-inf sp -p misc-cloud-hello -c definition.json
 ```
-
 
 Since we'll be using fly to create our pipeline in the tutorial Concourse instance, use -t tutorial rather than pr-inf and make
 any other necessary substitutions according to your environment.

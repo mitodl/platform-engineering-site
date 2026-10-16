@@ -1,3 +1,6 @@
+---
+title: "Engineering Handbook"
+---
 # Engineering Handbook
 
 This contains information for how MIT's Office of Open Learning (OL) does things. The breadth of this covers coding conventions to project requirements and more.

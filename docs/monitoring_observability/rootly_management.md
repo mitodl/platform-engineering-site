@@ -1,3 +1,6 @@
+---
+title: "Managing Rootly with ol-rootly-manager"
+---
 # Managing Rootly with ol-rootly-manager
 
 [Rootly](https://rootly.com/) is our on-call and incident management platform. It handles alert routing, escalation policies, service definitions, status pages, and incident workflows. We manage Rootly configuration as code using the [`ol-rootly-manager`](https://github.com/mitodl/ol-rootly-manager) Python CLI.

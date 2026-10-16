@@ -1,3 +1,6 @@
+---
+title: "workers.json Generation Requirements"
+---
 # workers.json Generation Requirements
 
 **Date:** November 5, 2024

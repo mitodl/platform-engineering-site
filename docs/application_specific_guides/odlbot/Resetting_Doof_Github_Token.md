@@ -1,3 +1,6 @@
+---
+title: "Resetting odlbot / Doof's Github Access Token"
+---
 # Resetting odlbot / Doof's Github Access Token
 
 ## Note: This doc makes lots of assumptions about prior knowledge. TODO :)
@@ -5,7 +8,7 @@
 From time to time we need to go through the fire drill of rotating all our github access
 tokens.
 
-If you need to reset  Doof's you'll need to login to gtihub with the mitx-devops@mit.edu
+If you need to reset  Doof's you'll need to login to gtihub with the <mitx-devops@mit.edu>
 account.
 
 You can get the 2FA code from Vault in the platform-secrets github secret.

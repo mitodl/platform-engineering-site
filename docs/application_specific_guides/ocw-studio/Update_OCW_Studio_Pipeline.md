@@ -46,7 +46,6 @@ heroku run --app ocw-studio-rc bash
 
 ```
 
-
 Once you get a shell prompt, run the
 following command:
 

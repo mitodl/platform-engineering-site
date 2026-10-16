@@ -30,7 +30,7 @@ jobs:
       # so a different PlantUML/Graphviz build would emit different bytes and
       # report false drift. Bump both in lockstep (and re-render) when updating.
       kroki:
-        image: yuzutech/kroki@sha256:63a74a0ab9e70c2f30bfdbd0628a5a938442c616c01600e0395f58094d0dba7a
+        image: yuzutech/kroki@sha256:a4341ac44cd2590124da7142d13fdf5d83eadc2b94c023d018a2227695a30da1
         ports:
           - 8000:8000
     env:
@@ -40,7 +40,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install uv
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           enable-cache: true
       - name: Set up Python

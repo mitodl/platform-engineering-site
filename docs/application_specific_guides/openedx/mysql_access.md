@@ -1,3 +1,6 @@
+---
+title: "Querying An MIT OL Open EdX Mysql Database"
+---
 # Querying An MIT OL Open EdX Mysql Database
 
 This is a quick and dirty guide to connecting to the OpenEdX MySQL database for
@@ -19,11 +22,13 @@ to remove it when done.)
 ```
 sudo apt install mariadb-client
 ```
+
 OR
 
 ```
 sudo apt install mysql-client
 ```
+
 ## Get the Database Credentials
 
 Use docker compose to connect to a container like the LMS or CMS:

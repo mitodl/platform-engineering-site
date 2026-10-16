@@ -9,7 +9,7 @@ In order to create user accounts in Open edX and permit authentication from MIT 
 
 ## Prerequisite
 
-To begin, you need to follow the [Installing Tutor for development](https://docs.tutor.edly.io/dev.html#open-edx-development) instructions provided by Tutor **for local development installations**. 
+To begin, you need to follow the [Installing Tutor for development](https://docs.tutor.edly.io/dev.html#open-edx-development) instructions provided by Tutor **for local development installations**.
 
 Once Tutor has bootstrapped itself and is available, create a superuser account:
 
@@ -18,6 +18,7 @@ Once Tutor has bootstrapped itself and is available, create a superuser account:
 Log in to your edX and MIT application as an admin and make sure the session remains active throughout the process. (Part of this process will involve mostly breaking authentication, so it's important that you are able to access the admin).
 
 #### For MITxOnline Only
+
 For best results, create two new courses within edX. The MITxOnline `configure_instance` command expects a couple of courses to exist in edX (because they come with the devstack package):
 
 | Course ID                       | Course Title         |
@@ -79,7 +80,7 @@ To set up the MIT Application:
 3. Run the **configure_instance** command
 
     For `gateway_ip`, use the Gateway IP from the first step. (Specify `macos` or `linux` based on your OS. You can also skip --gateway.) The command will print `Client ID` and `Client Secret` that you will need further in the setup, so keep them safe. Alternatively, you can access the `Client ID` and `Client Secret` through the MIT Application's `/admin/oauth2_provider/application/`
-           
+
        docker-compose run --rm web ./manage.py configure_instance <linux or macos> --gateway <gateway_ip from above step> --tutor-dev
 
 ## EdX Application Setup
@@ -91,7 +92,7 @@ To set up the MIT Application:
 2. Install the required dependencies using one of the following:
 
    - **Option 1:** Open the LMS container shell using `tutor dev exec -it lms bash` and run:
-     
+
          pip install ol-social-auth openedx-companion-auth
 
    - **Option 2:** Follow the [Tutor guide for installing extra requirements](https://docs.tutor.edly.io/configuration.html#installing-extra-xblocks-and-requirements).
@@ -142,13 +143,13 @@ To set up the MIT Application:
 
 You should now be able to run some MIT Application management commands to ensure the service worker is set up properly:
 
-   - `sync_courserun --all ALL` should sync the two test courses (if you made them).
-      - `sync_courseruns --all ALL` in MITxPro
-   - `repair_missing_courseware_records` should also work.
+- `sync_courserun --all ALL` should sync the two test courses (if you made them).
+    - `sync_courseruns --all ALL` in MITxPro
+- `repair_missing_courseware_records` should also work.
 
 In a separate browser session, attempt to log in again. This time, you should be able to log in through the MIT Application, and you should be able to get to the edX LMS dashboard. If not, then double-check your provider configuration settings and try again.
 
-   - If you are still getting "Can't fetch settings" errors, **make sure** your Site is set properly.
+- If you are still getting "Can't fetch settings" errors, **make sure** your Site is set properly.
 
 **Optionally**, log into the LMS Django Admin and make your MIT Application superuser account a superuser there too.
 

@@ -1,3 +1,6 @@
+---
+title: "Open edX Proctoring Build Issues - Investigation Summary"
+---
 # Open edX Proctoring Build Issues - Investigation Summary
 
 **Investigation Date:** November 5, 2024

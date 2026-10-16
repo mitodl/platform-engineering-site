@@ -1,7 +1,9 @@
 # Development Process
+
 An approximate workflow guide to hacking on software at the MIT Office of Digital Learning.
 
 # Purpose
+
 Every team of developers has its own particular approach to writing, reviewing, and deploying code.
 This guide aims to capture MIT ODL's way of doing things. It will be (hopefully) useful as a
 step-by-step guide for new developers.
@@ -9,13 +11,12 @@ step-by-step guide for new developers.
 # Tools
 
 - git
-- Zenhub Chrome extension (https://www.zenhub.io/)
-  - This extension adds the **Boards** and **Burndown** tabs to GitHub repos. We use it in the way
+- Zenhub Chrome extension (<https://www.zenhub.io/>)
+    - This extension adds the **Boards** and **Burndown** tabs to GitHub repos. We use it in the way
   that you might use JIRA or Trello. The **Boards** tab is particularly important as it adds a
   'swim lane'-type view for open issues.
 
 # Coding Workflow
-
 
 ### Step 0) Choosing or creating an Issue for work to be done
 
@@ -47,7 +48,6 @@ You can do this before you open a Pull Request (see below) or right after you cr
 Make changes, test (automated and/or manual), commit, repeat. The repo README should have details
 for running automated tests.
 
-
 ### Step 2) Code Review
 
 _When you've completed the given issue, the code is passing tests, and you feel like it's ready
@@ -73,13 +73,12 @@ parsed, and the issue will be automatically closed if "fixes #X"/"closes #X" is 
 
 Before (or after) you submit the PR, add the "Needs Review" label to it.
 
-
 **TL;DR**
 
 1. Click "New Pull Request"
 1. Fill in (or confirm) the appropriate **base** and **compare** branches
 1. Fill in all the relevant sections in the PR template (especially "relevant tickets", which should
-   typically read "Closes #*ISSUE_NUMBER*" or "Fixes #*ISSUE_NUMBER*")
+   typically read "Closes #_ISSUE_NUMBER_" or "Fixes #_ISSUE_NUMBER_")
 1. Add the "Needs Review" label
 1. Submit and wait for comments/approval
 
@@ -122,7 +121,6 @@ process looks something like this in the command line:
 
 That message near the bottom of your PR page should have a green check mark and read "This branch has no
 conflicts with the base branch" when you have successfully resolved and pushed.
-
 
 ### Step 3) Merging
 

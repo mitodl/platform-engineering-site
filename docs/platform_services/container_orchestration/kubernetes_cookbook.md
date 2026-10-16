@@ -4,7 +4,7 @@
 
 ### Port-forward to a pod
 
-https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/
+<https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/>
 
 ```bash
 kubectl port-forward <podname> <local port>:<remote port> -n <namespace>
@@ -40,6 +40,7 @@ kubectl patch -n operations vaultstaticsecret vault-kv-global-odl-wildcard -p '{
 ### Get Overview Of a Namespace
 
 Shows things like open ports, pod status and the like.
+
 ```bash
 kubectl get all -n open-metadata
 ```
@@ -49,7 +50,9 @@ kubectl get all -n open-metadata
 ```bash
 kubectl describe <resource> <optional-resource-name> -n <namespace>
 ```
+
 e.g.
+
 ```bash
 kubectl describe pod -n open-metadata openmetadata-5f78b769d4-4wgs9                                                                                                                 feoh@prometheus
 ```

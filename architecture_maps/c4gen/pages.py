@@ -6,6 +6,8 @@ placeholder div that docs/javascripts/c4-zoom.js fills with the pre-rendered SVG
 
 from __future__ import annotations
 
+import json
+
 from .landscape import Landscape
 from .render import ASYNC_COLOR, BANNER, SYNC_COLOR, _owner_id
 from .schema import Flow, Model
@@ -30,7 +32,7 @@ runtime units) → **Dynamic** (a single data flow, step by step).
 """
 
 
-def _diagram(model: Model, name: str) -> str:  # noqa: ARG001 (kept for signature stability)
+def _diagram(model: Model, name: str) -> str:
     """A placeholder div that docs/javascripts/c4-zoom.js fills with the
     pre-rendered SVG (fetched from a sibling ``_diagrams/`` file) and turns into a
     pan/zoom viewport. Client-side injection of a static SVG keeps this
@@ -49,6 +51,17 @@ def _stamp(model: Model) -> str:
 
 def _banner(model: Model) -> str:
     return BANNER.format(model=model.meta.primary_system)
+
+
+def _heading(banner: str, title: str) -> str:
+    """Front matter, the generated banner, and the H1 for a generated page.
+
+    zensical (>= 0.0.59) titles a page by its mkdocs.yml nav label, which for these
+    pages is the bare view name ("Containers"). The front-matter title keeps the
+    system name in the browser title and the header.
+    """
+    front_matter = f"---\ntitle: {json.dumps(title, ensure_ascii=False)}\n---\n"
+    return f"{front_matter}{banner}# {title}"
 
 
 def page_index(model: Model) -> str:
@@ -70,7 +83,7 @@ def page_index(model: Model) -> str:
         if model.meta.has_infrastructure_references
         else ""
     )
-    return f"""{_banner(model)}# {model.meta.name} — Architecture & Data Flows
+    return f"""{_heading(_banner(model), f"{model.meta.name} — Architecture & Data Flows")}
 
 {_stamp(model)}
 {model.meta.description}
@@ -103,7 +116,7 @@ def page_context(model: Model) -> str:
     rows = ["| System | Role |", "| --- | --- |"]
     for s in externals:
         rows.append(f"| **{s.name}** | {s.description} |")
-    return f"""{_banner(model)}# System Context — {model.meta.name}
+    return f"""{_heading(_banner(model), f"System Context — {model.meta.name}")}
 
 {_stamp(model)}
 The widest view: **{model.meta.name}** and every external actor and system it
@@ -126,13 +139,15 @@ into its [container view](container.md).
 
 
 def page_container(model: Model) -> str:
-    primary = next((s for s in model.systems if s.id == model.meta.primary_system), None)
+    primary = next(
+        (s for s in model.systems if s.id == model.meta.primary_system), None
+    )
     if primary is None:
         raise ValueError(f"primary_system {model.meta.primary_system!r} not in model")
     rows = ["| Container | Technology | Responsibility |", "| --- | --- | --- |"]
     for c in primary.containers:
         rows.append(f"| **{c.name}** | {c.technology or ''} | {c.description} |")
-    return f"""{_banner(model)}# Containers — {primary.name}
+    return f"""{_heading(_banner(model), f"Containers — {primary.name}")}
 
 {_stamp(model)}
 The runtime/deployable units inside **{primary.name}** and how data moves
@@ -150,13 +165,15 @@ def page_component(model: Model) -> str:
     section with its own C4 Component diagram and a responsibility table. Only
     emitted when at least one container is expanded to Component level."""
     expanded = model.containers_with_components()
-    parts = [f"""{_banner(model)}# Components — {model.meta.name}
+    parts = [
+        f"""{_heading(_banner(model), f"Components — {model.meta.name}")}
 
 {_stamp(model)}
 The innermost view: the **components** inside containers that have been expanded
 to C4 Component level — the major code groupings within a deployable unit and how
 they collaborate and reach out to adjacent containers and systems.
-{_LEGEND}"""]
+{_LEGEND}"""
+    ]
     for container in expanded:
         parts.append(f"## {container.name}\n")
         if container.description:
@@ -172,12 +189,14 @@ they collaborate and reach out to adjacent containers and systems.
 
 
 def page_data_flows(model: Model) -> str:
-    parts = [f"""{_banner(model)}# Data Flows — {model.meta.name}
+    parts = [
+        f"""{_heading(_banner(model), f"Data Flows — {model.meta.name}")}
 
 {_stamp(model)}
 Each scenario below replays one interaction as a C4 **Dynamic** diagram.
 Amber steps are asynchronous (queued / scheduled / event-driven).
-{_LEGEND}"""]
+{_LEGEND}"""
+    ]
     for sc in model.scenarios:
         parts.append(f"## {sc.title}\n")
         if sc.description:
@@ -191,8 +210,10 @@ Amber steps are asynchronous (queued / scheduled / event-driven).
             "pull from, with transport and cadence. ⚠️ marks brittle linkages "
             "(HTML/token scrapes, hardcoded URLs).\n"
         )
-        rows = ["| Source | Transport | Cadence | Data | Source of truth |",
-                "| --- | --- | --- | --- | --- |"]
+        rows = [
+            "| Source | Transport | Cadence | Data | Source of truth |",
+            "| --- | --- | --- | --- | --- |",
+        ]
         for s in sorted(model.etl_sources, key=lambda x: x.name):
             warn = "⚠️ " if s.fragile else ""
             ref = ""
@@ -205,7 +226,9 @@ Amber steps are asynchronous (queued / scheduled / event-driven).
     return "\n".join(parts)
 
 
-def page_dependencies(model: Model, cycles: list[list[str]], candidates: list[Flow]) -> str:
+def page_dependencies(
+    model: Model, cycles: list[list[str]], candidates: list[Flow]
+) -> str:
     # curated cross-service edges actually drawn in the diagrams
     cross = [f for f in model.flows if "cross-service" in f.tags]
     # dependency matrix at system level (curated, verified)
@@ -223,9 +246,13 @@ def page_dependencies(model: Model, cycles: list[list[str]], candidates: list[Fl
     matrix_md = "\n".join(matrix) if deps else "_No curated cross-service edges._"
 
     if cycles:
-        cyc_lines = ["/// admonition | Dependency cycles detected", "    type: danger", ""]
+        cyc_lines = [
+            "/// admonition | Dependency cycles detected",
+            "    type: danger",
+            "",
+        ]
         for c in cycles:
-            cyc_lines.append(f"* `{ ' → '.join(c + [c[0]]) }`")
+            cyc_lines.append(f"* `{' → '.join(c + [c[0]])}`")
         cyc_lines.append("///")
         cyc_md = "\n".join(cyc_lines)
     else:
@@ -235,11 +262,14 @@ def page_dependencies(model: Model, cycles: list[list[str]], candidates: list[Fl
         )
 
     fragile = [f for f in model.flows if "fragile" in f.tags]
-    frag_md = "\n".join(
-        f"- **{f.source} → {f.target}**: {f.label} — {f.data}" for f in fragile
-    ) or "_None flagged._"
+    frag_md = (
+        "\n".join(
+            f"- **{f.source} → {f.target}**: {f.label} — {f.data}" for f in fragile
+        )
+        or "_None flagged._"
+    )
 
-    return f"""{_banner(model)}# Dependencies & Cycles — {model.meta.name}
+    return f"""{_heading(_banner(model), f"Dependencies & Cycles — {model.meta.name}")}
 
 {_stamp(model)}
 Coupling between {model.meta.name} and the rest of the SOA. The **matrix** and
@@ -276,12 +306,16 @@ actual client/route code before treating it as a real runtime dependency.
 def _candidate_rows(candidates: list[Flow]) -> str:
     if not candidates:
         return "_None extracted._"
-    rows = ["| Consumer → Provider | Contract sample | Source of truth |",
-            "| --- | --- | --- |"]
+    rows = [
+        "| Consumer → Provider | Contract sample | Source of truth |",
+        "| --- | --- | --- |",
+    ]
     for f in sorted(candidates, key=lambda x: (x.source, x.target)):
         url = f.provenance.url()
-        loc = f"[{f.provenance.path}]({url})" if url and f.provenance.path else (
-            f"`{f.provenance.path}`" if f.provenance.path else "—"
+        loc = (
+            f"[{f.provenance.path}]({url})"
+            if url and f.provenance.path
+            else (f"`{f.provenance.path}`" if f.provenance.path else "—")
         )
         rows.append(
             f"| {f.source} → {f.target} ({f.label}) | `{f.provenance.contract_key or ''}` | {loc} |"
@@ -311,7 +345,9 @@ def page_landscape(landscape: Landscape, generated_at: str, version: str) -> str
     matrix = ["| System | Depends on → |", "| --- | --- |"]
     for src in landscape.internal_ids():
         targets = sorted(landscape.node(t).name for t in deps.get(src, set()))
-        matrix.append(f"| **{landscape.node(src).name}** | {', '.join(targets) or '—'} |")
+        matrix.append(
+            f"| **{landscape.node(src).name}** | {', '.join(targets) or '—'} |"
+        )
     matrix_md = "\n".join(matrix)
 
     if landscape.cycles:
@@ -327,7 +363,8 @@ def page_landscape(landscape: Landscape, generated_at: str, version: str) -> str
 
     if landscape.unresolved:
         rows = "\n".join(
-            f"- `{rid}` (referenced in **{model}**)" for model, rid in landscape.unresolved
+            f"- `{rid}` (referenced in **{model}**)"
+            for model, rid in landscape.unresolved
         )
         unresolved_md = (
             "/// admonition | Unresolved peer references\n    type: warning\n\n"
@@ -344,7 +381,7 @@ def page_landscape(landscape: Landscape, generated_at: str, version: str) -> str
 
     n_internal = len(landscape.internal_ids())
 
-    return f"""{_LANDSCAPE_BANNER}# SOA System Landscape — MIT Open Learning
+    return f"""{_heading(_LANDSCAPE_BANNER, "SOA System Landscape — MIT Open Learning")}
 
 {stamp}
 The holistic, whole-system view: every mapped MIT Open Learning system and the

@@ -2,7 +2,8 @@ site_name: Platform Engineering Documentation
 site_url: https://engineering.ol.mit.edu
 theme:
   name: material
-  user_color_mode_toggle: true
+  logo: img/mit-logo-white.svg
+  favicon: img/favicon.ico
   features:
     - content.code.copy
     - navigation.tabs
@@ -29,7 +30,11 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.blocks.admonition
   - pymdownx.details
+copyright: "&copy; Massachusetts Institute of Technology"
+extra:
+  generator: false
 extra_css:
+  - stylesheets/mit-learn.css
   - stylesheets/c4.css
 extra_javascript:
   # Pan/zoom for the C4 architecture diagrams (drill-down is native PlantUML
@@ -53,7 +58,8 @@ nav:
           - Production Ready: handbook/delivering/production-ready.md
           - Release Process:
               - Overview: handbook/delivering/release-process/index.md
-              - Webapp Release Process: handbook/delivering/release-process/webapp-release-process.md
+              - Concourse Release Workflow: handbook/delivering/release-process/concourse-release-workflow.md
+              - Webapp Release Process (Legacy): handbook/delivering/release-process/webapp-release-process.md
       - How-To Guides:
           - Overview: handbook/how-to/index.md
           - Caching: handbook/how-to/caching.md
@@ -69,6 +75,14 @@ nav:
           - Integrating MIT Applications with Open edX using Tutor: handbook/openedx/MITx-edx-integration-tutor.md
       - Deprecated Docs:
           - Integrating MIT Applications with Open edX using Devstack: handbook/deprecated-docs/MITx-edx-integration-devstack.md
+  - Policies:
+      - Overview: policies/index.md
+      - Business Continuity: policies/business-continuity.md
+      - Change Management: policies/change-management.md
+      - Disaster Recovery: policies/disaster-recovery.md
+      - Incident Response: policies/incident-response.md
+      - Patch Management: policies/patch-management.md
+      - Vulnerability Management: policies/vulnerability-management.md
   - Platform Engineering:
       - Getting Started & How-Tos:
           - Emergency Oncall Break Glass Procedure: getting_started_and_how_tos/emergency-break-glass.md
@@ -88,10 +102,13 @@ nav:
           - Container Orchestration (Kubernetes):
               - Deploying Apps with Kubernetes: platform_services/container_orchestration/deploying_apps_with_kubernetes.md
               - Kubernetes Cookbook: platform_services/container_orchestration/kubernetes_cookbook.md
+              - Application Developer Shell: platform_services/container_orchestration/developer_shell.md
           - CI/CD (Concourse):
               - Getting Started with Concourse: platform_services/ci_cd/getting_started_with_concourse.md
               - Deploying Concourse: platform_services/ci_cd/deploying_concourse.md
               - Concourse GitHub Issues User Guide: platform_services/ci_cd/concourse_github_issues_user_guide.md
+              - Release Workflow Machinery: platform_services/ci_cd/release_workflow_machinery.md
+              - Migrating an App to the Release Workflow: platform_services/ci_cd/migrating_an_app_to_the_release_workflow.md
           - Cloud Infrastructure (AWS & Pulumi):
               - Pulumi AWS Classic 5 to 6 Upgrade: platform_services/cloud_infrastructure/pulumi_aws_classic_5_to_6_upgrade.md
               - Importing Existing Resources with Pulumi: platform_services/cloud_infrastructure/import_existing_resources_with_pulumi.md
@@ -165,6 +182,13 @@ nav:
               - Containers: system_architecture/ol-data-platform/container.md
               - Data Flows: system_architecture/ol-data-platform/data-flows.md
               - Dependencies & Cycles: system_architecture/ol-data-platform/dependencies-and-cycles.md
+          - OL Analytics API:
+              - Architecture & Data Flows: system_architecture/ol-analytics-api/index.md
+              - System Context: system_architecture/ol-analytics-api/system-context.md
+              - Containers: system_architecture/ol-analytics-api/container.md
+              - Components: system_architecture/ol-analytics-api/component.md
+              - Data Flows: system_architecture/ol-analytics-api/data-flows.md
+              - Dependencies & Cycles: system_architecture/ol-analytics-api/dependencies-and-cycles.md
       - Application Specific Guides:
           - Open edX:
               - MITx Online Bulk Rescore: application_specific_guides/openedx/mitxonline_bulk_rescore.md
@@ -195,7 +219,8 @@ nav:
           - Renovate:
               - Updating Renovate Configuration: application_specific_guides/renovate/updating_renovate_config.md
           - JupyterHub:
-              - JupyterHub Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
+              - Course Notebooks Admin Guide: application_specific_guides/jupyterhub/jupyterhub_admin_guide.md
+              - Data Platform Notebooks: application_specific_guides/jupyterhub/data_platform_notebooks.md
           - Keycloak:
               - Inviting New Users to Keycloak Realms: application_specific_guides/keycloak/inviting_users_to_realms.md
       - Monitoring And Observability:
@@ -206,13 +231,15 @@ nav:
           - Managing Rootly: monitoring_observability/rootly_management.md
       - Runbooks & Post-Mortems:
           - On-Call Runbook: runbooks_post_mortems/oncall_runbook.md
-          - OL Production Outage Runbook: runbooks_post_mortems/ol_production_outage_runbook.md
+          - OL Production Incident Response Runbook: runbooks_post_mortems/ol_production_outage_runbook.md
           - Compromised Account Response Runbook: runbooks_post_mortems/compromised_account_runbook.md
+          - Disaster Recovery Runbook: runbooks_post_mortems/disaster_recovery_runbook.md
           - 20231030 xPro Outage Post-Mortem: runbooks_post_mortems/20231030_xpro_outage.md
-          - 20260423 MIT Learn Outage Post-Mortem: runbooks_post_mortems/20260324_mitlearn_outage.md
+          - 20260324 MIT Learn Outage Post-Mortem: runbooks_post_mortems/20260324_mitlearn_outage.md
           - 20260603 MIT XPro Certificate Outage Post Mortem: runbooks_post_mortems/20260603_xpro_outage.md
           - 20260720 engineering.ol.mit.edu Domain Hijack Post-Mortem: runbooks_post_mortems/20260720_engineering_domain_hijack.md
           - 20260810 MITx Online Cart HTTP 406 Errors Post-Mortem: runbooks_post_mortems/20260810_http_406_errors_on_cart_endpoints.md
+          - 20260909 Degraded Language Translation Dashboard Performance Post-Mortem: runbooks_post_mortems/20260909_degraded_language_translation_dashboard_performance.md
           - Clear User Grades In Open edX: runbooks_post_mortems/openedx_clear_user_grades.md
       - Cookbooks & Patterns:
           - DevOps Patterns Cookbook: cookbooks_patterns/devops_patterns_cookbook.md

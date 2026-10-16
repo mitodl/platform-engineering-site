@@ -1,4 +1,5 @@
 # How We Work
+
 We hire smart and talented people and support them in doing their best work. The core
 component of how we think about "getting work done" is that we trust everyone to take
 ownership of the tasks/features/projects that they are involved in.
@@ -8,12 +9,14 @@ work and a high quality of our output, it is useful to highlight the stages of o
 and the value that each step provides.
 
 ## Project Shaping
+
 The first step of any project is to understand the scope and goals of the work to be
 done. This typically involves documenting the user-facing value that the work will
 provide and collaborating with product managers to ensure that everyone is properly
 aligned and understands what needs to be done.
 
 ## Architecture
+
 Every piece of functionality for our products has an impact on the architecture of our
 platforms, and the design/experience of our end users. To that end, it is important that
 we have a common understanding of how we are going to build a piece of functionality and
@@ -26,12 +29,14 @@ widely throughout the team to ensure that everyone has the opportunity to provid
 and learn about the work being done.
 
 ## Design
+
 For visual aspects of our work the RFC may be replaced with a graphic design, a set of
 wireframes, etc. This will provide a way for engineers who will be implementing a
 feature to understand the user flow and provide input on constraints that may influence
 the final design.
 
 ## Planning
+
 At the tactical level, it is necessary to understand the steps required to complete a
 project and the dependencies across those steps. Timely, clear, and effective
 communication is the most important tool in this stage. For small, well understood tasks
@@ -42,6 +47,7 @@ documenting the overarching roadmap, or opening a discussion thread in a shared 
 (e.g. [GitHub Discussions](https://github.com/mitodl/hq/discussions))
 
 ## Implementation
+
 Once the scope of a problem is understood it is necessary to create a way to deliver the
 intended functionality. This will typically be done through writing code that is
 incorporated into one of our source repositories. Sometimes it will mean using
@@ -51,16 +57,19 @@ solving the problem, you are best situated to know how best to bring it to resol
 For more details on our development process please refer to the guide [here](/delivering/development-process.html).
 
 ## Validate
+
 Once a feature is added to one of our products, we need to ensure that it functions
 properly and will continue to do so. This typically involves writing automated tests
 using one of our selected frameworks. This may also involve writing a manual test plan
 and ensuring that it is executed on a periodic basis.
 
 ## Document
+
 A feature is not useful if nobody knows that it exists or how to use it. In order to
 ensure that we don’t have to explain something more than once, it is necessary to write
 documentation that addresses the needs of our peers and end-users. This documentation
 may take many forms, including but not limited to:
+
 - In-line code comments that explain the “why” for a given approach
 - Meaningful and descriptive variable, function, and class definitions
 - README documentation that lives with the source code. There is nothing preventing the
@@ -74,9 +83,11 @@ may take many forms, including but not limited to:
   a project is structured, how logical flows are expected to work, etc.
 
 ## Deliver To Production
+
 While you may not be the person who is actually shipping the functionality into a
 production environment, it is your responsibility to make sure that it happens. This
 includes:
+
 - Ensuring that you get timely feedback on your pull requests
 - Personally validating functionality, or helping others to validate it for you
 - Working with platform engineering to inform them of any requirements to support your

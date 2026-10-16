@@ -29,7 +29,7 @@ DOCS_DIR = REPO_ROOT / "docs"
 # asset, with an optional existing ?v=<hash>. Quote-agnostic, trailing space ok.
 _ENTRY = re.compile(
     r'(?P<lead>-\s*(?P<q>["\']?))(?P<path>javascripts/\S+?\.js)'
-    r'(?:\?v=(?P<ver>[0-9a-f]+))?(?P<tail>(?P=q)[ \t]*)$',
+    r"(?:\?v=(?P<ver>[0-9a-f]+))?(?P<tail>(?P=q)[ \t]*)$",
     re.MULTILINE,
 )
 
@@ -37,7 +37,9 @@ _ENTRY = re.compile(
 def _fingerprint(asset_path: str) -> str:
     f = DOCS_DIR / asset_path
     if not f.is_file():
-        raise FileNotFoundError(f"referenced asset not found: {f.relative_to(REPO_ROOT)}")
+        raise FileNotFoundError(
+            f"referenced asset not found: {f.relative_to(REPO_ROOT)}"
+        )
     return hashlib.sha256(f.read_bytes()).hexdigest()[:8]
 
 
@@ -57,11 +59,16 @@ def main() -> int:
         want = _fingerprint(m.group("path"))
         have = m.group("ver")
         if have != want:
-            stale.append(f"{m.group('path')}: committed v={have or '(none)'} expected v={want}")
+            stale.append(
+                f"{m.group('path')}: committed v={have or '(none)'} expected v={want}"
+            )
         return f"{m.group('lead')}{m.group('path')}?v={want}{m.group('tail')}"
 
     if not _ENTRY.search(text):
-        print("no local javascripts/*.js entries found in mkdocs.yml extra_javascript", file=sys.stderr)
+        print(
+            "no local javascripts/*.js entries found in mkdocs.yml extra_javascript",
+            file=sys.stderr,
+        )
         return 1
 
     try:
@@ -72,7 +79,9 @@ def main() -> int:
 
     if args.check:
         if stale:
-            print("STALE asset cache-bust fingerprints (regenerate with this script, no --check):")
+            print(
+                "STALE asset cache-bust fingerprints (regenerate with this script, no --check):"
+            )
             for s in stale:
                 print(f"  - {s}")
             return 1

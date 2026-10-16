@@ -220,12 +220,14 @@ else:
 ## Troubleshooting
 
 **User not found**:
+
 ```python
 # List all users matching a pattern
 User.objects.filter(username__icontains='student').values_list('username', 'id')
 ```
 
 **Course not found**:
+
 ```python
 # List all courses a user is enrolled in
 from common.djangoapps.student.models import CourseEnrollment
@@ -233,6 +235,7 @@ CourseEnrollment.objects.filter(user_id=user_id).values_list('course_id')
 ```
 
 **Permission denied**:
+
 - Ensure you're using an admin/staff shell session
 - Check database user privileges
 - May need to run with elevated permissions or on database primary (not replica)

@@ -1,3 +1,6 @@
+---
+title: "Accessing OCW Site S3 Bucket Audit Logs"
+---
 # Accessing OCW Site S3 Bucket Audit Logs
 
 S3 audit logs for OCW Site are stored in dedicated buckets for each environment:

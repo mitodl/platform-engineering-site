@@ -3,22 +3,23 @@
 # Docker/Django/Webpack Web App Guide
 
 **SECTIONS**
+
 1. [Initial Setup](#initial-setup)
 1. [Running and Accessing the App](#running-and-accessing-the-app)
 1. [Testing and Formatting](#testing-and-formatting)
 1. [Administering your Local App](#administering-your-local-app)
 1. [Troubleshooting](#troubleshooting)
 
-
 # Initial Setup
 
 ### Major Dependencies
+
 - Docker
-  - _[MacOS only]_ We use **Docker Desktop**&#42;, a desktop development environment that includes Docker.  
+    - _[MacOS only]_ We use **Docker Desktop**&#42;, a desktop development environment that includes Docker.
     Recommended MacOS install method: [Download from Docker website](https://docs.docker.com/desktop/setup/install/mac-install/)
 - Docker Compose
-  - If you've installed Docker Desktop, you already have Compose (invoked as `docker compose`, no hyphen) installed as a Docker CLI plugin.
-  - If not, install the `docker-compose-plugin` package for your platform. Avoid `pip install docker-compose` - that installs the older, no-longer-maintained Compose v1, whose `docker-compose` (hyphenated) command is a different tool from the `docker compose` used throughout this guide.
+    - If you've installed Docker Desktop, you already have Compose (invoked as `docker compose`, no hyphen) installed as a Docker CLI plugin.
+    - If not, install the `docker-compose-plugin` package for your platform. Avoid `pip install docker-compose` - that installs the older, no-longer-maintained Compose v1, whose `docker-compose` (hyphenated) command is a different tool from the `docker compose` used throughout this guide.
 
 ### Build And Configure Docker Containers
 
@@ -36,9 +37,10 @@ project's README file.
 
     docker compose build
 
-*NOTE: You will also need to run this command whenever dependency files change. Newer projects manage Python dependencies with [`uv`](https://docs.astral.sh/uv/) (``pyproject.toml`` and a committed ``uv.lock``, updated via ``uv add``/``uv sync``) rather than hand-maintained ``requirements.txt``/``test_requirements.txt`` files - check which convention your project uses.*
+_NOTE: You will also need to run this command whenever dependency files change. Newer projects manage Python dependencies with [`uv`](https://docs.astral.sh/uv/) (``pyproject.toml`` and a committed ``uv.lock``, updated via ``uv add``/``uv sync``) rather than hand-maintained ``requirements.txt``/``test_requirements.txt`` files - check which convention your project uses._
 
 #### _(Optional)_ Create a superuser
+
 Some of our apps include user creation as part of their specific setup steps. If the given app does not
 include steps to create a user, you can create one easily via Django's `createsuperuser` command.
 It will prompt you for the username and some other details for this user.
@@ -72,7 +74,7 @@ Start all the services that are required to run the app:
 
     docker compose up
 
-*NOTE: In most repos this will also apply migrations. Consult your docker-compose.yml file to see what specific actions are taken.*
+_NOTE: In most repos this will also apply migrations. Consult your docker-compose.yml file to see what specific actions are taken._
 
 #### 2) Navigate to the running app in your browser
 
@@ -86,18 +88,18 @@ Your app should now be accessible via browser:
   locally-running site, but it's recommended/essential that you add an `/etc/hosts` alias and use that URL instead.
   More info on that in the section above.
 
-
 # Testing and Formatting
 
 There are a few different commands for running tests/linters and formatting code.
 
-*NOTE: The `--rm` option for the `docker compose run` command tells Docker to destroy the container after it finishes running. This is useful for running specific commands in one-off containers. This prevents the accumulation of unused Docker containers on your machine.*
+_NOTE: The `--rm` option for the `docker compose run` command tells Docker to destroy the container after it finishes running. This is useful for running specific commands in one-off containers. This prevents the accumulation of unused Docker containers on your machine._
 
 ### Python tests, linting, and formatting
 
 We use `pytest` (with various plugins) to run our Python test suite in most of our projects.
 
 #### With `pytest`...
+
 ```bash
 # Run Python tests with linting
 docker compose run --rm web pytest
@@ -116,6 +118,7 @@ docker compose run --rm web ruff check .
 ```
 
 #### Formatting
+
 Most of our projects use [`ruff`](https://docs.astral.sh/ruff/) for both formatting and linting, replacing `black`, `isort`, and `pylint`. This should be run before any commit that makes changes to Python code (ignore this if your project does not list `ruff` in its dependencies).
 Additionally, many of our projects perform formatting/linting as a part of their `pre-commit` hook, so if you have that hook installed it will automatically run these checks on commit.
 
@@ -129,6 +132,7 @@ docker compose run --rm web ruff check .
 ```
 
 #### Older projects: `black`/`isort`/`pylint`
+
 Some projects predate the move to `ruff` and still use `black` for formatting, `isort` for import sorting, and `pylint` for linting - for example, `open-discussions` uses all three, and `micromasters` uses `isort`/`pylint` (no `black`). Check `test_requirements.txt` or `pyproject.toml` to see which tools your project actually uses.
 
 ```bash
@@ -141,6 +145,7 @@ docker compose run --rm web bash -c "pylint ./**/*.py"
 ```
 
 #### Speeding up test development
+
 There are many scenarios where you'll want to run tests many times in a row (authoring new tests, fixing old tests and checking if they pass). In that case it will save time to run a bash shell in a new container and run these commands as needed in that container.
 
 ```bash
@@ -154,7 +159,7 @@ pytest /path/to/test.py
 
 #### Running tests via helper script
 
-Most of our projects include a helper script to run JS tests. 
+Most of our projects include a helper script to run JS tests.
 
 If your project includes `/scripts/test/js_test.sh` or `/js_test.sh`, this is how you can run the JS test suite:
 
@@ -166,14 +171,13 @@ docker compose run --rm watch ./scripts/test/js_test.sh path/to/file.js
 docker compose run --rm watch ./scripts/test/js_test.sh path/to/file.js "should test basic arithmetic"
 ```
 
-**NOTE:** 
+**NOTE:**
 In some of our projects we include a shell script that runs the entire test suite including linting, etc.: `./test_suite.sh`.
 If you're in yarn workspaces enabled project e.g. MITxOnline, you will need to replace `yarn run` with `yarn workspaces foreach run` for the below commands.
 
-
 #### Running tests via yarn
 
-In 2021 we changed our JS testing practice to use yarn directly to run the JS test suite, and to use [jest](https://jestjs.io/docs/getting-started) 
+In 2021 we changed our JS testing practice to use yarn directly to run the JS test suite, and to use [jest](https://jestjs.io/docs/getting-started)
 as our testing framework.
 
 If your project DOES NOT include a `js_test.sh` file, this is how you can run the JS test suite:
@@ -192,6 +196,7 @@ docker compose run --rm watch yarn run test:coverage
 ```
 
 #### Linting and formatting
+
 Many of our projects perform formatting as a part of their `pre-commit` hook, so if you have that hook installed it will automatically run formatting checks on commit.
 
 ```bash
@@ -205,10 +210,10 @@ docker compose run --rm watch yarn run fmt
 
 #### Type-checking
 
-If your project has files with the extension `.ts`/`.tsx`, your project is 
+If your project has files with the extension `.ts`/`.tsx`, your project is
 Typescript-enabled.
 
-**Typescript** 
+**Typescript**
 
 As stated above, type-checking is done automatically with Typescript-enabled projects, so it's not necessary to run
 any commands, but you can still type-check with a command if you prefer:
@@ -222,9 +227,9 @@ any error but does not run a full compilation. We have incremental compilation
 turned on, so this should be relatively fast. It uses a file called
 `.tsbuildinfo` for incremental compilation.
 
-Most of our legacy projects use [Flow](https://flow.org/en/docs/) 
-type-checking. We switched to Typescript for new projects in 2021. Type-checking only needs to be invoked directly 
-in our projects that use Flow. 
+Most of our legacy projects use [Flow](https://flow.org/en/docs/)
+type-checking. We switched to Typescript for new projects in 2021. Type-checking only needs to be invoked directly
+in our projects that use Flow.
 
 **Flow**
 
@@ -234,9 +239,9 @@ docker compose run --rm watch yarn run-script flow
 ```
 
 #### Speeding up test development
+
 You can speed up JS test development in the same way described in the Python testing section above by starting the
 `watch` container instead of the `web` container.
-
 
 # Administering your Local App
 

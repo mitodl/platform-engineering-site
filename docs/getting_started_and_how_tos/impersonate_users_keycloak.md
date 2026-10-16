@@ -9,7 +9,7 @@ Be careful impersonating users! Do not take unnecessary actions on their behalf.
 - Log out of the user's account when you're done.
 ///
 
-1. Log in to the Keycloak Admin Console, https://sso.ol.mit.edu/admin/olapps/console/
+1. Log in to the Keycloak Admin Console, <https://sso.ol.mit.edu/admin/olapps/console/>
     - As Devops for access.
 2. Select the Users tab on left navigation.
 3. Search for the user you want to impersonate.

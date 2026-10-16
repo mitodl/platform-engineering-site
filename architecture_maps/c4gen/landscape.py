@@ -54,6 +54,7 @@ INTERNAL_ORDER = [
     "mit-learn",
     "learn-ai",
     "ol-data-platform",
+    "ol-analytics-api",
 ]
 
 # Shared platform / identity / AI systems that recur across models and are worth
@@ -81,6 +82,7 @@ INTERNAL_GROUP: dict[str, str] = {
     "mit-learn": "Discovery",
     "learn-ai": "AI",
     "ol-data-platform": "Data Platform",
+    "ol-analytics-api": "Data Platform",
 }
 
 # Cross-model id aliases that ``repo``-matching cannot catch (the alias system has
@@ -143,7 +145,10 @@ class Landscape:
 
     def internal_ids(self) -> list[str]:
         ids = [n.id for n in self.nodes.values() if n.internal]
-        return sorted(ids, key=lambda x: (INTERNAL_ORDER.index(x) if x in INTERNAL_ORDER else 99, x))
+        return sorted(
+            ids,
+            key=lambda x: (INTERNAL_ORDER.index(x) if x in INTERNAL_ORDER else 99, x),
+        )
 
     def groups(self) -> dict[str, list[str]]:
         """group label -> ordered node ids (internal groups first, then shared)."""
@@ -230,8 +235,10 @@ def compose(models: dict[str, Model]) -> Landscape:
         actor_ids = {a.id for a in model.actors}
         for flow in model.flows:
             for end in (flow.source, flow.target):
-                if end not in actor_ids and model.system_of(end) is None and not is_landscape_node(
-                    ID_ALIASES.get(end, end)
+                if (
+                    end not in actor_ids
+                    and model.system_of(end) is None
+                    and not is_landscape_node(ID_ALIASES.get(end, end))
                 ):
                     unresolved.add((name, end))
             if flow.source in actor_ids or flow.target in actor_ids:
@@ -290,7 +297,7 @@ def _find_cycles(pairs: list[tuple[str, str]]) -> list[list[str]]:
     def dfs(node: str, stack: list[str], on_stack: set[str]) -> None:
         for nxt in adj[node]:
             if nxt in on_stack:
-                cyc = stack[stack.index(nxt):]
+                cyc = stack[stack.index(nxt) :]
                 if len(cyc) >= 2:
                     cycles.add(canonical(cyc))
             elif nxt not in visited_global:

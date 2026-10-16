@@ -30,7 +30,11 @@ ASYNC_COLOR = "#e8a33d"
 # Kroki's form-field limit.
 _ASYNC_TAG = f'AddRelTag("async", $lineStyle=DashedLine(), $lineColor="{ASYNC_COLOR}")'
 
-_SHAPE_MACRO = {"container": "Container", "db": "ContainerDb", "queue": "ContainerQueue"}
+_SHAPE_MACRO = {
+    "container": "Container",
+    "db": "ContainerDb",
+    "queue": "ContainerQueue",
+}
 
 
 def _title(text: str) -> str:
@@ -46,7 +50,9 @@ def _rel(src: str, tgt: str, label: str, sync: bool) -> str:
 # --------------------------------------------------------------------------
 # System Landscape (composed from every per-system model)
 # --------------------------------------------------------------------------
-def render_landscape_puml(landscape: Landscape, links: dict[str, str] | None = None) -> str:
+def render_landscape_puml(
+    landscape: Landscape, links: dict[str, str] | None = None
+) -> str:
     """Render the composed SOA System Landscape.
 
     Internal systems and the curated shared platform/AI nodes are drawn grouped by
@@ -72,7 +78,9 @@ def render_landscape_puml(landscape: Landscape, links: dict[str, str] | None = N
             )
         out.append("}")
     for edge in landscape.edges:
-        out.append(_rel(alias(edge.source), alias(edge.target), edge.summary(), edge.sync))
+        out.append(
+            _rel(alias(edge.source), alias(edge.target), edge.summary(), edge.sync)
+        )
     out.append("@enduml")
     return "\n".join(out)
 
@@ -96,22 +104,32 @@ def render_context_puml(model: Model, links: dict[str, str] | None = None) -> st
 
     def ctx_node(system_id: str) -> str:
         s = next((x for x in model.systems if x.id == system_id), None)
-        return _group_alias(s.context_group) if (s and s.context_group) else alias(system_id)
+        return (
+            _group_alias(s.context_group)
+            if (s and s.context_group)
+            else alias(system_id)
+        )
 
     used = {f.source for f in model.flows} | {f.target for f in model.flows}
     for actor in model.actors:
         if actor.id in used:
-            out.append(f"Person({alias(actor.id)}, {q(actor.name)}, {q(_tagline(actor.description))})")
+            out.append(
+                f"Person({alias(actor.id)}, {q(actor.name)}, {q(_tagline(actor.description))})"
+            )
     for s in model.systems:
         if s.context_group:
             continue
         macro = "System" if s.kind == "internal" else "System_Ext"
         link = links.get(s.id)
         link_arg = f', $link="{link}"' if link else ""
-        out.append(f"{macro}({alias(s.id)}, {q(s.name)}, {q(_tagline(s.description))}{link_arg})")
+        out.append(
+            f"{macro}({alias(s.id)}, {q(s.name)}, {q(_tagline(s.description))}{link_arg})"
+        )
     for label, members in groups.items():
         names = ", ".join(m.name for m in members)
-        out.append(f"System_Ext({_group_alias(label)}, {q(label)}, {q(_short(names, 48))})")
+        out.append(
+            f"System_Ext({_group_alias(label)}, {q(label)}, {q(_short(names, 48))})"
+        )
 
     seen: dict[tuple[str, str], Flow] = {}
     pairs: set[frozenset[str]] = set()
@@ -136,7 +154,9 @@ def render_context_puml(model: Model, links: dict[str, str] | None = None) -> st
 # --------------------------------------------------------------------------
 def render_container_puml(model: Model, links: dict[str, str] | None = None) -> str:
     links = links or {}
-    primary = next((s for s in model.systems if s.id == model.meta.primary_system), None)
+    primary = next(
+        (s for s in model.systems if s.id == model.meta.primary_system), None
+    )
     if primary is None:
         raise ValueError(f"primary_system {model.meta.primary_system!r} not in model")
     container_ids = {c.id for c in primary.containers}
@@ -151,7 +171,9 @@ def render_container_puml(model: Model, links: dict[str, str] | None = None) -> 
     touch = _nodes_touching(model, container_ids | {primary.id})
     for actor in model.actors:
         if actor.id in touch:
-            out.append(f"Person({alias(actor.id)}, {q(actor.name)}, {q(_tagline(actor.description))})")
+            out.append(
+                f"Person({alias(actor.id)}, {q(actor.name)}, {q(_tagline(actor.description))})"
+            )
 
     out.append(f"System_Boundary({alias(primary.id)}_b, {q(primary.name)}) {{")
     for c in primary.containers:
@@ -182,8 +204,16 @@ def render_container_puml(model: Model, links: dict[str, str] | None = None) -> 
             and _drawn(model, flow.target, container_ids, touch)
         ):
             continue
-        s = flow.source if flow.source in container_ids else _owner_id(model, flow.source)
-        t = flow.target if flow.target in container_ids else _owner_id(model, flow.target)
+        s = (
+            flow.source
+            if flow.source in container_ids
+            else _owner_id(model, flow.source)
+        )
+        t = (
+            flow.target
+            if flow.target in container_ids
+            else _owner_id(model, flow.target)
+        )
         if entry:
             s = entry if s == primary.id else s
             t = entry if t == primary.id else t
@@ -294,7 +324,9 @@ def render_dynamic_puml(model: Model, scenario_id: str) -> str:
     for i, step in enumerate(scenario.steps, 1):
         label = f"{i}. {step.label}"
         tag = "" if step.sync else ', $tags="async"'
-        out.append(f"Rel({alias(step.source)}, {alias(step.target)}, {q(_short(label, 60))}{tag})")
+        out.append(
+            f"Rel({alias(step.source)}, {alias(step.target)}, {q(_short(label, 60))}{tag})"
+        )
     out.append("@enduml")
     return "\n".join(out)
 
@@ -316,7 +348,9 @@ def _nodes_touching(model: Model, ids: set[str]) -> set[str]:
     return out
 
 
-def _drawn(model: Model, node_id: str, container_ids: set[str], touch: set[str]) -> bool:
+def _drawn(
+    model: Model, node_id: str, container_ids: set[str], touch: set[str]
+) -> bool:
     if node_id in container_ids:
         return True
     owner = _owner_id(model, node_id)

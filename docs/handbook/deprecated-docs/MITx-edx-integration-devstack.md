@@ -70,8 +70,10 @@ There are two options for this:
 - Copy the `openedx-companion-auth-$VERSION.tar.gz` file from the `dist` folder into devstack's `edx-platform` directory
 - In devstack, run `make lms-shell` and within that shell `pip install openedx-companion-auth-$VERSION.tar.gz`
 
-  - To update to a new development version without having to actually bump the package version, simply `pip uninstall -y openedx-companion-auth`, then install again
+    - To update to a new development version without having to actually bump the package version, simply `pip uninstall -y openedx-companion-auth`, then install again
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------
+
 ## Configure Open edX user and token for use with Application management commands
 
 - In Open edX, create a staff user `mit_application_serviceworker` and then under `/admin/oauth2_provider/accesstoken/` add access token with that newly created staff user.
@@ -131,18 +133,18 @@ In Open edX (derived from instructions [`here`](https://edx.readthedocs.io/proje
 
 - Login to django-admin (default username and password can be found [`here`](https://github.com/openedx/devstack#usernames-and-passwords)), go to `http://edx.odl.local:18000/admin/third_party_auth/oauth2providerconfig/`, and create a new config:
 
-  - Select the default example site
-  - The slug field **MUST** match the the backend's name, which for us is `ol-oauth2`
-  - Check the following checkboxes:
+    - Select the default example site
+    - The slug field **MUST** match the the backend's name, which for us is `ol-oauth2`
+    - Check the following checkboxes:
 
-    - Enabled
-    - Skip hinted login dialog
-    - Skip registration form
-    - Sync learner profile data
-    - Enable SSO id verification
-  - Set Backend name to: `ol-oauth2`
+        - Enabled
+        - Skip hinted login dialog
+        - Skip registration form
+        - Sync learner profile data
+        - Enable SSO id verification
+    - Set Backend name to: `ol-oauth2`
 
-  - In "Other settings", put:
+    - In "Other settings", put:
 
     ```
     {
@@ -152,25 +154,25 @@ In Open edX (derived from instructions [`here`](https://edx.readthedocs.io/proje
     }
     ```
 
-  - `EXTERNAL_MIT_APP_HOST` will depend on your OS, but it needs to be resolvable within the edx container
+    - `EXTERNAL_MIT_APP_HOST` will depend on your OS, but it needs to be resolvable within the edx container
 
-    - Linux users: The gateway IP of the docker-compose networking setup for MIT Application as found via `docker network inspect mit-Application_default | grep Gateway` e.g; `docker network inspect mitxonline_default | grep Gateway`
-    - OSX users: Use `host.docker.internal`
+        - Linux users: The gateway IP of the docker-compose networking setup for MIT Application as found via `docker network inspect mit-Application_default | grep Gateway` e.g; `docker network inspect mitxonline_default | grep Gateway`
+        - OSX users: Use `host.docker.internal`
 
-  - Save the configuration.
+    - Save the configuration.
 
 ## Configure Open edX to support OAuth2 authentication from MITx Application
 
-   - Go to `http://edx.odl.local:18000/admin/oauth2_provider/application/` and add/edit the `edx-oauth-app` entry.
-   - Ensure these settings are set:
+- Go to `http://edx.odl.local:18000/admin/oauth2_provider/application/` and add/edit the `edx-oauth-app` entry.
+- Ensure these settings are set:
 
-      - Name: `edx-oauth-app`
-      - Redirect uris: `http://{Domain}:{PORT}/login/_private/complete`
-      - Client type: `Confidential`
-      - Authorization grant type: `Authorization code`
-      - Skip authorization is checked.
+    - Name: `edx-oauth-app`
+    - Redirect uris: `http://{Domain}:{PORT}/login/_private/complete`
+    - Client type: `Confidential`
+    - Authorization grant type: `Authorization code`
+    - Skip authorization is checked.
 
-   - Save `Client id` and `Client secret`.
+- Save `Client id` and `Client secret`.
 
 Update your MIT Application `.env` file. Set `OPENEDX_API_CLIENT_ID` and `OPENEDX_API_CLIENT_SECRET` to the values from the record you created or updated in the last step.
 
@@ -178,16 +180,16 @@ Also set the **LOGOUT_REDIRECT_URL** in `.env`:
 
     LOGOUT_REDIRECT_URL=http://edx.odl.local:18000/logout
 
-  - Build the MIT Application: `docker-compose build`
+- Build the MIT Application: `docker-compose build`
 
 You should now be able to run some MIT Application management commands to ensure the service worker is set up properly:
 
-   - `sync_courserun --all ALL` should sync the two test courses (if you made them).
-      - `sync_courseruns --all ALL` in MITxPro
-   - `repair_missing_courseware_records` should also work.
+- `sync_courserun --all ALL` should sync the two test courses (if you made them).
+    - `sync_courseruns --all ALL` in MITxPro
+- `repair_missing_courseware_records` should also work.
 
 In the separate browser session, attempt to log in again. This time, you should be able to log in through MIT Application, and you should be able to get to the edX LMS dashboard. If not, then double-check your provider configuration settings and try again.
 
-   - If you are still getting "Can't fetch settings" errors, **make sure** your Site is set properly - there are three options by default and only one works. (This was typically the problem I had.)
+- If you are still getting "Can't fetch settings" errors, **make sure** your Site is set properly - there are three options by default and only one works. (This was typically the problem I had.)
 
 **Optionally**, log into the LMS Django Admin and make your MIT Application superuser account a superuser there too.

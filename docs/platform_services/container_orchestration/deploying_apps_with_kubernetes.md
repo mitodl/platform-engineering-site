@@ -48,7 +48,6 @@ General Rules:
     - Service address spaces jump +60 on the third octet for CI->QA->Production
     - Service address spaces are at least `/23` -> ~512 addresses per space
 
-
 #### Operations VPC
 
 | Environment | Services | Pods |
@@ -81,14 +80,13 @@ General Rules:
 | QA | 10.110.86.0/23 | 10.5.128.0/21<br/>10.5.136.0/21<br/>10.5.144.0/21<br/>10.5.152.0/21 |
 | Production | 10.110.146.0/23 | 10.7.128.0/21<br/>10.7.136.0/21<br/>10.7.144.0/21<br/>10.7.152.0/21 |
 
-
 Additionally there are four 'public' subnets per VPC used exclusively for NAT gateways. These are not terribly important and are documented in the yaml configuration. NAT gateways are somewhat expensive so we have two ways of deploying them. `single` deploys one NAT gateway in the first availability zone only. `all` deploys a NAT gateway in each availability zone. `all` is preferred for production environments.
 
 Networking Configuration YAML
 
- - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml)
- - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml)
- - [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml)
+- [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.CI.yaml)
+- [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.QA.yaml)
+- [src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/infrastructure/aws/network/Pulumi.infrastructure.aws.network.Production.yaml)
 
 #### EKS Cluster
 
@@ -151,6 +149,7 @@ ol-infrastructure/src/ol_infrastructure/infrastructure/aws/eks and run pulumi
 up.
 
 For instance, were you building the data CI cluster, you'd run:
+
 ```bash
 pulumi up -s infrastructure.aws.eks.data.CI
 ```

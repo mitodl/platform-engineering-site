@@ -1,0 +1,164 @@
+meta:
+  name: OL Analytics API
+  primary_system: ol-analytics-api
+  api_container: analytics-api
+  has_infrastructure_references: false
+  description: >-
+    ol-analytics-api is a multi-tenant, read-only FastAPI gateway over StarRocks. Each consumer is a tenant: an independent FastAPI sub-app with its own routes, auth model and OpenAPI document, mounted on one root app that owns the shared StarRocks connection pool, Vault credential refresh, health checks and observability. Two tenants were mounted as of October 2026. `b2b_dashboard` (/api/v1/analytics) serves k-anonymized B2B site-license aggregates (contract utilization, enrollment funnel, engagement trend, program funnel, content engagement, needs-attention) plus a consent-gated learner-progress view (the consent gate fails open in QA and Production until a consent field exists upstream) to MIT Learn's organization dashboard; it trusts the X-Userinfo header APISIX builds from the mit-learn Keycloak session and confirms org-manager status with a service-authenticated round-trip to MITx Online. `b2b_learner_records` (/api/v1/learner-records) serves identifiable learner, enrollment and course records to contracted partner integrations over Keycloak client-credentials tokens, which the tenant verifies itself against the realm JWKS. Every query reads materialized views that ol-data-platform's dbt builds in the StarRocks `b2b_analytics` and `b2b_learner_records` databases from the dimensional Iceberg layer, which a Dagster schedule rebuilds nightly once enabled (it ships stopped). Tenant isolation is application-layer only: all tenants share one StarRocks pool authenticated as the Vault `app` role. Deployed by ol-infrastructure (applications/ol_analytics_api) to the data EKS clusters, namespace `ol-analytics`, image mitodl/ol-analytics-api-app, min 2 replicas; APISIX hosts analytics.ol.mit.edu (Keycloak redirect flow, dedicated ol-analytics-api-client) and analytics.learn.mit.edu (shares mit-learn's OIDC session, unauth_action pass), with QA at analytics-qa.ol.mit.edu / analytics.rc.learn.mit.edu.
+actors:
+  - id: org-manager
+    name: B2B Organization Manager
+    description: >-
+      Manager of a B2B organization (is_manager in MITx Online, member of the Keycloak organization). Views contract analytics in MIT Learn's dashboard, authenticated by the mit-learn Keycloak session cookie.
+  - id: mit-contract-admin
+    name: MIT Contract Admin
+    description: >-
+      MIT staff holding the Keycloak realm role mit_contract_admin. The only caller allowed on /api/v1/analytics/admin/contract-health; no MIT Learn client called that endpoint as of October 2026.
+  - id: partner-integration
+    name: Partner Integration (machine client)
+    description: >-
+      A contracted training provider or LMS integration with its own Keycloak client-credentials client carrying the learner-records:read scope and a learner_records_organizations claim. No partner client was provisioned in any environment as of October 2026.
+systems:
+  # ---- primary system ------------------------------------------------
+  - id: ol-analytics-api
+    name: OL Analytics API
+    kind: internal
+    repo: https://github.com/mitodl/ol-analytics-api
+    description: Multi-tenant read-only FastAPI analytics gateway over StarRocks.
+    containers:
+      - id: analytics-api
+        name: Analytics API (FastAPI)
+        technology: FastAPI on Granian (ASGI, 1 worker), Python 3.14, K8s
+        description: >-
+          Root ASGI app mounting the b2b_dashboard tenant at /api/v1/analytics and b2b_learner_records at /api/v1/learner-records. Owns the shared aiomysql StarRocks pool, refreshes its Vault-issued StarRocks credentials at 80% of the lease, and exposes /health/{startup,readiness,liveness}/ plus per-tenant /health/readiness/{tenant}/. Stateless apart from in-process TTL caches (org-manager check 60s, MV freshness, JWKS 1h).
+        shape: container
+        source: {repo: 'https://github.com/mitodl/ol-analytics-api', path: src/ol_analytics_api/main.py}
+        components:
+          - id: tenant-b2b-dashboard
+            name: b2b_dashboard tenant
+            technology: FastAPI sub-app (/api/v1/analytics)
+            description: >-
+              Org and contract aggregates under a k-anonymity floor (default 5), a consent-gated learner-progress view (fails open in QA and Production until a consent field exists), and the MIT-admin contract-health view. Gates every org route on X-Userinfo org membership plus a MITx Online manager check, and contract routes on contract ownership.
+            relationships:
+              - {target: core-db, label: Floored aggregate + learner-progress queries, technology: SQL}
+              - {target: mitxonline, label: Org-manager check (OAuth2 client credentials), technology: HTTPS}
+          - id: tenant-learner-records
+            name: b2b_learner_records tenant
+            technology: FastAPI sub-app (/api/v1/learner-records)
+            description: >-
+              Identifiable learner, enrollment and course records for partner integrations. Verifies the bearer JWT itself (RS256, issuer, audience, token class, lifetime), requires learner-records:read and the path org in learner_records_organizations, and ignores X-Userinfo.
+            relationships:
+              - {target: core-db, label: Learner/enrollment queries (consent-gated), technology: SQL}
+              - {target: keycloak, label: Fetch realm JWKS, technology: HTTPS}
+          - id: core-db
+            name: Shared StarRocks access
+            technology: aiomysql pool + query chokepoint
+            description: >-
+              One connection pool for every tenant, schema identifiers validated before splicing, per-statement query_timeout, and the anonymization chokepoint (fetch_and_suppress) that applies each model's CohortPolicy.
+            relationships:
+              - {target: ol-data-platform, label: Read b2b MVs + MV freshness, technology: 'MySQL protocol :9030'}
+              - {target: vault, label: Dynamic StarRocks credentials, technology: HTTPS}
+          - id: core-observability
+            name: Observability & health
+            technology: structlog, OpenTelemetry SDK, sentry-sdk
+            description: >-
+              JSON logs with trace/pod fields, one access-log line per request on the root app, OTLP/HTTP trace export, Sentry errors, and tiered K8s probes.
+            relationships:
+              - {target: grafana-alloy, label: OTLP traces, sync: false, technology: OTLP/HTTP}
+              - {target: sentry, label: Errors, technology: HTTPS}
+  # ---- SOA peers -----------------------------------------------------
+  - id: mit-learn
+    name: MIT Learn
+    kind: external
+    repo: https://github.com/mitodl/mit-learn
+    context_group: SOA Apps
+    description: >-
+      Consumer of the b2b_dashboard tenant. Its Next.js organization dashboard calls the API from the browser (client component) with the mit-learn session cookie, behind the b2b-contract-manager-dashboard and b2b-learner-analytics PostHog flags.
+  - id: mitxonline
+    name: MITx Online
+    kind: external
+    repo: https://github.com/mitodl/mitxonline
+    context_group: SOA Apps
+    description: >-
+      System of record for B2B organizations, contracts and the is_manager flag. Serves GET /api/v0/b2b/service/organization-manager-check/ to this service's OAuth2 client (scope b2b:manager-check).
+  - id: ol-data-platform
+    name: OL Data Platform (StarRocks)
+    kind: external
+    repo: https://github.com/mitodl/ol-data-platform
+    context_group: Data Platform
+    description: >-
+      StarRocks lakehouse FE (lakehouse-starrocks-fe-service.starrocks.svc.cluster.local:9030). dbt (tag:starrocks) builds manual-refresh MVs in the b2b_analytics and b2b_learner_records databases from the dimensional Iceberg tables (dim_contract, bridge_organization_courserun, tfact_enrollment, ...) through the ol_data_lake_{env} external catalog; Dagster's b2b_analytics_starrocks_nightly schedule (06:00 UTC) rebuilds and refreshes them once enabled; it ships with DefaultScheduleStatus.STOPPED.
+  # ---- shared platform / identity -------------------------------------
+  - id: apisix
+    name: APISIX Gateway
+    kind: external
+    context_group: Platform & Identity
+    description: >-
+      Three routes to this service: ol-analytics-api (analytics.ol.mit.edu, openid-connect unauth_action auth), ol-analytics-api-learn (analytics.learn.mit.edu, mit-learn's OIDC client and session cookie, unauth_action pass) and ol-analytics-api-learner-records (both hosts, priority 20, bearer_only with JWKS, required scope learner-records:read, audience check).
+  - id: keycloak
+    name: Keycloak (SSO)
+    kind: external
+    context_group: Platform & Identity
+    description: >-
+      olapps realm. Issues the mit-learn browser session the dashboard reuses, the ol-analytics-api-client OIDC client, and the per-contract learner-records client-credentials clients (300s tokens).
+  - id: vault
+    name: HashiCorp Vault
+    kind: external
+    context_group: Platform & Identity
+    description: >-
+      K8s auth role ol-analytics-api (mount k8s-data). Issues dynamic StarRocks users from database-starrocks/creds/app; the vault-secrets-operator syncs SENTRY_DSN, the MITx Online OAuth pair and the learner-records issuer/audience into env.
+  # ---- observability -------------------------------------------------
+  - id: grafana-alloy
+    name: Grafana Alloy (OTLP receiver)
+    kind: external
+    context_group: Observability
+    description: >-
+      In-cluster OTLP/HTTP receiver (grafana-k8s-monitoring-alloy-receiver.grafana:4318) forwarding traces to Grafana Cloud; it also scrapes the pods' JSON stdout as logs.
+  - id: sentry
+    name: Sentry
+    kind: external
+    context_group: Observability
+    description: Error reporting (send_default_pii false); DSN owned by the ol-infrastructure Sentry stack.
+flows:
+  # ----- dashboard request path (synchronous) ------------------------
+  - {id: manager-mitlearn, source: org-manager, target: mit-learn, label: Open org analytics dashboard, sync: true, protocol: HTTPS, data: "/dashboard/organization/[orgSlug]/analytics", trigger: on request, provenance: {derived_from: code, repo: 'https://github.com/mitodl/mit-learn', path: "frontends/main/src/app/(site)/dashboard/organization/[orgSlug]/analytics/page.tsx"}}
+  - {id: mitlearn-apisix, source: mit-learn, target: apisix, label: B2B analytics GETs (browser fetch + session cookie), sync: true, protocol: HTTPS/JSON, data: "GET /api/v1/analytics/organizations/{sso_organization_id}/...", trigger: on dashboard load, tags: [cross-service], provenance: {derived_from: code, contract_kind: endpoint, contract_key: /api/v1/analytics, repo: 'https://github.com/mitodl/mit-learn', path: frontends/api/src/analytics/clients.ts, line: 22}}
+  - {id: admin-apisix, source: mit-contract-admin, target: apisix, label: Contract health (MIT admin), sync: true, protocol: HTTPS/JSON, data: GET /api/v1/analytics/admin/contract-health, trigger: on request, provenance: {derived_from: code, repo: 'https://github.com/mitodl/ol-analytics-api', path: src/ol_analytics_api/tenants/b2b_dashboard/routers/admin.py, line: 41}}
+  - {id: apisix-keycloak, source: apisix, target: keycloak, label: OIDC session + JWT validation, sync: true, protocol: OIDC, data: "Discovery, session refresh, JWKS", trigger: on request, tags: [auth], provenance: {derived_from: infra, repo: 'https://github.com/mitodl/ol-infrastructure', path: src/ol_infrastructure/applications/ol_analytics_api/__main__.py, line: 680}}
+  - {id: apisix-api-dashboard, source: apisix, target: analytics-api, label: Proxy + X-Userinfo, sync: true, protocol: HTTP, data: "Request + base64 X-Userinfo (sub, organization, realm_access)", trigger: on request, tags: [auth], provenance: {derived_from: infra, repo: 'https://github.com/mitodl/ol-infrastructure', path: src/ol_infrastructure/applications/ol_analytics_api/__main__.py, line: 830}}
+  - {id: api-mitxonline, source: analytics-api, target: mitxonline, label: Org-manager check (cached 60s), sync: true, protocol: HTTPS (OAuth2 client credentials), data: "POST /oauth2/token/; GET /api/v0/b2b/service/organization-manager-check/", trigger: on org-scoped request (cache miss), tags: [cross-service, auth, temporary], provenance: {derived_from: code, contract_kind: endpoint, contract_key: /api/v0/b2b/service/organization-manager-check/, repo: 'https://github.com/mitodl/ol-analytics-api', path: src/ol_analytics_api/tenants/b2b_dashboard/mitxonline_client.py, line: 146}}
+  - {id: api-starrocks-analytics, source: analytics-api, target: ol-data-platform, label: Read b2b_analytics MVs, sync: true, protocol: 'MySQL protocol (aiomysql) :9030', data: "mv_b2b_contract_utilization, mv_b2b_enrollment_completion_funnel, mv_b2b_(contract_)monthly_engagement_trend, mv_b2b_program_funnel, mv_b2b_(contract_)content_engagement_depth, mv_b2b_mit_admin_contract_health; as_of from information_schema.materialized_views", trigger: on request, tags: [cross-service], provenance: {derived_from: code, repo: 'https://github.com/mitodl/ol-analytics-api', path: src/ol_analytics_api/tenants/b2b_dashboard/routers/organizations.py, line: 170}}
+  - {id: api-starrocks-learner, source: analytics-api, target: ol-data-platform, label: Read b2b_learner_records MVs, sync: true, protocol: 'MySQL protocol (aiomysql) :9030', data: "mv_b2b_learner, mv_b2b_learner_enrollment, mv_b2b_contract_courserun (consent-gated outcomes, fail-open in QA and Production)", trigger: on request, tags: [cross-service, pii], provenance: {derived_from: code, repo: 'https://github.com/mitodl/ol-analytics-api', path: src/ol_analytics_api/tenants/b2b_learner_records/queries.py, line: 44}}
+  # ----- partner learner-records path (synchronous) ------------------
+  - {id: partner-keycloak, source: partner-integration, target: keycloak, label: Client-credentials token, sync: true, protocol: OAuth2, data: "Access token (scope learner-records:read, aud ol-analytics-api-client, learner_records_organizations)", trigger: every 300s token lifetime, tags: [auth], provenance: {derived_from: infra, repo: 'https://github.com/mitodl/ol-infrastructure', path: src/ol_infrastructure/substructure/keycloak/learner_records.py, line: 40}}
+  - {id: partner-apisix, source: partner-integration, target: apisix, label: Learner-records GETs (Bearer), sync: true, protocol: HTTPS/JSON, data: "GET /api/v1/learner-records/organizations/{id}/{learners,enrollments,courses}", trigger: on request, provenance: {derived_from: code, contract_kind: endpoint, contract_key: /api/v1/learner-records, repo: 'https://github.com/mitodl/ol-analytics-api', path: openapi/specs/b2b_learner_records.yaml, line: 8}}
+  - {id: apisix-api-learner-records, source: apisix, target: analytics-api, label: Proxy bearer-only route, sync: true, protocol: HTTP, data: Request + Authorization header (JWT re-verified by the app), trigger: on request, tags: [auth], provenance: {derived_from: infra, repo: 'https://github.com/mitodl/ol-infrastructure', path: src/ol_infrastructure/applications/ol_analytics_api/__main__.py, line: 799}}
+  - {id: api-keycloak-jwks, source: analytics-api, target: keycloak, label: Fetch realm JWKS (cached 1h), sync: true, protocol: HTTPS, data: "{issuer}/protocol/openid-connect/certs", trigger: cache miss or unseen kid, tags: [auth], provenance: {derived_from: code, repo: 'https://github.com/mitodl/ol-analytics-api', path: src/ol_analytics_api/tenants/b2b_learner_records/token.py, line: 116}}
+  # ----- credentials & config -----------------------------------------
+  - {id: api-vault-starrocks, source: analytics-api, target: vault, label: K8s login + dynamic StarRocks creds, sync: true, protocol: HTTPS (hvac), data: "database-starrocks/creds/app (username, password, lease)", trigger: on startup + at 80% of lease, tags: [config], provenance: {derived_from: code, repo: 'https://github.com/mitodl/ol-analytics-api', path: src/ol_analytics_api/core/db/vault_credentials.py, line: 35}}
+  - {id: vault-api-secrets, source: vault, target: analytics-api, label: VSO-synced env secrets, sync: true, protocol: HTTPS (vault-secrets-operator), data: "SENTRY_DSN; MITx Online OAuth client id/secret; learner-records issuer + audience", trigger: "operator refresh 1m/1h", tags: [config], provenance: {derived_from: infra, repo: 'https://github.com/mitodl/ol-infrastructure', path: src/ol_infrastructure/applications/ol_analytics_api/__main__.py, line: 295}}
+  # ----- observability (asynchronous) ---------------------------------
+  - {id: api-alloy, source: analytics-api, target: grafana-alloy, label: OTLP traces, sync: false, protocol: OTLP/HTTP, data: Request + httpx client spans, trigger: batched per span, tags: [async, observability], provenance: {derived_from: code, repo: 'https://github.com/mitodl/ol-analytics-api', path: src/ol_analytics_api/core/observability/telemetry.py, line: 201}}
+  - {id: api-sentry, source: analytics-api, target: sentry, label: Report errors, sync: true, protocol: HTTPS, data: Exceptions (no default PII), trigger: on error, tags: [observability], provenance: {derived_from: code, repo: 'https://github.com/mitodl/ol-analytics-api', path: src/ol_analytics_api/core/observability/sentry.py, line: 103}}
+scenarios:
+  - id: org-manager-dashboard
+    title: "Org manager loads the B2B analytics dashboard (synchronous)"
+    description: >-
+      The dashboard is a client component, so the browser makes every call. MIT Learn first lists the organizations the user manages from MITx Online to get the org's Keycloak UUID (sso_organization_id), then fetches each panel from the Learn-scoped analytics host with the mit-learn session cookie. APISIX's learn route reuses mit-learn's OIDC session and forwards X-Userinfo. The b2b_dashboard tenant checks the org is in the user's organization claim, confirms is_manager with MITx Online (cached 60s per user and org), reads the backing materialized view, drops rows under the k-anonymity floor, and returns the rows with as_of taken from that view's last refresh.
+    steps:
+      - {source: org-manager, target: mit-learn, label: "Open /dashboard/organization/[orgSlug]/analytics", sync: true}
+      - {source: mit-learn, target: mitxonline, label: "List managed orgs (sso_organization_id)", sync: true}
+      - {source: mit-learn, target: apisix, label: "GET .../organizations/{uuid}/contract-utilization (cookie)", sync: true}
+      - {source: apisix, target: analytics-api, label: "Proxy + X-Userinfo", sync: true}
+      - {source: analytics-api, target: mitxonline, label: "Org-manager check (service token)", sync: true}
+      - {source: analytics-api, target: ol-data-platform, label: "SELECT mv_b2b_contract_utilization + MV refresh time", sync: true}
+  - id: partner-learner-records
+    title: "Partner integration reads learner records (synchronous)"
+    description: >-
+      Machine-to-machine path for the b2b_learner_records tenant. The partner mints a client-credentials token, APISIX's bearer-only route verifies it against the realm JWKS and requires learner-records:read and the ol-analytics-api-client audience, and the app verifies the token again itself because the pod is reachable without going through APISIX. Access is granted only for organizations listed in the token's learner_records_organizations claim. No partner client was provisioned in any environment as of October 2026.
+    steps:
+      - {source: partner-integration, target: keycloak, label: "client_credentials token", sync: true}
+      - {source: partner-integration, target: apisix, label: "GET /api/v1/learner-records/organizations/{id}/learners (Bearer)", sync: true}
+      - {source: apisix, target: analytics-api, label: "Proxy (bearer_only, JWKS, scope check)", sync: true}
+      - {source: analytics-api, target: keycloak, label: "Fetch JWKS (cached)", sync: true}
+      - {source: analytics-api, target: ol-data-platform, label: "SELECT b2b_learner_records.mv_b2b_learner", sync: true}

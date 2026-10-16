@@ -3,13 +3,13 @@
 To get logs from heroku applications -> Grafana we need to configure a 'log drain' in heroku for each application. This is pretty straight forward but does require collecting a few pieces of information first:
 
 - The address of the 'vector-log-proxy'
-  - log-proxy-ci.odl.mit.edu
-  - log-proxy-qa.odl.mit.edu
-  - log-proxy.odl.mit.edu
+    - log-proxy-ci.odl.mit.edu
+    - log-proxy-qa.odl.mit.edu
+    - log-proxy.odl.mit.edu
 - The basic auth password for the 'vector-log-proxy' server.
-  - `sops -d src/bridge/secrets/vector/vector_log_proxy.ci.yaml`  heroku section, username: vector-log-proxy
-  - `sops -d src/bridge/secrets/vector/vector_log_proxy.qa.yaml`  heroku section, username: vector-log-proxy
-  - `sops -d src/bridge/secrets/vector/vector_log_proxy.production.yaml`  heroku section, username: vector-log-proxy
+    - `sops -d src/bridge/secrets/vector/vector_log_proxy.ci.yaml`  heroku section, username: vector-log-proxy
+    - `sops -d src/bridge/secrets/vector/vector_log_proxy.qa.yaml`  heroku section, username: vector-log-proxy
+    - `sops -d src/bridge/secrets/vector/vector_log_proxy.production.yaml`  heroku section, username: vector-log-proxy
 
 Next we configure the log drain using the heroku-cli. There is no web interface for configuring this.
 
@@ -27,5 +27,5 @@ Successfully added drain https://vector-log-proxy:<The rest of the URL you just 
 
 ## References
 
-https://devcenter.heroku.com/articles/logplex
-https://devcenter.heroku.com/articles/log-drains#https-drains
+<https://devcenter.heroku.com/articles/logplex>
+<https://devcenter.heroku.com/articles/log-drains#https-drains>

@@ -9,7 +9,6 @@
 * [MITXOnline](#mitxonline)
 * [Reddit](#reddit)
 
-
 # Introduction
 
 This document is meant to be one stop shopping for your MIT OL Devops oncall needs.
@@ -30,6 +29,7 @@ searchable text and omit specifics that will vary. For instance:
 ```
 "[Prometheus]: [FIRING:1] DiskUsageWarning mitx-production (xqwatcher filesystem /dev/root ext4 ip-10-7-0-78 integrations/linux_hos"
 ```
+
 would boil down to `DiskUsageWarning xqwatcher` because the rest will change and
 make finding the right entry more difficult.
 
@@ -56,22 +56,20 @@ Github repository, change directory to
 `src/mit/ol-infrastructure/src/ol_infrastructure/applications/open_discussions`
 and run `pulumi up'.
 
-
 ## SaltStack
 
-
-### MemoryUsageWarning operations-<ENVIRONMENT>
+### MemoryUsageWarning `operations-<ENVIRONMENT>`
 
 _Diagnosis_
 
 You get an alert like: `[Prometheus]: [FIRING:1] MemoryUsageWarning operations-qa (memory ip-10-1-3-33 integrations/linux_host warning)`.
-
 
 You'll need an account and ssh key set up on the saltstack master hosts. This should happen when you join the team.
 
 Now, ssh into the salt master appropriate to the environment you received the alert for. The IP address is cited in the alert. So, for the above:
 
 (Substitute your username and the appropriate environment if not qa, e.g. production)
+
 ```
 ssh -l cpatti salt-qa.odl.mit.edu
 ```
@@ -90,7 +88,6 @@ In this case, the machine only has 120M free which isn't great.
 _Mitigation_
 
 We probably need to restart the Salt master service. Use the systemctl command for that:
-
 
 ```
 root@ip-10-1-3-33:~#  systemctl restart salt-master
@@ -271,8 +268,8 @@ _Mitigation_
 
 You need to refresh the credentials the salt-proxy is using for Heroku to manage this app.
 
-- ssh to the salt production server: `ssh salt-production.odl.mit.edu`
-- Run the salt proxy command to refresh creds: `salt proxy-bootcamps-production state.sls heroku.update_heroku_config`. You should see output similar to the following:
+* ssh to the salt production server: `ssh salt-production.odl.mit.edu`
+* Run the salt proxy command to refresh creds: `salt proxy-bootcamps-production state.sls heroku.update_heroku_config`. You should see output similar to the following:
 
 ```
 cpatti@ip-10-0-2-195:~$ sudo salt proxy-bootcamps-production state.sls heroku.update_heroku_config
@@ -339,7 +336,7 @@ Fixing this issue currently requires an instance refresh, as the newly launched
 instances will have all the necessary credentials.
 
 From the EC2 console, on the left hand side, click "Auto Scaling Groups", then
-type 'edxapp-web-mitx-<ENVIRONMENT>' e.g. 'edxapp-web-mitx-production'. This
+type `edxapp-web-mitx-<ENVIRONMENT>` e.g. 'edxapp-web-mitx-production'. This
 should yield 1 result with something like 'edxapp-web-autoscaling-group-XXXX' in
 the 'Name' column. Click that.
 
@@ -375,7 +372,7 @@ First, generate a new API key in Hubspot. You can do this by logging into
 Hubspot,
 
 You can do this using the username/password and TOTP token found in
-[Vault](https://vault-production.odl.mit.edu/ui/vault/secrets/platform-secrets/kv/hubspot/details?version=1.
+[Vault](<https://vault-production.odl.mit.edu/ui/vault/secrets/platform-secrets/kv/hubspot/details?version=1>.
 
 Once you're logged in, click "Open" next to "MIT XPro" in the Accounts list.
 
@@ -415,7 +412,8 @@ Sentry page to ensure that the Last Seen value reflects something appropriately
 long ago and you can resolve this ticket.
 
 If you are asked to run a sync to Hubspot:
-- Inform the requester, preferably on the #product-xpro Slack that the process
+
+* Inform the requester, preferably on the #product-xpro Slack that the process
 will take quite a long time. If this is time critical they may ask you to run
 only parts of the sync. You can find documentation on the command you'll run
 [here](https://github.com/mitodl/mitxpro/blob/master/hubspot_xpro/management/commands/sync_db_to_hubspot.py).
@@ -463,7 +461,6 @@ Since we have no access to the Cybersource web UI, we must send E-mail
 to: <sbmit@mit.edu> to validate the status of the current credential
 or request a new one.
 
-
 ### Grading Celery Task Failed (STUB entry. Needs love)
 
 _Diagnosis_
@@ -477,8 +474,7 @@ Keycloak Platform Engineering realm credentials.
 
 Then, get the course ID for the failed grading tasks and search for it in
 Celery Monitoring by entering the course key in the kwargs input, surrounded
-by {*' and '*}, for example {*'course-v1:MITxT+14.310x+1T2024'*}.
-
+by {_' and '_}, for example {_'course-v1:MITxT+14.310x+1T2024'_}.
 
 _Mitigation_
 
@@ -488,6 +484,7 @@ for mitxonline. (TODO: Needs details. How do we get there? etc.)
 ## Reddit
 
 ### [Prometheus]: [FIRING:1] DiskUsageWarning production-apps (reddit filesystem /dev/nvme0n1p1 ext4 ip-10-13-1-59 integrations/linux_
+
 ### [Pingdom] Open Discussions production home page has an alert
 
 _Diagnosis_
