@@ -3,6 +3,12 @@
 - Each environment is deployed independently (e.g. separate servers, DBs, etc).
 - Each environment deploys new code included in the release once the automated tests for that particular release-commit pass successfully.
 
+> The `release-candidate` and `release` branches below apply to apps on the
+> legacy release process. Apps on the
+> [Concourse release workflow](release-process/concourse-release-workflow.md)
+> have neither branch: RC and Production deploy the same image, built from a
+> `releases/<version>` branch and tagged with the calendar version.
+
 ## Environment Name
 
 |              |                                                      |

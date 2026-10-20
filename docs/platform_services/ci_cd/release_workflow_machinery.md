@@ -70,7 +70,14 @@ the whole git side of a release:
 
 `github-issues` opens the release issue from `body_file` and, configured with
 `issue_state: closed` and `skip_if_labeled: [abandoned]`, acts as the production
-gate. `github-deployments` records the RC and Production GitHub Deployments.
+gate. `github-deployments` records the RC and Production GitHub Deployments. Its
+`put action: finish` takes an optional `comment_on_issue_file`; the Production
+job passes the release gate's `gh_issue.json`, so that on success the resource
+comments the Deployment on the issue whose closing authorized the promotion. The
+comment is posted after the status is recorded and never fails the put, because
+the release merge-back follows it. An older resource image fails the put on the
+unknown param, so a change to this contract has to publish the image before the
+pipeline that passes it is regenerated.
 
 The resource's own reference documentation, covering the source fields and the
 hotfix contract, is in
@@ -103,7 +110,7 @@ Jobs:
 | `deploy-ol-application-<app>-ci` | New CI image | Pulumi deploy to CI. |
 | `build-<app>-release-image` | The `<app>-release` resource | Bumps the version, `put action: create`, checks out the cut release, builds the image tagged with the version. |
 | `deploy-ol-application-<app>-qa` | New release image | Pulumi deploy to QA, then opens the release issue from `checklist.md` and marks the RC Deployment successful. |
-| `deploy-ol-application-<app>-production` | `<app>-release-gate` (a closed release issue) | Pulumi deploy to production, then marks the Production Deployment successful and runs `put action: finish`. |
+| `deploy-ol-application-<app>-production` | `<app>-release-gate` (a closed release issue) | Pulumi deploy to production, then marks the Production Deployment successful (and comments it on the closed release issue) and runs `put action: finish`. |
 | `abandon-<app>-release` | Manual, or `/doof abandon` | `put action: abandon`: deletes the release branch and tag. |
 
 The image is built from the cut `releases/<version>` branch rather than from the
@@ -125,7 +132,8 @@ Its background loops:
   `promote-ready` label. An app with neither a `slack_channel` in the registry nor
   the `RELEASE_ANNOUNCE_CHANNEL` fallback is skipped entirely.
 - release progress, every 120s: announces RC and Production deployments as they
-  reach success, and nags every 24h about a release that has been cut but not
+  reach success (the RC announcement reads the release issue's checklist and
+  @-mentions authors with unchecked items), and nags every 24h about a release that has been cut but not
   finished for longer than `RELEASE_STUCK_AFTER_HOURS` (default 24).
 
 It reads its app list from `REPOS_CONFIG`, a JSON blob rendered from the registry
