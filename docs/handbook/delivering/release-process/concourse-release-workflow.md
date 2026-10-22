@@ -84,7 +84,8 @@ the channel rather than only to you.
 
 | Command | What it does |
 | --- | --- |
-| `/doof release <app>` | Cuts a release: next version, release branch and tag, image build, QA deploy, release issue. |
+| `/doof release <app>` | Cuts a release: next version, release branch and tag, image build, QA deploy, release issue. Refuses if a release is already in flight; see below. |
+| `/doof release <app> supersede <version>` | Confirms discarding the in-flight release `<version>` and cuts a new one. |
 | `/doof hotfix <app> <sha>` | Cuts what production runs plus one commit. See below. |
 | `/doof preview <app>` | Shows what the next release would contain. Changes nothing. |
 | `/doof release-notes <app>` | Lists the unreleased commits. |
@@ -101,11 +102,18 @@ commits in the release. Verify your own changes in QA and check your boxes. When
 every box is checked the bot posts a "ready to promote" message with a button
 into the app's Slack channel, mentioning whoever ran `/doof release`.
 
-Two things about that message are worth knowing. The checklist itself mentions
-nobody: the authors in it are commit email addresses written into a GitHub issue.
-`/doof wait-for-checkboxes <app>` is where authors get @-mentioned, by resolving
-those emails through Slack's user lookup. And the `promote-ready` label the bot
-applies is bookkeeping to stop the notification repeating, not a gate signal.
+Three things about that flow are worth knowing.
+
+- The checklist itself mentions nobody: the authors in it are commit email
+  addresses written into a GitHub issue.
+- Authors get @-mentioned in Slack, by resolving those emails through Slack's
+  user lookup, in two places. The "deployed to RC" announcement ends with
+  `Still waiting on:` and names each author who still has an unchecked item
+  (once each, however many items they have). `/doof wait-for-checkboxes <app>`
+  does the same while it watches the checklist. An author with no Slack match is
+  shown by name instead.
+- The `promote-ready` label the bot applies is bookkeeping to stop the
+  notification repeating, not a gate signal.
 
 ## Hotfixes
 
@@ -137,12 +145,32 @@ the remote, which means it was cut but never finished. That is a statement about
 git, not about deployment: a release whose production deploy succeeded but whose
 merge-back failed is still in flight by this definition.
 
-`/doof release` on an app with an in-flight release _supersedes_ it: the old
-release branch is deleted, and its tag with it if that release never reached
-production. A release that did reach production keeps its tag, because the tag is
-the only thing tying what production runs back to a commit. Doof refused a second
-release instead. The change is deliberate: pinning to the in-flight version froze
-the resource indefinitely after a single failed merge-back.
+Like Doof, `/doof release` will not quietly start a second release. With one in
+flight it refuses, privately to you, names the in-flight release, and prints the
+choices:
+
+- `/doof release <app> supersede <version>` discards it and cuts a new one.
+- `/doof release-status <app>` shows where it stands.
+- `/doof abandon <app>` discards it without starting another.
+
+Superseding deletes the old release branch, and its tag with it if that release
+never reached production. A release that did reach production keeps its tag,
+because the tag is the only thing tying what production runs back to a commit.
+The confirmation has to name the version, so it cannot discard a release that was
+cut after you read the warning. `supersede` is a plain word rather than a
+`--flag` because Slack clients can rewrite a leading `--`, and a misspelled or
+extra word is refused rather than read as a plain release.
+
+The bot also refuses while a `build-<app>-release-image` build is pending or
+running, confirmation or not: the branch only appears once that build reaches the
+cut step, so a second release started now would supersede whatever the first one
+cuts. If that build is stuck pending (a paused pipeline, no workers), abort it in
+Concourse. And if the bot cannot tell whether a release is in flight or a build
+is running, because a lookup failed, it refuses rather than guess.
+
+Superseding exists because pinning to the in-flight version froze the resource
+indefinitely after a single failed merge-back. Doof refused a second release
+outright; this keeps the escape hatch but makes it a deliberate act.
 
 `/doof abandon <app>` deletes the in-flight release's branch and tag and cancels
 any pending hotfix request. Use it when a release was cut and must not ship.
@@ -151,8 +179,15 @@ any pending hotfix request. Use it when a release was cut and must not ship.
 
 A closed release issue means _promotion was authorized_, not that production is
 running that version. What production is running is recorded as a GitHub
-Deployment on the `Production` environment of the app's repo, and the bot posts
-a message when an RC or Production deployment reaches success.
+Deployment on the `Production` environment of the app's repo, and that Deployments
+record, not the issue, is the source of truth for what is live. The bot posts a
+message when an RC or Production deployment reaches success.
+
+When the production deploy succeeds, the pipeline also comments on the closed
+release issue with the Production Deployment and a link to the environment's
+deployment history, so a closed issue is not misread as "shipped". The comment is
+a pointer only: if posting it fails, the pipeline warns and carries on to the
+merge-back.
 
 ## Differences from Doof worth knowing
 
@@ -166,7 +201,12 @@ a message when an RC or Production deployment reaches success.
   sat cut-but-unfinished for 24 hours. Rollout narration comes from kubewatch,
   routed by the `ol.mit.edu/slack-channel` pod label rather than by the release.
 - The release PR state labels Doof maintained (`WAITING_FOR_CHECKBOXES` and the
-  rest) are gone. The release issue carries only `release` and `promote-ready`.
+  rest) are gone, and nothing replaces them as a label. The release issue carries
+  only `release` and `promote-ready`; the Production Deployment comment on the
+  closed issue and the Deployments record say what is live.
+- Starting a release while one is in flight still needs a deliberate step, as it
+  did with Doof, but the step is `supersede <version>` rather than closing the
+  old release first.
 
 ## When something looks stuck
 

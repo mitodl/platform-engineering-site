@@ -32,8 +32,8 @@ other side is described in
 - The Docker Hub repo `mitodl/<app>-app` exists. The ECR repository does not need
   creating: both build jobs create it idempotently.
 - No stale release refs. A leftover `releases/<version>` branch, usually from an
-  earlier experiment, reads as an in-flight release and the first cut will
-  supersede it. Check with `git ls-remote --heads origin 'releases/*'` and delete
+  earlier experiment, reads as an in-flight release, so the first `/doof release`
+  refuses until you `abandon` or `supersede` it. Check with `git ls-remote --heads origin 'releases/*'` and delete
   what you find before flipping.
 - A non-`main` default branch, or a repo name that differs from the app name,
   is handled by the registry (`repo_main_branch`, `github_repo`), but check the
@@ -124,6 +124,12 @@ pipeline (the bot should refuse before it gets that far, so check the bot
 actually redeployed), or the call went to the wrong Concourse team. The bot runs
 everything under `infrastructure`; the image builds and library publish pipelines
 are in `main`.
+
+`/doof release` refuses and names an in-flight release. A `releases/<version>`
+branch exists on the remote, or a `build-<app>-release-image` build is pending or
+running. If the release is real, promote or abandon it. If it is a leftover,
+`/doof release <app> supersede <version>` replaces it, or `/doof abandon <app>`
+discards it. A build stuck pending needs aborting in Concourse.
 
 A release is cut but never finishes. The release branch stays on the remote
 and the bot nags after 24h. Look at the production deploy job: `action: finish`
