@@ -117,13 +117,13 @@ It's currently installed on the parallel Jupyterhub `authoring.nb.learn.mit.edu`
 
 Once pushed to S3, the archive can be added to the concourse pipeline which builds course images.
 
-  - This step is currently a manual process, but in theory, if you were able to automate the build to trigger on S3 events, users could author a course entirely on platform, which would allow authors to catch resource allocation issues much earlier in the process.
+- This step is currently a manual process, but in theory, if you were able to automate the build to trigger on S3 events, users could author a course entirely on platform, which would allow authors to catch resource allocation issues much earlier in the process.
 
 This has been lightly tested and is highly experimental. It is not recommended for production use at this time. Planning assets exist within [this doc](https://docs.google.com/document/d/1vK2wGsLLkCqNUx6GxGrzEC-hsXiBBAOl8Yz0UAf8ZDM/edit?tab=t.0)
 
 In order to make this usable as an MVP we would need to tackle at least the following:
 
-  - Revisit the authentication mechanism to move away from a shared secret.
-  - Add additional guardrails to enforce valid home directory structure in the extension.
-  - Alter the concourse pipeline to automatically trigger builds when an archive is pushed to S3.
-  - Provide some indication of when the build is complete and the image is available for use.
+- Revisit the authentication mechanism to move away from a shared secret.
+- Add additional guardrails to enforce valid home directory structure in the extension.
+- Alter the concourse pipeline to automatically trigger builds when an archive is pushed to S3.
+- Provide some indication of when the build is complete and the image is available for use.
