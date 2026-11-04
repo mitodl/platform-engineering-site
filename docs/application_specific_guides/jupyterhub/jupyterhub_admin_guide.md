@@ -24,13 +24,17 @@ Concourse runs a [parameterized job](https://cicd.odl.mit.edu/?search=team%3A%22
 
 Jupyterhub will use the [KubeSpawner library](https://github.com/jupyterhub/kubespawner) (with some very slight modifications to enable [image selection via query param](https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py)) to allow users to start up and interact with a set of images we maintain. For courses, this will involve Jupyterhub starting up a notebook server for the user by pulling the corresponding course image from ECR.
 
-The backing database is a Postgres RDS instance.
+The backing database is a Postgres RDS instance. It is used to store ephemeral notebook server state and is only interacted with by core Jupyterhub code at the time of writing.
 
-Images are pre-pulled via [continuous-pre-puller](https://z2jh.jupyter.org/en/stable/administrator/optimization.html#pulling-images-before-users-arrive) daemonsets. This is currently configured to pull all 4 existing images we build and maintain via specification of an extraImages block.
+Images are pre-pulled via [continuous-pre-puller](https://z2jh.jupyter.org/en/stable/administrator/optimization.html#pulling-images-before-users-arrive) daemonsets. This is currently configured to pull all images we build and maintain via specification of an extraImages block.
 
 Jupyterhub domains are currently gated by an SSO login to the olapps Keycloak realm. Once authenticated with Keycloak, Jupyterhub is set up to use the TmpAuthenticator class. When accessing the /tmplogin endpoint provided by the authenticator, Jupyterhub will unconditionally authenticate users as a random UUID. This ensures that users can spin up ephemeral notebooks provided they are able to authenticate with MIT Learn.
 
 Culling is performed via the [jupyterhub-idle-culler](https://github.com/jupyterhub/jupyterhub-idle-culler) configured via [Helm chart](https://z2jh.jupyter.org/en/latest/resources/reference.html#cull). It currently culls both running, inactive servers as well as users. Culling users is important as we will accumulate UUID-keyed users and sessions in the database over time.
+
+We also maintain a set of custom [Jupyterlab extension](https://github.com/mitodl/ol-notebook-extensions/). These are built and packaged via a [different concourse pipeline](https://cicd.odl.mit.edu/teams/main/pipelines/publish-jupyterhub-extensions-pypi) and published to PyPi.
+  - [ol-themed-jupyter](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-themed-jupyter) is a Jupyterlab extension which exists only to override the link at the top left corner of a notebook to the MIT Learn logo pointing at the Learn dashboard.
+  - [ol-jupyter-authoring](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-jupyter-authoring) is an experimental Jupyterlab extension which, when installed, allows saving the contents of a home directory of a running notebook server to an S3 bucket when running on the `authoring` deployment. **This is highly experimental - see appendix for more details**
 
 # Monitoring
 
@@ -48,7 +52,8 @@ At the moment, adding a new course involves a few manual steps:
 1. Create a new repository in the [ol-notebooks](https://github.mit.edu/ol-notebooks) org using the [template repo](https://github.mit.edu/ol-notebooks/ol-notebook-repo-template).
 2. Author your changes. If you started from the template repo, the only required changes you'll need to make are adding your notebooks and data, adding any dependencies to either requirements.txt or the Dockerfile, and ensuring that the Dockerfile copies your notebooks and data into the ${NB_USER} home directory. Sometimes this will be done for you by the course authors.
     - Here's an example of a PR which adds a notebook and data files to a fresh course repo: <https://github.mit.edu/ol-notebooks/UAI_SOURCE-UAI.ST.1-1T2026/pull/1>
-    - Note that there's a 100mb limit on files checked into the repo. If the course requires larger data files, they need to either be hosted externally or compressed and unzipped at runtime.
+    - Note that there's a 100mb limit on files checked into the repo. If the course requires larger data files, they need to either be hosted externally, split into multiple files or compressed and unzipped at runtime. Anything stored externally will need notebook code changes to fetch it, while anything packaged into the image will be accessible on the filesystem.
+      - There is also **experimental** support for storing notebook code in S3 and building based on that, which sidesteps the 100mb limitation entirely, but this currently requires engineering to place files. See appendix for more details.
 3. Make changes to ol-infrastructure to add a new image build job in Concourse. This involves adding a new job to the [jupyter_courses.py](https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_concourse/pipelines/container_images/jupyter_courses.py) file and provisioning the new pipeline via fly command. Additionally, add the new image to the QueryStringKubeSpawner's `KNOWN_IMAGES` in [dynamicImageConfig.py](https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py) and to `COURSE_NAMES` in [JupyterHub's Pulumi code](https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/__main__.py).
     - If the notebook requires GPU resources, also add the new course to the `GPU_ENABLED_COURSES` in `dynamicImageConfig.py`
     - Here's an example PR which added a new course called `uai_source-uai.intro`: <https://github.com/mitodl/ol-infrastructure/pull/3630>
@@ -57,9 +62,25 @@ At the moment, adding a new course involves a few manual steps:
     - For example, if your image URI is `610119931565.dkr.ecr.us-east-1.amazonaws.com/ol-course-notebooks:uai_source-uai.intro` and your notebook is at `lectures/lecture1/mod5_lec1.ipynb`, the URL would be `https://nb.learn.mit.edu/tmplogin?course=uai_source-uai.intro&notebook=lectures%2Flecture1%2Fmod5_lec1.ipynb`.
 6. Lastly, open the link and run the entire notebook. This will help you catch any dependency issues or let you know if the notebook uses too much memory to execute. See the Troubleshooting section for more details on common failure modes you might encounter.
 
+By convention, we try to be consistent in how we name the course repos, tag the images and lay the files out on disk. That said, none of these are actual requirements so adherence is very much best effort.
+- When possible we try to use the Course Run's ID as the repo name (i.e. `MITxT-6.7960.5x-2T2026`) 
+- Repos are typically structured as follows:
+```
+daniel@dansubak-macbook course_repos % tree UAI_SOURCE-UAI.PM.1-1T2026
+UAI_SOURCE-UAI.PM.1-1T2026
+├── assignments
+│         └── assignment1
+│             ├── synthetic_observational_data.csv
+│             └── uaipm1_assign1.ipynb
+├── Dockerfile
+├── requirements.txt
+└── runtime.txt
+```
+- Docker image tags are typically the same as the repo name, but lowercased and omitting the term specifier (i.e. `mitxt-6.7960.5x`)
+
 ### Updating an Existing Course
 
-The steps for updating a new course are a subset of the steps for adding a new course:
+The steps for updating an existing course are a subset of the steps for adding a new course:
 
 1. Author your changes in the course repo. If it is an update to an existing course, it should already have a Concourse build pipeline which will automatically attempt to build an updated image.
 2. Once the image is built, you should be able to start a notebook server with the updated image automatically. If you adjusted the notebook directory structure, you may need to construct a new URL, but you will not need to make any additional infrastructure changes.
@@ -73,7 +94,8 @@ If you run into issues attempting to run a course image, here are some common th
 - If the image starts but you get a 404, verify that the notebook path is correct and URL encoded.
     - You may need to change the `COPY` command in the dockerfile depending on the file structure of the repo. By default it expects all files to be in the root and handles copying it correctly, but by convention existing courses use file structures like `assignments/assignment1/mod1_assign1.ipynb`, which requires a Dockerfile change.
 - If a notebook starts misbehaving while you're running code, it may be an OOMKill. This can manifest in a few ways such as being unable to run more code, or a popup mentioning that the file on disk has changed unexpectedly.
-    - Validating this directly is tricky and the most direct way to validate it is by watching `top` in a shell on the pod running your notebook. However, for cases where the OOMKill results in the pod restarting, it should appear on [this graph](https://mitolproduction.grafana.net/d/ds6qvrm/jupyter-notebooks?orgId=1&from=now-6h&to=now&timezone=browser&viewPanel=panel-2)
+    - Validating this directly is tricky and the most direct way to validate it is by watching `top` in a shell on the pod running your notebook. To find the pod, look for one with the UUID matching the one in the running server's URL. 
+    - However, for cases where the OOMKill results in the pod restarting, it should appear on [this graph](https://mitolproduction.grafana.net/d/ds6qvrm/jupyter-notebooks?orgId=1&from=now-6h&to=now&timezone=browser&viewPanel=panel-2)
 - The code itself may have issues. The specific way it manifests varies widely, but a few common ones are:
     - Missing dependencies, resulting in import errors. If an inline `!pip install` resolves the issue, add the pinned dependency to requirements.txt.
     - Missing data files, resulting in a `FileNotFoundError`. Typically this involves asking the course authors to provide you with the data, or ensuring that the file is where the code expects it to be.
@@ -81,3 +103,6 @@ If you run into issues attempting to run a course image, here are some common th
         - Notebooks that use Tensorflow features may need to use a Tensorflow-specific base image. Modify the `FROM` directive in the course's Dockerfile as seen [here](https://github.mit.edu/ol-notebooks/UAI_SOURCE-UAI.12-3T2025/commit/5e29f917408adc5899982607dbf06f85fb2b0530)
         - Ensure that if a course needs a GPU-enabled node that the course it is added to the `GPU_ENABLED_COURSES` set in [dynamicImageConfig.py](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py#L49-L63)
     - Code output seems suspicious or incorrect when compared to the provided notebook content. Sometimes this is obvious (e.g. a plot that looks nonsensical), other times it may be more subtle (e.g. a model training to suspiciously low accuracy). In these cases, it's best to reach out to the course authors for help if you're not an expert in the course material.
+
+### Appendix: S3 Backed Authoring
+
