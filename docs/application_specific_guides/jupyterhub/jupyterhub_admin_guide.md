@@ -33,8 +33,9 @@ Jupyterhub domains are currently gated by an SSO login to the olapps Keycloak re
 Culling is performed via the [jupyterhub-idle-culler](https://github.com/jupyterhub/jupyterhub-idle-culler) configured via [Helm chart](https://z2jh.jupyter.org/en/latest/resources/reference.html#cull). It currently culls both running, inactive servers as well as users. Culling users is important as we will accumulate UUID-keyed users and sessions in the database over time.
 
 We also maintain a set of custom [Jupyterlab extension](https://github.com/mitodl/ol-notebook-extensions/). These are built and packaged via a [different concourse pipeline](https://cicd.odl.mit.edu/teams/main/pipelines/publish-jupyterhub-extensions-pypi) and published to PyPi.
-  - [ol-themed-jupyter](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-themed-jupyter) is a Jupyterlab extension which exists only to override the link at the top left corner of a notebook to the MIT Learn logo pointing at the Learn dashboard.
-  - [ol-jupyter-authoring](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-jupyter-authoring) is an experimental Jupyterlab extension which, when installed, allows saving the contents of a home directory of a running notebook server to an S3 bucket when running on the `authoring` deployment. **This is highly experimental - see appendix for more details**
+
+- [ol-themed-jupyter](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-themed-jupyter) is a Jupyterlab extension which exists only to override the link at the top left corner of a notebook to the MIT Learn logo pointing at the Learn dashboard.
+- [ol-jupyter-authoring](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-jupyter-authoring) is an experimental Jupyterlab extension which, when installed, allows saving the contents of a home directory of a running notebook server to an S3 bucket when running on the `authoring` deployment. **This is highly experimental - see appendix for more details**
 
 # Monitoring
 
@@ -64,8 +65,10 @@ At the moment, adding a new course involves a few manual steps:
 6. Lastly, open the link and run the entire notebook. This will help you catch any dependency issues or let you know if the notebook uses too much memory to execute. See the Troubleshooting section for more details on common failure modes you might encounter.
 
 By convention, we try to be consistent in how we name the course repos, tag the images and lay the files out on disk. That said, none of these are actual requirements so adherence is very much best effort.
-- When possible we try to use the Course Run's ID as the repo name (i.e. `MITxT-6.7960.5x-2T2026`) 
+
+- When possible we try to use the Course Run's ID as the repo name (i.e. `MITxT-6.7960.5x-2T2026`)
 - Repos are typically structured as follows:
+
 ```
 daniel@dansubak-macbook course_repos % tree UAI_SOURCE-UAI.PM.1-1T2026
 UAI_SOURCE-UAI.PM.1-1T2026
@@ -77,6 +80,7 @@ UAI_SOURCE-UAI.PM.1-1T2026
 ├── requirements.txt
 └── runtime.txt
 ```
+
 - Docker image tags are typically the same as the repo name, but lowercased and omitting the term specifier (i.e. `mitxt-6.7960.5x`)
 
 ### Updating an Existing Course
@@ -95,7 +99,7 @@ If you run into issues attempting to run a course image, here are some common th
 - If the image starts but you get a 404, verify that the notebook path is correct and URL encoded.
     - You may need to change the `COPY` command in the dockerfile depending on the file structure of the repo. By default it expects all files to be in the root, but by convention existing courses use file structures like `assignments/assignment1/mod1_assign1.ipynb`, which requires a Dockerfile change.
 - If a notebook starts misbehaving while you're running code, it may be an OOMKill. This can manifest in a few ways such as being unable to run more code, or a popup mentioning that the file on disk has changed unexpectedly.
-    - Validating this directly is tricky and the most direct way to validate it is by watching `top` in a shell on the pod running your notebook. To find the pod, look for one with the UUID matching the one in the running server's URL. 
+    - Validating this directly is tricky and the most direct way to validate it is by watching `top` in a shell on the pod running your notebook. To find the pod, look for one with the UUID matching the one in the running server's URL.
     - However, for cases where the OOMKill results in the pod restarting, it should appear on [this graph](https://mitolproduction.grafana.net/d/ds6qvrm/jupyter-notebooks?orgId=1&from=now-6h&to=now&timezone=browser&viewPanel=panel-2)
 - The code itself may have issues. The specific way it manifests varies widely, but a few common ones are:
     - Missing dependencies, resulting in import errors. If an inline `!pip install` resolves the issue, add the pinned dependency to requirements.txt.
@@ -107,13 +111,13 @@ If you run into issues attempting to run a course image, here are some common th
 
 #### Appendix: S3 Backed Authoring
 
-- [ol-jupyter-authoring](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-jupyter-authoring) adds a button to the Jupyterlab interface which allows saving a compressed archive of the home directory to the env-specific S3 authoring bucket (i.e. `jupyter-courses-qa`). Access to these buckets is restricted to hosts within the mitx AWS account. 
+- [ol-jupyter-authoring](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-jupyter-authoring) adds a button to the Jupyterlab interface which allows saving a compressed archive of the home directory to the env-specific S3 authoring bucket (i.e. `jupyter-courses-qa`). Access to these buckets is restricted to hosts within the mitx AWS account.
 - It's currently installed on the parallel Jupyterhub `authoring.nb.learn.mit.edu` deployment, which uses a shared secret for authentication.
 - Once pushed to S3, the archive can be added to the concourse pipeline which builds course images.
-  - This step is currently a manual process, but in theory, if you were able to automate the build to trigger on S3 events, users could author a course entirely on platform, which would allow authors to catch resource allocation issues much earlier in the process.
+    - This step is currently a manual process, but in theory, if you were able to automate the build to trigger on S3 events, users could author a course entirely on platform, which would allow authors to catch resource allocation issues much earlier in the process.
 - This has been lightly tested and is highly experimental. It is not recommended for production use at this time. Planning assets exist within [this doc](https://docs.google.com/document/d/1vK2wGsLLkCqNUx6GxGrzEC-hsXiBBAOl8Yz0UAf8ZDM/edit?tab=t.0)
 - In order to make this usable as an MVP we would need to tackle at least the following:
-  - Revisit the authentication mechanism to move away from a shared secret. 
-  - Add additional guardrails to enforce valid home directory structure in the extension.
-  - Alter the concourse pipeline to automatically trigger builds when an archive is pushed to S3.
-  - Provide some indication of when the build is complete and the image is available for use.
+    - Revisit the authentication mechanism to move away from a shared secret.
+    - Add additional guardrails to enforce valid home directory structure in the extension.
+    - Alter the concourse pipeline to automatically trigger builds when an archive is pushed to S3.
+    - Provide some indication of when the build is complete and the image is available for use.
