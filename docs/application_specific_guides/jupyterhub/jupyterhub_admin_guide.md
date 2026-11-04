@@ -53,6 +53,7 @@ At the moment, adding a new course involves a few manual steps:
 2. Author your changes. If you started from the template repo, the only required changes you'll need to make are adding your notebooks and data, adding any dependencies to either requirements.txt or the Dockerfile, and ensuring that the Dockerfile copies your notebooks and data into the ${NB_USER} home directory. Sometimes this will be done for you by the course authors.
     - Here's an example of a PR which adds a notebook and data files to a fresh course repo: <https://github.mit.edu/ol-notebooks/UAI_SOURCE-UAI.ST.1-1T2026/pull/1>
     - Note that there's a 100mb limit on files checked into the repo. If the course requires larger data files, they need to either be hosted externally, split into multiple files or compressed and unzipped at runtime. Anything stored externally will need notebook code changes to fetch it, while anything packaged into the image will be accessible on the filesystem.
+    - External authors frequently make use of inline `!pip install` or `!apt-get install` commands in their notebooks to install dependencies at runtime. This is not ideal as it lengthens startup time and dependency changes upstream can result in the notebook becoming unusable. It is recommend to add dependencies to the requirements.txt file or Dockerfile whenever possible.
       - There is also **experimental** support for storing notebook code in S3 and building based on that, which sidesteps the 100mb limitation entirely, but this currently requires engineering to place files. See appendix for more details.
 3. Make changes to ol-infrastructure to add a new image build job in Concourse. This involves adding a new job to the [jupyter_courses.py](https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_concourse/pipelines/container_images/jupyter_courses.py) file and provisioning the new pipeline via fly command. Additionally, add the new image to the QueryStringKubeSpawner's `KNOWN_IMAGES` in [dynamicImageConfig.py](https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py) and to `COURSE_NAMES` in [JupyterHub's Pulumi code](https://github.com/mitodl/ol-infrastructure/blob/81983ea7116cd2f63a8c46e0c56536a9247b6f8e/src/ol_infrastructure/applications/jupyterhub/__main__.py).
     - If the notebook requires GPU resources, also add the new course to the `GPU_ENABLED_COURSES` in `dynamicImageConfig.py`
@@ -92,7 +93,7 @@ If you run into issues attempting to run a course image, here are some common th
 
 - If you get the wrong image when you log in, verify that you've specified the right course parameter and that the value is in `KNOWN_IMAGES` in `dynamicImageConfig.py`.
 - If the image starts but you get a 404, verify that the notebook path is correct and URL encoded.
-    - You may need to change the `COPY` command in the dockerfile depending on the file structure of the repo. By default it expects all files to be in the root and handles copying it correctly, but by convention existing courses use file structures like `assignments/assignment1/mod1_assign1.ipynb`, which requires a Dockerfile change.
+    - You may need to change the `COPY` command in the dockerfile depending on the file structure of the repo. By default it expects all files to be in the root, but by convention existing courses use file structures like `assignments/assignment1/mod1_assign1.ipynb`, which requires a Dockerfile change.
 - If a notebook starts misbehaving while you're running code, it may be an OOMKill. This can manifest in a few ways such as being unable to run more code, or a popup mentioning that the file on disk has changed unexpectedly.
     - Validating this directly is tricky and the most direct way to validate it is by watching `top` in a shell on the pod running your notebook. To find the pod, look for one with the UUID matching the one in the running server's URL. 
     - However, for cases where the OOMKill results in the pod restarting, it should appear on [this graph](https://mitolproduction.grafana.net/d/ds6qvrm/jupyter-notebooks?orgId=1&from=now-6h&to=now&timezone=browser&viewPanel=panel-2)
@@ -104,5 +105,15 @@ If you run into issues attempting to run a course image, here are some common th
         - Ensure that if a course needs a GPU-enabled node that the course it is added to the `GPU_ENABLED_COURSES` set in [dynamicImageConfig.py](https://github.com/mitodl/ol-infrastructure/blob/main/src/ol_infrastructure/applications/jupyterhub/dynamicImageConfig.py#L49-L63)
     - Code output seems suspicious or incorrect when compared to the provided notebook content. Sometimes this is obvious (e.g. a plot that looks nonsensical), other times it may be more subtle (e.g. a model training to suspiciously low accuracy). In these cases, it's best to reach out to the course authors for help if you're not an expert in the course material.
 
-### Appendix: S3 Backed Authoring
+#### Appendix: S3 Backed Authoring
 
+- [ol-jupyter-authoring](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-jupyter-authoring) adds a button to the Jupyterlab interface which allows saving a compressed archive of the home directory to the env-specific S3 authoring bucket (i.e. `jupyter-courses-qa`). Access to these buckets is restricted to hosts within the mitx AWS account. 
+- It's currently installed on the parallel Jupyterhub `authoring.nb.learn.mit.edu` deployment, which uses a shared secret for authentication.
+- Once pushed to S3, the archive can be added to the concourse pipeline which builds course images.
+  - This step is currently a manual process, but in theory, if you were able to automate the build to trigger on S3 events, users could author a course entirely on platform, which would allow authors to catch resource allocation issues much earlier in the process.
+- This has been lightly tested and is highly experimental. It is not recommended for production use at this time. Planning assets exist within [this doc](https://docs.google.com/document/d/1vK2wGsLLkCqNUx6GxGrzEC-hsXiBBAOl8Yz0UAf8ZDM/edit?tab=t.0)
+- In order to make this usable as an MVP we would need to tackle at least the following:
+  - Revisit the authentication mechanism to move away from a shared secret. 
+  - Add additional guardrails to enforce valid home directory structure in the extension.
+  - Alter the concourse pipeline to automatically trigger builds when an archive is pushed to S3.
+  - Provide some indication of when the build is complete and the image is available for use.
