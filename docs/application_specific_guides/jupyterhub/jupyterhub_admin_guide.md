@@ -111,13 +111,19 @@ If you run into issues attempting to run a course image, here are some common th
 
 #### Appendix: S3 Backed Authoring
 
-- [ol-jupyter-authoring](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-jupyter-authoring) adds a button to the Jupyterlab interface which allows saving a compressed archive of the home directory to the env-specific S3 authoring bucket (i.e. `jupyter-courses-qa`). Access to these buckets is restricted to hosts within the mitx AWS account.
-- It's currently installed on the parallel Jupyterhub `authoring.nb.learn.mit.edu` deployment, which uses a shared secret for authentication.
-- Once pushed to S3, the archive can be added to the concourse pipeline which builds course images.
-    - This step is currently a manual process, but in theory, if you were able to automate the build to trigger on S3 events, users could author a course entirely on platform, which would allow authors to catch resource allocation issues much earlier in the process.
-- This has been lightly tested and is highly experimental. It is not recommended for production use at this time. Planning assets exist within [this doc](https://docs.google.com/document/d/1vK2wGsLLkCqNUx6GxGrzEC-hsXiBBAOl8Yz0UAf8ZDM/edit?tab=t.0)
-- In order to make this usable as an MVP we would need to tackle at least the following:
-    - Revisit the authentication mechanism to move away from a shared secret.
-    - Add additional guardrails to enforce valid home directory structure in the extension.
-    - Alter the concourse pipeline to automatically trigger builds when an archive is pushed to S3.
-    - Provide some indication of when the build is complete and the image is available for use.
+[ol-jupyter-authoring](https://github.com/mitodl/ol-notebook-extensions/tree/main/ol-jupyter-authoring) adds a button to the Jupyterlab interface which allows saving a compressed archive of the home directory to the env-specific S3 authoring bucket (i.e. `jupyter-courses-qa`). Access to these buckets is restricted to hosts within the mitx AWS account.
+
+It's currently installed on the parallel Jupyterhub `authoring.nb.learn.mit.edu` deployment, which uses a shared secret for authentication.
+
+Once pushed to S3, the archive can be added to the concourse pipeline which builds course images.
+
+  - This step is currently a manual process, but in theory, if you were able to automate the build to trigger on S3 events, users could author a course entirely on platform, which would allow authors to catch resource allocation issues much earlier in the process.
+
+This has been lightly tested and is highly experimental. It is not recommended for production use at this time. Planning assets exist within [this doc](https://docs.google.com/document/d/1vK2wGsLLkCqNUx6GxGrzEC-hsXiBBAOl8Yz0UAf8ZDM/edit?tab=t.0)
+
+In order to make this usable as an MVP we would need to tackle at least the following:
+
+  - Revisit the authentication mechanism to move away from a shared secret.
+  - Add additional guardrails to enforce valid home directory structure in the extension.
+  - Alter the concourse pipeline to automatically trigger builds when an archive is pushed to S3.
+  - Provide some indication of when the build is complete and the image is available for use.
