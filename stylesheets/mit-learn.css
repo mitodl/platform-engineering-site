@@ -1,0 +1,170 @@
+/* MIT Learn branding. Color values are the smoot-design tokens
+   (https://github.com/mitodl/smoot-design, src/components/ThemeProvider/colors.ts)
+   and the layout follows the MIT Learn header and footer. */
+:root {
+  --mit-red: #750014;
+  --mit-red-link: #a31f34;
+  --mit-red-light: #d02e44;
+  --mit-nav-gray: #303337;
+  --mit-dark-gray-2: #212326;
+  --mit-silver-gray-dark: #626a73;
+  --mit-silver-gray-light: #b8c2cc;
+  --mit-light-gray-2: #dde1e6;
+  --mit-light-gray-1: #f3f4f8;
+  --mit-white: #fff;
+  --mit-blue: #1966ff;
+  --mit-orange: #fab005;
+  --mit-green: #008000;
+
+  --md-primary-fg-color: var(--mit-red);
+  --md-primary-fg-color--light: var(--mit-red-light);
+  --md-primary-fg-color--dark: var(--mit-red);
+  --md-accent-fg-color: var(--mit-red-light);
+  --md-accent-fg-color--transparent: #d02e441a;
+
+  --md-default-fg-color: var(--mit-dark-gray-2);
+  --md-default-fg-color--light: var(--mit-silver-gray-dark);
+  --md-default-fg-color--lighter: var(--mit-silver-gray-light);
+  --md-default-fg-color--lightest: var(--mit-light-gray-2);
+  --md-default-bg-color: var(--mit-light-gray-1);
+  --md-default-bg-color--light: #f3f4f8b3;
+
+  --md-typeset-a-color: var(--mit-red-link);
+  --md-typeset-table-color: var(--mit-light-gray-2);
+  --md-code-fg-color: var(--mit-dark-gray-2);
+  --md-code-bg-color: var(--mit-white);
+}
+
+.md-header {
+  --md-accent-fg-color: var(--mit-white);
+  background-color: var(--mit-nav-gray);
+  color: var(--mit-white);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.md-tabs {
+  box-shadow: none;
+  color: var(--mit-white);
+}
+
+.md-tabs__item--active {
+  border-bottom-color: var(--mit-white);
+}
+
+/* The mobile drawer repeats the white header logo, so its title bar needs the
+   header background. */
+.md-nav .md-nav__title[for="__drawer"] {
+  background-color: var(--mit-nav-gray);
+  color: var(--mit-white);
+}
+
+/* The accent (hover) red is 4.5:1 short on the tinted active background. */
+.md-nav--primary .md-nav__item .md-nav__link--active {
+  color: var(--mit-red-link);
+}
+
+/* Surfaces that sit on the gray page are white, as on MIT Learn. */
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid.cards > ol > li,
+.md-typeset .grid > .card,
+.md-typeset table:not([class]) {
+  background-color: var(--mit-white);
+}
+
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid.cards > ol > li,
+.md-typeset .grid > .card,
+.md-typeset pre > code {
+  border: 1px solid var(--mit-light-gray-2);
+  border-radius: 8px;
+}
+
+.md-typeset a:focus,
+.md-typeset a:hover {
+  text-decoration: underline;
+}
+
+.md-typeset .md-button {
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.md-typeset .md-button--primary {
+  background-color: var(--mit-red);
+  color: var(--mit-white);
+}
+
+.md-typeset .md-button--primary:focus,
+.md-typeset .md-button--primary:hover {
+  background-color: var(--mit-red-link);
+  color: var(--mit-white);
+  opacity: 1;
+}
+
+/* Admonitions take the smoot-design Alert tints. `tip` has no Alert
+   equivalent and shares the success color. */
+.md-typeset .admonition[class],
+.md-typeset details[class] {
+  --mit-admonition-color: var(--mit-blue);
+  background-color: color-mix(
+    in srgb,
+    var(--mit-admonition-color) 10%,
+    var(--mit-white)
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--mit-admonition-color) 50%, var(--mit-white));
+  border-radius: 4px;
+}
+
+.md-typeset .admonition.warning,
+.md-typeset details.warning {
+  --mit-admonition-color: var(--mit-orange);
+}
+
+.md-typeset .admonition.danger,
+.md-typeset details.danger {
+  --mit-admonition-color: var(--mit-red-link);
+}
+
+.md-typeset .admonition.success,
+.md-typeset details.success,
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+  --mit-admonition-color: var(--mit-green);
+}
+
+.md-typeset .admonition > .admonition-title::before,
+.md-typeset details[class] > summary::before {
+  background-color: var(--mit-admonition-color);
+}
+
+.md-typeset .admonition > .admonition-title::after,
+.md-typeset details[class] > summary::after {
+  color: var(--mit-admonition-color);
+}
+
+.md-footer {
+  background-color: var(--mit-white);
+  border-top: 1px solid var(--mit-dark-gray-2);
+}
+
+.md-footer-meta {
+  background-color: var(--mit-white);
+}
+
+.md-copyright {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 0;
+  color: var(--mit-dark-gray-2);
+}
+
+.md-copyright::before {
+  content: "";
+  flex: none;
+  width: 3.4rem;
+  height: 1.8rem;
+  background: url("../img/mit-logo-black.svg") no-repeat center / contain;
+}
