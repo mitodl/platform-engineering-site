@@ -1,7 +1,7 @@
 # LLM prompt lifecycle
 
-Every Open Learning LLM call site goes through
-[ol-llm](https://github.com/mitodl/ol-llm), and apps fetch their prompts from Opik through it.
+Open Learning LLM call sites are moving onto
+[ol-llm](https://github.com/mitodl/ol-llm), and apps on it fetch their prompts from Opik through it.
 Production runs the prompt version an app's repository points at: a pull request moves the
 pointer, and merging it moves the `production` label in Opik.
 
@@ -12,4 +12,5 @@ cache), rolling back, what to do while Opik is down, and what to check after a p
 
 The decisions behind it are in
 [`llm-opik-lifecycle-spec.md`](https://github.com/mitodl/ol-infrastructure/blob/main/docs/plans/llm-opik-lifecycle-spec.md)
-(sections 2.3 and 3).
+(section 1.2 item 5 for the drift report, 2.3 for promotion, 3 for the runtime
+policy, and 5.1 item 9 for online scoring).
