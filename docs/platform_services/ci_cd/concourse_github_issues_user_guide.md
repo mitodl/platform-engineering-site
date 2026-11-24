@@ -22,7 +22,7 @@ answered when it comes to deploying their software:
 ## The Solution
 
 Thankfully, our director Tobias came up with an excellent and novel solution.
-What's one of the most common non code mechanism developers use to govern their work?
+What's one of the most common non code mechanisms developers use to govern their work?
 
 Github Issues!
 
