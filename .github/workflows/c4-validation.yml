@@ -30,7 +30,7 @@ jobs:
       # so a different PlantUML/Graphviz build would emit different bytes and
       # report false drift. Bump both in lockstep (and re-render) when updating.
       kroki:
-        image: yuzutech/kroki@sha256:a4341ac44cd2590124da7142d13fdf5d83eadc2b94c023d018a2227695a30da1
+        image: yuzutech/kroki@sha256:e8860a4abf233b706e8979e54266599713f254a7e695ff927c85f0c7043e34ab
         ports:
           - 8000:8000
     env:
